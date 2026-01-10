@@ -28,8 +28,8 @@ internal val BackgroundDark = Color(0xFF121212) // Почти черный фо�
 internal val PrimaryDark = Color(0xFF4FA3BF) // Осветлённый синий из PrimaryLight
 internal val OnPrimaryDark = Color(0xFF001F2A) // Очень тёмный сине-черный
 
-internal val SecondaryDark = Color(0xFF6FBAD6) // Более насыщенный голубой
-internal val OnSecondaryDark = Color(0xFF002733)
+internal val SecondaryDark = Color(0xFF6FA4D6) // Более насыщенный голубой
+internal val OnSecondaryDark = Color(0xFFFFFFFF)
 
 internal val TertiaryDark = Color(0xFFE0B894) // Тёплый бежевый, мягкий
 internal val OnTertiaryDark = Color(0xFF2B1B10)
