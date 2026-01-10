@@ -1,4 +1,4 @@
-package ru.hse.app.androidApp.ui.components.common.buttons
+package ru.hse.app.androidApp.ui.components.common.button
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth

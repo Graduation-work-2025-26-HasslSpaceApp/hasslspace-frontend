@@ -1,4 +1,4 @@
-package ru.hse.app.androidApp.ui.components.auth
+package ru.hse.app.androidApp.ui.components.auth.welcome
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -22,7 +21,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.hse.app.androidApp.R
-import ru.hse.app.androidApp.ui.components.common.buttons.BigButton
+import ru.hse.app.androidApp.ui.components.common.button.BigButton
 import ru.hse.app.androidApp.ui.theme.AppTheme
 
 @Composable
@@ -38,7 +37,7 @@ fun WelcomeScreenContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(280.dp)
-                .offset(y=(-10).dp)
+                .offset(y = (-10).dp)
                 .align(Alignment.TopCenter),
             contentScale = ContentScale.Crop
         )
@@ -52,7 +51,7 @@ fun WelcomeScreenContent(
                     scaleY = 3f,
                     clip = false
                 )
-                .offset(y=(-30).dp)
+                .offset(y = (-30).dp)
         )
 
         Column(

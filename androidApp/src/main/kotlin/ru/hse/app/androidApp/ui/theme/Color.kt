@@ -11,6 +11,7 @@ internal val Seed = Color(0xFF1D3557)
 internal val BackgroundLight = Color(0xFFEBEBEB) // Светло-серый
 internal val PrimaryLight = Color(0xFF013648) // Синий
 internal val OnPrimaryLight = Color(0xFFFFFFFF) // Белый
+internal val OnPrimaryContainerLight = Color(0xFFFFFFFF) // Белый
 internal val SecondaryLight = Color(0xFFCFEDFF) // Голубой
 internal val OnSecondaryLight = Color(0xFF000000) // Черный
 internal val TertiaryLight = Color(0xFFF3D0B2) // Бежевый
@@ -27,6 +28,7 @@ internal val OutlineLight = Color(0xFF6D6F6E) // Темно-серый
 internal val BackgroundDark = Color(0xFF121212) // Почти черный фон
 internal val PrimaryDark = Color(0xFF4FA3BF) // Осветлённый синий из PrimaryLight
 internal val OnPrimaryDark = Color(0xFF001F2A) // Очень тёмный сине-черный
+internal val OnPrimaryContainerDark = Color(0xFF001F2A) // Очень тёмный сине-черный
 
 internal val SecondaryDark = Color(0xFF6FA4D6) // Более насыщенный голубой
 internal val OnSecondaryDark = Color(0xFFFFFFFF)

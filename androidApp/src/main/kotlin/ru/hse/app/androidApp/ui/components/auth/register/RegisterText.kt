@@ -1,34 +1,27 @@
-package ru.hse.app.androidApp.ui.components.auth
+package ru.hse.app.androidApp.ui.components.auth.register
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import ru.hse.app.androidApp.ui.theme.AppTheme
-import ru.hse.app.androidApp.ui.theme.RighteousFontFamily
 
 @Composable
-fun WelcomeText(
+fun RegisterText(
     modifier: Modifier = Modifier,
     fontSize: TextUnit = 35.sp
 ) {
     Text(
-        text = buildAnnotatedString {
-            append("Добро пожаловать \n в ")
-            withStyle(style = SpanStyle(fontFamily = RighteousFontFamily)) {
-                append("HasslSpace")
-            }
-        },
+        text = "Создайте новый \n аккаунт",
         fontWeight = FontWeight.Medium,
         fontSize = fontSize,
-        lineHeight = fontSize * 1.34f,
+        color = MaterialTheme.colorScheme.onBackground,
+        lineHeight = fontSize * 1.03f,
         textAlign = TextAlign.Center,
         modifier = modifier
     )
@@ -36,20 +29,20 @@ fun WelcomeText(
 
 @Preview
 @Composable
-fun WelcomeTextPreviewLight() {
+fun RegisterTextPreviewLight() {
     AppTheme(
         isDark = false
     ) {
-        WelcomeText()
+        RegisterText()
     }
 }
 
 @Preview
 @Composable
-fun WelcomeTextPreviewDark() {
+fun RegisterTextPreviewDark() {
     AppTheme(
         isDark = true
     ) {
-        WelcomeText()
+        RegisterText()
     }
 }

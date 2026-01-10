@@ -32,4 +32,7 @@ kotlin {
 dependencies {
     implementation(project(":sharedUI"))
     implementation(libs.androidx.activityCompose)
+
+    //TODO перенести в libs
+    implementation("androidx.compose.material:material-icons-extended-android:1.6.0")
 }
