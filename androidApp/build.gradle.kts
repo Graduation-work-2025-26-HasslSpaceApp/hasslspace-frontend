@@ -34,5 +34,8 @@ dependencies {
     implementation(libs.androidx.activityCompose)
 
     //TODO перенести в libs
-    implementation("androidx.compose.material:material-icons-extended-android:1.6.0")
+    implementation("androidx.compose.material:material-icons-extended-android:1.7.8")
+    //Coil
+    implementation("io.coil-kt.coil3:coil-compose:3.3.0")
+    implementation("io.coil-kt.coil3:coil-network-okhttp:3.3.0")
 }
