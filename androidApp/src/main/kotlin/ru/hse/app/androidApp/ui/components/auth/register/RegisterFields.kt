@@ -42,7 +42,7 @@ fun EmailField(
 ) {
     AuthCustomField(
         text = text,
-        placeholder = "Введите адрес электронной почты",
+        placeholder = "Адрес электронной почты",
         description = "Почта",
         maxCharacters = null,
         isEmail = true,
