@@ -32,10 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.hse.app.androidApp.R
 import ru.hse.app.androidApp.ui.components.auth.register.EmailField
-import ru.hse.app.androidApp.ui.components.auth.register.PasswordColumn
 import ru.hse.app.androidApp.ui.components.auth.register.RegisterText
-import ru.hse.app.androidApp.ui.components.auth.register.UniqueNicknameField
-import ru.hse.app.androidApp.ui.components.auth.register.UsernameField
 import ru.hse.app.androidApp.ui.components.common.button.BigButton
 import ru.hse.app.androidApp.ui.components.common.field.PasswordCustomField
 import ru.hse.app.androidApp.ui.theme.AppTheme
