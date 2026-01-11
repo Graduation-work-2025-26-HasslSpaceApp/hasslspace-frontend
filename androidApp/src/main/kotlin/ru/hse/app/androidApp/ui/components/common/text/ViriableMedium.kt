@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.sp
 fun VariableMedium(
     text: String,
     fontSize: TextUnit,
-    fontColor: Color = MaterialTheme.colorScheme.onPrimary,
+    fontColor: Color = MaterialTheme.colorScheme.onBackground,
     style: TextStyle = TextStyle(
         fontWeight = FontWeight.Medium,
         fontSize = 15.sp,

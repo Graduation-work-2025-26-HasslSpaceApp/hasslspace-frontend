@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.sp
 fun VariableBold(
     text: String,
     fontSize: TextUnit,
-    fontColor: Color = MaterialTheme.colorScheme.onPrimary,
+    fontColor: Color = MaterialTheme.colorScheme.onBackground,
     style: TextStyle = TextStyle(
         fontWeight = FontWeight.Bold,
         fontSize = 15.sp,

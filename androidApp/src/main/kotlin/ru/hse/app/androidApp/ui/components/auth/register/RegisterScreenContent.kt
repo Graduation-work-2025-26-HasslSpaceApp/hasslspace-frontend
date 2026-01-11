@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -81,7 +82,10 @@ fun RegisterScreenContent(
 
             BigButton(
                 text = "Создать аккаунт",
-                onClick = { onRegisterClick() }
+                onClick = { onRegisterClick() },
+                colors = ButtonDefaults.buttonColors(
+                    contentColor = MaterialTheme.colorScheme.scrim
+                )
             )
             Spacer(Modifier.height(10.dp))
 

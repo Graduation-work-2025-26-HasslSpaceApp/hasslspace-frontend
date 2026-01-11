@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.sp
 fun VariableLight(
     text: String,
     fontSize: TextUnit,
-    fontColor: Color = MaterialTheme.colorScheme.onPrimary,
+    fontColor: Color = MaterialTheme.colorScheme.onBackground,
     style: TextStyle = TextStyle(
         fontWeight = FontWeight.Light,
         fontSize = 15.sp,
