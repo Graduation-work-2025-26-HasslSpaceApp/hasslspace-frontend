@@ -1,4 +1,4 @@
-package ru.hse.app.androidApp.ui.components.profile
+package ru.hse.app.androidApp.ui.components.profile.user
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

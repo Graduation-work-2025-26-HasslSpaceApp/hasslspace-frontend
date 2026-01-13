@@ -95,22 +95,22 @@ fun UserCardRoleAndArrow(
         ) {
             VariableMedium(
                 text = username,
-                fontSize = 14.sp,
+                fontSize = 16.sp,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
 
-            Spacer(modifier = Modifier.height(2.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             VariableLight(
                 text = "@$nickname",
-                fontSize = 10.sp,
+                fontSize = 12.sp,
                 fontColor = MaterialTheme.colorScheme.outline,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
             if (color !== null && role != null) {
-                Spacer(modifier = Modifier.height(2.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(5.dp),

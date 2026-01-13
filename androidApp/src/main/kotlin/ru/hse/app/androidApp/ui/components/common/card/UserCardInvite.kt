@@ -77,7 +77,7 @@ fun UserCardInvite(
         ) {
             VariableMedium(
                 text = username,
-                fontSize = 14.sp,
+                fontSize = 16.sp,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

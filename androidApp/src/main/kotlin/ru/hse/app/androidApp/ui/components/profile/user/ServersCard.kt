@@ -1,4 +1,4 @@
-package ru.hse.app.androidApp.ui.components.profile
+package ru.hse.app.androidApp.ui.components.profile.user
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,65 +11,61 @@ import ru.hse.app.androidApp.ui.components.common.card.ProfileCard
 import ru.hse.app.androidApp.ui.theme.AppTheme
 
 @Composable
-fun FriendsCard(
+fun ServersCard(
     count: Int,
     modifier: Modifier = Modifier
 ) {
     ProfileCard(
-        type = "Друзья",
-        label = friendsLabel(count),
+        type = "Серверы",
+        label = serversLabel(count),
         modifier = modifier,
-        cardColor = MaterialTheme.colorScheme.secondary,
-        typeColor = MaterialTheme.colorScheme.onSecondary,
+        cardColor = MaterialTheme.colorScheme.tertiary,
+        typeColor = MaterialTheme.colorScheme.onTertiary,
         labelColor = MaterialTheme.colorScheme.onSurface
     )
 }
 
-fun friendsLabel(count: Int): String {
+fun serversLabel(count: Int): String {
     val mod10 = count % 10
     val mod100 = count % 100
 
     return when {
-        mod100 in 11..14 -> "$count друзей"
-        mod10 == 1 -> "$count друг"
-        mod10 in 2..4 -> "$count друга"
-        else -> "$count друзей"
+        mod100 in 11..14 -> "$count серверов"
+        mod10 == 1 -> "$count сервер"
+        mod10 in 2..4 -> "$count сервера"
+        else -> "$count серверов"
     }
 }
 
 @Preview(showBackground = true, name = "All cases")
 @Composable
-fun FriendsCardPreviewAllLight() {
+fun ServersCardPreviewAllLight() {
     AppTheme(isDark = false) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            FriendsCard(1)
-            FriendsCard(2)
-            FriendsCard(5)
-            FriendsCard(11)
-            FriendsCard(21)
-            FriendsCard(24)
-            FriendsCard(100)
+            ServersCard(1)
+            ServersCard(2)
+            ServersCard(5)
+            ServersCard(11)
+            ServersCard(21)
+            ServersCard(24)
+            ServersCard(100)
         }
     }
 }
 
 @Preview(showBackground = true, name = "All cases")
 @Composable
-fun FriendsCardPreviewAllDark() {
+fun ServersCardPreviewAllDark() {
     AppTheme(isDark = true) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            FriendsCard(1)
-            FriendsCard(2)
-            FriendsCard(5)
-            FriendsCard(11)
-            FriendsCard(21)
-            FriendsCard(24)
-            FriendsCard(100)
+            ServersCard(1)
+            ServersCard(2)
+            ServersCard(5)
+            ServersCard(11)
+            ServersCard(21)
+            ServersCard(24)
+            ServersCard(100)
         }
     }
 }
-
-
-
-
 
