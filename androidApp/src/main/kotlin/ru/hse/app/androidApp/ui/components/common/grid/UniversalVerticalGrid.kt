@@ -22,7 +22,7 @@ fun <T> UniversalVerticalGrid(
     modifier: Modifier = Modifier,
     horizontalSpacing: Dp = 12.dp,
     verticalSpacing: Dp = 12.dp,
-    contentPadding: PaddingValues = PaddingValues(16.dp),
+    contentPadding: PaddingValues = PaddingValues(0.dp),
     itemContent: @Composable (item: T) -> Unit
 ) {
     LazyVerticalGrid(

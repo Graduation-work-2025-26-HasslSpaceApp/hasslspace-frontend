@@ -33,7 +33,7 @@ fun SearchFriendsToolbar(
     ) {
         VariableLight(
             text = "Вы можете добавить друзей в HasslSpace по никнейму",
-            fontSize = 11.sp,
+            fontSize = 14.sp,
             modifier = Modifier.fillMaxWidth()
         )
 

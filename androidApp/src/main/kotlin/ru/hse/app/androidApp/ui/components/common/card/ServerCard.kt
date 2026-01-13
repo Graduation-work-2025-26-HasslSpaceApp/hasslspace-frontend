@@ -82,7 +82,7 @@ fun ServerCard(
         ) {
             VariableMedium(
                 text = name,
-                fontSize = 14.sp,
+                fontSize = 16.sp,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -91,7 +91,7 @@ fun ServerCard(
 
             VariableLight(
                 text = participantsLabel(count = participantCount),
-                fontSize = 10.sp,
+                fontSize = 12.sp,
                 fontColor = MaterialTheme.colorScheme.outline,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
