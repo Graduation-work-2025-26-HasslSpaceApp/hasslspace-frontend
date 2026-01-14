@@ -1,4 +1,4 @@
-package ru.hse.app.androidApp.ui.components.chats
+package ru.hse.app.androidApp.ui.components.chats.mychats
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
