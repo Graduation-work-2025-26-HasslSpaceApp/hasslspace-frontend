@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import coil3.ImageLoader
 import ru.hse.app.androidApp.R
 import ru.hse.app.androidApp.ui.components.common.bar.SearchBar
+import ru.hse.app.androidApp.ui.components.common.button.AddButton
 import ru.hse.app.androidApp.ui.components.common.button.BackButton
 import ru.hse.app.androidApp.ui.components.common.card.UserCardArrow
 import ru.hse.app.androidApp.ui.components.common.state.StatusPresentation

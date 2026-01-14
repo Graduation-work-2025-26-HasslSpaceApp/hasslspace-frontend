@@ -1,4 +1,4 @@
-package ru.hse.app.androidApp.ui.components.chats.newmessage
+package ru.hse.app.androidApp.ui.components.common.button
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
