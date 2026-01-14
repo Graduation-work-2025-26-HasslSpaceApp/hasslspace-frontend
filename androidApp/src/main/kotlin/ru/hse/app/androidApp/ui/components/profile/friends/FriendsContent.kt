@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.ImageLoader
 import ru.hse.app.androidApp.ui.components.common.bar.SearchBar
+import ru.hse.app.androidApp.ui.components.common.box.NoItemsBox
 import ru.hse.app.androidApp.ui.components.common.button.AddTextButton
 import ru.hse.app.androidApp.ui.components.common.button.BackButton
 import ru.hse.app.androidApp.ui.components.common.card.UserCardAcceptDismiss
@@ -74,6 +75,10 @@ fun FriendsContent(
             onValueChange = onValueChange
         )
         Spacer(Modifier.height(15.dp))
+
+        if (applications.isEmpty() && friends.isEmpty()) {
+            NoItemsBox("Вы пока не добавили друзей в HasslSpace")
+        }
 
         if (applications.isNotEmpty()) {
             LazyVerticalGrid(

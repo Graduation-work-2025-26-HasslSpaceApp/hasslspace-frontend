@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.ImageLoader
 import ru.hse.app.androidApp.ui.components.common.bar.SearchBar
+import ru.hse.app.androidApp.ui.components.common.box.NoItemsBox
 import ru.hse.app.androidApp.ui.components.common.button.BackButton
 import ru.hse.app.androidApp.ui.components.common.card.ServerCard
 import ru.hse.app.androidApp.ui.components.common.grid.UniversalVerticalGrid
@@ -56,6 +57,10 @@ fun ServersContent(
             onValueChange = onValueChange
         )
         Spacer(Modifier.height(15.dp))
+
+        if (servers.isEmpty()) {
+            NoItemsBox("Вы пока не являетесь участником серверов")
+        }
 
         UniversalVerticalGrid(
             items = servers,
