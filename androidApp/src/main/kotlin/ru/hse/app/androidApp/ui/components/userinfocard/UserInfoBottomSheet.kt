@@ -1,6 +1,5 @@
 package ru.hse.app.androidApp.ui.components.userinfocard
 
-import android.R.attr.endY
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
