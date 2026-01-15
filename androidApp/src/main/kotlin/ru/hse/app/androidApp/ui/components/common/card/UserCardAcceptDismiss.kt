@@ -32,7 +32,7 @@ import coil3.ImageLoader
 import coil3.compose.rememberAsyncImagePainter
 import ru.hse.app.androidApp.R
 import ru.hse.app.androidApp.ui.components.common.state.StatusCircle
-import ru.hse.app.androidApp.ui.components.common.state.StatusPresentation
+import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
 import ru.hse.app.androidApp.ui.components.common.text.VariableLight
 import ru.hse.app.androidApp.ui.components.common.text.VariableMedium
 import ru.hse.app.androidApp.ui.theme.AppTheme
@@ -172,7 +172,7 @@ fun UserCardAcceptDismissPreviewAllLight() {
             UserCardAcceptDismiss(
                 username = "Дмитрий Сидоров",
                 nickname = "dmitry_sidorov",
-                status = StatusPresentation.DONOTDISTURB,
+                status = StatusPresentation.DO_NOT_DISTURB,
                 profilePictureUrl = "",
                 onCardClick = {},
                 onAcceptClick = {},
@@ -200,7 +200,7 @@ fun UserCardAcceptDismissPreviewAllLight() {
             UserCardAcceptDismiss(
                 username = "Иван Николаев",
                 nickname = "ivan_nikolaev",
-                status = StatusPresentation.NOTACTIVE,
+                status = StatusPresentation.NOT_ACTIVE,
                 profilePictureUrl = "",
                 onCardClick = {},
                 onAcceptClick = {},
@@ -234,7 +234,7 @@ fun UserCardAcceptDismissPreviewAllDark() {
             UserCardAcceptDismiss(
                 username = "Мария Петрова",
                 nickname = "maria_petrova",
-                status = StatusPresentation.NOTACTIVE,
+                status = StatusPresentation.NOT_ACTIVE,
                 profilePictureUrl = "",
                 onCardClick = {},
                 onAcceptClick = {},
@@ -248,7 +248,7 @@ fun UserCardAcceptDismissPreviewAllDark() {
             UserCardAcceptDismiss(
                 username = "Дмитрий Сидоров",
                 nickname = "dmitry_sidorov",
-                status = StatusPresentation.DONOTDISTURB,
+                status = StatusPresentation.DO_NOT_DISTURB,
                 profilePictureUrl = "",
                 onCardClick = {},
                 onAcceptClick = {},

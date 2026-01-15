@@ -28,7 +28,7 @@ import ru.hse.app.androidApp.ui.components.common.bar.SearchBar
 import ru.hse.app.androidApp.ui.components.common.button.AddButton
 import ru.hse.app.androidApp.ui.components.common.button.BackButton
 import ru.hse.app.androidApp.ui.components.common.card.UserCardArrow
-import ru.hse.app.androidApp.ui.components.common.state.StatusPresentation
+import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
 import ru.hse.app.androidApp.ui.components.common.text.VariableBold
 import ru.hse.app.androidApp.ui.entity.model.FriendUiModel
 import ru.hse.app.androidApp.ui.theme.AppTheme
@@ -130,14 +130,14 @@ fun NewMessageScreenContentPreviewLight() {
             name = "Сергей Петров",
             nickname = "@sergey_p",
             avatarUrl = "",
-            status = StatusPresentation.DONOTDISTURB
+            status = StatusPresentation.DO_NOT_DISTURB
         ),
         FriendUiModel(
             id = "4",
             name = "Екатерина Смирнова",
             nickname = "@katya_smirnova",
             avatarUrl = "",
-            status = StatusPresentation.NOTACTIVE
+            status = StatusPresentation.NOT_ACTIVE
         ),
         FriendUiModel(
             id = "5",

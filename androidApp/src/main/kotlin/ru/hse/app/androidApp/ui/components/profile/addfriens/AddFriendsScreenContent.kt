@@ -22,7 +22,7 @@ import ru.hse.app.androidApp.ui.components.common.bar.SearchFriendsToolbar
 import ru.hse.app.androidApp.ui.components.common.button.BackButton
 import ru.hse.app.androidApp.ui.components.common.card.UserCardUndo
 import ru.hse.app.androidApp.ui.components.common.grid.UniversalVerticalGrid
-import ru.hse.app.androidApp.ui.components.common.state.StatusPresentation
+import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
 import ru.hse.app.androidApp.ui.components.common.text.VariableBold
 import ru.hse.app.androidApp.ui.components.common.text.VariableLight
 import ru.hse.app.androidApp.ui.entity.model.FriendUiModel

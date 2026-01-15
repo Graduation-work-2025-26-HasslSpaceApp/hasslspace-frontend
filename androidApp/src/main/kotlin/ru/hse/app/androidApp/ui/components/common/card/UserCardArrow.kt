@@ -33,7 +33,7 @@ import coil3.ImageLoader
 import coil3.compose.rememberAsyncImagePainter
 import ru.hse.app.androidApp.R
 import ru.hse.app.androidApp.ui.components.common.state.StatusCircle
-import ru.hse.app.androidApp.ui.components.common.state.StatusPresentation
+import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
 import ru.hse.app.androidApp.ui.components.common.text.VariableLight
 import ru.hse.app.androidApp.ui.components.common.text.VariableMedium
 import ru.hse.app.androidApp.ui.theme.AppTheme
@@ -159,7 +159,7 @@ fun UserCardArrowPreviewAllLight() {
             UserCardArrow(
                 username = "Дмитрий Сидоров",
                 nickname = "dmitry_sidorov",
-                status = StatusPresentation.DONOTDISTURB,
+                status = StatusPresentation.DO_NOT_DISTURB,
                 profilePictureUrl = "",
                 onCardClick = {},
                 isDarkTheme = false,
@@ -183,7 +183,7 @@ fun UserCardArrowPreviewAllLight() {
             UserCardArrow(
                 username = "Иван Николаев",
                 nickname = "ivan_nikolaev",
-                status = StatusPresentation.NOTACTIVE,
+                status = StatusPresentation.NOT_ACTIVE,
                 profilePictureUrl = "",
                 onCardClick = {},
                 isDarkTheme = false,
@@ -213,7 +213,7 @@ fun UserCardArrowPreviewAllDark() {
             UserCardArrow(
                 username = "Мария Петрова",
                 nickname = "maria_petrova",
-                status = StatusPresentation.NOTACTIVE,
+                status = StatusPresentation.NOT_ACTIVE,
                 profilePictureUrl = "",
                 onCardClick = {},
                 isDarkTheme = true,
@@ -225,7 +225,7 @@ fun UserCardArrowPreviewAllDark() {
             UserCardArrow(
                 username = "Дмитрий Сидоров",
                 nickname = "dmitry_sidorov",
-                status = StatusPresentation.DONOTDISTURB,
+                status = StatusPresentation.DO_NOT_DISTURB,
                 profilePictureUrl = "",
                 onCardClick = {},
                 isDarkTheme = true,
@@ -303,7 +303,7 @@ fun UserCardArrowPreviewMixedLight() {
             UserCardArrow(
                 username = "Ольга Соколова",
                 nickname = "olga_sokolova",
-                status = StatusPresentation.DONOTDISTURB,
+                status = StatusPresentation.DO_NOT_DISTURB,
                 onCardClick = {},
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
@@ -356,7 +356,7 @@ fun UserCardArrowPreviewMixedDark() {
             UserCardArrow(
                 username = "Ольга Соколова",
                 nickname = "olga_sokolova",
-                status = StatusPresentation.DONOTDISTURB,
+                status = StatusPresentation.DO_NOT_DISTURB,
                 onCardClick = {},
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)

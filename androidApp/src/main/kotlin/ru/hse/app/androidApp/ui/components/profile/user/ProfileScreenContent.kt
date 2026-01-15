@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import coil3.ImageLoader
 import ru.hse.app.androidApp.R
 import ru.hse.app.androidApp.ui.components.common.button.SettingsButton
-import ru.hse.app.androidApp.ui.components.common.state.StatusPresentation
+import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
 import ru.hse.app.androidApp.ui.theme.AppTheme
 
 @Composable
@@ -133,7 +133,7 @@ fun ProfileScreenContentPreviewDark() {
             imageLoader = ImageLoader(LocalContext.current),
             username = "Ваше имя",
             nickname = "nickname123",
-            status = StatusPresentation.DONOTDISTURB,
+            status = StatusPresentation.DO_NOT_DISTURB,
             profilePictureUrl = "",
             friendsCount = 1,
             onFriendsClick = {},

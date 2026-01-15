@@ -10,7 +10,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import ru.hse.app.androidApp.R
+import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
 
 @Composable
 fun StatusCircle(
@@ -25,21 +25,14 @@ fun StatusCircle(
     )
 }
 
-enum class StatusPresentation(val painter: Int) {
-    ACTIVE(R.drawable.active),
-    INVISIBLE(R.drawable.invisible),
-    DONOTDISTURB(R.drawable.donotdisturb),
-    NOTACTIVE(R.drawable.notactive)
-}
-
 @Preview(showBackground = true)
 @Composable
 fun StatusCirclePreview() {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         StatusCircle(StatusPresentation.ACTIVE, 32.dp)
         StatusCircle(StatusPresentation.INVISIBLE, 32.dp)
-        StatusCircle(StatusPresentation.DONOTDISTURB, 32.dp)
-        StatusCircle(StatusPresentation.NOTACTIVE, 32.dp)
+        StatusCircle(StatusPresentation.DO_NOT_DISTURB, 32.dp)
+        StatusCircle(StatusPresentation.NOT_ACTIVE, 32.dp)
     }
 }
 

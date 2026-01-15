@@ -33,7 +33,7 @@ import coil3.ImageLoader
 import coil3.compose.rememberAsyncImagePainter
 import ru.hse.app.androidApp.R
 import ru.hse.app.androidApp.ui.components.common.state.StatusCircle
-import ru.hse.app.androidApp.ui.components.common.state.StatusPresentation
+import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
 import ru.hse.app.androidApp.ui.components.common.text.VariableLight
 import ru.hse.app.androidApp.ui.components.common.text.VariableMedium
 import ru.hse.app.androidApp.ui.theme.AppTheme
@@ -189,7 +189,7 @@ fun UserCardRoleAndArrowPreviewAllLight() {
             UserCardRoleAndArrow(
                 username = "Дмитрий Сидоров",
                 nickname = "dmitry_sidorov",
-                status = StatusPresentation.DONOTDISTURB,
+                status = StatusPresentation.DO_NOT_DISTURB,
                 profilePictureUrl = "",
                 color = Color(0xFFFF9800), // Оранжевый
                 role = "Редактор",
@@ -217,7 +217,7 @@ fun UserCardRoleAndArrowPreviewAllLight() {
             UserCardRoleAndArrow(
                 username = "Иван Николаев",
                 nickname = "ivan_nikolaev",
-                status = StatusPresentation.NOTACTIVE,
+                status = StatusPresentation.NOT_ACTIVE,
                 profilePictureUrl = "",
                 color = Color(0xFFF44336), // Красный
                 role = "Гость",
@@ -251,7 +251,7 @@ fun UserCardRoleAndArrowPreviewAllDark() {
             UserCardRoleAndArrow(
                 username = "Мария Петрова",
                 nickname = "maria_petrova",
-                status = StatusPresentation.NOTACTIVE,
+                status = StatusPresentation.NOT_ACTIVE,
                 profilePictureUrl = "",
                 color = Color(0xFF4CAF50), // Зеленый
                 role = "Модератор",
@@ -265,7 +265,7 @@ fun UserCardRoleAndArrowPreviewAllDark() {
             UserCardRoleAndArrow(
                 username = "Дмитрий Сидоров",
                 nickname = "dmitry_sidorov",
-                status = StatusPresentation.DONOTDISTURB,
+                status = StatusPresentation.DO_NOT_DISTURB,
                 profilePictureUrl = "",
                 color = Color(0xFFFF9800), // Оранжевый
                 role = "Редактор",
@@ -353,7 +353,7 @@ fun UserCardRoleAndArrowPreviewMixedLight() {
             UserCardRoleAndArrow(
                 username = "Ольга Соколова",
                 nickname = "olga_sokolova",
-                status = StatusPresentation.DONOTDISTURB,
+                status = StatusPresentation.DO_NOT_DISTURB,
                 color = Color(0xFFFF9800),
                 role = "Модератор",
                 onArrowClick = {},
@@ -412,7 +412,7 @@ fun UserCardRoleAndArrowPreviewMixedDark() {
             UserCardRoleAndArrow(
                 username = "Ольга Соколова",
                 nickname = "olga_sokolova",
-                status = StatusPresentation.DONOTDISTURB,
+                status = StatusPresentation.DO_NOT_DISTURB,
                 color = Color(0xFFFF9800),
                 role = "Модератор",
                 onArrowClick = {},
