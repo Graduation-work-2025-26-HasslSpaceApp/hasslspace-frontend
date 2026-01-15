@@ -27,6 +27,8 @@ internal val OutlineLight = Color(0xFF6D6F6E) // Темно-серый
 internal val OnSurfaceLight = Color(0xFF6D6F6E)
 internal val ScrimLight = Color(0xFFFFFFFF) //Белый
 
+internal val SurfaceContainerLowLight = Color(0x0D000000)
+
 // Темная тема
 
 internal val BackgroundDark = Color(0xFF121212) // Почти черный фон
@@ -52,6 +54,8 @@ internal val SurfaceDark = Color(0xFF1E1E1E) // Карточки, bottom bar, п
 internal val OnSurfaceDark = Color(0xFFD5D5D5)
 internal val OutlineDark = Color(0xFF8A8A8A) // Контуры, бордеры, divider
 internal val ScrimDark = Color(0xFFFFFFFF) //Белый
+
+internal val SurfaceContainerLowDark = Color(0x26FFFFFF)
 
 
 //internal val PrimaryLight = Color(0xFF485F84)
