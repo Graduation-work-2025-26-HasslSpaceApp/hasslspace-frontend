@@ -42,7 +42,8 @@ fun ApplyButton(
     ) {
         VariableMedium(
             text = text,
-            fontSize = 16.sp
+            fontSize = 16.sp,
+            fontColor = colors.contentColor
         )
     }
 }

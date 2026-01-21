@@ -10,6 +10,7 @@ internal val Seed = Color(0xFF1D3557)
 // Светлая тема
 internal val BackgroundLight = Color(0xFFFFFFFF) // Белый
 internal val SurfaceContainerLight = Color(0xFFEBEBEB) // Светло-серый
+internal val SurfaceBrightLight = Color(0xFF013648)
 internal val OnBackgroundLight = Color(0xFF000000) // Черный
 internal val PrimaryLight = Color(0xFF013648) // Синий
 internal val OnPrimaryLight = Color(0xFFFFFFFF) // Белый
@@ -33,6 +34,7 @@ internal val SurfaceContainerLowLight = Color(0x0D000000)
 
 internal val BackgroundDark = Color(0xFF121212) // Почти черный фон
 internal val SurfaceContainerDark = Color(0x462CB8FF) // Для карточек с друзьями
+internal val SurfaceBrightDark = Color(0xFFB6ECFF)
 internal val OnBackgroundDark = Color(0xFFFFFFFF) // Черный
 internal val PrimaryDark = Color(0xFF4FA3BF) // Осветлённый синий из PrimaryLight
 internal val OnPrimaryDark = Color(0xFF001F2A) // Очень тёмный сине-черный

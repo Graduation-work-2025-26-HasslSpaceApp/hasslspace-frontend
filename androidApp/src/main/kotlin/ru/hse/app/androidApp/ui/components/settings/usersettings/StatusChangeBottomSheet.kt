@@ -139,3 +139,21 @@ fun StatusChangeBottomSheetPreview() {
         )
     }
 }
+
+@Preview
+@Composable
+fun StatusChangeBottomSheetPreview1() {
+    AppTheme(isDark = true) {
+        StatusChangeBottomSheet(
+            selectedOption = mutableStateOf(StatusPresentation.ACTIVE),
+            onApply = { selected -> println("Выбрана опция: $selected") },
+            showSortSheet = mutableStateOf(true),
+            options = listOf(
+                StatusPresentation.ACTIVE,
+                StatusPresentation.NOT_ACTIVE,
+                StatusPresentation.DO_NOT_DISTURB,
+                StatusPresentation.INVISIBLE
+            )
+        )
+    }
+}
