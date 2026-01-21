@@ -1,5 +1,6 @@
 package ru.hse.app.androidApp.ui.components.settings.usersettings
 
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,6 +35,14 @@ fun UserSettingsScreenContent(
     isDarkTheme: Boolean,
     selectedStatus: MutableState<StatusPresentation>,
     onStatusArrowClick: () -> Unit,
+    selectedImageUri: MutableState<Uri?>,
+    onPhotoPickClick: () -> Unit,
+    editedUsername: MutableState<String>,
+    enabledChangeUsername: Boolean,
+    onApplyNewUsername: () -> Unit,
+    description: MutableState<String>,
+    onApplyDescClick: () -> Unit,
+    onExit: () -> Unit
 ) {
     Box(
         modifier = modifier.fillMaxSize()
@@ -72,7 +81,25 @@ fun UserSettingsScreenContent(
                 onArrowClick = onStatusArrowClick
             )
 
+            PhotoSetting(
+                selectedImageUri = selectedImageUri,
+                onPhotoPickClick = onPhotoPickClick
+            )
 
+            Spacer(Modifier.height(10.dp))
+
+            UsernameSetting(
+                editedUsername = editedUsername,
+                onApplyClick = onApplyNewUsername,
+                enabled = enabledChangeUsername
+            )
+
+            DescriptionSetting(
+                description = description,
+                onApplyClick = onApplyDescClick
+            )
+
+            Exit(onClick = onExit)
         }
     }
 }
@@ -87,13 +114,66 @@ fun UserSettingsContentPreview() {
     val isDarkTheme = remember { mutableStateOf(false) }
     val selectedOption = remember { mutableStateOf(StatusPresentation.ACTIVE) }
 
+    val selectedImageUri = remember {
+        mutableStateOf<Uri?>(
+            Uri.parse("android.resource://ru.hse.app.androidApp/drawable/avatar_default_light")
+        )
+    }
+    val description = remember { mutableStateOf("Рассказываю о себе рассказываю о себе") }
+    val username = remember { mutableStateOf("username") }
+
     AppTheme(isDark = isDarkTheme.value) {
         UserSettingsScreenContent(
             modifier = Modifier.fillMaxSize(),
             onBackClick = {},
             isDarkTheme = isDarkTheme.value,
             selectedStatus = selectedOption,
-            onStatusArrowClick = {}
+            onStatusArrowClick = {},
+            selectedImageUri = selectedImageUri,
+            onPhotoPickClick = {},
+            editedUsername = username,
+            enabledChangeUsername = true,
+            onApplyNewUsername = {},
+            description = description,
+            onApplyDescClick = {},
+            onExit = {}
+        )
+    }
+}
+
+@Preview(
+    name = "User Settings - Theme Toggle",
+    showBackground = true,
+    widthDp = 360
+)
+@Composable
+fun UserSettingsContentPreview1() {
+    val isDarkTheme = remember { mutableStateOf(true) }
+    val selectedOption = remember { mutableStateOf(StatusPresentation.ACTIVE) }
+
+    val selectedImageUri = remember {
+        mutableStateOf<Uri?>(
+            Uri.parse("android.resource://ru.hse.app.androidApp/drawable/avatar_default_light")
+        )
+    }
+    val description = remember { mutableStateOf("Рассказываю о себе рассказываю о себе") }
+    val username = remember { mutableStateOf("username") }
+
+    AppTheme(isDark = isDarkTheme.value) {
+        UserSettingsScreenContent(
+            modifier = Modifier.fillMaxSize(),
+            onBackClick = {},
+            isDarkTheme = isDarkTheme.value,
+            selectedStatus = selectedOption,
+            onStatusArrowClick = {},
+            selectedImageUri = selectedImageUri,
+            onPhotoPickClick = {},
+            editedUsername = username,
+            enabledChangeUsername = true,
+            onApplyNewUsername = {},
+            description = description,
+            onApplyDescClick = {},
+            onExit = {}
         )
     }
 }

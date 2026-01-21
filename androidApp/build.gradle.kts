@@ -34,9 +34,14 @@ dependencies {
     implementation(libs.androidx.activityCompose)
 
     //TODO перенести в libs
-    implementation("androidx.compose.material:material-icons-extended-android:1.7.8")
+    implementation(libs.androidx.material.icons.extended.android)
+
+    implementation("androidx.appcompat:appcompat:1.7.1")
     //Coil
-    implementation("io.coil-kt.coil3:coil-compose:3.3.0")
-    implementation("io.coil-kt.coil3:coil-network-okhttp:3.3.0")
-    implementation("androidx.palette:palette-ktx:1.0.0")
+    implementation(libs.coil)
+    implementation(libs.coil.network.okhttp)
+    implementation(libs.androidx.palette.ktx)
+
+    //Image Cropper
+    implementation(libs.ucrop)
 }

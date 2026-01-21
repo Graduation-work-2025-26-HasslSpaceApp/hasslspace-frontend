@@ -20,13 +20,16 @@ fun AddTextButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     text: String = "Добавить",
+    enabled: Boolean = true,
     colors: ButtonColors = ButtonDefaults.buttonColors(
         containerColor = MaterialTheme.colorScheme.secondary,
-        contentColor = MaterialTheme.colorScheme.onSecondary
+        contentColor = MaterialTheme.colorScheme.onSecondary,
+        disabledContainerColor = MaterialTheme.colorScheme.outline,
     )
 ) {
     Button(
         onClick = onClick,
+        enabled = enabled,
         shape = RoundedCornerShape(13.dp),
         colors = colors,
         contentPadding = PaddingValues(
@@ -40,7 +43,8 @@ fun AddTextButton(
     ) {
         VariableMedium(
             text = text,
-            fontSize = 12.sp
+            fontSize = 12.sp,
+            fontColor = if (enabled) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.scrim
         )
     }
 }
@@ -65,6 +69,33 @@ fun AddTextButtonPreviewDark() {
     ) {
         AddTextButton(
             onClick = {},
+        )
+    }
+}
+
+
+@Preview
+@Composable
+fun AddTextButtonPreviewLightDis() {
+    AppTheme(
+        isDark = false
+    ) {
+        AddTextButton(
+            onClick = {},
+            enabled = false
+        )
+    }
+}
+
+@Preview
+@Composable
+fun AddTextButtonPreviewDarkDis() {
+    AppTheme(
+        isDark = true
+    ) {
+        AddTextButton(
+            onClick = {},
+            enabled = false
         )
     }
 }

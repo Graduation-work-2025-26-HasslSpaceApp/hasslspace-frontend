@@ -31,6 +31,7 @@ fun UsernameField(
         text = text,
         placeholder = "Как вас увидят другие",
         description = "Имя пользователя",
+        maxCharacters = 30,
         modifier = modifier
     )
 }
