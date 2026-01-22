@@ -10,8 +10,12 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import ru.hse.app.androidApp.ui.components.common.text.TextMedium
 import ru.hse.app.androidApp.ui.theme.AppTheme
 
@@ -20,6 +24,7 @@ fun BigButton(
     onClick: () -> Unit,
     text: String,
     modifier: Modifier = Modifier,
+    fontSize: TextUnit = 24.sp,
     colors: ButtonColors = ButtonDefaults.buttonColors(
         containerColor = MaterialTheme.colorScheme.primary,
         contentColor = MaterialTheme.colorScheme.onPrimary
@@ -39,7 +44,10 @@ fun BigButton(
             .fillMaxWidth()
             .height(50.dp)
     ) {
-        TextMedium(text = text)
+        TextMedium(text = text, style = TextStyle(
+            fontWeight = FontWeight.Medium,
+            fontSize = fontSize,
+        ))
     }
 }
 
