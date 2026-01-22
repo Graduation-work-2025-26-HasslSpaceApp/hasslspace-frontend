@@ -3,6 +3,7 @@ package ru.hse.app.androidApp.ui.components.common.button
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -37,7 +38,7 @@ fun ApplyButton(
             bottom = 10.dp
         ),
         modifier = modifier
-            .width(141.dp)
+            .widthIn(min = 141.dp)
             .height(39.dp)
     ) {
         VariableMedium(
@@ -54,6 +55,17 @@ fun ApplyButtonPreview() {
     AppTheme(isDark = false) {
         ApplyButton(
             onClick = {},
+        )
+    }
+}
+
+@Preview
+@Composable
+fun ApplyButtonPreview1() {
+    AppTheme(isDark = false) {
+        ApplyButton(
+            onClick = {},
+            text = "ляляляляляляляляляляляляля"
         )
     }
 }
