@@ -9,24 +9,21 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.ImageLoader
-import coil3.compose.AsyncImage
 import coil3.imageLoader
 import ru.hse.app.androidApp.R
 import ru.hse.app.androidApp.ui.components.common.button.IconTextButton
@@ -35,15 +32,15 @@ import ru.hse.app.androidApp.ui.theme.AppTheme
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun ChannelsBottomSheet(
+fun ChannelCardBottomSheet(
     imageLoader: ImageLoader,
     text: String,
+    icon: Int,
     isDarkTheme: Boolean,
     modifier: Modifier = Modifier,
-    serverPictureUrl: String = "",
     onReadClick: () -> Unit,
 //    onMuteClick: () -> Unit,
-    onCreateChannel: () -> Unit,
+    onSetUpChannel: () -> Unit,
     onDismiss: () -> Unit,
     isModerator: Boolean
 ) {
@@ -63,23 +60,15 @@ fun ChannelsBottomSheet(
                 .padding(top = 0.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
             verticalArrangement = Arrangement.spacedBy(15.dp)
         ) {
-            Row (
+            Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                AsyncImage(
-                    model = serverPictureUrl,
-                    imageLoader = imageLoader,
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(42.dp)
-                        .clip(CircleShape),
-                    error = painterResource(
-                        if (isDarkTheme)
-                            R.drawable.default_server_photo_dark
-                        else
-                            R.drawable.default_server_photo_light
-                    )
+                Icon(
+                    painter = painterResource(id = icon),
+                    contentDescription = "icon",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = modifier
+                        .size(25.dp)
                 )
 
                 Spacer(Modifier.width(20.dp))
@@ -106,9 +95,9 @@ fun ChannelsBottomSheet(
 
             if (isModerator) {
                 IconTextButton(
-                    onClick = onCreateChannel,
-                    text = "Создать канал",
-                    iconResource = if (isDarkTheme) R.drawable.plus_dark else R.drawable.plus_light
+                    onClick = onSetUpChannel,
+                    text = "Настроить канал",
+                    iconResource = if (isDarkTheme) R.drawable.setup_dark else R.drawable.setup_light
                 )
             }
         }
@@ -118,19 +107,19 @@ fun ChannelsBottomSheet(
 @Preview(showBackground = true)
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun ChannelsBottomSheetPreviewWithRequestsLight() {
+fun ChannelCardBottomSheetPreviewWithRequestsLight() {
 
     AppTheme(isDark = false) {
-        ChannelsBottomSheet(
-            text = "Текстовые каналы",
-            serverPictureUrl = "",
+        ChannelCardBottomSheet(
+            text = "основной",
             imageLoader = LocalContext.current.imageLoader,
             isDarkTheme = false,
             onDismiss = {},
             onReadClick = {},
 //            onMuteClick = {},
-            onCreateChannel = {},
-            isModerator = true
+            onSetUpChannel = {},
+            isModerator = true,
+            icon = R.drawable.hashtag,
         )
     }
 }
@@ -138,19 +127,19 @@ fun ChannelsBottomSheetPreviewWithRequestsLight() {
 @Preview(showBackground = true)
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun ChannelsBottomSheetPreviewWithRequestsDark() {
+fun ChannelCardBottomSheetPreviewWithRequestsDark() {
 
     AppTheme(isDark = true) {
-        ChannelsBottomSheet(
-            text = "Голосовые каналы",
-            serverPictureUrl = "",
+        ChannelCardBottomSheet(
+            text = "Основной",
             imageLoader = LocalContext.current.imageLoader,
             isDarkTheme = true,
             onDismiss = {},
             onReadClick = {},
 //            onMuteClick = {},
-            onCreateChannel = {},
-            isModerator = true
+            onSetUpChannel = {},
+            isModerator = true,
+            icon = R.drawable.voice
         )
     }
 }
@@ -158,19 +147,19 @@ fun ChannelsBottomSheetPreviewWithRequestsDark() {
 @Preview(showBackground = true)
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun ChannelsBottomSheetPreviewWithRequestsLight1() {
+fun ChannelCardBottomSheetPreviewWithRequestsLight1() {
 
     AppTheme(isDark = false) {
-        ChannelsBottomSheet(
-            text = "Текстовые каналы",
-            serverPictureUrl = "",
+        ChannelCardBottomSheet(
+            text = "основной",
             imageLoader = LocalContext.current.imageLoader,
             isDarkTheme = false,
             onDismiss = {},
             onReadClick = {},
 //            onMuteClick = {},
-            onCreateChannel = {},
-            isModerator = false
+            onSetUpChannel = {},
+            isModerator = false,
+            icon = R.drawable.hashtag,
         )
     }
 }
@@ -178,19 +167,19 @@ fun ChannelsBottomSheetPreviewWithRequestsLight1() {
 @Preview(showBackground = true)
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun ChannelsBottomSheetPreviewWithRequestsDark1() {
+fun ChannelCardBottomSheetPreviewWithRequestsDark1() {
 
     AppTheme(isDark = true) {
-        ChannelsBottomSheet(
-            text = "Голосовые каналы",
-            serverPictureUrl = "",
+        ChannelCardBottomSheet(
+            text = "Основной",
             imageLoader = LocalContext.current.imageLoader,
             isDarkTheme = true,
             onDismiss = {},
             onReadClick = {},
 //            onMuteClick = {},
-            onCreateChannel = {},
-            isModerator = false
+            onSetUpChannel = {},
+            isModerator = false,
+            icon = R.drawable.voice
         )
     }
 }
