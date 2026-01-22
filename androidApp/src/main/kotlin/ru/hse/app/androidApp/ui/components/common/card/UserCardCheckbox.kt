@@ -35,9 +35,9 @@ import coil3.compose.rememberAsyncImagePainter
 import ru.hse.app.androidApp.R
 import ru.hse.app.androidApp.ui.components.common.quarks.CheckboxToggle
 import ru.hse.app.androidApp.ui.components.common.state.StatusCircle
-import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
 import ru.hse.app.androidApp.ui.components.common.text.VariableLight
 import ru.hse.app.androidApp.ui.components.common.text.VariableMedium
+import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
 import ru.hse.app.androidApp.ui.theme.AppTheme
 
 @Composable

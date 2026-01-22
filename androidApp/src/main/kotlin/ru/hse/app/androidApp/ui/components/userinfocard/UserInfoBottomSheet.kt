@@ -41,9 +41,9 @@ import coil3.compose.AsyncImage
 import coil3.toBitmap
 import ru.hse.app.androidApp.R
 import ru.hse.app.androidApp.ui.components.common.state.StatusCircle
-import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
 import ru.hse.app.androidApp.ui.components.common.text.VariableLight
 import ru.hse.app.androidApp.ui.components.common.text.VariableMedium
+import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
 import ru.hse.app.androidApp.ui.theme.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)

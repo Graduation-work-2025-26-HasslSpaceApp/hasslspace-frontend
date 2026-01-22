@@ -26,8 +26,8 @@ import androidx.compose.ui.unit.sp
 import ru.hse.app.androidApp.ui.components.common.button.ApplyButton
 import ru.hse.app.androidApp.ui.components.common.quarks.RadioButtonToggle
 import ru.hse.app.androidApp.ui.components.common.state.StatusCircle
-import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
 import ru.hse.app.androidApp.ui.components.common.text.VariableMedium
+import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
 import ru.hse.app.androidApp.ui.theme.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)

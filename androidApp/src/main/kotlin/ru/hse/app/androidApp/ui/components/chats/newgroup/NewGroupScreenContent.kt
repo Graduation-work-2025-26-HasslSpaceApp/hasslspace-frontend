@@ -56,7 +56,7 @@ fun NewGroupScreenContent(
         ) {
             BackButton(onClick = onBackClick)
 
-            Column (
+            Column(
                 modifier = Modifier
                     .weight(1f)
                     .wrapContentWidth(Alignment.CenterHorizontally),

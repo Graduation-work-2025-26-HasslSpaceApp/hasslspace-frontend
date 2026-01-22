@@ -1,7 +1,6 @@
 package ru.hse.app.androidApp.ui.entity.model
 
 import androidx.compose.runtime.Immutable
-import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
 
 @Immutable
 data class FriendCheckboxUiModel(
