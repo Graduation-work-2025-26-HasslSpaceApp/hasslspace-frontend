@@ -1,4 +1,4 @@
-package ru.hse.app.androidApp.ui.components.settings.systemsettings
+package ru.hse.app.androidApp.ui.components.common.quarks
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
@@ -9,7 +9,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import ru.hse.app.androidApp.ui.theme.AppTheme
 
 @Composable
-fun ThemeSwitch(
+fun AppSwitch(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
@@ -32,7 +32,7 @@ fun ThemeSwitch(
 @Composable
 fun ThemeSwitchLight() {
     AppTheme(isDark = false) {
-        ThemeSwitch(
+        AppSwitch(
             checked = true,
             onCheckedChange = {}
         )
@@ -43,7 +43,7 @@ fun ThemeSwitchLight() {
 @Composable
 fun ThemeSwitchLight1() {
     AppTheme(isDark = false) {
-        ThemeSwitch(
+        AppSwitch(
             checked = false,
             onCheckedChange = {}
         )
@@ -54,7 +54,7 @@ fun ThemeSwitchLight1() {
 @Composable
 fun ThemeSwitchDark() {
     AppTheme(isDark = true) {
-        ThemeSwitch(
+        AppSwitch(
             checked = true,
             onCheckedChange = {}
         )
@@ -65,7 +65,7 @@ fun ThemeSwitchDark() {
 @Composable
 fun ThemeSwitchDark1() {
     AppTheme(isDark = true) {
-        ThemeSwitch(
+        AppSwitch(
             checked = false,
             onCheckedChange = {}
         )

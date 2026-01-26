@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import ru.hse.app.androidApp.ui.components.common.quarks.AppSwitch
 import ru.hse.app.androidApp.ui.components.common.text.VariableLight
 import ru.hse.app.androidApp.ui.theme.AppTheme
 
@@ -30,7 +31,7 @@ fun ThemeChangeSetting(
             modifier = Modifier.weight(1f)
         )
 
-        ThemeSwitch(
+        AppSwitch (
             checked = isDarkCheck,
             onCheckedChange = onCheckedChange
         )
