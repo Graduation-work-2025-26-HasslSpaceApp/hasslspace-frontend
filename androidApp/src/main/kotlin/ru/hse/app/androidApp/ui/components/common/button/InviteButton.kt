@@ -9,7 +9,9 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.hse.app.androidApp.ui.components.common.text.VariableMedium
@@ -20,6 +22,8 @@ fun InviteButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     text: String = "Пригласить",
+    fontSize: TextUnit = 12.sp,
+    fontColor: Color = MaterialTheme.colorScheme.onBackground,
     colors: ButtonColors = ButtonDefaults.buttonColors(
         containerColor = MaterialTheme.colorScheme.surface,
         contentColor = MaterialTheme.colorScheme.onSurface
@@ -40,7 +44,8 @@ fun InviteButton(
     ) {
         VariableMedium(
             text = text,
-            fontSize = 12.sp
+            fontSize = fontSize,
+            fontColor = fontColor
         )
     }
 }

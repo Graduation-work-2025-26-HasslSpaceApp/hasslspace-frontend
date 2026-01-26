@@ -1,6 +1,5 @@
 package ru.hse.app.androidApp.ui.components.common.field
 
-import android.util.Patterns
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.hse.app.androidApp.ui.components.common.text.VariableMedium
 import ru.hse.app.androidApp.ui.theme.AppTheme
-import kotlin.text.matches
 
 @Composable
 fun LinkCustomField(

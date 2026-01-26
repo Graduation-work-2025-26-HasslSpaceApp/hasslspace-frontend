@@ -63,7 +63,7 @@ fun ChannelsBottomSheet(
                 .padding(top = 0.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
             verticalArrangement = Arrangement.spacedBy(15.dp)
         ) {
-            Row (
+            Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 AsyncImage(

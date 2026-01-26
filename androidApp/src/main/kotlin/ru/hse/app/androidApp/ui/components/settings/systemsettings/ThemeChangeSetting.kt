@@ -31,7 +31,7 @@ fun ThemeChangeSetting(
             modifier = Modifier.weight(1f)
         )
 
-        AppSwitch (
+        AppSwitch(
             checked = isDarkCheck,
             onCheckedChange = onCheckedChange
         )
