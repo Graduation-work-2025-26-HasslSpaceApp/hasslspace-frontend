@@ -1,5 +1,6 @@
 package ru.hse.app.androidApp.ui.components.auth.welcome
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -28,6 +29,7 @@ fun WelcomeText(
         },
         fontWeight = FontWeight.Medium,
         fontSize = fontSize,
+        color = MaterialTheme.colorScheme.onBackground,
         lineHeight = fontSize * 1.34f,
         textAlign = TextAlign.Center,
         modifier = modifier
