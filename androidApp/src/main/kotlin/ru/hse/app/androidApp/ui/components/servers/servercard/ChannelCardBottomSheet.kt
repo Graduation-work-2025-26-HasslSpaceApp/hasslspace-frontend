@@ -33,7 +33,6 @@ import ru.hse.app.androidApp.ui.theme.AppTheme
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun ChannelCardBottomSheet(
-    imageLoader: ImageLoader,
     text: String,
     icon: Int,
     isDarkTheme: Boolean,
@@ -112,7 +111,6 @@ fun ChannelCardBottomSheetPreviewWithRequestsLight() {
     AppTheme(isDark = false) {
         ChannelCardBottomSheet(
             text = "основной",
-            imageLoader = LocalContext.current.imageLoader,
             isDarkTheme = false,
             onDismiss = {},
             onReadClick = {},
@@ -132,7 +130,6 @@ fun ChannelCardBottomSheetPreviewWithRequestsDark() {
     AppTheme(isDark = true) {
         ChannelCardBottomSheet(
             text = "Основной",
-            imageLoader = LocalContext.current.imageLoader,
             isDarkTheme = true,
             onDismiss = {},
             onReadClick = {},
@@ -152,7 +149,6 @@ fun ChannelCardBottomSheetPreviewWithRequestsLight1() {
     AppTheme(isDark = false) {
         ChannelCardBottomSheet(
             text = "основной",
-            imageLoader = LocalContext.current.imageLoader,
             isDarkTheme = false,
             onDismiss = {},
             onReadClick = {},
@@ -172,7 +168,6 @@ fun ChannelCardBottomSheetPreviewWithRequestsDark1() {
     AppTheme(isDark = true) {
         ChannelCardBottomSheet(
             text = "Основной",
-            imageLoader = LocalContext.current.imageLoader,
             isDarkTheme = true,
             onDismiss = {},
             onReadClick = {},
