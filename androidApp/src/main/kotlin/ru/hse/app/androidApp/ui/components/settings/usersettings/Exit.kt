@@ -17,7 +17,8 @@ import ru.hse.app.androidApp.ui.components.common.text.VariableMedium
 fun Exit(
     onClick: () -> Unit,
     text: String = "Выйти из приложения",
-    contentColor: Color = MaterialTheme.colorScheme.error
+    contentColor: Color = MaterialTheme.colorScheme.error,
+    modifier: Modifier = Modifier
 ) {
     Button(
         onClick = onClick,
@@ -31,7 +32,7 @@ fun Exit(
             end = 0.dp,
             bottom = 0.dp
         ),
-        modifier = Modifier
+        modifier = modifier
             .height(23.dp)
     ) {
         VariableMedium(text, 15.sp, contentColor)
