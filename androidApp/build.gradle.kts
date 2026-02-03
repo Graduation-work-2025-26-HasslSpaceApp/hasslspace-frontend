@@ -11,7 +11,7 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        minSdk = 23
+        minSdk = 26
         targetSdk = 36
 
         applicationId = "ru.hse.app.androidApp"
@@ -32,4 +32,19 @@ kotlin {
 dependencies {
     implementation(project(":sharedUI"))
     implementation(libs.androidx.activityCompose)
+
+    //TODO перенести в libs
+    implementation(libs.androidx.material.icons.extended.android)
+
+    implementation("androidx.appcompat:appcompat:1.7.1")
+
+    // Color Picker
+    implementation("com.github.skydoves:colorpicker-compose:1.1.3")
+    //Coil
+    implementation(libs.coil)
+    implementation(libs.coil.network.okhttp)
+    implementation(libs.androidx.palette.ktx)
+
+    //Image Cropper
+    implementation(libs.ucrop)
 }
