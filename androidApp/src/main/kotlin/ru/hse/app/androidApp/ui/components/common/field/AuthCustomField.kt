@@ -28,7 +28,8 @@ import ru.hse.app.androidApp.ui.theme.AppTheme
 
 @Composable
 fun AuthCustomField(
-    text: MutableState<String>,
+    text: String,
+    onTextChanged: (String) -> Unit,
     placeholder: String = "Имя пользователя",
     description: String = "Имя пользователя",
     isEmail: Boolean = false,
@@ -36,12 +37,12 @@ fun AuthCustomField(
     maxCharacters: Int? = 20,
     modifier: Modifier = Modifier
 ) {
-    val isMaxReached = maxCharacters != null && text.value.length == maxCharacters
+    val isMaxReached = maxCharacters != null && text.length == maxCharacters
     val isEmailValid =
-        !isEmail || text.value.isEmpty() || Patterns.EMAIL_ADDRESS.matcher(text.value).matches()
+        !isEmail || text.isEmpty() || Patterns.EMAIL_ADDRESS.matcher(text).matches()
 
     val usernameRegex = Regex("^[a-zA-Z][a-zA-Z0-9_]{2,19}$")
-    val usernameError = if (isUniqueUsername) validateUsername(text.value) else null
+    val usernameError = if (isUniqueUsername) validateUsername(text) else null
 
     val isError = usernameError != null || !isEmailValid
 
@@ -55,10 +56,10 @@ fun AuthCustomField(
         )
         Spacer(Modifier.height(6.dp))
         OutlinedTextField(
-            value = text.value,
+            value = text,
             onValueChange = {
                 if (maxCharacters == null || it.length <= maxCharacters) {
-                    text.value = it
+                    onTextChanged(it)
                 }
             },
             modifier = Modifier.fillMaxWidth(),
@@ -101,7 +102,7 @@ fun AuthCustomField(
 
                     if (maxCharacters != null) {
                         Text(
-                            text = "${text.value.length} / $maxCharacters",
+                            text = "${text.length} / $maxCharacters",
                             fontSize = 12.sp,
                             color = if (isMaxReached) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline
                         )
@@ -143,7 +144,8 @@ fun AuthCustomFieldPreviewLightCorrect() {
         isDark = false
     ) {
         AuthCustomField(
-            text = mutableStateOf("1@gmail.com"),
+            text = "1@gmail.com",
+            onTextChanged = {},
             placeholder = "Почта",
             description = "Почта",
             isEmail = true,
@@ -159,7 +161,8 @@ fun AuthCustomFieldPreviewLightInvalid() {
         isDark = false
     ) {
         AuthCustomField(
-            text = mutableStateOf("1gmail.com"),
+            text = "1@gmail.com",
+            onTextChanged = {},
             placeholder = "Почта",
             description = "Почта",
             isEmail = true,
@@ -175,7 +178,8 @@ fun AuthCustomFieldPreviewLightMaxLength() {
         isDark = false
     ) {
         AuthCustomField(
-            text = mutableStateOf("1@gmail.com"),
+            text = "1@gmail.com",
+            onTextChanged = {},
 
             isEmail = true,
             maxCharacters = 11
@@ -190,7 +194,8 @@ fun AuthCustomFieldPreviewLightEmpty() {
         isDark = false
     ) {
         AuthCustomField(
-            text = mutableStateOf(""),
+            text = "",
+            onTextChanged = {},
             placeholder = "Почта",
             description = "Почта",
             isEmail = true,
@@ -206,7 +211,8 @@ fun AuthCustomFieldPreviewUsernameLightLess3() {
         isDark = false
     ) {
         AuthCustomField(
-            text = mutableStateOf("а"),
+            text = "a",
+            onTextChanged = {},
             isUniqueUsername = true,
             maxCharacters = 30
         )
@@ -220,7 +226,8 @@ fun AuthCustomFieldPreviewUsernameLightOnlyLat() {
         isDark = false
     ) {
         AuthCustomField(
-            text = mutableStateOf("@@@юл"),
+            text = "@@@юл",
+            onTextChanged = {},
             isUniqueUsername = true,
             maxCharacters = 30
         )
@@ -234,7 +241,8 @@ fun AuthCustomFieldPreviewUsernameLightFirstSymbol() {
         isDark = false
     ) {
         AuthCustomField(
-            text = mutableStateOf("1julia"),
+            text = "1julia",
+            onTextChanged = {},
             isUniqueUsername = true,
             maxCharacters = 30
         )
@@ -248,7 +256,8 @@ fun AuthCustomFieldPreviewUsernameLightFirstSymbolOk() {
         isDark = false
     ) {
         AuthCustomField(
-            text = mutableStateOf("julia_123"),
+            text = "julia_123",
+            onTextChanged = {},
             isUniqueUsername = true,
             maxCharacters = 30
         )
@@ -262,7 +271,8 @@ fun AuthCustomFieldPreviewDarkCorrect() {
         isDark = true
     ) {
         AuthCustomField(
-            text = mutableStateOf("1@gmail.com"),
+            text = "1@gmail.com",
+            onTextChanged = {},
             placeholder = "Почта",
             description = "Почта",
             isEmail = true,
@@ -278,7 +288,8 @@ fun AuthCustomFieldPreviewDarkInvalid() {
         isDark = true
     ) {
         AuthCustomField(
-            text = mutableStateOf("1gmail.com"),
+            text = "1@gmail.com",
+            onTextChanged = {},
             placeholder = "Почта",
             description = "Почта",
             isEmail = true,
@@ -294,7 +305,8 @@ fun AuthCustomFieldPreviewDarkMaxLength() {
         isDark = true
     ) {
         AuthCustomField(
-            text = mutableStateOf("1@gmail.com"),
+            text = "1@gmail.com",
+            onTextChanged = {},
             placeholder = "Почта",
             description = "Почта",
             isEmail = true,
@@ -310,7 +322,8 @@ fun AuthCustomFieldPreviewDarkEmpty() {
         isDark = true
     ) {
         AuthCustomField(
-            text = mutableStateOf(""),
+            text = "",
+            onTextChanged = {},
             placeholder = "Почта",
             description = "Почта",
             isEmail = true,

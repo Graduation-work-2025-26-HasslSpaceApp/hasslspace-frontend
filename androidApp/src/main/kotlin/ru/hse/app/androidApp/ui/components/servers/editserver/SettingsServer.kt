@@ -34,7 +34,8 @@ fun SettingsServer(
     onBackClick: () -> Unit,
     selectedImageUri: MutableState<Uri?>,
     onPhotoPickClick: () -> Unit,
-    editedServerName: MutableState<String>,
+    editedServerName: String,
+    onEditedServernameChanged: (String) -> Unit,
     enabledChangeServerName: Boolean,
     onApplyNewServerName: () -> Unit,
     onMembersClick: () -> Unit,
@@ -67,7 +68,8 @@ fun SettingsServer(
         ServernameSetting(
             editedServername = editedServerName,
             onApplyClick = onApplyNewServerName,
-            enabled = enabledChangeServerName
+            enabled = enabledChangeServerName,
+            onEditedServernameChanged = onEditedServernameChanged
         )
         Spacer(Modifier.height(15.dp))
 
@@ -147,7 +149,8 @@ fun SettingsServerPreviewWithRequestsLight() {
             onBackClick = {},
             selectedImageUri = mutableStateOf(Uri.EMPTY),
             onPhotoPickClick = {},
-            editedServerName = mutableStateOf("Тест сервер"),
+            editedServerName = "Тест сервер",
+            onEditedServernameChanged = {},
             enabledChangeServerName = true,
             onApplyNewServerName = {},
             onMembersClick = {},
@@ -166,7 +169,8 @@ fun SettingsServerPreviewWithRequestsDark() {
             onBackClick = {},
             selectedImageUri = mutableStateOf(Uri.EMPTY),
             onPhotoPickClick = {},
-            editedServerName = mutableStateOf("Тест сервер"),
+            editedServerName = "Тест сервер",
+            onEditedServernameChanged = {},
             enabledChangeServerName = true,
             onApplyNewServerName = {},
             onMembersClick = {},

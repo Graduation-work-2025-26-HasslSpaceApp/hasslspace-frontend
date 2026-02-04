@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import ru.hse.app.androidApp.data.local.DataManager
 import javax.inject.Inject
 
 @HiltViewModel
@@ -17,8 +18,9 @@ import javax.inject.Inject
 class SessionValidationViewModel @Inject constructor(
 //    private val checkJwtUseCase: CheckJwtUseCase,
 //    private val checkEmailVerificationUseCase: CheckEmailVerificationUseCase,
-//    private val verificationManager: VerificationManager
+    private val dataManager: DataManager
 ) : ViewModel() {
+    //TODO потом заменить на null
 //    private val _isTokenValid = MutableStateFlow<Boolean?>(null)
     private val _isTokenValid = MutableStateFlow<Boolean?>(true)
     val isTokenValid: StateFlow<Boolean?> = _isTokenValid.asStateFlow()
@@ -26,9 +28,13 @@ class SessionValidationViewModel @Inject constructor(
 //    private val _isVerified = MutableStateFlow<Boolean?>(null)
     private val _isVerified = MutableStateFlow<Boolean?>(true)
     val isVerified: StateFlow<Boolean?> = _isVerified.asStateFlow()
-//
-//    val jwtFlow = verificationManager.jwtFlow
-//    val verificationFlow = verificationManager.verificationFlow
+
+    private val _isDark = MutableStateFlow<Boolean>(false)
+    val isDark: StateFlow<Boolean> = _isDark.asStateFlow()
+
+    val jwtFlow = dataManager.jwtFlow
+    val verificationFlow = dataManager.verificationFlow
+    val isDarkFlow = dataManager.isDark
 //
 //    init {
 //        viewModelScope.launch {

@@ -17,22 +17,28 @@ import ru.hse.app.androidApp.ui.components.common.field.PasswordCustomField
 
 @Composable
 fun PasswordColumn(
-    password: MutableState<String>,
-    passwordAgain: MutableState<String>,
+    password: String,
+    onPasswordChanged: (String) -> Unit,
+    passwordAgain: String,
+    onPasswordAgainChanged: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box() {
         Column(
             modifier = modifier
         ) {
-            PasswordCustomField(text = password, shouldBeChecked = true)
+            PasswordCustomField(
+                text = password,
+                onStringChanged = onPasswordChanged,
+                shouldBeChecked = true)
             PasswordCustomField(
                 text = passwordAgain,
+                onStringChanged = onPasswordAgainChanged,
                 placeholder = "Повторите пароль",
                 description = "Повторите пароль"
             )
         }
-        if (password.value != passwordAgain.value) {
+        if (password != passwordAgain) {
             Text(
                 text = "Пароли должны совпадать",
                 fontSize = 12.sp,
@@ -50,7 +56,9 @@ fun PasswordColumn(
 @Composable
 fun PasswordColumnPreview() {
     PasswordColumn(
-        password = mutableStateOf(""),
-        passwordAgain = mutableStateOf("")
+        password = "",
+        {},
+        passwordAgain = "",
+        {}
     )
 }

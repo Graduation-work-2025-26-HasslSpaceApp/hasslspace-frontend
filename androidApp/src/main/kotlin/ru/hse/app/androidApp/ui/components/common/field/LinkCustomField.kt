@@ -27,17 +27,18 @@ import ru.hse.app.androidApp.ui.theme.AppTheme
 
 @Composable
 fun LinkCustomField(
-    text: MutableState<String>,
+    text: String,
+    onStringChanged: (String) -> Unit,
     placeholder: String = "Ссылка-приглашение",
     description: String = "Ссылка-приглашение",
     maxCharacters: Int? = 20,
     modifier: Modifier = Modifier
 ) {
-    val isMaxReached = maxCharacters != null && text.value.length == maxCharacters
+    val isMaxReached = maxCharacters != null && text.length == maxCharacters
 
     val linkRegex = Regex("^https://hasslspace\\.ru/[a-zA-Z0-9]+$")
 
-    val isError = !text.value.matches(linkRegex)
+    val isError = !text.matches(linkRegex)
 
     Column(
         modifier = modifier
@@ -49,10 +50,10 @@ fun LinkCustomField(
         )
         Spacer(Modifier.height(6.dp))
         OutlinedTextField(
-            value = text.value,
+            value = text,
             onValueChange = {
                 if (maxCharacters == null || it.length <= maxCharacters) {
-                    text.value = it
+                    onStringChanged(it)
                 }
             },
             modifier = Modifier.fillMaxWidth(),
@@ -88,7 +89,7 @@ fun LinkCustomField(
 
                     if (maxCharacters != null) {
                         Text(
-                            text = "${text.value.length} / $maxCharacters",
+                            text = "${text.length} / $maxCharacters",
                             fontSize = 12.sp,
                             color = if (isMaxReached) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline
                         )
@@ -119,7 +120,8 @@ fun LinkCustomFieldPreviewLightCorrect() {
         isDark = false
     ) {
         LinkCustomField(
-            text = mutableStateOf("https://hasslspace.ru/hTKzmak"),
+            text = "https://hasslspace.ru/hTKzmak",
+            onStringChanged = {},
             placeholder = "Ссылка",
             description = "Ссылка",
             maxCharacters = null
@@ -134,7 +136,8 @@ fun LinkCustomFieldPreviewDarkEmpty() {
         isDark = true
     ) {
         LinkCustomField(
-            text = mutableStateOf("https://hasslукspace.ru/hTKzmak"),
+            text = "https://hasslукspace.ru/hTKzmak",
+            onStringChanged = {},
             placeholder = "Ссылка",
             description = "Ссылка",
             maxCharacters = null
