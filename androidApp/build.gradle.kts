@@ -4,6 +4,9 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.android.application)
+    id("com.google.dagger.hilt.android")
+    id("kotlin-kapt")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -30,6 +33,8 @@ kotlin {
 }
 
 dependencies {
+    implementation("org.jetbrains.kotlin:kotlin-metadata-jvm:2.3.0")
+
     implementation(project(":sharedUI"))
     implementation(libs.androidx.activityCompose)
 
@@ -40,6 +45,17 @@ dependencies {
 
     // Color Picker
     implementation("com.github.skydoves:colorpicker-compose:1.1.3")
+
+    // Navigation
+    implementation("androidx.navigation:navigation-compose:2.4.0")
+
+    // Hilt and kapt
+    implementation("com.google.dagger:hilt-android:2.57.1")
+    implementation("androidx.hilt:hilt-navigation-compose:1.3.0")
+    kapt("org.jetbrains.kotlin:kotlin-metadata-jvm:2.3.0")
+    ksp("com.google.dagger:hilt-android-compiler:2.57.1")
+
+
     //Coil
     implementation(libs.coil)
     implementation(libs.coil.network.okhttp)
