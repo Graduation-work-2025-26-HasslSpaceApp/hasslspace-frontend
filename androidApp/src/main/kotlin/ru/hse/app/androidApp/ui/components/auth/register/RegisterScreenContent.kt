@@ -36,11 +36,16 @@ import ru.hse.app.androidApp.ui.theme.AppTheme
 
 @Composable
 fun RegisterScreenContent(
-    nickname: MutableState<String>,
-    username: MutableState<String>,
-    email: MutableState<String>,
-    password: MutableState<String>,
-    passwordAgain: MutableState<String>,
+    nickname: String,
+    username: String,
+    email: String,
+    password: String,
+    passwordAgain: String,
+    onNicknameChanged: (String) -> Unit,
+    onUsernameChanged: (String) -> Unit,
+    onEmailChanged: (String) -> Unit,
+    onPasswordChanged: (String) -> Unit,
+    onPasswordAgainChanged: (String) -> Unit,
     isDarkTheme: Boolean,
     onRegisterClick: () -> Unit,
     onGoToLoginClick: () -> Unit,
@@ -69,13 +74,15 @@ fun RegisterScreenContent(
             RegisterText(fontSize = 30.sp)
             Spacer(modifier = Modifier.height(20.dp))
 
-            UniqueNicknameField(nickname)
-            UsernameField(username)
-            EmailField(email)
+            UniqueNicknameField(nickname, onNicknameChanged)
+            UsernameField(username, onUsernameChanged)
+            EmailField(email, onEmailChanged)
             Spacer(Modifier.height(20.dp))
             PasswordColumn(
                 password = password,
-                passwordAgain = passwordAgain
+                onPasswordChanged = onPasswordChanged,
+                passwordAgain = passwordAgain,
+                onPasswordAgainChanged = onPasswordAgainChanged
             )
 
             Spacer(Modifier.height(20.dp))
@@ -113,11 +120,12 @@ fun RegisterScreenContentPreviewLight() {
         isDark = false
     ) {
         RegisterScreenContent(
-            mutableStateOf("yuulkht"),
-            mutableStateOf("Юлия"),
-            mutableStateOf("julia@co.com"),
-            mutableStateOf("123456789"),
-            mutableStateOf("123456789"),
+            "yuulkht",
+            "Юлия",
+            "julia@co.com",
+            "123456789",
+            "123456789",
+            {},{},{},{},{},
             false,
             {},
             {}
@@ -132,11 +140,12 @@ fun RegisterScreenContentPreviewDark() {
         isDark = true
     ) {
         RegisterScreenContent(
-            mutableStateOf("yuulkht"),
-            mutableStateOf("Юлия"),
-            mutableStateOf("julia@co.com"),
-            mutableStateOf("123456789"),
-            mutableStateOf("123456789"),
+            "yuulkht",
+            "Юлия",
+            "julia@co.com",
+            "123456789",
+            "123456789",
+        {},{},{},{},{},
             true,
             {},
             {}

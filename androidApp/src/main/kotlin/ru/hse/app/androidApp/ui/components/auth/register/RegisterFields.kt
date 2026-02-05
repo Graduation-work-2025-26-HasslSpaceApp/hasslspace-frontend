@@ -10,11 +10,13 @@ import ru.hse.app.androidApp.ui.theme.AppTheme
 
 @Composable
 fun UniqueNicknameField(
-    text: MutableState<String>,
+    text: String,
+    onTextChanged: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     AuthCustomField(
         text = text,
+        onTextChanged = onTextChanged,
         placeholder = "Уникальный, на латинице",
         description = "Никнейм",
         isUniqueUsername = true,
@@ -24,11 +26,13 @@ fun UniqueNicknameField(
 
 @Composable
 fun UsernameField(
-    text: MutableState<String>,
+    text: String,
+    onTextChanged: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     AuthCustomField(
         text = text,
+        onTextChanged = onTextChanged,
         placeholder = "Как вас увидят другие",
         description = "Имя пользователя",
         maxCharacters = 30,
@@ -38,11 +42,13 @@ fun UsernameField(
 
 @Composable
 fun EmailField(
-    text: MutableState<String>,
+    text: String,
+    onTextChanged: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     AuthCustomField(
         text = text,
+        onTextChanged = onTextChanged,
         placeholder = "Адрес электронной почты",
         description = "Почта",
         maxCharacters = null,
@@ -58,7 +64,7 @@ fun UniqueNicknameFieldPreviewLight() {
         isDark = false
     ) {
         UniqueNicknameField(
-            mutableStateOf("hfdjhfsk")
+            "fsdfsdf", {}
         )
     }
 }
@@ -70,7 +76,7 @@ fun UniqueNicknameFieldPreviewDark() {
         isDark = true
     ) {
         UniqueNicknameField(
-            mutableStateOf("hfdjhfsk")
+            "fsdfsdf", {}
         )
     }
 }
@@ -82,7 +88,7 @@ fun UsernameFieldPreviewLight() {
         isDark = false
     ) {
         UsernameField(
-            mutableStateOf("Юлия Кухтина")
+            "Юлия Кухтина", {}
         )
     }
 }
@@ -94,7 +100,7 @@ fun UsernameFieldPreviewDark() {
         isDark = true
     ) {
         UsernameField(
-            mutableStateOf("Юлия Кухтина")
+            "Юлия Кухтина", {}
         )
     }
 }
@@ -106,7 +112,7 @@ fun EmailFieldPreviewLight() {
         isDark = false
     ) {
         EmailField(
-            mutableStateOf("julia@gmail.co")
+            "julia@gmail.co", {}
         )
     }
 }
@@ -118,7 +124,7 @@ fun EmailFieldPreviewDark() {
         isDark = true
     ) {
         EmailField(
-            mutableStateOf("julia@gmail.co")
+            "julia@gmail.co", {}
         )
     }
 }

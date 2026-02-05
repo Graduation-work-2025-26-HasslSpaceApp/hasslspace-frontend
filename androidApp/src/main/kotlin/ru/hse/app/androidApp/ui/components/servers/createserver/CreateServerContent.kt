@@ -37,7 +37,8 @@ fun CreateServerContent(
     onBackClick: () -> Unit,
     selectedImageUri: Uri?,
     onPickImageClick: () -> Unit,
-    serverName: MutableState<String>,
+    serverName: String,
+    onServerNameChanged: (String) -> Unit,
     onCreateServerClick: () -> Unit,
     onJoinClick: () -> Unit
 ) {
@@ -87,6 +88,7 @@ fun CreateServerContent(
 
             AuthCustomField(
                 text = serverName,
+                onTextChanged = onServerNameChanged,
                 placeholder = "Введите название сервера",
                 description = "Название сервера",
                 maxCharacters = 30,
@@ -133,7 +135,8 @@ fun CreateServerContentPreviewLightEmpty() {
             selectedImageUri = null,
             onPickImageClick = {},
             onBackClick = {},
-            serverName = remember { mutableStateOf("консультация матан") },
+            serverName = "консультация матан",
+            onServerNameChanged = {},
             onCreateServerClick = {},
             onJoinClick = {}
         )
@@ -148,7 +151,8 @@ fun CreateServerContentPreviewDarkEmpty() {
             selectedImageUri = null,
             onPickImageClick = {},
             onBackClick = {},
-            serverName = remember { mutableStateOf("консультация матан") },
+            serverName = "консультация матан",
+            onServerNameChanged = {},
             onCreateServerClick = {},
             onJoinClick = {}
         )

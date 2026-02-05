@@ -16,11 +16,13 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.key.Key.Companion.Back
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.hse.app.androidApp.R
+import ru.hse.app.androidApp.ui.components.common.button.BackButton
 import ru.hse.app.androidApp.ui.components.common.button.BigButton
 import ru.hse.app.androidApp.ui.theme.AppTheme
 
@@ -30,6 +32,7 @@ fun VerificationScreenContent(
     onCodeChange: (Int, String) -> Unit,
     onConfirm: () -> Unit,
     onResend: () -> Unit,
+    onBackClick: () -> Unit,
     isDarkTheme: Boolean,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
@@ -43,13 +46,18 @@ fun VerificationScreenContent(
                 .align(Alignment.TopCenter),
             contentScale = ContentScale.Crop
         )
+        Box(modifier = Modifier.padding(top = 50.dp, start = 16.dp, end = 16.dp)) {
+            BackButton(
+                onClick = onBackClick
+            )
+        }
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(Modifier.height(100.dp))
+            Spacer(Modifier.height(150.dp))
 
             VerificationHeader()
 
@@ -85,6 +93,7 @@ fun VerificationScreenContentPreviewLight() {
             onCodeChange = { index, value -> code[index] = value },
             onConfirm = {},
             onResend = {},
+            onBackClick = {},
             false
         )
     }
@@ -101,6 +110,7 @@ fun VerificationScreenContentPreviewDark() {
             onCodeChange = { index, value -> code[index] = value },
             onConfirm = {},
             onResend = {},
+            onBackClick = {},
             true
         )
     }

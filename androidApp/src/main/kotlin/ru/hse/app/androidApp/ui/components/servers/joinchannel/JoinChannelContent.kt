@@ -33,7 +33,8 @@ import ru.hse.app.androidApp.ui.theme.AppTheme
 @Composable
 fun JoinChannelContent(
     onBackClick: () -> Unit,
-    linkText: MutableState<String>,
+    linkText: String,
+    onLinkTextChanged: (String) -> Unit,
     onButtonCLick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -69,6 +70,7 @@ fun JoinChannelContent(
 
             LinkCustomField(
                 text = linkText,
+                onStringChanged = onLinkTextChanged,
                 placeholder = "Введите ссылку-приглашение",
                 description = "Ссылка-приглашение",
                 maxCharacters = null,
@@ -112,7 +114,8 @@ fun JoinChannelContentPreviewLight() {
     AppTheme(isDark = false) {
         JoinChannelContent(
             onBackClick = {},
-            linkText = remember { mutableStateOf("https://hasslspace.ru/hTKzmak") },
+            linkText = "https://hasslspace.ru/hTKzmak",
+            onLinkTextChanged = {},
             onButtonCLick = {},
         )
     }
@@ -124,7 +127,8 @@ fun JoinChannelContentPreviewDark() {
     AppTheme(isDark = true) {
         JoinChannelContent(
             onBackClick = {},
-            linkText = remember { mutableStateOf("https://haserslspace.ru/hTKzmak") },
+            linkText = "https://haserslspace.ru/hTKzmak",
+            onLinkTextChanged = {},
             onButtonCLick = {},
         )
     }

@@ -37,7 +37,8 @@ import ru.hse.app.androidApp.ui.components.common.text.VariableMedium
 
 @Composable
 fun PasswordCustomField(
-    text: MutableState<String>,
+    text: String,
+    onStringChanged: (String) -> Unit,
     placeholder: String = "Пароль",
     description: String = "Пароль",
     maxCharacters: Int = 40,
@@ -45,8 +46,8 @@ fun PasswordCustomField(
     modifier: Modifier = Modifier,
 ) {
     var isPasswordVisible by remember { mutableStateOf(false) }
-    val isMaxReached = text.value.length >= maxCharacters
-    val isTooShort = shouldBeChecked && text.value.length < 8 && text.value.isNotEmpty()
+    val isMaxReached = text.length >= maxCharacters
+    val isTooShort = shouldBeChecked && text.length < 8 && text.isNotEmpty()
 
     Column(modifier = modifier) {
         VariableMedium(
@@ -57,10 +58,10 @@ fun PasswordCustomField(
         Spacer(Modifier.height(6.dp))
 
         OutlinedTextField(
-            value = text.value,
+            value = text,
             onValueChange = {
                 if (it.length <= maxCharacters) {
-                    text.value = it
+                    onStringChanged(it)
                 }
             },
             modifier = Modifier.fillMaxWidth(),
@@ -108,7 +109,7 @@ fun PasswordCustomField(
                     }
 
                     Text(
-                        text = "${text.value.length} / $maxCharacters",
+                        text = "${text.length} / $maxCharacters",
                         fontSize = 12.sp,
                         color = when {
                             isMaxReached -> MaterialTheme.colorScheme.error
@@ -140,7 +141,8 @@ fun PasswordCustomFieldPreview() {
     Column() {
         Spacer(modifier = Modifier.height(500.dp))
         PasswordCustomField(
-            text = mutableStateOf("1234567"),
+            text = "1234567",
+            onStringChanged = {},
             shouldBeChecked = true
         )
     }

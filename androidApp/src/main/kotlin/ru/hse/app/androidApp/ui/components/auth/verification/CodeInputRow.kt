@@ -24,6 +24,7 @@ fun CodeInputRow(
                 value = digit,
                 onValueChange = { newValue ->
                     if (newValue.length <= 1 && newValue.all { it.isDigit() }) {
+                        //TODO wasEmptu тут был, разобраться с логикой
                         onDigitChange(index, newValue)
 
                         if (newValue.isNotEmpty() && index < code.lastIndex)

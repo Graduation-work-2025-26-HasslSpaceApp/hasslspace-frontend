@@ -15,7 +15,8 @@ import ru.hse.app.androidApp.ui.components.common.field.AuthCustomField
 
 @Composable
 fun ServernameSetting(
-    editedServername: MutableState<String>,
+    editedServername: String,
+    onEditedServernameChanged: (String) -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean,
     onApplyClick: () -> Unit,
@@ -26,6 +27,7 @@ fun ServernameSetting(
     ) {
         AuthCustomField(
             text = editedServername,
+            onTextChanged = onEditedServernameChanged,
             placeholder = "Введите название сервера",
             description = "Название сервера",
             maxCharacters = 30,

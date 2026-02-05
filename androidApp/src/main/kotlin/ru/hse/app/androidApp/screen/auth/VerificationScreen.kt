@@ -1,0 +1,92 @@
+package ru.hse.app.androidApp.screen.auth
+
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.navigation.NavController
+import ru.hse.app.androidApp.ui.components.auth.verification.VerificationScreenContent
+import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
+import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
+import ru.hse.app.androidApp.ui.entity.model.auth.AuthUiState
+import ru.hse.app.androidApp.ui.entity.model.auth.VerifyUserEvent
+import ru.hse.app.androidApp.ui.navigation.AuthNavigationItem
+
+@Composable
+fun VerificationScreen(
+    navController: NavController,
+    type: String,
+    viewModel: AuthViewModel = hiltViewModel()
+) {
+    val uiState by viewModel.uiState.collectAsState()
+    val verifyUserEvent by viewModel.verifyUserEvent.collectAsState()
+
+    LaunchedEffect(verifyUserEvent) {
+        when (verifyUserEvent) {
+            is VerifyUserEvent.SuccessVerify -> {
+                if (type != "login") {
+                    navController.navigate(AuthNavigationItem.AddPhotoScreen.route)
+                }
+            }
+
+            is VerifyUserEvent.Error -> {
+                val message = (verifyUserEvent as VerifyUserEvent.Error).message
+                viewModel.showToast(message)
+            }
+
+            null -> {}
+        }
+
+        viewModel.resetVerifyUserEvent()
+
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        when (uiState) {
+            is AuthUiState.Loading -> {
+                LoadingScreen()
+            }
+
+            is AuthUiState.Error -> {
+                ErrorScreen()
+            }
+
+            is AuthUiState.Success -> {
+                VerificationScreenWithStateContent(
+                    uiState = uiState as AuthUiState.Success,
+                    type = type,
+                    navController = navController,
+                    viewModel = viewModel,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun VerificationScreenWithStateContent(
+    uiState: AuthUiState.Success,
+    type: String,
+    navController: NavController,
+    viewModel: AuthViewModel,
+) {
+    val data = uiState.data
+
+    VerificationScreenContent(
+        code = data.code,
+        onCodeChange = viewModel::onDigitInCodeChanged,
+        isDarkTheme = viewModel.isDarkTheme,
+        onConfirm = {
+            viewModel.verifyUser(type)
+        },
+        onResend = {
+            viewModel.onWasSentChanged(false)
+            viewModel.sendCode()
+        },
+        onBackClick = { navController.navigate(AuthNavigationItem.RegisterScreen.route) }
+    )
+}

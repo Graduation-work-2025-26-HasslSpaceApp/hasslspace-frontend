@@ -39,8 +39,10 @@ import ru.hse.app.androidApp.ui.theme.AppTheme
 
 @Composable
 fun LoginScreenContent(
-    email: MutableState<String>,
-    password: MutableState<String>,
+    email: String,
+    onEmailChanged: (String) -> Unit,
+    password: String,
+    onPasswordChanged: (String) -> Unit,
     isDarkTheme: Boolean,
     onLoginClick: () -> Unit,
     onGoToRegisterClick: () -> Unit,
@@ -66,17 +68,26 @@ fun LoginScreenContent(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(90.dp))
-            RegisterText(fontSize = 30.sp)
+            RegisterText(
+                text = "Войдите  \nв существующий \nаккаунт",
+                fontSize = 30.sp
+            )
             Spacer(modifier = Modifier.height(20.dp))
 
-            EmailField(email)
+            EmailField(
+                text = email,
+                onTextChanged = onEmailChanged
+            )
             Spacer(Modifier.height(20.dp))
-            PasswordCustomField(password)
+            PasswordCustomField(
+                text = password,
+                onStringChanged = onPasswordChanged
+            )
 
             Spacer(Modifier.height(20.dp))
 
             BigButton(
-                text = "Создать аккаунт",
+                text = "Войти",
                 onClick = { onLoginClick() },
                 colors = ButtonDefaults.buttonColors(
                     contentColor = MaterialTheme.colorScheme.scrim
@@ -108,8 +119,10 @@ fun LoginScreenContentPreviewLight() {
         isDark = false
     ) {
         LoginScreenContent(
-            mutableStateOf("julia@co.com"),
-            mutableStateOf("123456789"),
+            "julia@co.com",
+            {},
+            "123456789",
+            {},
             false,
             {},
             {}
@@ -124,8 +137,10 @@ fun RLoginScreenContentPreviewDark() {
         isDark = true
     ) {
         LoginScreenContent(
-            mutableStateOf("julia@co.com"),
-            mutableStateOf("123456789"),
+            "julia@co.com",
+            {},
+            "123456789",
+            {},
             true,
             {},
             {}

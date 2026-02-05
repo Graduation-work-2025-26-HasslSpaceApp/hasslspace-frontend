@@ -1,0 +1,23 @@
+package ru.hse.app.androidApp.domain.repository
+
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import ru.hse.app.androidApp.domain.model.entity.UserInfo
+
+interface UserRepository {
+
+    suspend fun registerUser(email: String, password: String, username: String, nickname: String): Result<String>
+    suspend fun loginUser(email: String, password: String): Result<String>
+    suspend fun sendVerificationCode(email: String): Result<String>
+    suspend fun checkVerificationCode(code: String): Result<String>
+    suspend fun checkEmailVerification(): Result<Boolean>
+    suspend fun getUserInfo(): Result<UserInfo>
+    suspend fun saveUserPhoto(photoUrl: String): Result<String>
+    //TODO подумать как поменять
+    suspend fun uploadPhoto(
+        photo: MultipartBody.Part,
+        type: RequestBody,
+        photoUrl: RequestBody?
+    ): Result<String>
+
+}

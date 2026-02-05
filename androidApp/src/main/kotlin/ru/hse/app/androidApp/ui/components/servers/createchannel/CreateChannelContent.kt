@@ -28,7 +28,8 @@ import ru.hse.app.androidApp.ui.theme.AppTheme
 fun CreateChannelContent(
     modifier: Modifier = Modifier,
     onCloseClick: () -> Unit,
-    channelName: MutableState<String>,
+    channelName: String,
+    onChannelNameChanged: (String) -> Unit,
     onCreateChannelClick: () -> Unit,
     isDarkTheme: Boolean,
     isPrivate: Boolean,
@@ -53,6 +54,7 @@ fun CreateChannelContent(
 
         AuthCustomField(
             text = channelName,
+            onTextChanged = onChannelNameChanged,
             placeholder = "Новый канал",
             description = "Название канала",
             maxCharacters = 30,
@@ -93,7 +95,8 @@ fun CreateChannelContentPreviewLightEmpty() {
             onCloseClick = {},
             isPrivate = true,
             onPrivateChange = {},
-            channelName = remember { mutableStateOf("консультация матан") },
+            channelName = "консультация матан",
+            onChannelNameChanged = {},
             onCreateChannelClick = {},
             isDarkTheme = false,
             onAddMembers = {}
@@ -109,7 +112,8 @@ fun CreateChannelContentPreviewLight1() {
             onCloseClick = {},
             isPrivate = false,
             onPrivateChange = {},
-            channelName = remember { mutableStateOf("консультация матан") },
+            channelName = "консультация матан",
+            onChannelNameChanged = {},
             onCreateChannelClick = {},
             isDarkTheme = false,
             onAddMembers = {}
@@ -125,7 +129,8 @@ fun CreateChannelContentPreviewDarkEmpty() {
             onCloseClick = {},
             isPrivate = true,
             onPrivateChange = {},
-            channelName = remember { mutableStateOf("консультация матан") },
+            channelName = "консультация матан",
+            onChannelNameChanged = {},
             onCreateChannelClick = {},
             isDarkTheme = true,
             onAddMembers = {}
@@ -141,7 +146,8 @@ fun CreateChannelContentPreviewDark1() {
             onCloseClick = {},
             isPrivate = false,
             onPrivateChange = {},
-            channelName = remember { mutableStateOf("консультация матан") },
+            channelName = "консультация матан",
+            onChannelNameChanged = {},
             onCreateChannelClick = {},
             isDarkTheme = true,
             onAddMembers = {}

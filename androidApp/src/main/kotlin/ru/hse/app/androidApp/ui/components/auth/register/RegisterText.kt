@@ -13,11 +13,12 @@ import ru.hse.app.androidApp.ui.theme.AppTheme
 
 @Composable
 fun RegisterText(
+    text : String = "Создайте новый \n аккаунт",
     modifier: Modifier = Modifier,
     fontSize: TextUnit = 35.sp
 ) {
     Text(
-        text = "Создайте новый \n аккаунт",
+        text = text,
         fontWeight = FontWeight.Medium,
         fontSize = fontSize,
         color = MaterialTheme.colorScheme.onBackground,

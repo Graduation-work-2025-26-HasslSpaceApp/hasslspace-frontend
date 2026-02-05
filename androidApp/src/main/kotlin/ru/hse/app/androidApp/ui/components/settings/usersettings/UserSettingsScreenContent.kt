@@ -37,7 +37,8 @@ fun UserSettingsScreenContent(
     onStatusArrowClick: () -> Unit,
     selectedImageUri: MutableState<Uri?>,
     onPhotoPickClick: () -> Unit,
-    editedUsername: MutableState<String>,
+    editedUsername: String,
+    onEditedUsernameChanged: (String) -> Unit,
     enabledChangeUsername: Boolean,
     onApplyNewUsername: () -> Unit,
     description: MutableState<String>,
@@ -91,7 +92,8 @@ fun UserSettingsScreenContent(
             UsernameSetting(
                 editedUsername = editedUsername,
                 onApplyClick = onApplyNewUsername,
-                enabled = enabledChangeUsername
+                enabled = enabledChangeUsername,
+                onEditedUsernameChanged = onEditedUsernameChanged
             )
 
             DescriptionSetting(
@@ -120,7 +122,7 @@ fun UserSettingsContentPreview() {
         )
     }
     val description = remember { mutableStateOf("Рассказываю о себе рассказываю о себе") }
-    val username = remember { mutableStateOf("username") }
+    val username = "username"
 
     AppTheme(isDark = isDarkTheme.value) {
         UserSettingsScreenContent(
@@ -136,7 +138,8 @@ fun UserSettingsContentPreview() {
             onApplyNewUsername = {},
             description = description,
             onApplyDescClick = {},
-            onExit = {}
+            onExit = {},
+            onEditedUsernameChanged = {}
         )
     }
 }
@@ -157,7 +160,7 @@ fun UserSettingsContentPreview1() {
         )
     }
     val description = remember { mutableStateOf("Рассказываю о себе рассказываю о себе") }
-    val username = remember { mutableStateOf("username") }
+    val username = "username"
 
     AppTheme(isDark = isDarkTheme.value) {
         UserSettingsScreenContent(
@@ -173,7 +176,8 @@ fun UserSettingsContentPreview1() {
             onApplyNewUsername = {},
             description = description,
             onApplyDescClick = {},
-            onExit = {}
+            onExit = {},
+            onEditedUsernameChanged = {}
         )
     }
 }

@@ -17,7 +17,8 @@ import ru.hse.app.androidApp.ui.theme.AppTheme
 
 @Composable
 fun UsernameSetting(
-    editedUsername: MutableState<String>,
+    editedUsername: String,
+    onEditedUsernameChanged: (String) -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean,
     onApplyClick: () -> Unit,
@@ -28,6 +29,7 @@ fun UsernameSetting(
     ) {
         UsernameField(
             text = editedUsername,
+            onTextChanged = onEditedUsernameChanged,
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -43,12 +45,13 @@ fun UsernameSetting(
 @Preview(showBackground = true)
 @Composable
 fun UsernameSettingPreview() {
-    val username = remember { mutableStateOf("username") }
+    val username = "username"
     AppTheme(isDark = false) {
         UsernameSetting(
             editedUsername = username,
             enabled = true,
-            onApplyClick = {}
+            onApplyClick = {},
+            onEditedUsernameChanged = {}
         )
     }
 }
@@ -56,12 +59,13 @@ fun UsernameSettingPreview() {
 @Preview(showBackground = true)
 @Composable
 fun UsernameSettingPreview1() {
-    val username = remember { mutableStateOf("username10username10username10") }
+    val username = "username10username10username10"
     AppTheme(isDark = false) {
         UsernameSetting(
             editedUsername = username,
             enabled = false,
-            onApplyClick = {}
+            onApplyClick = {},
+            onEditedUsernameChanged = {}
         )
     }
 }
@@ -69,12 +73,13 @@ fun UsernameSettingPreview1() {
 @Preview(showBackground = true)
 @Composable
 fun UsernameSettingPreview2() {
-    val username = remember { mutableStateOf("username") }
+    val username = "username"
     AppTheme(isDark = true) {
         UsernameSetting(
             editedUsername = username,
             enabled = true,
-            onApplyClick = {}
+            onApplyClick = {},
+            onEditedUsernameChanged = {}
         )
     }
 }
@@ -82,12 +87,13 @@ fun UsernameSettingPreview2() {
 @Preview(showBackground = true)
 @Composable
 fun UsernameSettingPreview3() {
-    val username = remember { mutableStateOf("username") }
+    val username = "username"
     AppTheme(isDark = true) {
         UsernameSetting(
             editedUsername = username,
             enabled = false,
-            onApplyClick = {}
+            onApplyClick = {},
+            onEditedUsernameChanged = {}
         )
     }
 }
