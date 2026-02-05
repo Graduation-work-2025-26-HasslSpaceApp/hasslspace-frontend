@@ -59,7 +59,8 @@ fun EditRoleContent(
     onToggle: (Boolean) -> Unit,
     onDeleteRoleClick: () -> Unit,
     modifier: Modifier = Modifier,
-    selectedColor: MutableState<Color>,
+    selectedColor: Color,
+    onColorChanged: (Color) -> Unit,
     onColorPickClick: () -> Unit,
     isDarkTheme: Boolean
 ) {
@@ -252,7 +253,8 @@ fun EditRoleContentPreviewWithRequestsLight() {
             onSaveClick = {},
             onToggle = {},
             isDarkTheme = false,
-            selectedColor = remember { mutableStateOf(Color.Blue) },
+            selectedColor = Color.Blue,
+            onColorChanged = {},
             onColorPickClick = {},
             onDeleteRoleClick = {},
             originalTitle = "role 1"
@@ -273,7 +275,8 @@ fun EditRoleContentPreviewWithRequestsDark() {
             onSaveClick = {},
             onToggle = {},
             isDarkTheme = true,
-            selectedColor = remember { mutableStateOf(Color.Blue) },
+            selectedColor = Color.Blue,
+            onColorChanged = {},
             onColorPickClick = {},
             onDeleteRoleClick = {},
             originalTitle = "role 1"

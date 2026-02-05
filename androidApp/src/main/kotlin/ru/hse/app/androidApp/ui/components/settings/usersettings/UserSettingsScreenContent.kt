@@ -33,15 +33,17 @@ fun UserSettingsScreenContent(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     isDarkTheme: Boolean,
-    selectedStatus: MutableState<StatusPresentation>,
+    selectedStatus: StatusPresentation,
     onStatusArrowClick: () -> Unit,
-    selectedImageUri: MutableState<Uri?>,
+    selectedImageUri: Uri?,
+    onSelectedImageUri: (Uri?) -> Unit,
     onPhotoPickClick: () -> Unit,
     editedUsername: String,
     onEditedUsernameChanged: (String) -> Unit,
     enabledChangeUsername: Boolean,
     onApplyNewUsername: () -> Unit,
-    description: MutableState<String>,
+    description: String,
+    onDescChanged: (String) -> Unit,
     onApplyDescClick: () -> Unit,
     onExit: () -> Unit
 ) {
@@ -84,6 +86,7 @@ fun UserSettingsScreenContent(
 
             PhotoSetting(
                 selectedImageUri = selectedImageUri,
+                onSelectedImageUri = onSelectedImageUri,
                 onPhotoPickClick = onPhotoPickClick
             )
 
@@ -98,6 +101,7 @@ fun UserSettingsScreenContent(
 
             DescriptionSetting(
                 description = description,
+                onDescChanged = onDescChanged,
                 onApplyClick = onApplyDescClick
             )
 
@@ -129,14 +133,16 @@ fun UserSettingsContentPreview() {
             modifier = Modifier.fillMaxSize(),
             onBackClick = {},
             isDarkTheme = isDarkTheme.value,
-            selectedStatus = selectedOption,
+            selectedStatus = selectedOption.value,
             onStatusArrowClick = {},
-            selectedImageUri = selectedImageUri,
+            selectedImageUri = selectedImageUri.value,
+            onSelectedImageUri = {},
             onPhotoPickClick = {},
             editedUsername = username,
             enabledChangeUsername = true,
             onApplyNewUsername = {},
-            description = description,
+            description = description.value,
+            onDescChanged = {},
             onApplyDescClick = {},
             onExit = {},
             onEditedUsernameChanged = {}
@@ -167,14 +173,16 @@ fun UserSettingsContentPreview1() {
             modifier = Modifier.fillMaxSize(),
             onBackClick = {},
             isDarkTheme = isDarkTheme.value,
-            selectedStatus = selectedOption,
+            selectedStatus = selectedOption.value,
             onStatusArrowClick = {},
-            selectedImageUri = selectedImageUri,
+            selectedImageUri = selectedImageUri.value,
+            onSelectedImageUri = {},
             onPhotoPickClick = {},
             editedUsername = username,
             enabledChangeUsername = true,
             onApplyNewUsername = {},
-            description = description,
+            description = description.value,
+            onDescChanged = {},
             onApplyDescClick = {},
             onExit = {},
             onEditedUsernameChanged = {}

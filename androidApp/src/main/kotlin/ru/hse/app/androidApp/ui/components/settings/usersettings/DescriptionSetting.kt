@@ -32,13 +32,14 @@ import ru.hse.app.androidApp.ui.theme.AppTheme
 
 @Composable
 fun DescriptionSetting(
-    description: MutableState<String>,
+    description: String,
+    onDescChanged: (String) -> Unit,
     maxCharacters: Int = 1000,
     modifier: Modifier = Modifier,
     onApplyClick: () -> Unit,
 ) {
     val containerBackgroundColor = Color.Transparent
-    val isMaxReached = description.value.length == maxCharacters
+    val isMaxReached = description.length == maxCharacters
 
     Column(
         modifier = modifier
@@ -55,6 +56,7 @@ fun DescriptionSetting(
 
         CustomTextWindow(
             text = description,
+            onTextChanged = onDescChanged,
             placeholder = "Расскажите о себе",
         )
         Spacer(Modifier.height(10.dp))
@@ -70,19 +72,20 @@ fun DescriptionSetting(
 
 @Composable
 fun CustomTextWindow(
-    text: MutableState<String>,
+    text: String,
+    onTextChanged: (String) -> Unit,
     placeholder: String = "Оставьте отзыв...",
     maxCharacters: Int = 1000,
     modifier: Modifier = Modifier,
 ) {
-    val isMaxReached = text.value.length == maxCharacters
+    val isMaxReached = text.length == maxCharacters
 
     Column(modifier = modifier) {
         OutlinedTextField(
-            value = text.value,
+            value = text,
             onValueChange = {
                 if (it.length <= maxCharacters) {
-                    text.value = it
+                    onTextChanged(it)
                 }
             },
             supportingText = {
@@ -92,7 +95,7 @@ fun CustomTextWindow(
                 ) {
                     Spacer(modifier = Modifier.weight(1f))
                     Text(
-                        text = "${text.value.length} / $maxCharacters",
+                        text = "${text.length} / $maxCharacters",
                         fontSize = 12.sp,
                         color = if (isMaxReached) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline
                     )
@@ -136,7 +139,8 @@ fun ReviewBoxPreview() {
     val description = remember { mutableStateOf("Рассказываю о себе рассказываю о себе") }
     AppTheme(isDark = false) {
         DescriptionSetting(
-            description = description,
+            description = description.value,
+            onDescChanged = {description.value = it},
             onApplyClick = {}
         )
     }

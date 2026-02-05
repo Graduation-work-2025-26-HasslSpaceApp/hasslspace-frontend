@@ -28,10 +28,11 @@ import kotlin.math.roundToInt
 @Composable
 fun UserLimitSlider(
     modifier: Modifier = Modifier,
-    sliderValue: MutableState<Float>
+    sliderValue: Float,
+    onSliderValueChange: (Float) -> Unit
 ) {
 
-    val roundedValue = sliderValue.value.roundToInt()
+    val roundedValue = sliderValue.roundToInt()
 
     val limitText = if (roundedValue == 0) {
         "Без ограничений"
@@ -68,8 +69,8 @@ fun UserLimitSlider(
         Spacer(modifier = Modifier.height(8.dp))
 
         Slider(
-            value = sliderValue.value,
-            onValueChange = { sliderValue.value = it },
+            value = sliderValue,
+            onValueChange = onSliderValueChange,
             valueRange = 0f..100f,
             steps = 0,
             colors = SliderDefaults.colors(
@@ -90,8 +91,9 @@ fun UserLimitSliderPreview() {
     AppTheme(isDark = false) {
         Spacer(Modifier.height(100.dp))
         UserLimitSlider(
-            sliderValue = remember { mutableStateOf(0f) })
-
+            sliderValue = 0f,
+            onSliderValueChange = {}
+        )
     }
 }
 
@@ -102,7 +104,9 @@ fun UserLimitSliderPreview1() {
         Column() {
             Spacer(Modifier.height(100.dp))
             UserLimitSlider(
-                sliderValue = remember { mutableStateOf(25f) })
+                sliderValue = 25f,
+                onSliderValueChange = {}
+            )
         }
     }
 }
@@ -113,7 +117,9 @@ fun UserLimitSliderPreview2() {
     AppTheme(isDark = true) {
         Spacer(Modifier.height(100.dp))
         UserLimitSlider(
-            sliderValue = remember { mutableStateOf(0f) })
+            sliderValue = 0f,
+            onSliderValueChange = {}
+        )
     }
 }
 
@@ -123,6 +129,8 @@ fun UserLimitSliderPreview3() {
     AppTheme(isDark = true) {
         Spacer(Modifier.height(100.dp))
         UserLimitSlider(
-            sliderValue = remember { mutableStateOf(25f) })
+            sliderValue = 25f,
+            onSliderValueChange = {}
+        )
     }
 }

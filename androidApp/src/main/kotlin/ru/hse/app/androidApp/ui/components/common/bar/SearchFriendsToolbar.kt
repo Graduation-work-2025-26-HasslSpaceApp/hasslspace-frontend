@@ -22,7 +22,7 @@ import ru.hse.app.androidApp.ui.theme.AppTheme
 @Composable
 fun SearchFriendsToolbar(
     modifier: Modifier = Modifier,
-    searchValue: MutableState<String>,
+    searchValue: String,
     onValueChange: (String) -> Unit,
     onSendClick: () -> Unit,
     infoText: String? = null,
@@ -77,7 +77,7 @@ fun SearchFriendsToolbarPreviewLight() {
         isDark = false
     ) {
         SearchFriendsToolbar(
-            searchValue = text,
+            searchValue = text.value,
             onValueChange = { text.value = it },
             onSendClick = {}
         )
@@ -92,7 +92,7 @@ fun SearchFriendsToolbarPreviewLightNotEmpty() {
         isDark = false
     ) {
         SearchFriendsToolbar(
-            searchValue = text,
+            searchValue = text.value,
             onValueChange = { text.value = it },
             onSendClick = {}
         )
@@ -107,7 +107,7 @@ fun SearchFriendsToolbarPreviewLightError() {
         isDark = false
     ) {
         SearchFriendsToolbar(
-            searchValue = text,
+            searchValue = text.value,
             onValueChange = { text.value = it },
             onSendClick = {},
             infoText = "Хм... Не получилось. Проверьте, что вы ввели правильное имя пользователя",
@@ -124,7 +124,7 @@ fun SearchFriendsToolbarPreviewLightSuccess() {
         isDark = false
     ) {
         SearchFriendsToolbar(
-            searchValue = text,
+            searchValue = text.value,
             onValueChange = { text.value = it },
             onSendClick = {},
             infoText = "Получилось! Отправили заявку в друзья пользователю @yuulkht"
@@ -140,7 +140,7 @@ fun SearchFriendsToolbarPreviewDark() {
         isDark = true
     ) {
         SearchFriendsToolbar(
-            searchValue = text,
+            searchValue = text.value,
             onValueChange = { text.value = it },
             onSendClick = {}
         )
@@ -155,7 +155,7 @@ fun SearchFriendsToolbarPreviewDarkNotEmpty() {
         isDark = true
     ) {
         SearchFriendsToolbar(
-            searchValue = text,
+            searchValue = text.value,
             onValueChange = { text.value = it },
             onSendClick = {}
         )
@@ -170,7 +170,7 @@ fun SearchFriendsToolbarPreviewDarkError() {
         isDark = true
     ) {
         SearchFriendsToolbar(
-            searchValue = text,
+            searchValue = text.value,
             onValueChange = { text.value = it },
             onSendClick = {},
             infoText = "Хм... Не получилось. Проверьте, что вы ввели правильное имя пользователя",
@@ -187,7 +187,7 @@ fun SearchFriendsToolbarPreviewDarkSuccess() {
         isDark = true
     ) {
         SearchFriendsToolbar(
-            searchValue = text,
+            searchValue = text.value,
             onValueChange = { text.value = it },
             onSendClick = {},
             infoText = "Получилось! Отправили заявку в друзья пользователю @yuulkht"

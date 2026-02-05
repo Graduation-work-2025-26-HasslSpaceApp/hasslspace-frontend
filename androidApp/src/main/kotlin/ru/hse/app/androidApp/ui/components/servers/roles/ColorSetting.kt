@@ -23,7 +23,7 @@ import ru.hse.app.androidApp.ui.components.common.text.VariableLight
 
 @Composable
 fun ColorSetting(
-    selectedColor: MutableState<Color>,
+    selectedColor: Color,
     modifier: Modifier = Modifier,
     onColorPickClick: () -> Unit,
 ) {
@@ -43,7 +43,7 @@ fun ColorSetting(
                 modifier = Modifier
                     .size(45.dp)
                     .clip(CircleShape)
-                    .background(selectedColor.value, shape = CircleShape),
+                    .background(selectedColor, shape = CircleShape),
             )
 
             Icon(

@@ -35,7 +35,8 @@ import ru.hse.app.androidApp.ui.theme.AppTheme
 
 @Composable
 fun PhotoSetting(
-    selectedImageUri: MutableState<Uri?>,
+    selectedImageUri: Uri?,
+    onSelectedImageUri: (Uri?) -> Unit,
     modifier: Modifier = Modifier,
     onPhotoPickClick: () -> Unit,
 ) {
@@ -46,7 +47,7 @@ fun PhotoSetting(
         onResult = { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val croppedUri = UCrop.getOutput(result.data!!)
-                selectedImageUri.value = croppedUri
+                onSelectedImageUri(croppedUri)
             }
         }
     )
@@ -85,7 +86,7 @@ fun PhotoSetting(
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            selectedImageUri.value?.let { uri ->
+            selectedImageUri?.let { uri ->
                 AsyncImage(
                     model = uri,
                     contentDescription = "Выбранное изображение",
@@ -117,10 +118,10 @@ fun PhotoSetting(
 )
 @Composable
 fun PhotoSettingWithoutPhotoPreview() {
-    val selectedImageUri = remember { mutableStateOf<Uri?>(null) }
     AppTheme(isDark = false) {
         PhotoSetting(
-            selectedImageUri = selectedImageUri,
+            selectedImageUri = null,
+            onSelectedImageUri = {},
             onPhotoPickClick = {},
             modifier = Modifier.background(MaterialTheme.colorScheme.background)
         )
@@ -134,14 +135,10 @@ fun PhotoSettingWithoutPhotoPreview() {
 )
 @Composable
 fun PhotoSettingWithPhotoPreview() {
-    val selectedImageUri = remember {
-        mutableStateOf<Uri?>(
-            Uri.parse("android.resource://ru.hse.app.androidApp/drawable/avatar_default_dark")
-        )
-    }
     AppTheme(isDark = true) {
         PhotoSetting(
-            selectedImageUri = selectedImageUri,
+            selectedImageUri = Uri.parse("android.resource://ru.hse.app.androidApp/drawable/avatar_default_dark"),
+            onSelectedImageUri = {},
             onPhotoPickClick = {},
             modifier = Modifier.background(MaterialTheme.colorScheme.background)
         )
@@ -155,14 +152,10 @@ fun PhotoSettingWithPhotoPreview() {
 )
 @Composable
 fun PhotoSettingLightWithPhotoPreview() {
-    val selectedImageUri = remember {
-        mutableStateOf<Uri?>(
-            Uri.parse("android.resource://ru.hse.app.androidApp/drawable/avatar_default_light")
-        )
-    }
     AppTheme(isDark = false) {
         PhotoSetting(
-            selectedImageUri = selectedImageUri,
+            selectedImageUri = Uri.parse("android.resource://ru.hse.app.androidApp/drawable/avatar_default_dark"),
+            onSelectedImageUri = {},
             onPhotoPickClick = {},
             modifier = Modifier.background(MaterialTheme.colorScheme.background)
         )

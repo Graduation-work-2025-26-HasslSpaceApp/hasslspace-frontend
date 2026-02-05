@@ -32,7 +32,7 @@ fun ServersContent(
     servers: List<ServerShortUiModel>,
     onBackClick: () -> Unit,
     onServerClick: (ServerShortUiModel) -> Unit,
-    searchText: MutableState<String>,
+    searchText: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     isDarkTheme: Boolean
@@ -110,7 +110,7 @@ fun ServersContentPreviewLight() {
             servers = servers,
             onBackClick = {},
             onServerClick = {},
-            searchText = remember { mutableStateOf("") },
+            searchText = "",
             onValueChange = {},
             isDarkTheme = false
         )
@@ -127,7 +127,7 @@ fun ServersContentPreviewWithRequestsDark() {
             servers = servers,
             onBackClick = {},
             onServerClick = {},
-            searchText = remember { mutableStateOf("") },
+            searchText = "",
             onValueChange = {},
             isDarkTheme = true
         )

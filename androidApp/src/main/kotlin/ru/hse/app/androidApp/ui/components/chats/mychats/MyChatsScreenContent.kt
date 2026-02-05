@@ -32,7 +32,7 @@ fun MyChatsScreenContent(
     chats: List<ChatShortUiModel>,
     onAddClick: () -> Unit,
     onChatClick: (ChatShortUiModel) -> Unit,
-    searchText: MutableState<String>,
+    searchText: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     isDarkTheme: Boolean
@@ -142,7 +142,7 @@ fun MyChatsScreenContentPreviewLight() {
             chats = mockChats,
             onAddClick = {},
             onChatClick = {},
-            searchText = remember { mutableStateOf("") },
+            searchText = "",
             onValueChange = {},
             isDarkTheme = false
         )
@@ -185,7 +185,7 @@ fun MyChatsScreenContentPreviewDark() {
             chats = mockChats,
             onAddClick = {},
             onChatClick = {},
-            searchText = remember { mutableStateOf("поиск") },
+            searchText = "поиск",
             onValueChange = {},
             isDarkTheme = true
         )
@@ -201,7 +201,7 @@ fun MyChatsScreenContentPreviewEmptyLight() {
             chats = emptyList(),
             onAddClick = {},
             onChatClick = {},
-            searchText = remember { mutableStateOf("") },
+            searchText = "",
             onValueChange = {},
             isDarkTheme = false
         )
@@ -236,7 +236,7 @@ fun MyChatsScreenContentPreviewWithSearchLight() {
             chats = mockChats,
             onAddClick = {},
             onChatClick = {},
-            searchText = remember { mutableStateOf("мар") },
+            searchText = "мар",
             onValueChange = {},
             isDarkTheme = false
         )

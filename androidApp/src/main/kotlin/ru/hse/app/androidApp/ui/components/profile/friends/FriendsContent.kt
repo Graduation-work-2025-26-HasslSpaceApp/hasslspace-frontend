@@ -47,7 +47,7 @@ fun FriendsContent(
     onApplicationClick: (FriendUiModel) -> Unit,
     onAcceptClick: (FriendUiModel) -> Unit,
     onDismissClick: (FriendUiModel) -> Unit,
-    searchText: MutableState<String>,
+    searchText: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     isDarkTheme: Boolean
@@ -191,7 +191,7 @@ fun FriendsContentPreviewWithRequestsLight() {
             onApplicationClick = {},
             onAcceptClick = {},
             onDismissClick = {},
-            searchText = remember { mutableStateOf("") },
+            searchText = "",
             onValueChange = {},
             isDarkTheme = false
         )
@@ -221,7 +221,7 @@ fun FriendsContentPreviewOnlyFriendsLight() {
             onApplicationClick = {},
             onAcceptClick = {},
             onDismissClick = {},
-            searchText = remember { mutableStateOf("") },
+            searchText = "",
             onValueChange = {},
             isDarkTheme = false
         )
@@ -255,7 +255,7 @@ fun FriendsContentPreviewWithRequestsDark() {
             onApplicationClick = {},
             onAcceptClick = {},
             onDismissClick = {},
-            searchText = remember { mutableStateOf("") },
+            searchText = "",
             onValueChange = {},
             isDarkTheme = true
         )

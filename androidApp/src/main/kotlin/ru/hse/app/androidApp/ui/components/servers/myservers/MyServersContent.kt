@@ -31,7 +31,7 @@ fun MyServersContent(
     servers: List<ServerShortUiModel>,
     onAddClick: () -> Unit,
     onServerClick: (ServerShortUiModel) -> Unit,
-    searchText: MutableState<String>,
+    searchText: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     isDarkTheme: Boolean
@@ -110,7 +110,7 @@ fun FriendsContentPreviewWithRequestsLight() {
             servers = servers,
             onServerClick = {},
             onAddClick = {},
-            searchText = remember { mutableStateOf("") },
+            searchText = "",
             onValueChange = {},
             isDarkTheme = false
         )
@@ -127,7 +127,7 @@ fun FriendsContentPreviewWithRequestsDark() {
             servers = servers,
             onServerClick = {},
             onAddClick = {},
-            searchText = remember { mutableStateOf("") },
+            searchText = "",
             onValueChange = {},
             isDarkTheme = true
         )

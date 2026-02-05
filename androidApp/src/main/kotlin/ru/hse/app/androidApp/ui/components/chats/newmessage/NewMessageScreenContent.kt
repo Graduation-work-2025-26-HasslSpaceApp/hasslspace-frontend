@@ -41,7 +41,7 @@ fun NewMessageScreenContent(
     onFriendClick: (FriendUiModel) -> Unit,
     onAddFriendClick: () -> Unit,
     onNewGroupClick: () -> Unit,
-    searchText: MutableState<String>,
+    searchText: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     isDarkTheme: Boolean
@@ -163,7 +163,7 @@ fun NewMessageScreenContentPreviewLight() {
             onFriendClick = {},
             onAddFriendClick = {},
             onNewGroupClick = {},
-            searchText = remember { mutableStateOf("") },
+            searchText = "",
             onValueChange = {},
             isDarkTheme = false
         )
@@ -212,7 +212,7 @@ fun NewMessageScreenContentPreviewDark() {
             onFriendClick = {},
             onAddFriendClick = {},
             onNewGroupClick = {},
-            searchText = remember { mutableStateOf("мар") },
+            searchText = "мар",
             onValueChange = {},
             isDarkTheme = true
         )
@@ -230,7 +230,7 @@ fun NewMessageScreenContentPreviewEmptyLight() {
             onFriendClick = {},
             onAddFriendClick = {},
             onNewGroupClick = {},
-            searchText = remember { mutableStateOf("") },
+            searchText = "",
             onValueChange = {},
             isDarkTheme = false
         )
@@ -248,7 +248,7 @@ fun NewMessageScreenContentPreviewEmptyDark() {
             onFriendClick = {},
             onAddFriendClick = {},
             onNewGroupClick = {},
-            searchText = remember { mutableStateOf("") },
+            searchText = "",
             onValueChange = {},
             isDarkTheme = true
         )
@@ -283,7 +283,7 @@ fun NewMessageScreenContentPreviewWithSearchLight() {
             onFriendClick = {},
             onAddFriendClick = {},
             onNewGroupClick = {},
-            searchText = remember { mutableStateOf("мар") },
+            searchText = "мар",
             onValueChange = {},
             isDarkTheme = false
         )

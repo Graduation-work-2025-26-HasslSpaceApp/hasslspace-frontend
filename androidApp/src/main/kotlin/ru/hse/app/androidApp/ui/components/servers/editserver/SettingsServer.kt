@@ -32,7 +32,8 @@ import ru.hse.app.androidApp.ui.theme.AppTheme
 fun SettingsServer(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
-    selectedImageUri: MutableState<Uri?>,
+    selectedImageUri: Uri?,
+    onSelectedImageUri: (Uri?) -> Unit,
     onPhotoPickClick: () -> Unit,
     editedServerName: String,
     onEditedServernameChanged: (String) -> Unit,
@@ -60,6 +61,7 @@ fun SettingsServer(
 
         PhotoSetting(
             selectedImageUri = selectedImageUri,
+            onSelectedImageUri = onSelectedImageUri,
             onPhotoPickClick = onPhotoPickClick
         )
 
@@ -147,7 +149,8 @@ fun SettingsServerPreviewWithRequestsLight() {
     AppTheme(isDark = false) {
         SettingsServer(
             onBackClick = {},
-            selectedImageUri = mutableStateOf(Uri.EMPTY),
+            selectedImageUri = Uri.EMPTY,
+            onSelectedImageUri = {},
             onPhotoPickClick = {},
             editedServerName = "Тест сервер",
             onEditedServernameChanged = {},
@@ -167,7 +170,8 @@ fun SettingsServerPreviewWithRequestsDark() {
     AppTheme(isDark = true) {
         SettingsServer(
             onBackClick = {},
-            selectedImageUri = mutableStateOf(Uri.EMPTY),
+            selectedImageUri = Uri.EMPTY,
+            onSelectedImageUri = {},
             onPhotoPickClick = {},
             editedServerName = "Тест сервер",
             onEditedServernameChanged = {},

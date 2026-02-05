@@ -31,7 +31,7 @@ import ru.hse.app.androidApp.ui.theme.AppTheme
 
 @Composable
 fun SearchBar(
-    text: MutableState<String>,
+    text: String,
     modifier: Modifier = Modifier,
     placeholder: String = "Поиск",
     onValueChange: (String) -> Unit
@@ -51,7 +51,7 @@ fun SearchBar(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(modifier = Modifier.weight(1f)) {
-                if (text.value.isEmpty()) {
+                if (text.isEmpty()) {
                     VariableLight(
                         text = placeholder,
                         fontSize = 16.sp,
@@ -61,7 +61,7 @@ fun SearchBar(
                 }
 
                 BasicTextField(
-                    value = text.value,
+                    value = text,
                     onValueChange = onValueChange,
                     textStyle = TextStyle(
                         fontWeight = FontWeight.Light,
@@ -73,7 +73,7 @@ fun SearchBar(
                 )
             }
 
-            if (text.value.isNotEmpty()) {
+            if (text.isNotEmpty()) {
                 Icon(
                     painter = painterResource(id = R.drawable.cross),
                     contentDescription = "Очистить поиск",
@@ -81,7 +81,6 @@ fun SearchBar(
                     modifier = Modifier
                         .size(20.dp)
                         .clickable {
-                            text.value = ""
                             onValueChange("")
                         }
                         .padding(start = 8.dp)
@@ -99,7 +98,7 @@ fun SearchBarPreviewLight() {
         isDark = false
     ) {
         SearchBar(
-            text = text,
+            text = text.value,
             onValueChange = { text.value = it }
         )
     }
@@ -113,7 +112,7 @@ fun SearchBarPreviewLightNotEmpty() {
         isDark = false
     ) {
         SearchBar(
-            text = text,
+            text = text.value,
             onValueChange = { text.value = it }
         )
     }
@@ -127,7 +126,7 @@ fun SearchBarPreviewDark() {
         isDark = true
     ) {
         SearchBar(
-            text = text,
+            text = text.value,
             onValueChange = { text.value = it }
         )
     }
@@ -141,7 +140,7 @@ fun SearchBarPreviewDarkNotEmpty() {
         isDark = true
     ) {
         SearchBar(
-            text = text,
+            text = text.value,
             onValueChange = { text.value = it }
         )
     }

@@ -34,7 +34,8 @@ import ru.hse.app.androidApp.ui.theme.AppTheme
 @Composable
 fun StatusChangeBottomSheet(
     options: List<StatusPresentation>,
-    selectedOption: MutableState<StatusPresentation>,
+    selectedOption: StatusPresentation,
+    onSelectedOptionChanged: (StatusPresentation) -> Unit,
     onApply: (StatusPresentation) -> Unit,
     showSortSheet: MutableState<Boolean>,
 ) {
@@ -75,12 +76,12 @@ fun StatusChangeBottomSheet(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clickable { selectedOption.value = option }
+                                .clickable {  onSelectedOptionChanged(option) }
                         ) {
                             RadioButtonToggle(
-                                isChosen = selectedOption.value == option,
+                                isChosen = selectedOption == option,
                                 onToggle = { isChosen ->
-                                    if (isChosen) selectedOption.value = option
+                                    if (isChosen) onSelectedOptionChanged(option)
                                 }
                             )
                             Spacer(modifier = Modifier.width(8.dp))
@@ -107,8 +108,7 @@ fun StatusChangeBottomSheet(
                     ApplyButton(
                         text = "Сохранить",
                         onClick = {
-                            onApply(selectedOption.value)
-                            selectedOption.value = selectedOption.value
+                            onApply(selectedOption)
                             showSortSheet.value = false
                         },
                         colors = ButtonDefaults.buttonColors(
@@ -127,7 +127,8 @@ fun StatusChangeBottomSheet(
 fun StatusChangeBottomSheetPreview() {
     AppTheme(isDark = false) {
         StatusChangeBottomSheet(
-            selectedOption = mutableStateOf(StatusPresentation.ACTIVE),
+            selectedOption = StatusPresentation.ACTIVE,
+            onSelectedOptionChanged = {},
             onApply = { selected -> println("Выбрана опция: $selected") },
             showSortSheet = mutableStateOf(true),
             options = listOf(
@@ -145,7 +146,8 @@ fun StatusChangeBottomSheetPreview() {
 fun StatusChangeBottomSheetPreview1() {
     AppTheme(isDark = true) {
         StatusChangeBottomSheet(
-            selectedOption = mutableStateOf(StatusPresentation.ACTIVE),
+            selectedOption = StatusPresentation.ACTIVE,
+            onSelectedOptionChanged = {},
             onApply = { selected -> println("Выбрана опция: $selected") },
             showSortSheet = mutableStateOf(true),
             options = listOf(

@@ -39,7 +39,8 @@ fun ConfigureVoiceChannelContent(
     onAddMembers: () -> Unit,
     onSaveClick: () -> Unit,
     onDeleteChannel: () -> Unit,
-    sliderValue: MutableState<Float>
+    sliderValue: Float,
+    onSliderValueChange: (Float) -> Unit
 ) {
     Column(
         modifier = modifier.fillMaxSize()
@@ -99,7 +100,8 @@ fun ConfigureVoiceChannelContent(
 
         Spacer(Modifier.height(25.dp))
         UserLimitSlider(
-            sliderValue = sliderValue
+            sliderValue = sliderValue,
+            onSliderValueChange = onSliderValueChange
         )
 
         Spacer(Modifier.height(25.dp))
@@ -124,7 +126,8 @@ fun ConfigureVoiceChannelContentPreviewLightEmpty() {
             onSaveClick = {},
             onDeleteChannel = {},
             onAddMembers = {},
-            sliderValue = remember { mutableStateOf(25f) }
+            sliderValue = 25f,
+            onSliderValueChange = {}
         )
     }
 }
@@ -143,7 +146,8 @@ fun ConfigureVoiceChannelContentPreviewLight1() {
             onSaveClick = {},
             onDeleteChannel = {},
             onAddMembers = {},
-            sliderValue = remember { mutableStateOf(25f) }
+            sliderValue = 25f,
+            onSliderValueChange = {}
         )
     }
 }
@@ -162,7 +166,8 @@ fun ConfigureVoiceChannelContentPreviewDarkEmpty() {
             onSaveClick = {},
             onDeleteChannel = {},
             onAddMembers = {},
-            sliderValue = remember { mutableStateOf(25f) }
+            sliderValue = 25f,
+            onSliderValueChange = {}
         )
     }
 }
@@ -181,7 +186,8 @@ fun ConfigureVoiceChannelContentPreviewDark1() {
             onSaveClick = {},
             onDeleteChannel = {},
             onAddMembers = {},
-            sliderValue = remember { mutableStateOf(25f) }
+            sliderValue = 25f,
+            onSliderValueChange = {}
         )
     }
 }

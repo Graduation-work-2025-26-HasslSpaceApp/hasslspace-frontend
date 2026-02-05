@@ -43,7 +43,8 @@ fun NewRoleContent(
     onSaveClick: () -> Unit,
     onToggle: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
-    selectedColor: MutableState<Color>,
+    selectedColor: Color,
+    onColorChanged: (Color) -> Unit,
     onColorPickClick: () -> Unit,
     isDarkTheme: Boolean
 ) {
@@ -192,8 +193,9 @@ fun NewRoleContentPreviewWithRequestsLight() {
             onSaveClick = {},
             onToggle = {},
             isDarkTheme = false,
-            selectedColor = remember { mutableStateOf(Color.Blue) },
-            onColorPickClick = {}
+            selectedColor = Color.Blue,
+            onColorPickClick = {},
+            onColorChanged = {}
         )
     }
 }
@@ -211,8 +213,9 @@ fun NewRoleContentPreviewWithRequestsDark() {
             onSaveClick = {},
             onToggle = {},
             isDarkTheme = true,
-            selectedColor = remember { mutableStateOf(Color.Blue) },
-            onColorPickClick = {}
+            selectedColor = Color.Blue,
+            onColorPickClick = {},
+            onColorChanged = {}
         )
     }
 }

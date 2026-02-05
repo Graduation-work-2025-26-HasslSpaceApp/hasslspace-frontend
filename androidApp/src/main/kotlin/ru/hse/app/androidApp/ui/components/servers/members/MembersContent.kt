@@ -39,7 +39,7 @@ fun ServerMembersContent(
     friends: List<ServerMemberUiModel>,
     onBackClick: () -> Unit,
     onFriendClick: (ServerMemberUiModel) -> Unit,
-    searchText: MutableState<String>,
+    searchText: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     isDarkTheme: Boolean
@@ -136,7 +136,7 @@ fun ServerMembersContentPreviewWithRequestsLight() {
             friends = friends,
             onBackClick = {},
             onFriendClick = {},
-            searchText = remember { mutableStateOf("") },
+            searchText = "",
             onValueChange = {},
             isDarkTheme = false
         )
@@ -153,7 +153,7 @@ fun ServerMembersContentPreviewOnlyFriendsLight() {
             friends = friends,
             onBackClick = {},
             onFriendClick = {},
-            searchText = remember { mutableStateOf("") },
+            searchText = "",
             onValueChange = {},
             isDarkTheme = true
         )
