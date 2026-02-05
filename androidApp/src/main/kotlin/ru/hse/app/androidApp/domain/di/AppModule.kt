@@ -8,6 +8,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import ru.hse.app.androidApp.domain.service.common.CropProfilePhotoService
 import ru.hse.coursework.godaily.ui.notification.ToastManager
 import javax.inject.Singleton
 
@@ -59,12 +60,12 @@ object AppModule {
     fun provideToastManager(@ApplicationContext context: Context): ToastManager {
         return ToastManager(context)
     }
-//
-//    @Provides
-//    @Singleton
-//    fun provideCropProfilePhotoService(): CropProfilePhotoService {
-//        return CropProfilePhotoService()
-//    }
+
+    @Provides
+    @Singleton
+    fun provideCropProfilePhotoService(): CropProfilePhotoService {
+        return CropProfilePhotoService()
+    }
 //
 //    @Provides
 //    @Singleton

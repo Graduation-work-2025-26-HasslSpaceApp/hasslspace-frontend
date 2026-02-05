@@ -5,31 +5,42 @@ import android.util.Patterns
 import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import ru.hse.app.androidApp.data.local.DataManager
+import ru.hse.app.androidApp.domain.service.common.CropProfilePhotoService
+import ru.hse.app.androidApp.domain.usecase.auth.CheckEmailVerificationUseCase
+import ru.hse.app.androidApp.domain.usecase.auth.CheckVerificationCodeUseCase
+import ru.hse.app.androidApp.domain.usecase.auth.LoginUserUseCase
+import ru.hse.app.androidApp.domain.usecase.auth.RegisterUserUseCase
+import ru.hse.app.androidApp.domain.usecase.auth.SendVerificationCodeUseCase
+import ru.hse.app.androidApp.domain.usecase.profile.SaveUserPhotoUseCase
 import ru.hse.app.androidApp.ui.entity.model.auth.AuthUiState
+import ru.hse.app.androidApp.ui.entity.model.auth.CheckEmailVerificationEvent
 import ru.hse.app.androidApp.ui.entity.model.auth.LoginUserEvent
 import ru.hse.app.androidApp.ui.entity.model.auth.RegisterUserEvent
 import ru.hse.app.androidApp.ui.entity.model.auth.SavePhotoEvent
 import ru.hse.app.androidApp.ui.entity.model.auth.SendVerificationCodeEvent
 import ru.hse.app.androidApp.ui.entity.model.auth.VerifyCodeEvent
+import ru.hse.app.androidApp.ui.entity.model.auth.VerifyUserEvent
 import ru.hse.coursework.godaily.ui.notification.ToastManager
 import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val dataManager: DataManager,
-    private val toastManager: ToastManager
-//    private val loginUserUseCase: LoginUserUseCase,
-//    private val registerUserUseCase: RegisterUserUseCase,
-//    private val saveUserPhotoUseCase: SaveUserPhotoUseCase,
-//    private val checkEmailVerificationUseCase: CheckEmailVerificationUseCase,
-//    private val checkVerificationCodeUseCase: CheckVerificationCodeUseCase,
-//    private val sendVerificationCodeUseCase: SendVerificationCodeUseCase,
+    private val toastManager: ToastManager,
+    private val loginUserUseCase: LoginUserUseCase,
+    private val registerUserUseCase: RegisterUserUseCase,
+    private val saveUserPhotoUseCase: SaveUserPhotoUseCase,
+    private val checkEmailVerificationUseCase: CheckEmailVerificationUseCase,
+    private val checkVerificationCodeUseCase: CheckVerificationCodeUseCase,
+    private val sendVerificationCodeUseCase: SendVerificationCodeUseCase,
 //    private val errorHandler: ErrorHandler,
-//    val cropProfilePhotoService: CropProfilePhotoService,
+    val cropProfilePhotoService: CropProfilePhotoService,
 ) : ViewModel() {
     val isLoading = mutableStateOf(false)
     val isDarkTheme = dataManager.isDark.value
@@ -53,15 +64,13 @@ class AuthViewModel @Inject constructor(
     private val _verifyCodeEvent = MutableStateFlow<VerifyCodeEvent?>(null)
     val verifyCodeEvent: StateFlow<VerifyCodeEvent?> = _verifyCodeEvent
 
-//    val username = mutableStateOf("")
-//    val email = mutableStateOf("")
-//    val password = mutableStateOf("")
-//    val passwordAgain = mutableStateOf("")
-//    val selectedImageUri = mutableStateOf<Uri?>(null)
-//    val code = mutableStateListOf("", "", "", "", "", "")
-//    val jwt = mutableStateOf("")
-//    val verificationStatus = mutableStateOf(false)
-//    val wasSent = mutableStateOf(false)
+    private val _verifyUserEvent = MutableStateFlow<VerifyUserEvent?>(null)
+    val verifyUserEvent: StateFlow<VerifyUserEvent?> = _verifyUserEvent
+
+
+    private val _checkEmailVerificationEvent = MutableStateFlow<CheckEmailVerificationEvent?>(null)
+    val checkEmailVerificationEvent: StateFlow<CheckEmailVerificationEvent?> =
+        _checkEmailVerificationEvent
 
     fun clear() {
         val currentState = _uiState.value
@@ -77,175 +86,277 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    //
-//    suspend fun registerUser(): Boolean {
-//        isLoading.value = true
-//
-//        if (isValidEmail(email.value) &&
-//            isValidPassword(
-//                password.value,
-//                passwordAgain.value
-//            ) &&
-//            isValidUsername(username.value)
-//        ) {
-//            val resultResponse = registerUserUseCase.execute(
-//                email.value, password.value, username.value
-//            )
-//            isLoading.value = false
-//            return when (resultResponse) {
-//                is ApiCallResult.Error -> {
-//                    errorHandler.handleError(resultResponse)
-//                    false
-//                }
-//
-//                is ApiCallResult.Success -> {
-//                    jwt.value = resultResponse.data
-//                    saveJwtToStorage()
-//                    true
-//                }
-//            }
-//        }
-//        isLoading.value = false
-//        return false
-//    }
-//
-//    fun saveJwtToStorage() {
-//        viewModelScope.launch {
-//            verificationManager.saveJwt(jwt.value)
-//        }
-//    }
-//
-//    fun saveVerificationStatusToStorage() {
-//        viewModelScope.launch {
-//            verificationManager.saveVerificationStatus(verificationStatus.value)
-//        }
-//    }
-//
-//    suspend fun checkVerification(): Boolean {
-//        isLoading.value = true
-//        return try {
-//            when (val resultResponse = checkEmailVerificationUseCase.execute()) {
-//                is ApiCallResult.Error -> {
-//                    errorHandler.handleError(resultResponse)
-//                    false
-//                }
-//
-//                is ApiCallResult.Success -> {
-//                    val result = resultResponse.data
-//                    withContext(Dispatchers.Main) {
-//                        verificationStatus.value = result
-//                        saveVerificationStatusToStorage()
-//                    }
-//                    result
-//                }
-//            }
-//        } finally {
-//            withContext(Dispatchers.Main) {
-//                isLoading.value = false
-//            }
-//        }
-//    }
-//
-//    suspend fun loginUser(): Boolean {
-//        isLoading.value = true
-//        if (isValidEmail(email.value) &&
-//            isPasswordLongEnough(password.value)
-//        ) {
-//            val resultResponse = loginUserUseCase.execute(
-//                email.value, password.value
-//            )
-//            isLoading.value = false
-//            return when (resultResponse) {
-//                is ApiCallResult.Error -> {
-//                    errorHandler.handleError(resultResponse)
-//                    false
-//                }
-//
-//                is ApiCallResult.Success -> {
-//                    jwt.value = resultResponse.data
-//                    saveJwtToStorage()
-//                    true
-//                }
-//            }
-//        }
-//        isLoading.value = false
-//        return false
-//    }
-//
-//    suspend fun sendCode(): Boolean {
-//        if (wasSent.value) return false
-//
-//        return try {
-//            val responseResult = sendVerificationCodeUseCase.execute(email.value)
-//
-//            when (responseResult) {
-//                is ApiCallResult.Success -> {
-//                    wasSent.value = true
-//                    true
-//                }
-//
-//                is ApiCallResult.Error -> {
-//                    errorHandler.handleError(responseResult)
-//                    false
-//                }
-//            }
-//        } catch (e: Exception) {
-//            false
-//        }
-//    }
-//
-//    suspend fun verifyUser(type: String): Boolean {
-//        isLoading.value = true
-//        return try {
-//            val verificationResult = checkVerificationCodeUseCase.execute(code.joinToString(""))
-//            when (verificationResult) {
-//                is ApiCallResult.Success -> {
-//                    val verificationStatusResult = checkEmailVerificationUseCase.execute()
-//                    when (verificationStatusResult) {
-//                        is ApiCallResult.Success -> {
-//                            if (verificationStatusResult.data) {
-//                                verificationStatus.value = true
-//                                if (type == "login") {
-//                                    saveVerificationStatusToStorage()
-//                                }
-//                                true
-//                            } else {
-//                                false
-//                            }
-//                        }
-//
-//                        is ApiCallResult.Error -> {
-//                            errorHandler.handleError(verificationStatusResult)
-//                            false
-//                        }
-//                    }
-//                }
-//
-//                is ApiCallResult.Error -> {
-//                    errorHandler.handleError(verificationResult)
-//                    false
-//                }
-//            }
-//        } finally {
-//            isLoading.value = false
-//        }
-//    }
-//
-//    fun addProfilePhoto() {
-//        viewModelScope.launch {
-//            selectedImageUri.value?.let {
-//                val photoResultResponse = saveUserPhotoUseCase.execute(it, null)
-//                if (photoResultResponse is ApiCallResult.Error) {
-//                    errorHandler.handleError(photoResultResponse)
-//                }
-//            }
-//        }
-//    }
+    fun registerUser() {
+        val currentState = _uiState.value
+        if (currentState is AuthUiState.Success) {
+            val data = currentState.data
+
+            viewModelScope.launch {
+                if (isValidEmail(data.email) &&
+                    isValidPassword(
+                        data.password,
+                        data.passwordAgain
+                    ) &&
+                    isValidUsername(data.username) &&
+                    isValidNickname(data.nickname)
+                ) {
+                    val result = registerUserUseCase(
+                        email = data.email,
+                        username = data.username,
+                        nickname = data.nickname,
+                        password = data.password
+                    )
+
+                    _registerEvent.value = result.fold(
+                        onSuccess = { jwt ->
+                            onJwtChanged(jwt)
+                            saveJwtToStorage(jwt)
+                            RegisterUserEvent.SuccessRegister
+                        },
+                        onFailure = {
+                            RegisterUserEvent.Error(
+                                ("Ошибка при регистрации. " + it.message)
+                            )
+                        }
+                    )
+                }
+            }
+        }
+    }
+
+    fun loginUser() {
+        val currentState = _uiState.value
+        if (currentState is AuthUiState.Success) {
+            val data = currentState.data
+
+            viewModelScope.launch {
+                if (isValidEmail(data.email) &&
+                    isPasswordLongEnough(data.password)
+                ) {
+                    val result = loginUserUseCase(
+                        email = data.email,
+                        password = data.password
+                    )
+
+                    _loginEvent.value = result.fold(
+                        onSuccess = { jwt ->
+                            onJwtChanged(jwt)
+                            saveJwtToStorage(jwt)
+                            LoginUserEvent.SuccessLogin
+                        },
+                        onFailure = {
+                            LoginUserEvent.Error(
+                                ("Ошибка при входе. " + it.message)
+                            )
+                        }
+                    )
+                }
+            }
+        }
+    }
+
+    fun checkEmailVerification() {
+        val currentState = _uiState.value
+        if (currentState is AuthUiState.Success) {
+            val data = currentState.data
+
+            viewModelScope.launch {
+                val result = checkEmailVerificationUseCase()
+
+
+                _checkEmailVerificationEvent.value = result.fold(
+                    onSuccess = { verified ->
+                        onEmailVerificationChanged(verified)
+                        saveVerificationStatusToStorage(verified)
+                        CheckEmailVerificationEvent.SuccessChecked(verified)
+                    },
+                    onFailure = {
+                        CheckEmailVerificationEvent.Error(
+                            (it.message ?: "")
+                        )
+                    }
+                )
+            }
+        }
+    }
+
+    fun sendCode() {
+        val currentState = _uiState.value
+        if (currentState is AuthUiState.Success) {
+            val data = currentState.data
+            viewModelScope.launch {
+                if (!data.wasSent) {
+                    val responseResult = sendVerificationCodeUseCase(data.email)
+
+                    _sendCodeEvent.value = responseResult.fold(
+                        onSuccess = { _ ->
+                            onWasSentChanged(true)
+                            SendVerificationCodeEvent.SuccessSend
+                        },
+                        onFailure = {
+                            SendVerificationCodeEvent.Error(
+                                (it.message ?: "")
+                            )
+                        }
+                    )
+                }
+            }
+        }
+    }
+
+    fun addProfilePhoto() {
+        val currentState = _uiState.value
+        if (currentState is AuthUiState.Success) {
+            val data = currentState.data
+            viewModelScope.launch {
+                data.selectedImageUri?.let { uri ->
+                    val photoResultResponse = saveUserPhotoUseCase(uri, null)
+                    _savePhotoEvent.value = photoResultResponse.fold(
+                        onSuccess = { _ ->
+                            SavePhotoEvent.SuccessSave
+                        },
+                        onFailure = {
+                            SavePhotoEvent.Error(it.message ?: "")
+                        }
+                    )
+                }
+            }
+        }
+    }
+
+    fun verifyUser(type: String) {
+        val currentState = _uiState.value
+        if (currentState is AuthUiState.Success) {
+            val data = currentState.data
+            viewModelScope.launch {
+                val verificationResult = checkVerificationCodeUseCase(data.code.joinToString(""))
+
+                _verifyCodeEvent.value = verificationResult.fold(
+                    onSuccess = {
+                        val verificationStatusResult = checkEmailVerificationUseCase()
+
+                        _verifyUserEvent.value = verificationStatusResult.fold(
+                            onSuccess = { status ->
+                                if (status) {
+                                    if (type == "login") {
+                                        saveVerificationStatusToStorage(true)
+                                    }
+                                    VerifyUserEvent.SuccessVerify
+                                } else {
+                                    VerifyUserEvent.Error("Не верифицирован email")
+                                }
+                            },
+                            onFailure = {
+                                VerifyUserEvent.Error(it.message ?: "")
+                            }
+                        )
+                        VerifyCodeEvent.SuccessVerify
+                    },
+                    onFailure = {
+                        VerifyCodeEvent.Error(it.message ?: "")
+                    }
+                )
+            }
+        }
+    }
+
+    fun saveJwtToStorage(jwt: String) {
+        viewModelScope.launch {
+            dataManager.saveJwt(jwt)
+        }
+    }
+
+    fun saveVerificationStatusToStorage(status: Boolean) {
+        viewModelScope.launch {
+            dataManager.saveVerificationStatus(status)
+        }
+    }
+
     fun showToast(message: String, duration: Int = Toast.LENGTH_SHORT) {
         toastManager.showToast(
             message = message,
             duration = duration
         )
+    }
+
+    fun onUsernameChanged(username: String) {
+        val currentState = _uiState.value
+        if (currentState is AuthUiState.Success) {
+            val updatedData = currentState.data.copy(username = username)
+            _uiState.value = AuthUiState.Success(updatedData)
+        }
+    }
+
+    fun onEmailChanged(email: String) {
+        val currentState = _uiState.value
+        if (currentState is AuthUiState.Success) {
+            val updatedData = currentState.data.copy(email = email)
+            _uiState.value = AuthUiState.Success(updatedData)
+        }
+    }
+
+    fun onNicknameChanged(nickname: String) {
+        val currentState = _uiState.value
+        if (currentState is AuthUiState.Success) {
+            val updatedData = currentState.data.copy(nickname = nickname)
+            _uiState.value = AuthUiState.Success(updatedData)
+        }
+    }
+
+    fun onPasswordChanged(password: String) {
+        val currentState = _uiState.value
+        if (currentState is AuthUiState.Success) {
+            val updatedData = currentState.data.copy(password = password)
+            _uiState.value = AuthUiState.Success(updatedData)
+        }
+    }
+
+    fun onPasswordAgainChanged(passwordAgain: String) {
+        val currentState = _uiState.value
+        if (currentState is AuthUiState.Success) {
+            val updatedData = currentState.data.copy(passwordAgain = passwordAgain)
+            _uiState.value = AuthUiState.Success(updatedData)
+        }
+    }
+
+    fun onSelectedImageUriChanged(selectedImageUri: Uri?) {
+        val currentState = _uiState.value
+        if (currentState is AuthUiState.Success) {
+            val updatedData = currentState.data.copy(selectedImageUri = selectedImageUri)
+            _uiState.value = AuthUiState.Success(updatedData)
+        }
+    }
+
+    fun onCodeChanged(code: List<String>) {
+        val currentState = _uiState.value
+        if (currentState is AuthUiState.Success) {
+            val updatedData = currentState.data.copy(code = code)
+            _uiState.value = AuthUiState.Success(updatedData)
+        }
+    }
+
+    fun onEmailVerificationChanged(verified: Boolean) {
+        val currentState = _uiState.value
+        if (currentState is AuthUiState.Success) {
+            val updatedData = currentState.data.copy(verificationStatus = verified)
+            _uiState.value = AuthUiState.Success(updatedData)
+        }
+    }
+
+    fun onWasSentChanged(wasSent: Boolean) {
+        val currentState = _uiState.value
+        if (currentState is AuthUiState.Success) {
+            val updatedData = currentState.data.copy(wasSent = wasSent)
+            _uiState.value = AuthUiState.Success(updatedData)
+        }
+    }
+
+    fun onJwtChanged(jwt: String) {
+        val currentState = _uiState.value
+        if (currentState is AuthUiState.Success) {
+            val updatedData = currentState.data.copy(jwt = jwt)
+            _uiState.value = AuthUiState.Success(updatedData)
+        }
     }
 
     fun onPhotoUriChanged(uri: Uri?) {
@@ -275,4 +386,8 @@ private fun isValidPassword(password: String, passwordAgain: String): Boolean {
 
 private fun isValidUsername(username: String): Boolean {
     return username.isNotEmpty()
+}
+
+private fun isValidNickname(nickname: String): Boolean {
+    return nickname.isNotEmpty()
 }
