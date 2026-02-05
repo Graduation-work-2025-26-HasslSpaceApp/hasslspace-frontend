@@ -44,12 +44,12 @@ class DataManager @Inject constructor(
 
     fun saveIsDarkTheme(isDark: Boolean) {
         sharedPreferences.edit { putBoolean(IS_DARK_THEME, isDark) }
-        _verificationFlow.value = isDark
+        _isDark.value = isDark
     }
 
     fun clearIsDarkTheme() {
         sharedPreferences.edit { remove(IS_DARK_THEME) }
-        _verificationFlow.value = false
+        _isDark.value = false
     }
 
     companion object {

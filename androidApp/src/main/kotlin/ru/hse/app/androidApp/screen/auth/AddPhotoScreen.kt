@@ -90,7 +90,6 @@ fun AddPhotoScreenWithStateContent(
         }
     )
 
-    //TODO
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
         onResult = { uri: Uri? ->
@@ -101,7 +100,7 @@ fun AddPhotoScreenWithStateContent(
                 if (fileSizeInBytes > maxSizeInBytes) {
                     ToastManager(context).showToast("Файл слишком большой. Максимальный размер 20 МБ.")
                 } else {
-//                    viewModel.cropProfilePhotoService.startCrop(it, context, cropLauncher)
+                    viewModel.cropProfilePhotoService.startCrop(it, context, cropLauncher)
                 }
             }
         }
@@ -111,12 +110,11 @@ fun AddPhotoScreenWithStateContent(
         selectedImageUri = data.selectedImageUri,
         onPickImageClick = { imagePickerLauncher.launch("image/*") },
         onContinueClick = {
-            //TODO
-//                viewModel.addProfilePhoto()
-            //              viewModel.saveVerificationStatusToStorage()
+            viewModel.addProfilePhoto()
+            viewModel.saveVerificationStatusToStorageFromState()
         },
         onSkipClick = {
-//                viewModel.saveVerificationStatusToStorage()
+                viewModel.saveVerificationStatusToStorageFromState()
         },
         isDarkTheme = viewModel.isDarkTheme
     )

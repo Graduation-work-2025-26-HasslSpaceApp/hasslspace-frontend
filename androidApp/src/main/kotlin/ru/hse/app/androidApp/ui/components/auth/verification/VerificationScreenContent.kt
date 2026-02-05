@@ -46,7 +46,7 @@ fun VerificationScreenContent(
                 .align(Alignment.TopCenter),
             contentScale = ContentScale.Crop
         )
-        Box(modifier = Modifier.padding(16.dp)) {
+        Box(modifier = Modifier.padding(top = 50.dp, start = 16.dp, end = 16.dp)) {
             BackButton(
                 onClick = onBackClick
             )
@@ -57,7 +57,7 @@ fun VerificationScreenContent(
                 .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(Modifier.height(100.dp))
+            Spacer(Modifier.height(150.dp))
 
             VerificationHeader()
 

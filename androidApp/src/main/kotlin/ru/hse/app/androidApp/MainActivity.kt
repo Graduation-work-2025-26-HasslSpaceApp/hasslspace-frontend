@@ -24,8 +24,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
 //        requestLocationPermission()
-
-        // TODO Сделать смену темы тут на уровне всего приложения
         setContent {
             StartScreen()
         }

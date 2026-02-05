@@ -12,6 +12,7 @@ import ru.hse.app.androidApp.ui.components.auth.welcome.WelcomeScreenContent
 import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
 import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
 import ru.hse.app.androidApp.ui.entity.model.auth.AuthUiState
+import ru.hse.app.androidApp.ui.navigation.AuthNavigationItem
 
 @Composable
 fun WelcomeScreen(
@@ -19,24 +20,6 @@ fun WelcomeScreen(
     viewModel: AuthViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-
-    //    LaunchedEffect(event) {
-//        when (event) {
-//            is SavePhotoEvent.SuccessSave -> {
-//                viewModel.showToast("Фотография успешно добавлена")
-//            }
-//
-//            is SavePhotoEvent.Error -> {
-//                val message = (event as SavePhotoEvent.Error).message
-//                viewModel.showToast(message)
-//            }
-//
-//            null -> {}
-//        }
-//
-//        viewModel.resetSavePhotoEvent()
-//
-//    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         when (uiState) {
@@ -50,7 +33,6 @@ fun WelcomeScreen(
 
             is AuthUiState.Success -> {
                 WelcomeScreenWithStateContent(
-                    uiState = uiState as AuthUiState.Success,
                     navController = navController,
                     viewModel = viewModel,
                 )
@@ -61,14 +43,13 @@ fun WelcomeScreen(
 
 @Composable
 fun WelcomeScreenWithStateContent(
-    uiState: AuthUiState.Success,
     navController: NavController,
     viewModel: AuthViewModel,
 ) {
 
     WelcomeScreenContent(
         isDarkTheme = viewModel.isDarkTheme,
-        onLoginClick = { /*TODO*/ },
-        onRegisterClick = { /*TODO*/ }
+        onLoginClick = { navController.navigate(AuthNavigationItem.LoginScreen.route) },
+        onRegisterClick = { navController.navigate(AuthNavigationItem.RegisterScreen.route) }
     )
 }

@@ -18,6 +18,7 @@ import ru.hse.app.androidApp.domain.usecase.auth.LoginUserUseCase
 import ru.hse.app.androidApp.domain.usecase.auth.RegisterUserUseCase
 import ru.hse.app.androidApp.domain.usecase.auth.SendVerificationCodeUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.SaveUserPhotoUseCase
+import ru.hse.app.androidApp.ui.entity.model.auth.AuthUiModel
 import ru.hse.app.androidApp.ui.entity.model.auth.AuthUiState
 import ru.hse.app.androidApp.ui.entity.model.auth.CheckEmailVerificationEvent
 import ru.hse.app.androidApp.ui.entity.model.auth.LoginUserEvent
@@ -26,6 +27,7 @@ import ru.hse.app.androidApp.ui.entity.model.auth.SavePhotoEvent
 import ru.hse.app.androidApp.ui.entity.model.auth.SendVerificationCodeEvent
 import ru.hse.app.androidApp.ui.entity.model.auth.VerifyCodeEvent
 import ru.hse.app.androidApp.ui.entity.model.auth.VerifyUserEvent
+import ru.hse.app.androidApp.ui.entity.model.auth.getEmptyUiModel
 import ru.hse.coursework.godaily.ui.notification.ToastManager
 import javax.inject.Inject
 
@@ -42,7 +44,6 @@ class AuthViewModel @Inject constructor(
 //    private val errorHandler: ErrorHandler,
     val cropProfilePhotoService: CropProfilePhotoService,
 ) : ViewModel() {
-    val isLoading = mutableStateOf(false)
     val isDarkTheme = dataManager.isDark.value
 
     private val _uiState =
@@ -72,6 +73,10 @@ class AuthViewModel @Inject constructor(
     val checkEmailVerificationEvent: StateFlow<CheckEmailVerificationEvent?> =
         _checkEmailVerificationEvent
 
+    init {
+        loadAuthInfo()
+    }
+
     fun clear() {
         val currentState = _uiState.value
         if (currentState is AuthUiState.Success) {
@@ -85,6 +90,16 @@ class AuthViewModel @Inject constructor(
             _uiState.value = AuthUiState.Success(updatedData)
         }
     }
+
+    fun loadAuthInfo() {
+        viewModelScope.launch {
+            _uiState.value = AuthUiState.Loading
+            _uiState.value = AuthUiState.Success(
+                data = getEmptyUiModel()
+            )
+        }
+    }
+
 
     fun registerUser() {
         val currentState = _uiState.value
@@ -266,6 +281,17 @@ class AuthViewModel @Inject constructor(
         }
     }
 
+    fun saveVerificationStatusToStorageFromState() {
+        viewModelScope.launch {
+            var status = false
+            val currentState = _uiState.value
+            if (currentState is AuthUiState.Success) {
+                status = currentState.data.verificationStatus
+            }
+            dataManager.saveVerificationStatus(status)
+        }
+    }
+
     fun saveVerificationStatusToStorage(status: Boolean) {
         viewModelScope.launch {
             dataManager.saveVerificationStatus(status)
@@ -327,10 +353,12 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun onCodeChanged(code: List<String>) {
+    fun onDigitInCodeChanged(index: Int, value: String) {
         val currentState = _uiState.value
         if (currentState is AuthUiState.Success) {
-            val updatedData = currentState.data.copy(code = code)
+            val updatedCode = currentState.data.code.toMutableList()
+            updatedCode[index] = value
+            val updatedData = currentState.data.copy(code = updatedCode)
             _uiState.value = AuthUiState.Success(updatedData)
         }
     }
@@ -369,6 +397,26 @@ class AuthViewModel @Inject constructor(
 
     fun resetSavePhotoEvent() {
         _savePhotoEvent.value = null
+    }
+    fun resetRegisterEvent() {
+        _registerEvent.value = null
+    }
+    fun resetLoginEvent() {
+        _loginEvent.value = null
+    }
+    fun resetSendCodeEvent() {
+        _sendCodeEvent.value = null
+    }
+    fun resetVerifyCodeEvent() {
+        _verifyCodeEvent.value = null
+    }
+
+    fun resetVerifyUserEvent() {
+        _verifyUserEvent.value = null
+    }
+
+    fun resetCheckVerifyEmailEvent() {
+        _checkEmailVerificationEvent.value = null
     }
 }
 

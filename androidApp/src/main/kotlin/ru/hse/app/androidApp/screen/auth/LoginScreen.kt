@@ -3,16 +3,19 @@ package ru.hse.app.androidApp.screen.auth
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import ru.hse.app.androidApp.ui.components.auth.login.LoginScreenContent
 import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
 import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
 import ru.hse.app.androidApp.ui.entity.model.auth.AuthUiState
+import ru.hse.app.androidApp.ui.entity.model.auth.CheckEmailVerificationEvent
+import ru.hse.app.androidApp.ui.entity.model.auth.LoginUserEvent
+import ru.hse.app.androidApp.ui.navigation.AuthNavigationItem
 
 @Composable
 fun LoginScreen(
@@ -20,25 +23,45 @@ fun LoginScreen(
     viewModel: AuthViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val event by viewModel.loginEvent.collectAsState()
+    val loginUserEvent by viewModel.loginEvent.collectAsState()
+    val checkEmailVerificationEvent by viewModel.checkEmailVerificationEvent.collectAsState()
 
-//    LaunchedEffect(event) {
-//        when (event) {
-//            is SavePhotoEvent.SuccessSave -> {
-//                viewModel.showToast("Фотография успешно добавлена")
-//            }
-//
-//            is SavePhotoEvent.Error -> {
-//                val message = (event as SavePhotoEvent.Error).message
-//                viewModel.showToast(message)
-//            }
-//
-//            null -> {}
-//        }
-//
-//        viewModel.resetSavePhotoEvent()
-//
-//    }
+    LaunchedEffect(loginUserEvent) {
+        when (loginUserEvent) {
+            is LoginUserEvent.SuccessLogin -> {
+                viewModel.checkEmailVerification()
+            }
+
+            is LoginUserEvent.Error -> {
+                val message = (loginUserEvent as LoginUserEvent.Error).message
+                viewModel.showToast(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetLoginEvent()
+    }
+
+    LaunchedEffect(checkEmailVerificationEvent) {
+        when (checkEmailVerificationEvent) {
+            is CheckEmailVerificationEvent.SuccessChecked -> {
+                if (!(checkEmailVerificationEvent as CheckEmailVerificationEvent.SuccessChecked).verified) {
+                    viewModel.sendCode()
+                    navController.navigate(AuthNavigationItem.VerificationScreen.route + "/login")
+                }
+            }
+
+            is CheckEmailVerificationEvent.Error -> {
+                val message = (checkEmailVerificationEvent as CheckEmailVerificationEvent.Error).message
+                viewModel.showToast(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetCheckVerifyEmailEvent()
+    }
+
+
 
     Box(modifier = Modifier.fillMaxSize()) {
         when (uiState) {
@@ -68,15 +91,14 @@ fun LoginScreenWithStateContent(
     viewModel: AuthViewModel,
 ) {
     val data = uiState.data
-    val context = LocalContext.current
 
     LoginScreenContent(
         email = data.email,
-        onEmailChanged = { /*TODO */ },
+        onEmailChanged = viewModel::onEmailChanged,
         password = data.password,
-        onPasswordChanged = { /*TODO */ },
+        onPasswordChanged = viewModel::onPasswordChanged,
         isDarkTheme = viewModel.isDarkTheme,
-        onLoginClick = { /*TODO */ },
-        onGoToRegisterClick = { /*TODO */ },
+        onLoginClick = viewModel::loginUser,
+        onGoToRegisterClick = { navController.navigate(AuthNavigationItem.RegisterScreen.route) },
     )
 }

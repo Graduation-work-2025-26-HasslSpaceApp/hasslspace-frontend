@@ -22,3 +22,18 @@ data class AuthUiModel(
     val verificationStatus: Boolean,
     val wasSent: Boolean
 )
+
+fun getEmptyUiModel(): AuthUiModel {
+    return AuthUiModel(
+        username = "",
+        email = "",
+        nickname = "",
+        password = "",
+        passwordAgain = "",
+        selectedImageUri = null,
+        code = mutableListOf("", "", "", "", "", ""),
+        jwt = "",
+        verificationStatus = false,
+        wasSent = false
+    )
+}

@@ -16,7 +16,7 @@ fun WelcomeTextDescription(
     fontSize: TextUnit = 15.sp
 ) {
     Text(
-        text = "Ваше пространство для общения готово. \n Общайтесь и создавайте свои сообщества \n Рады вас видеть!",
+        text = "Ваше пространство для общения готово. \n Общайтесь и создавайте свои сообщества. \n Рады вас видеть!",
         fontSize = fontSize,
         fontWeight = FontWeight.Medium,
         lineHeight = fontSize * 1.25f,

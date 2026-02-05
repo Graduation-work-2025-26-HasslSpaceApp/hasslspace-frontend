@@ -68,7 +68,10 @@ fun LoginScreenContent(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(90.dp))
-            RegisterText(fontSize = 30.sp)
+            RegisterText(
+                text = "Войдите  \nв существующий \nаккаунт",
+                fontSize = 30.sp
+            )
             Spacer(modifier = Modifier.height(20.dp))
 
             EmailField(
@@ -84,7 +87,7 @@ fun LoginScreenContent(
             Spacer(Modifier.height(20.dp))
 
             BigButton(
-                text = "Создать аккаунт",
+                text = "Войти",
                 onClick = { onLoginClick() },
                 colors = ButtonDefaults.buttonColors(
                     contentColor = MaterialTheme.colorScheme.scrim
