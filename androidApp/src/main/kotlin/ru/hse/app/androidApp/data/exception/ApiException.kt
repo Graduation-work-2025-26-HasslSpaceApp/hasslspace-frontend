@@ -3,8 +3,10 @@ package ru.hse.app.androidApp.data.exception
 /**
  * Отвечает за ошибки при загрузке данных
  */
-class DataException(
-    override val message: String
+class ApiException(
+    val code: Int?,
+    override val message: String,
+    override val cause: Throwable?,
 ) : Exception(message) {
     companion object {
         const val UNAUTHORIZED = "Неавторизованный доступ"

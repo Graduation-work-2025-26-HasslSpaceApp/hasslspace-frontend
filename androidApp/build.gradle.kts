@@ -1,4 +1,18 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
+
+val serverUrl: String by extra {
+    val properties = Properties()
+    val localPropertiesFile = project.rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        localPropertiesFile.inputStream().use { properties.load(it) }
+    }
+    val value = properties.getProperty("SERVER_URL", "")
+    if (value.isEmpty()) {
+        throw InvalidUserDataException("Server URL is not provided")
+    }
+    value
+}
 
 plugins {
     alias(libs.plugins.compose.compiler)
@@ -20,6 +34,12 @@ android {
         applicationId = "ru.hse.app.androidApp"
         versionCode = 1
         versionName = "1.0.0"
+
+        buildConfigField("String", "SERVER_URL", "\"$serverUrl\"")
+    }
+    buildFeatures {
+        compose = true
+        buildConfig = true
     }
 
     compileOptions {
@@ -33,6 +53,20 @@ kotlin {
 }
 
 dependencies {
+    // Jackson
+    implementation("com.squareup.retrofit2:converter-jackson:3.0.0")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.18.3")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.18.3")
+
+    //Logging
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
+    // Kotlinx Serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+
+    implementation("com.squareup.retrofit2:retrofit:3.0.0")
+    implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
     implementation("org.jetbrains.kotlin:kotlin-metadata-jvm:2.3.0")
 
     implementation(project(":sharedUI"))

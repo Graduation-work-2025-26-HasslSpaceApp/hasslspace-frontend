@@ -5,7 +5,7 @@ import coil3.ImageLoader
 import jakarta.inject.Inject
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
-import ru.hse.app.androidApp.data.exception.DataException
+import ru.hse.app.androidApp.data.exception.ApiException
 import ru.hse.app.androidApp.domain.repository.UserRepository
 import ru.hse.app.androidApp.domain.service.common.PhotoConverterService
 
@@ -39,12 +39,13 @@ class SaveUserPhotoUseCase @Inject constructor(
                 onFailure = {
                     return Result.failure(
                         savePhotoResult.exceptionOrNull()
-                            ?: DataException(DataException.PHOTO_UPLOADING_ERROR)
+                            //TODO во всех юз кейсах сделать преобразование ошибки апи в ошибку UI
+                            ?: ApiException(null,ApiException.PHOTO_UPLOADING_ERROR, null)
                     )
                 }
             )
         }
 
-        return Result.failure(DataException(DataException.PHOTO_UPLOADING_ERROR))
+        return Result.failure(ApiException(null,ApiException.PHOTO_UPLOADING_ERROR, null))
     }
 }
