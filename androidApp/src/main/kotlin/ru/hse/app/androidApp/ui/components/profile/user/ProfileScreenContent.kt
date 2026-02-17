@@ -56,7 +56,8 @@ fun ProfileScreenContent(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = 16.dp)
+                .padding(top = 30.dp),
             verticalArrangement = Arrangement.Top
         ) {
             Row(

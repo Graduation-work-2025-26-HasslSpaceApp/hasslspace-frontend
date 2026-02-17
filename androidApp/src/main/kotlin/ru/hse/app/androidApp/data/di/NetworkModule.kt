@@ -71,8 +71,8 @@ class NetworkModule {
     @Provides
     @Singleton
     fun provideApiService(retrofit: Retrofit): ApiService {
-        return retrofit.create(ApiService::class.java)
-//        return FakeApiService()
+//        return retrofit.create(ApiService::class.java)
+        return FakeApiService()
     }
 
     @Provides

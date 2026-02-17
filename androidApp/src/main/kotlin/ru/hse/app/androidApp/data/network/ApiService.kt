@@ -9,7 +9,9 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Query
+import ru.hse.app.androidApp.data.model.ServerInfoDto
 import ru.hse.app.androidApp.data.model.UserDto
+import ru.hse.app.androidApp.data.model.UserInfoDto
 
 interface ApiService {
 
@@ -57,4 +59,12 @@ interface ApiService {
         @Part("type") type: RequestBody,
         @Part("photoUrl") photoUrl: RequestBody?
     ): Response<String>
+
+    // Получить список друзей пользователя
+    @GET("") //TODO
+    suspend fun getFriends(): Response<List<UserInfoDto>>
+
+    // Получить список серверов пользователя
+    @GET("") //TODO
+    suspend fun getServers(): Response<List<ServerInfoDto>>
 }

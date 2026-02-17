@@ -84,7 +84,7 @@ fun MainScreen(
     Scaffold(
         bottomBar = { BottomNavigationBar(navController) }
     ) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)) {
+        Box(modifier = Modifier/*TODO .padding(innerPadding)*/) {
             BottomNavigation(navController)
         }
     }

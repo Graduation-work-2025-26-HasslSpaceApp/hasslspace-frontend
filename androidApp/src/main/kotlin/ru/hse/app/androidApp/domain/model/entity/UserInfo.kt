@@ -1,17 +1,21 @@
 package ru.hse.app.androidApp.domain.model.entity
 
-import ru.hse.app.androidApp.data.model.UserDto
+import ru.hse.app.androidApp.data.model.UserInfoDto
 
 data class UserInfo(
-    val username: String,
-    val email: String,
-    val avatarUrl: String?
+    val id: String,
+    val name: String,
+    val nickname: String,
+    val status: String,
+    val photoUrl: String?
 )
 
-fun UserDto.toDomain(): UserInfo {
+fun UserInfoDto.toDomain(): UserInfo {
     return UserInfo(
-        username = this.username,
-        email = this.email,
-        avatarUrl = this.photoURL
+        id = this.id,
+        name = this.name,
+        nickname = this.nickname,
+        status = this.status,
+        photoUrl = this.photoURL
     )
 }

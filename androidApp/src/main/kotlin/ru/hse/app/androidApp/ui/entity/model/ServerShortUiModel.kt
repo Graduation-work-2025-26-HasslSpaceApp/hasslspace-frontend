@@ -1,6 +1,8 @@
 package ru.hse.app.androidApp.ui.entity.model
 
 import androidx.compose.runtime.Immutable
+import ru.hse.app.androidApp.domain.model.entity.ServerInfo
+import ru.hse.app.androidApp.domain.model.entity.UserInfo
 
 @Immutable
 data class ServerShortUiModel(
@@ -9,3 +11,12 @@ data class ServerShortUiModel(
     val participantCount: Int,
     val avatarUrl: String
 )
+
+fun ServerInfo.toUi(): ServerShortUiModel {
+    return ServerShortUiModel(
+        id = this.id,
+        name = this.title,
+        participantCount = this.usersCount,
+        avatarUrl = this.photoUrl?:""
+    )
+}

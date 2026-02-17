@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import ru.hse.app.androidApp.screen.profile.ProfileScreen
 import ru.hse.app.androidApp.ui.components.common.box.NoItemsBox
 
 @Composable
@@ -19,19 +20,15 @@ fun ProfileNavigation(bottomNavHostController: NavHostController) {
         startDestination = NavigationItem.ProfileMain.route
     ) {
         composable(NavigationItem.ProfileMain.route) {
-            NoItemsBox("Профиль")
+            ProfileScreen(profileNavController)
         }
-    }
-//        composable(NavigationItem.ProfileMain.route) {
-//            ProfileScreen(profileNavController, profileViewModel)
+//        composable(NavigationItem.MyFriends.route) {
+//            CompletedRoutesScreen(profileNavController)
 //        }
-//        composable(NavigationItem.CompletedRoutes.route) {
-//            CompletedRoutesScreen(profileNavController, routeDetailsViewModel, profileViewModel)
+//        composable(NavigationItem.MyServers.route) {
+//            FavouriteRoutesScreen(profileNavController)
 //        }
-//        composable(NavigationItem.FavouriteRoutes.route) {
-//            FavouriteRoutesScreen(profileNavController, routeDetailsViewModel, profileViewModel)
-//        }
-//        composable(NavigationItem.EditProfile.route) {
+//        composable(NavigationItem.Settings.route) {
 //            EditProfileScreen(profileNavController, profileViewModel)
 //        }
 //        composable(NavigationItem.AboutProgram.route) {
@@ -78,4 +75,5 @@ fun ProfileNavigation(bottomNavHostController: NavHostController) {
 //            }
 //        }
 //    }
+    }
 }
