@@ -1,5 +1,6 @@
 package ru.hse.app.androidApp.ui.entity.model.profile
 
+import android.net.Uri
 import androidx.compose.runtime.Immutable
 import ru.hse.app.androidApp.domain.model.entity.UserExpandedInfo
 import ru.hse.app.androidApp.ui.entity.model.FriendUiModel
@@ -23,6 +24,8 @@ data class ProfileUiModel(
     val description: String,
     val friends: List<FriendUiModel>,
     val servers: List<ServerShortUiModel>,
+    val isDarkCheck: Boolean,
+    val selectedImageUri: Uri?
 )
 
 fun getEmptyUiModel(): ProfileUiModel {
@@ -34,7 +37,9 @@ fun getEmptyUiModel(): ProfileUiModel {
         status = StatusPresentation.INVISIBLE,
         profilePictureUrl = "",
         friends = listOf(),
-        servers = listOf()
+        servers = listOf(),
+        isDarkCheck = false,
+        selectedImageUri = null
     )
 }
 
@@ -47,6 +52,8 @@ fun UserExpandedInfo.toUI(): ProfileUiModel {
         profilePictureUrl = this.avatarUrl?: "",
         description = this.description,
         friends = listOf(),
-        servers = listOf()
+        servers = listOf(),
+        isDarkCheck = false,
+        selectedImageUri = null
     )
 }

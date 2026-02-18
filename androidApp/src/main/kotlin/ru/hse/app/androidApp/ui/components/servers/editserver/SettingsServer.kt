@@ -33,7 +33,6 @@ fun SettingsServer(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     selectedImageUri: Uri?,
-    onSelectedImageUri: (Uri?) -> Unit,
     onPhotoPickClick: () -> Unit,
     editedServerName: String,
     onEditedServernameChanged: (String) -> Unit,
@@ -61,7 +60,6 @@ fun SettingsServer(
 
         PhotoSetting(
             selectedImageUri = selectedImageUri,
-            onSelectedImageUri = onSelectedImageUri,
             onPhotoPickClick = onPhotoPickClick
         )
 
@@ -150,7 +148,6 @@ fun SettingsServerPreviewWithRequestsLight() {
         SettingsServer(
             onBackClick = {},
             selectedImageUri = Uri.EMPTY,
-            onSelectedImageUri = {},
             onPhotoPickClick = {},
             editedServerName = "Тест сервер",
             onEditedServernameChanged = {},
@@ -171,7 +168,6 @@ fun SettingsServerPreviewWithRequestsDark() {
         SettingsServer(
             onBackClick = {},
             selectedImageUri = Uri.EMPTY,
-            onSelectedImageUri = {},
             onPhotoPickClick = {},
             editedServerName = "Тест сервер",
             onEditedServernameChanged = {},

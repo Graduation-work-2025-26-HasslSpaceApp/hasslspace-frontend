@@ -36,7 +36,6 @@ fun UserSettingsScreenContent(
     selectedStatus: StatusPresentation,
     onStatusArrowClick: () -> Unit,
     selectedImageUri: Uri?,
-    onSelectedImageUri: (Uri?) -> Unit,
     onPhotoPickClick: () -> Unit,
     editedUsername: String,
     onEditedUsernameChanged: (String) -> Unit,
@@ -77,7 +76,7 @@ fun UserSettingsScreenContent(
                 fontSize = 20.sp,
             )
 
-            Spacer(Modifier.height(15.dp))
+            Spacer(Modifier.height(25.dp))
 
             StatusSetting(
                 selectedOption = selectedStatus,
@@ -86,7 +85,6 @@ fun UserSettingsScreenContent(
 
             PhotoSetting(
                 selectedImageUri = selectedImageUri,
-                onSelectedImageUri = onSelectedImageUri,
                 onPhotoPickClick = onPhotoPickClick
             )
 
@@ -136,7 +134,6 @@ fun UserSettingsContentPreview() {
             selectedStatus = selectedOption.value,
             onStatusArrowClick = {},
             selectedImageUri = selectedImageUri.value,
-            onSelectedImageUri = {},
             onPhotoPickClick = {},
             editedUsername = username,
             enabledChangeUsername = true,
@@ -176,7 +173,6 @@ fun UserSettingsContentPreview1() {
             selectedStatus = selectedOption.value,
             onStatusArrowClick = {},
             selectedImageUri = selectedImageUri.value,
-            onSelectedImageUri = {},
             onPhotoPickClick = {},
             editedUsername = username,
             enabledChangeUsername = true,

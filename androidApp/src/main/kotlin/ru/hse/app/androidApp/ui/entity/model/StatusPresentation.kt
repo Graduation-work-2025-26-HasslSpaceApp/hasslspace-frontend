@@ -18,3 +18,12 @@ fun String.toStatusPresentation(): StatusPresentation {
         else -> StatusPresentation.INVISIBLE
     }
 }
+
+fun StatusPresentation.toDomain(): String {
+    return when(this) {
+        StatusPresentation.ACTIVE -> "В сети"
+        StatusPresentation.INVISIBLE -> "Невидимка"
+        StatusPresentation.DO_NOT_DISTURB -> "Не беспокоить"
+        StatusPresentation.NOT_ACTIVE -> "Не активен"
+    }
+}

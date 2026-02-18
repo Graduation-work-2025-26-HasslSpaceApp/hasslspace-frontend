@@ -6,6 +6,8 @@ sealed class NavigationItem(val route: String, val title: String) {
     data object MyFriends : NavigationItem("my_friends", "Мои друзья")
     data object MyServers : NavigationItem("my_servers", "Мои серверы")
     data object Settings : NavigationItem("settings", "Настройки")
+    data object UserSettings : NavigationItem("user_settings", "Пользовательские настройки")
+    data object SystemSettings : NavigationItem("system_settings", "Системные настройки")
 
     // Servers
     data object ServersMain : NavigationItem("servers_main", "Мои серверы")

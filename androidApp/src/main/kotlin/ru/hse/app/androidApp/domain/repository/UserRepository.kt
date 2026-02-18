@@ -26,4 +26,7 @@ interface UserRepository {
 
     suspend fun getServers(): Result<List<ServerInfo>>
 
+    suspend fun changeUserName(newName: String): Result<String>
+    suspend fun changeUserStatus(status: String): Result<String>
+    suspend fun changeUserDesc(desc: String): Result<String>
 }

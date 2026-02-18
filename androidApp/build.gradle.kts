@@ -53,6 +53,8 @@ kotlin {
 }
 
 dependencies {
+    implementation("androidx.activity:activity-compose:1.6.1")
+    implementation("androidx.appcompat:appcompat:1.7.0")
     // Jackson
     implementation("com.squareup.retrofit2:converter-jackson:3.0.0")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.18.3")
@@ -97,4 +99,7 @@ dependencies {
 
     //Image Cropper
     implementation(libs.ucrop)
+
+    //Easy Permissions
+    implementation("pub.devrel:easypermissions:3.0.0")
 }

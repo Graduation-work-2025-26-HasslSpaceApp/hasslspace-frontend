@@ -71,4 +71,16 @@ class UserRepositoryImpl @Inject constructor(
             serverDtoList.map { it.toDomain() }
         }
     }
+
+    override suspend fun changeUserName(newName: String): Result<String> {
+        return apiCaller.safeApiCall { apiService.changeName(newName) }
+    }
+
+    override suspend fun changeUserStatus(status: String): Result<String> {
+        return apiCaller.safeApiCall { apiService.changeStatus(status) }
+    }
+
+    override suspend fun changeUserDesc(desc: String): Result<String> {
+        return apiCaller.safeApiCall { apiService.changeDesc(desc) }
+    }
 }

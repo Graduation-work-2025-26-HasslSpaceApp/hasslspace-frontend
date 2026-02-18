@@ -6,6 +6,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import ru.hse.app.androidApp.screen.profile.ProfileScreen
+import ru.hse.app.androidApp.screen.profile.SettingsScreen
+import ru.hse.app.androidApp.screen.profile.UserSettingsScreen
+import ru.hse.app.androidApp.screen.profile.SystemSettingsScreen
 import ru.hse.app.androidApp.ui.components.common.box.NoItemsBox
 
 @Composable
@@ -21,6 +24,15 @@ fun ProfileNavigation(bottomNavHostController: NavHostController) {
     ) {
         composable(NavigationItem.ProfileMain.route) {
             ProfileScreen(profileNavController)
+        }
+        composable(NavigationItem.Settings.route) {
+            SettingsScreen(profileNavController)
+        }
+        composable(NavigationItem.UserSettings.route) {
+            UserSettingsScreen(profileNavController)
+        }
+        composable(NavigationItem.SystemSettings.route) {
+            SystemSettingsScreen(profileNavController)
         }
 //        composable(NavigationItem.MyFriends.route) {
 //            CompletedRoutesScreen(profileNavController)

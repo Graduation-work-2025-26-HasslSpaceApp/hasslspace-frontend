@@ -121,7 +121,7 @@ fun CustomTextWindow(
             shape = RoundedCornerShape(8.dp),
             colors = TextFieldDefaults.colors().copy(
                 focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-                unfocusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                unfocusedIndicatorColor = MaterialTheme.colorScheme.surface,
                 errorIndicatorColor = MaterialTheme.colorScheme.error,
                 cursorColor = MaterialTheme.colorScheme.primary,
                 focusedContainerColor = MaterialTheme.colorScheme.onPrimaryContainer,

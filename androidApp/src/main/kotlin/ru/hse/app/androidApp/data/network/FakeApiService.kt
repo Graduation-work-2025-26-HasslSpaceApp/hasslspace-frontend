@@ -86,4 +86,16 @@ class FakeApiService : ApiService {
     override suspend fun getServers(): Response<List<ServerInfoDto>> {
         return Response.success(fakeServers)
     }
+
+    override suspend fun changeName(newName: String): Response<String> {
+        return Response.success("true")
+    }
+
+    override suspend fun changeStatus(status: String): Response<String> {
+        return Response.success("true")
+    }
+
+    override suspend fun changeDesc(desc: String): Response<String> {
+        return Response.success("true")
+    }
 }

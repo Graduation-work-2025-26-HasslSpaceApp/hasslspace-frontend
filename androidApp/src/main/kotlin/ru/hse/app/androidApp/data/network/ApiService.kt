@@ -5,6 +5,7 @@ import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Multipart
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
@@ -67,4 +68,16 @@ interface ApiService {
     // Получить список серверов пользователя
     @GET("") //TODO
     suspend fun getServers(): Response<List<ServerInfoDto>>
+
+    // Изменить имя пользователя
+    @PATCH("") // todo
+    suspend fun changeName(newName: String) : Response<String>
+
+    // Изменить статус пользователя
+    @PATCH("") // todo
+    suspend fun changeStatus(status: String) : Response<String>
+
+    // Изменить описание пользователя
+    @PATCH("") // todo
+    suspend fun changeDesc(desc: String) : Response<String>
 }

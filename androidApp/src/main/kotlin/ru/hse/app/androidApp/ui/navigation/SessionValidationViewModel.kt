@@ -60,6 +60,11 @@ class SessionValidationViewModel @Inject constructor(
                     checkVerification()
                 }
             }
+            launch {
+                isDarkFlow.collect { isDarkTheme ->
+                    _isDark.update { isDarkTheme }
+                }
+            }
         }
     }
 

@@ -45,6 +45,7 @@ fun StatusChangeBottomSheet(
         modifier = Modifier
             .fillMaxWidth(),
         containerColor = MaterialTheme.colorScheme.background,
+        scrimColor = MaterialTheme.colorScheme.surfaceDim.copy(alpha = 0.5f),
         dragHandle = {
             BottomSheetDefaults.DragHandle(
                 color = MaterialTheme.colorScheme.outline

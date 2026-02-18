@@ -100,7 +100,7 @@ fun LinkCustomField(
             shape = RoundedCornerShape(10.dp),
             colors = TextFieldDefaults.colors(
                 focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-                unfocusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                unfocusedIndicatorColor = MaterialTheme.colorScheme.surface,
                 errorIndicatorColor = MaterialTheme.colorScheme.error,
                 cursorColor = MaterialTheme.colorScheme.primary,
                 focusedContainerColor = MaterialTheme.colorScheme.onPrimaryContainer,

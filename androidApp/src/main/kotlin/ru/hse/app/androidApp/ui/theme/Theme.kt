@@ -27,7 +27,8 @@ private val LightColorScheme = lightColorScheme(
     outline = OutlineLight,
     scrim = ScrimLight,
     surfaceContainerLow = SurfaceContainerLowLight,
-    surfaceBright = SurfaceBrightLight
+    surfaceBright = SurfaceBrightLight,
+    surfaceDim = SurfaceDimLight
 )
 
 private val DarkColorScheme = darkColorScheme(
@@ -50,7 +51,8 @@ private val DarkColorScheme = darkColorScheme(
     outline = OutlineDark,
     scrim = ScrimDark,
     surfaceContainerLow = SurfaceContainerLowDark,
-    surfaceBright = SurfaceBrightDark
+    surfaceBright = SurfaceBrightDark,
+    surfaceDim = SurfaceDimDark
 )
 
 @Composable

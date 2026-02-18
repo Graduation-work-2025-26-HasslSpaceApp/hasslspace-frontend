@@ -1,4 +1,4 @@
-package ru.hse.app.androidApp.screen.auth
+package ru.hse.app.androidApp.screen.profile
 
 import android.app.Activity
 import android.net.Uri
@@ -8,7 +8,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -16,54 +15,35 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.yalantis.ucrop.UCrop
-import ru.hse.app.androidApp.domain.service.common.CropProfilePhotoService
-import ru.hse.app.androidApp.ui.components.auth.photoloading.AddPhotoScreenContent
 import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
 import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
-import ru.hse.app.androidApp.ui.entity.model.auth.AuthUiState
-import ru.hse.app.androidApp.ui.entity.model.auth.SavePhotoEvent
+import ru.hse.app.androidApp.ui.components.settings.usersettings.StatusChangeBottomSheet
+import ru.hse.app.androidApp.ui.components.settings.usersettings.UserSettingsScreenContent
+import ru.hse.app.androidApp.ui.entity.model.profile.ProfileUiState
 import ru.hse.app.androidApp.ui.notification.ToastManager
 
+
+//TODO Обработка ивентов
 @Composable
-fun AddPhotoScreen(
+fun UserSettingsScreen(
     navController: NavController,
-    viewModel: AuthViewModel = hiltViewModel()
+    viewModel: ProfileViewModel = hiltViewModel()
 ) {
-
     val uiState by viewModel.uiState.collectAsState()
-    val event by viewModel.savePhotoEvent.collectAsState()
-
-    LaunchedEffect(event) {
-        when (event) {
-            is SavePhotoEvent.SuccessSave -> {
-                viewModel.showToast("Фотография успешно добавлена")
-            }
-
-            is SavePhotoEvent.Error -> {
-                val message = (event as SavePhotoEvent.Error).message
-                viewModel.showToast(message)
-            }
-
-            null -> {}
-        }
-
-        viewModel.resetSavePhotoEvent()
-
-    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         when (uiState) {
-            is AuthUiState.Loading -> {
+            is ProfileUiState.Loading -> {
                 LoadingScreen()
             }
 
-            is AuthUiState.Error -> {
+            is ProfileUiState.Error -> {
                 ErrorScreen()
             }
 
-            is AuthUiState.Success -> {
-                AddPhotoScreenWithStateContent(
-                    uiState = uiState as AuthUiState.Success,
+            is ProfileUiState.Success -> {
+                UserSettingsWithStateContent(
+                    uiState = uiState as ProfileUiState.Success,
                     navController = navController,
                     viewModel = viewModel,
                 )
@@ -73,10 +53,10 @@ fun AddPhotoScreen(
 }
 
 @Composable
-fun AddPhotoScreenWithStateContent(
-    uiState: AuthUiState.Success,
+fun UserSettingsWithStateContent(
+    uiState: ProfileUiState.Success,
     navController: NavController,
-    viewModel: AuthViewModel,
+    viewModel: ProfileViewModel,
 ) {
     val data = uiState.data
     val context = LocalContext.current
@@ -86,7 +66,7 @@ fun AddPhotoScreenWithStateContent(
         onResult = { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val croppedUri = UCrop.getOutput(result.data!!)
-                viewModel.onPhotoUriChanged(croppedUri)
+                viewModel.onSelectedImageUri(croppedUri)
             }
         }
     )
@@ -104,16 +84,30 @@ fun AddPhotoScreenWithStateContent(
         }
     }
 
-    AddPhotoScreenContent(
+    UserSettingsScreenContent(
+        onBackClick = { navController.popBackStack() },
+        isDarkTheme = data.isDarkCheck,
+        selectedStatus = data.status,
+        onStatusArrowClick = { viewModel.showStatusSheet.value = true },
+        onPhotoPickClick = { pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
         selectedImageUri = data.selectedImageUri,
-        onPickImageClick = { pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
-        onContinueClick = {
-            viewModel.addProfilePhoto()
-            viewModel.saveVerificationStatusToStorageFromState()
-        },
-        onSkipClick = {
-                viewModel.saveVerificationStatusToStorageFromState()
-        },
-        isDarkTheme = viewModel.isDarkTheme
+        editedUsername = data.username,
+        onEditedUsernameChanged = viewModel::onUsernameChanged,
+        enabledChangeUsername = (!viewModel.isUsernameMatched.value && data.username.isNotEmpty()),
+        onApplyNewUsername = viewModel::onApplyNewUsername,
+        description = data.description,
+        onDescChanged = viewModel::onDescChanged,
+        onApplyDescClick = viewModel::onApplyDescClick,
+        onExit = viewModel::exit,
     )
+
+    if (viewModel.showStatusSheet.value) {
+        StatusChangeBottomSheet(
+            options = viewModel.getStatusOptions(),
+            selectedOption = data.status,
+            onSelectedOptionChanged = viewModel::onSelectedStatusChanged,
+            onApply = viewModel::onApplyStatus,
+            showSortSheet = viewModel.showStatusSheet
+        )
+    }
 }

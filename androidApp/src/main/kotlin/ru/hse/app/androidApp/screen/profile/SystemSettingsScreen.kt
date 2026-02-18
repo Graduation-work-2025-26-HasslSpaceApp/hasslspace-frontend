@@ -10,12 +10,13 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
 import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
-import ru.hse.app.androidApp.ui.components.profile.user.ProfileScreenContent
+import ru.hse.app.androidApp.ui.components.settings.mainsettings.SettingsMainScreenContent
+import ru.hse.app.androidApp.ui.components.settings.systemsettings.SystemSettingsContent
 import ru.hse.app.androidApp.ui.entity.model.profile.ProfileUiState
 import ru.hse.app.androidApp.ui.navigation.NavigationItem
 
 @Composable
-fun ProfileScreen(
+fun SystemSettingsScreen (
     navController: NavController,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
@@ -32,7 +33,7 @@ fun ProfileScreen(
             }
 
             is ProfileUiState.Success -> {
-                ProfileScreenWithStateContent(
+                SystemSettingsWithStateContent(
                     uiState = uiState as ProfileUiState.Success,
                     navController = navController,
                     viewModel = viewModel,
@@ -43,24 +44,18 @@ fun ProfileScreen(
 }
 
 @Composable
-fun ProfileScreenWithStateContent(
+fun SystemSettingsWithStateContent(
     uiState: ProfileUiState.Success,
     navController: NavController,
     viewModel: ProfileViewModel,
 ) {
     val data = uiState.data
 
-    ProfileScreenContent(
-        imageLoader = viewModel.imageLoader,
-        username = data.username,
-        nickname = data.nickname,
-        status = data.status,
-        profilePictureUrl = data.profilePictureUrl,
-        friendsCount = data.friends.size,
-        onFriendsClick = { navController.navigate(NavigationItem.MyFriends.route) },
-        serversCount = data.servers.size,
-        onServersClick = { navController.navigate(NavigationItem.MyServers.route) },
-        onSettingsClick = { navController.navigate(NavigationItem.Settings.route) },
-        isDarkTheme = data.isDarkCheck,
+    SystemSettingsContent(
+        onBackClick = { navController.popBackStack() },
+        onCheckedChange = viewModel::onIsDarkChanged,
+        isDarkCheck = data.isDarkCheck,
+        isDarkTheme = data.isDarkCheck
     )
+
 }

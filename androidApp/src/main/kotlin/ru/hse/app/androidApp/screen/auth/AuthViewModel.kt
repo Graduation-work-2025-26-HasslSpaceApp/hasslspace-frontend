@@ -345,14 +345,6 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun onSelectedImageUriChanged(selectedImageUri: Uri?) {
-        val currentState = _uiState.value
-        if (currentState is AuthUiState.Success) {
-            val updatedData = currentState.data.copy(selectedImageUri = selectedImageUri)
-            _uiState.value = AuthUiState.Success(updatedData)
-        }
-    }
-
     fun onDigitInCodeChanged(index: Int, value: String) {
         val currentState = _uiState.value
         if (currentState is AuthUiState.Success) {
