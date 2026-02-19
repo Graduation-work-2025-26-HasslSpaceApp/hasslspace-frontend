@@ -1,6 +1,7 @@
 package ru.hse.app.androidApp.screen.profile
 
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -80,6 +81,8 @@ class ProfileViewModel @Inject constructor(
     val originalUsername = mutableStateOf("")
     val isUsernameMatched = mutableStateOf(false)
     val showStatusSheet = mutableStateOf(false)
+    val showExitSheet = mutableStateOf(false)
+    val originalStatusPresentation = mutableStateOf(StatusPresentation.INVISIBLE)
 
     init {
         loadUserData()
@@ -96,6 +99,7 @@ class ProfileViewModel @Inject constructor(
                     )
                     originalUsername.value = updatedData.username
                     isUsernameMatched.value = true
+                    originalStatusPresentation.value = updatedData.status
                     _uiState.value = ProfileUiState.Success(updatedData)
                 }
             }
@@ -211,7 +215,7 @@ class ProfileViewModel @Inject constructor(
         if (currentState is ProfileUiState.Success) {
             val updatedData = currentState.data.copy(selectedImageUri = uri)
             _uiState.value = ProfileUiState.Success(updatedData)
-            saveUserPhoto(uri) //todo update ссылки на фото
+            saveUserPhoto(uri)
         }
     }
 
@@ -229,7 +233,7 @@ class ProfileViewModel @Inject constructor(
         if (currentState is ProfileUiState.Success) {
             val updatedData = currentState.data.copy(status = status)
             _uiState.value =
-                ProfileUiState.Success(updatedData) //TODO будет меняться даже при несохранении, подумать об этом
+                ProfileUiState.Success(updatedData)
         }
     }
 
@@ -288,7 +292,11 @@ class ProfileViewModel @Inject constructor(
                     val photoResultResponse =
                         saveUserPhotoUseCase(uri, data.profilePictureUrl.takeIf { it.isNotEmpty() })
                     _savePhotoEvent.value = photoResultResponse.fold(
-                        onSuccess = { _ ->
+                        onSuccess = { url ->
+                            val updatedData = currentState.data.copy(
+                                profilePictureUrl = url
+                            )
+                            _uiState.value = ProfileUiState.Success(updatedData)
                             SavePhotoEvent.SuccessSave
                         },
                         onFailure = {
@@ -309,6 +317,7 @@ class ProfileViewModel @Inject constructor(
 
                 _saveUserStatusEvent.value = result.fold(
                     onSuccess = {
+                        originalStatusPresentation.value = status
                         SaveUserStatusEvent.SuccessSave
                     },
                     onFailure = {
@@ -319,8 +328,36 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    fun onDismiss() {
+        onSelectedStatusChanged(originalStatusPresentation.value)
+    }
+
+    fun showToast(message: String, duration: Int = Toast.LENGTH_SHORT) {
+        toastManager.showToast(
+            message = message,
+            duration = duration
+        )
+    }
+
     fun exit() {
+        showExitSheet.value = false
         dataManager.clearJwt()
         dataManager.clearVerificationStatus()
+    }
+
+    fun resetSaveUserNameEvent() {
+        _saveUserNameEvent.value = null
+    }
+
+    fun resetSaveUserStatusEvent() {
+        _saveUserStatusEvent.value = null
+    }
+
+    fun resetSaveUserDescEvent() {
+        _saveUserDescEvent.value = null
+    }
+
+    fun resetSavePhotoEvent() {
+        _savePhotoEvent.value = null
     }
 }

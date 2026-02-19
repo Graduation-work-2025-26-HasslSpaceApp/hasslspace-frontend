@@ -14,6 +14,8 @@ import ru.hse.app.androidApp.ui.components.profile.user.ProfileScreenContent
 import ru.hse.app.androidApp.ui.entity.model.profile.ProfileUiState
 import ru.hse.app.androidApp.ui.navigation.NavigationItem
 
+
+//Обработка ивентов
 @Composable
 fun ProfileScreen(
     navController: NavController,

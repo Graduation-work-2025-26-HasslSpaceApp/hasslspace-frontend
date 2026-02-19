@@ -34,7 +34,7 @@ class SaveUserPhotoUseCase @Inject constructor(
 
             savePhotoResult.fold(
                 onSuccess = {
-                    return userRepository.saveUserPhoto(it)
+                    return userRepository.saveUserPhoto(it) //TODO попросить сашу возвращать ссылку на фото
                 },
                 onFailure = {
                     return Result.failure(

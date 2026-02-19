@@ -37,11 +37,15 @@ fun StatusChangeBottomSheet(
     selectedOption: StatusPresentation,
     onSelectedOptionChanged: (StatusPresentation) -> Unit,
     onApply: (StatusPresentation) -> Unit,
+    onDismiss: () -> Unit,
     showSortSheet: MutableState<Boolean>,
 ) {
 
     ModalBottomSheet(
-        onDismissRequest = { showSortSheet.value = false },
+        onDismissRequest = {
+            onDismiss()
+            showSortSheet.value = false
+        },
         modifier = Modifier
             .fillMaxWidth(),
         containerColor = MaterialTheme.colorScheme.background,
@@ -137,7 +141,8 @@ fun StatusChangeBottomSheetPreview() {
                 StatusPresentation.NOT_ACTIVE,
                 StatusPresentation.DO_NOT_DISTURB,
                 StatusPresentation.INVISIBLE
-            )
+            ),
+            onDismiss = {}
         )
     }
 }
@@ -156,7 +161,8 @@ fun StatusChangeBottomSheetPreview1() {
                 StatusPresentation.NOT_ACTIVE,
                 StatusPresentation.DO_NOT_DISTURB,
                 StatusPresentation.INVISIBLE
-            )
+            ),
+            onDismiss = {}
         )
     }
 }
