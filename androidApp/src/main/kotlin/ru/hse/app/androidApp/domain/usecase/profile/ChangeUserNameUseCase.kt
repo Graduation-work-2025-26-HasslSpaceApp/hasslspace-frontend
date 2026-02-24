@@ -1,10 +1,7 @@
 package ru.hse.app.androidApp.domain.usecase.profile
 
-import ru.hse.app.androidApp.domain.model.entity.ServerInfo
-import ru.hse.app.androidApp.domain.model.entity.UserExpandedInfo
-import ru.hse.app.androidApp.domain.model.entity.UserInfo
-import javax.inject.Inject
 import ru.hse.app.androidApp.domain.repository.UserRepository
+import javax.inject.Inject
 
 class ChangeUserNameUseCase @Inject constructor(
     private val userRepository: UserRepository

@@ -10,7 +10,7 @@ enum class StatusPresentation(val painter: Int, val label: String) {
 }
 
 fun String.toStatusPresentation(): StatusPresentation {
-    return when(this) {
+    return when (this) {
         "В сети" -> StatusPresentation.ACTIVE
         "Невидимка" -> StatusPresentation.INVISIBLE
         "Не беспокоить" -> StatusPresentation.DO_NOT_DISTURB
@@ -20,7 +20,7 @@ fun String.toStatusPresentation(): StatusPresentation {
 }
 
 fun StatusPresentation.toDomain(): String {
-    return when(this) {
+    return when (this) {
         StatusPresentation.ACTIVE -> "В сети"
         StatusPresentation.INVISIBLE -> "Невидимка"
         StatusPresentation.DO_NOT_DISTURB -> "Не беспокоить"

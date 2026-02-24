@@ -10,13 +10,11 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
 import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
-import ru.hse.app.androidApp.ui.components.settings.mainsettings.SettingsMainScreenContent
 import ru.hse.app.androidApp.ui.components.settings.systemsettings.SystemSettingsContent
 import ru.hse.app.androidApp.ui.entity.model.profile.ProfileUiState
-import ru.hse.app.androidApp.ui.navigation.NavigationItem
 
 @Composable
-fun SystemSettingsScreen (
+fun SystemSettingsScreen(
     navController: NavController,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {

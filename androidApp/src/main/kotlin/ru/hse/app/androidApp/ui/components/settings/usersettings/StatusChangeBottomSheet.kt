@@ -81,7 +81,7 @@ fun StatusChangeBottomSheet(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clickable {  onSelectedOptionChanged(option) }
+                                .clickable { onSelectedOptionChanged(option) }
                         ) {
                             RadioButtonToggle(
                                 isChosen = selectedOption == option,

@@ -1,7 +1,6 @@
 package ru.hse.app.androidApp.screen.auth
 
 import android.app.Activity
-import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -16,7 +15,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.yalantis.ucrop.UCrop
-import ru.hse.app.androidApp.domain.service.common.CropProfilePhotoService
 import ru.hse.app.androidApp.ui.components.auth.photoloading.AddPhotoScreenContent
 import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
 import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
@@ -91,18 +89,19 @@ fun AddPhotoScreenWithStateContent(
         }
     )
 
-    val pickMedia = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-        uri?.let {
-            val fileSizeInBytes = viewModel.cropProfilePhotoService.getImageSize(context, it)
-            val maxSizeInBytes = 20 * 1024 * 1024
+    val pickMedia =
+        rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            uri?.let {
+                val fileSizeInBytes = viewModel.cropProfilePhotoService.getImageSize(context, it)
+                val maxSizeInBytes = 20 * 1024 * 1024
 
-            if (fileSizeInBytes > maxSizeInBytes) {
-                ToastManager(context).showToast("Файл слишком большой. Максимальный размер 20 МБ.")
-            } else {
-                viewModel.cropProfilePhotoService.startCrop(it, context, cropLauncher)
+                if (fileSizeInBytes > maxSizeInBytes) {
+                    ToastManager(context).showToast("Файл слишком большой. Максимальный размер 20 МБ.")
+                } else {
+                    viewModel.cropProfilePhotoService.startCrop(it, context, cropLauncher)
+                }
             }
         }
-    }
 
     AddPhotoScreenContent(
         selectedImageUri = data.selectedImageUri,
@@ -112,7 +111,7 @@ fun AddPhotoScreenWithStateContent(
             viewModel.saveVerificationStatusToStorageFromState()
         },
         onSkipClick = {
-                viewModel.saveVerificationStatusToStorageFromState()
+            viewModel.saveVerificationStatusToStorageFromState()
         },
         isDarkTheme = viewModel.isDarkTheme
     )

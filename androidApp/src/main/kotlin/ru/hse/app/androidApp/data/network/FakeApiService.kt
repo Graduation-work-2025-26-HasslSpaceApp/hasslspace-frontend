@@ -4,25 +4,116 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
 import ru.hse.app.androidApp.data.model.ServerInfoDto
+import ru.hse.app.androidApp.data.model.TypeDto
 import ru.hse.app.androidApp.data.model.UserDto
 import ru.hse.app.androidApp.data.model.UserInfoDto
+import ru.hse.app.androidApp.data.model.UserInfoExtendedDto
 
 class FakeApiService : ApiService {
 
     private val fakeUser =
-        UserDto("Юлия Кухтина", "yuulkht", "testuser@example.com", "В сети","https://i.postimg.cc/J4DLnLCS/accountphoto.jpg", "Описание профиля описание профиля описание профиля описание профиля")
+        UserDto(
+            "Юлия Кухтина",
+            "yuulkht",
+            "testuser@example.com",
+            "В сети",
+            "https://i.postimg.cc/J4DLnLCS/accountphoto.jpg",
+            "Описание профиля описание профиля описание профиля описание профиля"
+        )
+
+    private val fakeUserExtended =
+        UserInfoExtendedDto(
+            "1",
+            "Юлия Кухтина",
+            "yuulkht",
+            "testuser@example.com",
+            "В сети",
+            "https://i.postimg.cc/J4DLnLCS/accountphoto.jpg",
+            "Описание профиля описание профиля описание профиля описание профиля",
+            TypeDto.FRIEND
+        )
 
     private val fakeFriends = listOf(
-        UserInfoDto("1", "Алексей Иванов", "alex_ivanov", "В сети", "https://i.postimg.cc/1XfF8BZh/friend1.jpg"),
-        UserInfoDto("2", "Мария Петрова", "masha_petrov", "Невидимка", "https://i.postimg.cc/K8Jxt5wQ/friend2.jpg"),
-        UserInfoDto("3", "Ирина Смирнова", "irina_smirnov", "Не беспокоить", "https://i.postimg.cc/3RmDC39Y/friend3.jpg"),
-        UserInfoDto("4", "Дмитрий Козлов", "dmitry_kozlov", "Не активен", "https://i.postimg.cc/tgG6rqDh/friend4.jpg"),
-        UserInfoDto("5", "Елена Федорова", "elena_fedorova", "В сети", "https://i.postimg.cc/MTf5d7Z8/friend5.jpg"),
-        UserInfoDto("6", "Иван Ребров", "ivan_rebrov", "Не беспокоить", "https://i.postimg.cc/fyzsbpdZ/friend6.jpg"),
-        UserInfoDto("7", "Татьяна Белова", "tatiana_belova", "Невидимка", "https://i.postimg.cc/9F0CjTjR/friend7.jpg"),
-        UserInfoDto("8", "Максим Сидоров", "maxim_sidorov", "В сети", "https://i.postimg.cc/7Z1vBGzF/friend8.jpg"),
-        UserInfoDto("9", "Ольга Червонова", "olga_chervonova", "Не активен", "https://i.postimg.cc/Y2myr5x6/friend9.jpg"),
-        UserInfoDto("10", "Петр Лебедев", "peter_lebedev", "Невидимка", "https://i.postimg.cc/mkGYD5Kp/friend10.jpg")
+        UserInfoDto(
+            "1",
+            "Алексей Иванов",
+            "alex_ivanov",
+            "В сети",
+            "https://i.postimg.cc/1XfF8BZh/friend1.jpg",
+            TypeDto.FRIEND
+        ),
+        UserInfoDto(
+            "2",
+            "Мария Петрова",
+            "masha_petrov",
+            "Невидимка",
+            "https://i.postimg.cc/K8Jxt5wQ/friend2.jpg",
+            TypeDto.FRIEND
+        ),
+        UserInfoDto(
+            "3",
+            "Ирина Смирнова",
+            "irina_smirnov",
+            "Не беспокоить",
+            "https://i.postimg.cc/3RmDC39Y/friend3.jpg",
+            TypeDto.FRIEND
+        ),
+        UserInfoDto(
+            "4",
+            "Дмитрий Козлов",
+            "dmitry_kozlov",
+            "Не активен",
+            "https://i.postimg.cc/tgG6rqDh/friend4.jpg",
+            TypeDto.OUTGOING_REQUEST
+        ),
+        UserInfoDto(
+            "5",
+            "Елена Федорова",
+            "elena_fedorova",
+            "В сети",
+            "https://i.postimg.cc/MTf5d7Z8/friend5.jpg",
+            TypeDto.FRIEND
+        ),
+        UserInfoDto(
+            "6",
+            "Иван Ребров",
+            "ivan_rebrov",
+            "Не беспокоить",
+            "https://i.postimg.cc/fyzsbpdZ/friend6.jpg",
+            TypeDto.INCOMING_REQUEST
+        ),
+        UserInfoDto(
+            "7",
+            "Татьяна Белова",
+            "tatiana_belova",
+            "Невидимка",
+            "https://i.postimg.cc/9F0CjTjR/friend7.jpg",
+            TypeDto.FRIEND
+        ),
+        UserInfoDto(
+            "8",
+            "Максим Сидоров",
+            "maxim_sidorov",
+            "В сети",
+            "https://i.postimg.cc/7Z1vBGzF/friend8.jpg",
+            TypeDto.OUTGOING_REQUEST
+        ),
+        UserInfoDto(
+            "9",
+            "Ольга Червонова",
+            "olga_chervonova",
+            "Не активен",
+            "https://i.postimg.cc/Y2myr5x6/friend9.jpg",
+            TypeDto.FRIEND
+        ),
+        UserInfoDto(
+            "10",
+            "Петр Лебедев",
+            "peter_lebedev",
+            "Невидимка",
+            "https://i.postimg.cc/mkGYD5Kp/friend10.jpg",
+            TypeDto.INCOMING_REQUEST
+        )
     )
 
     private val fakeServers = listOf(
@@ -89,6 +180,7 @@ class FakeApiService : ApiService {
 
     override suspend fun changeName(newName: String): Response<String> {
         return Response.success("true")
+        //return Response.error(0, ResponseBody.EMPTY)
     }
 
     override suspend fun changeStatus(status: String): Response<String> {
@@ -97,5 +189,28 @@ class FakeApiService : ApiService {
 
     override suspend fun changeDesc(desc: String): Response<String> {
         return Response.success("true")
+    }
+
+    override suspend fun createFriendRequest(username: String): Response<String> {
+        return Response.success("true")
+    }
+
+    override suspend fun respondToFriendshipRequest(
+        friendshipId: String,
+        status: String
+    ): Response<String> {
+        return Response.success("true")
+    }
+
+    override suspend fun deleteFriendship(userId: String): Response<String> {
+        return Response.success("true")
+    }
+
+    override suspend fun getUserInfoExtended(userId: String): Response<UserInfoExtendedDto> {
+        return Response.success(fakeUserExtended)
+    }
+
+    override suspend fun getCommonServers(userId: String): Response<List<ServerInfoDto>> {
+        return Response.success(fakeServers)
     }
 }

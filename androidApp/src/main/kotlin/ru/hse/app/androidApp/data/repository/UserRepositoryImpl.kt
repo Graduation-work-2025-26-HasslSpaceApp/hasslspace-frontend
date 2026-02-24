@@ -6,7 +6,6 @@ import ru.hse.app.androidApp.data.network.ApiCaller
 import ru.hse.app.androidApp.data.network.ApiService
 import ru.hse.app.androidApp.domain.model.entity.ServerInfo
 import ru.hse.app.androidApp.domain.model.entity.UserExpandedInfo
-import ru.hse.app.androidApp.domain.model.entity.UserInfo
 import ru.hse.app.androidApp.domain.model.entity.toDomain
 import ru.hse.app.androidApp.domain.repository.UserRepository
 import javax.inject.Inject
@@ -22,7 +21,14 @@ class UserRepositoryImpl @Inject constructor(
         username: String,
         nickname: String
     ): Result<String> {
-        return apiCaller.safeApiCall { apiService.registerUser(email, password, username, nickname) }
+        return apiCaller.safeApiCall {
+            apiService.registerUser(
+                email,
+                password,
+                username,
+                nickname
+            )
+        }
     }
 
     override suspend fun loginUser(
@@ -45,7 +51,8 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getUserInfo(): Result<UserExpandedInfo> {
-        return apiCaller.safeApiCall { apiService.getUserInfo() }.mapCatching { userDto -> userDto.toDomain() }
+        return apiCaller.safeApiCall { apiService.getUserInfo() }
+            .mapCatching { userDto -> userDto.toDomain() }
     }
 
     override suspend fun saveUserPhoto(photoUrl: String): Result<String> {
@@ -58,12 +65,6 @@ class UserRepositoryImpl @Inject constructor(
         photoUrl: RequestBody?
     ): Result<String> {
         return apiCaller.safeApiCall { apiService.uploadPhoto(photo, type, photoUrl) }
-    }
-
-    override suspend fun getFriends(): Result<List<UserInfo>> {
-        return apiCaller.safeApiCall { apiService.getFriends() }.mapCatching { userDtoList ->
-            userDtoList.map { it.toDomain() }
-        }
     }
 
     override suspend fun getServers(): Result<List<ServerInfo>> {

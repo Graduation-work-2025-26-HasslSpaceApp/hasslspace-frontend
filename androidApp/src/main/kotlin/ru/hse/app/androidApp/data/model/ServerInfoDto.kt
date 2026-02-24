@@ -2,7 +2,7 @@ package ru.hse.app.androidApp.data.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
-data class ServerInfoDto (
+data class ServerInfoDto(
     @JsonProperty("id")
     val id: String,
 

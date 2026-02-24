@@ -31,7 +31,7 @@ class SessionValidationViewModel @Inject constructor(
     private val _isTokenValid = MutableStateFlow<Boolean?>(true)
     val isTokenValid: StateFlow<Boolean?> = _isTokenValid.asStateFlow()
 
-   //private val _isVerified = MutableStateFlow<Boolean?>(null)
+    //private val _isVerified = MutableStateFlow<Boolean?>(null)
     private val _isVerified = MutableStateFlow<Boolean?>(true)
     val isVerified: StateFlow<Boolean?> = _isVerified.asStateFlow()
 
@@ -108,7 +108,8 @@ class SessionValidationViewModel @Inject constructor(
     }
 
     private fun loadTheme() {
-        val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        val currentNightMode =
+            context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         val isDarkTheme = when (currentNightMode) {
             Configuration.UI_MODE_NIGHT_YES -> true
             Configuration.UI_MODE_NIGHT_NO -> false

@@ -22,6 +22,7 @@ import ru.hse.app.androidApp.ui.components.common.grid.UniversalVerticalGrid
 import ru.hse.app.androidApp.ui.components.common.text.VariableBold
 import ru.hse.app.androidApp.ui.entity.model.FriendUiModel
 import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
+import ru.hse.app.androidApp.ui.entity.model.TypeUiModel
 import ru.hse.app.androidApp.ui.theme.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -79,7 +80,8 @@ private fun previewFriend(id: String, name: String) = FriendUiModel(
     name = name,
     nickname = name.lowercase().replace(" ", "_"),
     avatarUrl = "",
-    status = StatusPresentation.ACTIVE
+    status = StatusPresentation.ACTIVE,
+    type = TypeUiModel.FRIEND
 )
 
 private val friends = listOf(

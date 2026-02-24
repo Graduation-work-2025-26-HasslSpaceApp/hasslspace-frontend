@@ -14,7 +14,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -140,7 +139,7 @@ fun ReviewBoxPreview() {
     AppTheme(isDark = false) {
         DescriptionSetting(
             description = description.value,
-            onDescChanged = {description.value = it},
+            onDescChanged = { description.value = it },
             onApplyClick = {}
         )
     }

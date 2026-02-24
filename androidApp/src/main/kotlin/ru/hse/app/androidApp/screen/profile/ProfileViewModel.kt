@@ -1,27 +1,40 @@
 package ru.hse.app.androidApp.screen.profile
 
+import android.content.Context
 import android.net.Uri
 import android.widget.Toast
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil3.ImageLoader
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import ru.hse.app.androidApp.data.local.DataManager
 import ru.hse.app.androidApp.domain.service.common.CropProfilePhotoService
 import ru.hse.app.androidApp.domain.service.common.PhotoConverterService
+import ru.hse.app.androidApp.domain.usecase.friends.CreateFriendRequestUseCase
+import ru.hse.app.androidApp.domain.usecase.friends.DeleteFriendshipUseCase
+import ru.hse.app.androidApp.domain.usecase.friends.GetChosenUserCommonServersUseCase
+import ru.hse.app.androidApp.domain.usecase.friends.GetUserFriendsUseCase
+import ru.hse.app.androidApp.domain.usecase.friends.GetUserInfoExtendedUseCase
+import ru.hse.app.androidApp.domain.usecase.friends.RespondToFriendshipRequestUseCase
+import ru.hse.app.androidApp.domain.usecase.friends.SearchFriendsUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.ChangeUserDescUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.ChangeUserNameUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.ChangeUserStatusUseCase
-import ru.hse.app.androidApp.domain.usecase.profile.GetUserFriendsUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.GetUserServersUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.LoadUserInfoUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.SaveUserPhotoUseCase
+import ru.hse.app.androidApp.ui.entity.model.FriendUiModel
 import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
+import ru.hse.app.androidApp.ui.entity.model.TypeUiModel
 import ru.hse.app.androidApp.ui.entity.model.auth.SavePhotoEvent
+import ru.hse.app.androidApp.ui.entity.model.profile.LoadChosenUserCommonServersEvent
+import ru.hse.app.androidApp.ui.entity.model.profile.LoadChosenUserEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.LoadUserDataEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.LoadUserFriendsEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.LoadUserServersEvent
@@ -38,14 +51,24 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
+    @ApplicationContext context: Context,
+    // Profile and settings
     private val dataManager: DataManager,
     private val loadUserInfoUseCase: LoadUserInfoUseCase,
-    private val getUserFriendsUseCase: GetUserFriendsUseCase,
     private val getUserServersUseCase: GetUserServersUseCase,
     private val saveUserPhotoUseCase: SaveUserPhotoUseCase,
     private val changeUserNameUseCase: ChangeUserNameUseCase,
     private val changeUserStatusUseCase: ChangeUserStatusUseCase,
     private val changeUserDescUseCase: ChangeUserDescUseCase,
+
+    // Friends
+    private val getUserFriendsUseCase: GetUserFriendsUseCase,
+    private val createFriendRequestUseCase: CreateFriendRequestUseCase,
+    private val deleteFriendshipUseCase: DeleteFriendshipUseCase,
+    private val respondToFriendshipRequestUseCase: RespondToFriendshipRequestUseCase,
+    private val searchFriendsUseCase: SearchFriendsUseCase,
+    private val getUserInfoExtendedUseCase: GetUserInfoExtendedUseCase,
+    private val getChosenUserCommonServersUseCase: GetChosenUserCommonServersUseCase,
 
     private val photoConverterService: PhotoConverterService,
     private val toastManager: ToastManager,
@@ -66,6 +89,14 @@ class ProfileViewModel @Inject constructor(
     private val _loadUserServersEvent = MutableStateFlow<LoadUserServersEvent?>(null)
     val loadUserServersEvent: StateFlow<LoadUserServersEvent?> = _loadUserServersEvent
 
+    private val _loadChosenUserEvent = MutableStateFlow<LoadChosenUserEvent?>(null)
+    val loadChosenUserEvent: StateFlow<LoadChosenUserEvent?> = _loadChosenUserEvent
+
+    private val _loadChosenUserCommonServersEvent =
+        MutableStateFlow<LoadChosenUserCommonServersEvent?>(null)
+    val loadChosenUserCommonServersEvent: StateFlow<LoadChosenUserCommonServersEvent?> =
+        _loadChosenUserCommonServersEvent
+
     private val _savePhotoEvent = MutableStateFlow<SavePhotoEvent?>(null)
     val savePhotoEvent: StateFlow<SavePhotoEvent?> = _savePhotoEvent
 
@@ -79,10 +110,17 @@ class ProfileViewModel @Inject constructor(
     val saveUserDescEvent: StateFlow<SaveUserDescEvent?> = _saveUserDescEvent
 
     val originalUsername = mutableStateOf("")
+    val originalStatusPresentation = mutableStateOf(StatusPresentation.INVISIBLE)
+    val originalDescription = mutableStateOf("")
+    val originalFriends = mutableStateListOf<FriendUiModel>()
+
     val isUsernameMatched = mutableStateOf(false)
     val showStatusSheet = mutableStateOf(false)
     val showExitSheet = mutableStateOf(false)
-    val originalStatusPresentation = mutableStateOf(StatusPresentation.INVISIBLE)
+    val showFriendCard = mutableStateOf(false)
+    val showCommonServers = mutableStateOf(false)
+
+    val searchValueFriends = mutableStateOf("")
 
     init {
         loadUserData()
@@ -100,6 +138,10 @@ class ProfileViewModel @Inject constructor(
                     originalUsername.value = updatedData.username
                     isUsernameMatched.value = true
                     originalStatusPresentation.value = updatedData.status
+                    originalDescription.value = updatedData.description
+
+                    originalFriends.addAll(updatedData.friends)
+
                     _uiState.value = ProfileUiState.Success(updatedData)
                 }
             }
@@ -177,6 +219,66 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    fun loadChosenUser(userId: String) {
+        viewModelScope.launch {
+            val result = getUserInfoExtendedUseCase(userId)
+
+            _loadChosenUserEvent.value = result.fold(
+                onSuccess = { user ->
+                    val currentState = _uiState.value
+                    if (currentState is ProfileUiState.Success) {
+                        val updatedData = currentState.data.copy(
+                            chosenUser = user.toUi()
+                        )
+                        _uiState.value = ProfileUiState.Success(updatedData)
+                    }
+                    LoadChosenUserEvent.SuccessLoad
+                },
+                onFailure = {
+                    LoadChosenUserEvent.Error(
+                        ("Ошибка при загрузке информации о пользователе. " + it.message)
+                    )
+                }
+            )
+        }
+    }
+
+    fun loadChosenUserCommonServers(userId: String) {
+        viewModelScope.launch {
+            val result = getChosenUserCommonServersUseCase(userId)
+
+            _loadChosenUserCommonServersEvent.value = result.fold(
+                onSuccess = { servers ->
+                    val currentState = _uiState.value
+                    if (currentState is ProfileUiState.Success) {
+                        val updatedData = currentState.data.copy(
+                            chosenUserCommonServers = servers.map { it.toUi() }
+                        )
+                        _uiState.value = ProfileUiState.Success(updatedData)
+                    }
+                    LoadChosenUserCommonServersEvent.SuccessLoad
+                },
+                onFailure = {
+                    LoadChosenUserCommonServersEvent.Error(
+                        ("Ошибка при загрузке информации об общих серверах с пользователем. " + it.message)
+                    )
+                }
+            )
+        }
+    }
+
+    fun getIncomingRequests(friends: List<FriendUiModel>): List<FriendUiModel> {
+        return friends.filter { friendUiModel -> friendUiModel.type == TypeUiModel.INCOMING_REQUEST }
+    }
+
+    fun getOutgoingRequests(friends: List<FriendUiModel>): List<FriendUiModel> {
+        return friends.filter { friendUiModel -> friendUiModel.type == TypeUiModel.OUTGOING_REQUEST }
+    }
+
+    fun getFriends(friends: List<FriendUiModel>): List<FriendUiModel> {
+        return friends.filter { friendUiModel -> friendUiModel.type == TypeUiModel.FRIEND }
+    }
+
     fun getStatusOptions(): List<StatusPresentation> {
         return listOf(
             StatusPresentation.ACTIVE,
@@ -246,9 +348,14 @@ class ProfileViewModel @Inject constructor(
 
                 _saveUserNameEvent.value = result.fold(
                     onSuccess = {
+                        originalUsername.value = data.username
                         SaveUserNameEvent.SuccessSave
                     },
                     onFailure = {
+                        val updatedData = currentState.data.copy(
+                            username = originalUsername.value
+                        )
+                        _uiState.value = ProfileUiState.Success(updatedData)
                         SaveUserNameEvent.Error("Ошибка при сохранении нового имени. " + it.message)
                     }
                 )
@@ -273,9 +380,14 @@ class ProfileViewModel @Inject constructor(
 
                 _saveUserDescEvent.value = result.fold(
                     onSuccess = {
+                        originalDescription.value = data.description
                         SaveUserDescEvent.SuccessSave
                     },
                     onFailure = {
+                        val updatedData = currentState.data.copy(
+                            description = originalDescription.value
+                        )
+                        _uiState.value = ProfileUiState.Success(updatedData)
                         SaveUserDescEvent.Error("Ошибка при сохранении описания. " + it.message)
                     }
                 )
@@ -328,6 +440,40 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    fun onSearchValueChange(value: String) {
+        searchValueFriends.value = value
+        val currentState = _uiState.value
+        if (currentState is ProfileUiState.Success) {
+            viewModelScope.launch {
+                val result = searchFriendsUseCase(originalFriends.map { it }, value)
+                val updatedData = currentState.data.copy(
+                    friends = result.map { it }
+                )
+                _uiState.value = ProfileUiState.Success(updatedData)
+            }
+        }
+    }
+
+    fun acceptFriend(user: FriendUiModel) {
+        //TODO
+    }
+
+    fun dismissFriend(user: FriendUiModel) {
+        //TODO
+    }
+
+    fun onCallClick(userId: String) {
+        //TODO
+    }
+
+    fun onMessageClick(userId: String) {
+        //TODO
+    }
+
+    fun onVideoCallClick(userId: String) {
+        //TODO
+    }
+
     fun onDismiss() {
         onSelectedStatusChanged(originalStatusPresentation.value)
     }
@@ -359,5 +505,13 @@ class ProfileViewModel @Inject constructor(
 
     fun resetSavePhotoEvent() {
         _savePhotoEvent.value = null
+    }
+
+    fun resetLoadChosenUserEvent() {
+        _loadChosenUserEvent.value = null
+    }
+
+    fun resetLoadChosenUserCommonServersEvent() {
+        _loadChosenUserCommonServersEvent.value = null
     }
 }

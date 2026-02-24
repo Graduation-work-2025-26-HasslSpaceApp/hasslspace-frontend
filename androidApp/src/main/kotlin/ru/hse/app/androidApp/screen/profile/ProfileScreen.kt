@@ -8,16 +8,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
 import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
 import ru.hse.app.androidApp.ui.components.profile.user.ProfileScreenContent
 import ru.hse.app.androidApp.ui.entity.model.profile.ProfileUiState
+import ru.hse.app.androidApp.ui.navigation.BottomNavigationItem
 import ru.hse.app.androidApp.ui.navigation.NavigationItem
 
 
-//Обработка ивентов
+// TODO подумать про обновление данных экрана при переходах и тп
 @Composable
 fun ProfileScreen(
+    bottomNavHostController: NavHostController,
     navController: NavController,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
@@ -37,6 +40,7 @@ fun ProfileScreen(
                 ProfileScreenWithStateContent(
                     uiState = uiState as ProfileUiState.Success,
                     navController = navController,
+                    bottomNavHostController = bottomNavHostController,
                     viewModel = viewModel,
                 )
             }
@@ -48,6 +52,7 @@ fun ProfileScreen(
 fun ProfileScreenWithStateContent(
     uiState: ProfileUiState.Success,
     navController: NavController,
+    bottomNavHostController: NavHostController,
     viewModel: ProfileViewModel,
 ) {
     val data = uiState.data
@@ -61,7 +66,7 @@ fun ProfileScreenWithStateContent(
         friendsCount = data.friends.size,
         onFriendsClick = { navController.navigate(NavigationItem.MyFriends.route) },
         serversCount = data.servers.size,
-        onServersClick = { navController.navigate(NavigationItem.MyServers.route) },
+        onServersClick = { bottomNavHostController.navigate(BottomNavigationItem.Servers.route) },
         onSettingsClick = { navController.navigate(NavigationItem.Settings.route) },
         isDarkTheme = data.isDarkCheck,
     )

@@ -39,13 +39,13 @@ class SaveUserPhotoUseCase @Inject constructor(
                 onFailure = {
                     return Result.failure(
                         savePhotoResult.exceptionOrNull()
-                            //TODO во всех юз кейсах сделать преобразование ошибки апи в ошибку UI
-                            ?: ApiException(null,ApiException.PHOTO_UPLOADING_ERROR, null)
+                        //TODO во всех юз кейсах сделать преобразование ошибки апи в ошибку UI
+                            ?: ApiException(null, ApiException.PHOTO_UPLOADING_ERROR, null)
                     )
                 }
             )
         }
 
-        return Result.failure(ApiException(null,ApiException.PHOTO_UPLOADING_ERROR, null))
+        return Result.failure(ApiException(null, ApiException.PHOTO_UPLOADING_ERROR, null))
     }
 }

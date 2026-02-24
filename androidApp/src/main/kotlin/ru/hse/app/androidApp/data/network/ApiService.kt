@@ -3,6 +3,7 @@ package ru.hse.app.androidApp.data.network
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.PATCH
@@ -13,6 +14,7 @@ import retrofit2.http.Query
 import ru.hse.app.androidApp.data.model.ServerInfoDto
 import ru.hse.app.androidApp.data.model.UserDto
 import ru.hse.app.androidApp.data.model.UserInfoDto
+import ru.hse.app.androidApp.data.model.UserInfoExtendedDto
 
 interface ApiService {
 
@@ -61,7 +63,7 @@ interface ApiService {
         @Part("photoUrl") photoUrl: RequestBody?
     ): Response<String>
 
-    // Получить список друзей пользователя
+    // Получить список друзей и заявок в друзья пользователя
     @GET("") //TODO
     suspend fun getFriends(): Response<List<UserInfoDto>>
 
@@ -71,13 +73,40 @@ interface ApiService {
 
     // Изменить имя пользователя
     @PATCH("") // todo
-    suspend fun changeName(newName: String) : Response<String>
+    suspend fun changeName(newName: String): Response<String>
 
     // Изменить статус пользователя
     @PATCH("") // todo
-    suspend fun changeStatus(status: String) : Response<String>
+    suspend fun changeStatus(status: String): Response<String>
 
     // Изменить описание пользователя
     @PATCH("") // todo
-    suspend fun changeDesc(desc: String) : Response<String>
+    suspend fun changeDesc(desc: String): Response<String>
+
+    @POST("") //TODO
+    suspend fun createFriendRequest(
+        @Query("username") username: String,
+    ): Response<String>
+
+    @PATCH("")//TODO
+    suspend fun respondToFriendshipRequest(
+        @Query("friendshipId") friendshipId: String,
+        @Query("status") status: String,
+    ): Response<String>
+
+    @DELETE("")//TODO
+    suspend fun deleteFriendship(
+        @Query("userId") userId: String,
+    ): Response<String>
+
+    @GET("") //todo
+    suspend fun getUserInfoExtended(
+        @Query("userId") userId: String,
+    ): Response<UserInfoExtendedDto>
+
+    // Получить список общих серверов пользователя с другим пользователем
+    @GET("") //TODO
+    suspend fun getCommonServers(
+        @Query("userId") userId: String,
+    ): Response<List<ServerInfoDto>>
 }

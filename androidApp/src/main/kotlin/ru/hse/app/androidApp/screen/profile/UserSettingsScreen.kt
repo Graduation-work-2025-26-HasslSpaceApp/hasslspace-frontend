@@ -194,7 +194,7 @@ fun UserSettingsWithStateContent(
             apply = "Выйти",
             dismiss = "Остаться",
             onApplyClick = viewModel::exit,
-            onDismissClick = { viewModel.showExitSheet.value = false},
+            onDismissClick = { viewModel.showExitSheet.value = false },
         )
     }
 }

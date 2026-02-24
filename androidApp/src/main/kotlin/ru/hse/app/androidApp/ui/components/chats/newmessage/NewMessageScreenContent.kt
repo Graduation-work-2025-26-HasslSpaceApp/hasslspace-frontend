@@ -13,9 +13,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -31,6 +28,7 @@ import ru.hse.app.androidApp.ui.components.common.card.UserCardArrow
 import ru.hse.app.androidApp.ui.components.common.text.VariableBold
 import ru.hse.app.androidApp.ui.entity.model.FriendUiModel
 import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
+import ru.hse.app.androidApp.ui.entity.model.TypeUiModel
 import ru.hse.app.androidApp.ui.theme.AppTheme
 
 @Composable
@@ -116,42 +114,48 @@ fun NewMessageScreenContentPreviewLight() {
             name = "Марина Ландышева",
             nickname = "@marina_flower",
             avatarUrl = "",
-            status = StatusPresentation.ACTIVE
+            status = StatusPresentation.ACTIVE,
+            type = TypeUiModel.FRIEND
         ),
         FriendUiModel(
             id = "2",
             name = "Александр Иванов",
             nickname = "@alex_ivanov",
             avatarUrl = "",
-            status = StatusPresentation.INVISIBLE
+            status = StatusPresentation.INVISIBLE,
+            type = TypeUiModel.FRIEND
         ),
         FriendUiModel(
             id = "3",
             name = "Сергей Петров",
             nickname = "@sergey_p",
             avatarUrl = "",
-            status = StatusPresentation.DO_NOT_DISTURB
+            status = StatusPresentation.DO_NOT_DISTURB,
+            type = TypeUiModel.FRIEND
         ),
         FriendUiModel(
             id = "4",
             name = "Екатерина Смирнова",
             nickname = "@katya_smirnova",
             avatarUrl = "",
-            status = StatusPresentation.NOT_ACTIVE
+            status = StatusPresentation.NOT_ACTIVE,
+            type = TypeUiModel.FRIEND
         ),
         FriendUiModel(
             id = "5",
             name = "Дмитрий Козлов",
             nickname = "@dmitry_k",
             avatarUrl = "",
-            status = StatusPresentation.ACTIVE
+            status = StatusPresentation.ACTIVE,
+            type = TypeUiModel.FRIEND
         ),
         FriendUiModel(
             id = "6",
             name = "Анна Морозова",
             nickname = "@anna_moroz",
             avatarUrl = "",
-            status = StatusPresentation.ACTIVE
+            status = StatusPresentation.ACTIVE,
+            type = TypeUiModel.FRIEND
         )
     )
 
@@ -179,28 +183,32 @@ fun NewMessageScreenContentPreviewDark() {
             name = "Марина Ландышева",
             nickname = "@marina_flower",
             avatarUrl = "",
-            status = StatusPresentation.ACTIVE
+            status = StatusPresentation.ACTIVE,
+            type = TypeUiModel.FRIEND
         ),
         FriendUiModel(
             id = "2",
             name = "Александр Иванов",
             nickname = "@alex_ivanov",
             avatarUrl = "",
-            status = StatusPresentation.ACTIVE
+            status = StatusPresentation.ACTIVE,
+            type = TypeUiModel.FRIEND
         ),
         FriendUiModel(
             id = "3",
             name = "Сергей Петров",
             nickname = "@sergey_p",
             avatarUrl = "",
-            status = StatusPresentation.ACTIVE
+            status = StatusPresentation.ACTIVE,
+            type = TypeUiModel.FRIEND
         ),
         FriendUiModel(
             id = "4",
             name = "Екатерина Смирнова",
             nickname = "@katya_smirnova",
             avatarUrl = "",
-            status = StatusPresentation.ACTIVE
+            status = StatusPresentation.ACTIVE,
+            type = TypeUiModel.FRIEND
         )
     )
 
@@ -264,14 +272,16 @@ fun NewMessageScreenContentPreviewWithSearchLight() {
             name = "Марина Ландышева",
             nickname = "@marina_flower",
             avatarUrl = "",
-            status = StatusPresentation.ACTIVE
+            status = StatusPresentation.ACTIVE,
+            type = TypeUiModel.FRIEND
         ),
         FriendUiModel(
             id = "2",
             name = "Мария Иванова",
             nickname = "@masha_ivanova",
             avatarUrl = "",
-            status = StatusPresentation.ACTIVE
+            status = StatusPresentation.ACTIVE,
+            type = TypeUiModel.FRIEND
         )
     )
 

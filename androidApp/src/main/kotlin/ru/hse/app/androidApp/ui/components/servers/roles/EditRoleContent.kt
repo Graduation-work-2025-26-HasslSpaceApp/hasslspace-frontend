@@ -18,7 +18,6 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -36,12 +35,9 @@ import ru.hse.app.androidApp.R
 import ru.hse.app.androidApp.ui.components.common.button.AddTextButton
 import ru.hse.app.androidApp.ui.components.common.button.BackButton
 import ru.hse.app.androidApp.ui.components.common.card.UserCardCheckbox
-import ru.hse.app.androidApp.ui.components.common.card.UserCardRoleAndArrow
 import ru.hse.app.androidApp.ui.components.common.field.AuthCustomField
-import ru.hse.app.androidApp.ui.components.common.grid.UniversalVerticalGrid
 import ru.hse.app.androidApp.ui.components.common.text.VariableBold
 import ru.hse.app.androidApp.ui.components.common.text.VariableLight
-import ru.hse.app.androidApp.ui.components.common.text.VariableMedium
 import ru.hse.app.androidApp.ui.components.settings.usersettings.Exit
 import ru.hse.app.androidApp.ui.entity.model.FriendCheckboxUiModel
 import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
@@ -126,7 +122,8 @@ fun EditRoleContent(
 
             item {
                 Row(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .clickable { areMembersShown.value = !areMembersShown.value },
                     verticalAlignment = Alignment.CenterVertically
                 ) {

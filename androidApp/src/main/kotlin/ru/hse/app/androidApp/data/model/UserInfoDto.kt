@@ -2,7 +2,7 @@ package ru.hse.app.androidApp.data.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
-data class UserInfoDto (
+data class UserInfoDto(
     @JsonProperty("id")
     val id: String,
 
@@ -17,4 +17,7 @@ data class UserInfoDto (
 
     @JsonProperty("photoUrl")
     val photoURL: String?,
+
+    @JsonProperty("type")
+    val type: TypeDto,
 )

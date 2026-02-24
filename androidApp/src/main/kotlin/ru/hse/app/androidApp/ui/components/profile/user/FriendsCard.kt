@@ -13,12 +13,14 @@ import ru.hse.app.androidApp.ui.theme.AppTheme
 @Composable
 fun FriendsCard(
     count: Int,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     ProfileCard(
         type = "Друзья",
         label = friendsLabel(count),
         modifier = modifier,
+        onClick = onClick,
         cardColor = MaterialTheme.colorScheme.secondary,
         typeColor = MaterialTheme.colorScheme.onSecondary,
         labelColor = MaterialTheme.colorScheme.onSurface
@@ -42,13 +44,13 @@ fun friendsLabel(count: Int): String {
 fun FriendsCardPreviewAllLight() {
     AppTheme(isDark = false) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            FriendsCard(1)
-            FriendsCard(2)
-            FriendsCard(5)
-            FriendsCard(11)
-            FriendsCard(21)
-            FriendsCard(24)
-            FriendsCard(100)
+            FriendsCard(1, onClick = {})
+            FriendsCard(2, onClick = {})
+            FriendsCard(5, onClick = {})
+            FriendsCard(11, onClick = {})
+            FriendsCard(21, onClick = {})
+            FriendsCard(24, onClick = {})
+            FriendsCard(100, onClick = {})
         }
     }
 }
@@ -58,13 +60,13 @@ fun FriendsCardPreviewAllLight() {
 fun FriendsCardPreviewAllDark() {
     AppTheme(isDark = true) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            FriendsCard(1)
-            FriendsCard(2)
-            FriendsCard(5)
-            FriendsCard(11)
-            FriendsCard(21)
-            FriendsCard(24)
-            FriendsCard(100)
+            FriendsCard(1, onClick = {})
+            FriendsCard(2, onClick = {})
+            FriendsCard(5, onClick = {})
+            FriendsCard(11, onClick = {})
+            FriendsCard(21, onClick = {})
+            FriendsCard(24, onClick = {})
+            FriendsCard(100, onClick = {})
         }
     }
 }

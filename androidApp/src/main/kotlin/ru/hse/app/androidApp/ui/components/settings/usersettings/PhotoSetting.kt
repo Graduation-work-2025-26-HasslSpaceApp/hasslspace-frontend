@@ -1,9 +1,6 @@
 package ru.hse.app.androidApp.ui.components.settings.usersettings
 
-import android.app.Activity
 import android.net.Uri
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,17 +15,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import com.yalantis.ucrop.UCrop
 import ru.hse.app.androidApp.R
-import ru.hse.app.androidApp.domain.service.common.CropProfilePhotoService
 import ru.hse.app.androidApp.ui.components.common.text.VariableLight
-import ru.hse.app.androidApp.ui.notification.ToastManager
 import ru.hse.app.androidApp.ui.theme.AppTheme
 
 @Composable

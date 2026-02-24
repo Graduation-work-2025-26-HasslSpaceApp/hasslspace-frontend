@@ -15,7 +15,7 @@ class ApiCaller {
                 Result.failure(ApiException(response.code(), response.message(), null))
             }
         } catch (e: Exception) {
-            Result.failure(ApiException(null, e.message?:"", e))
+            Result.failure(ApiException(null, e.message ?: "", e))
         }
     }
 }

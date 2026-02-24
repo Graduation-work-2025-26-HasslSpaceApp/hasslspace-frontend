@@ -5,11 +5,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import ru.hse.app.androidApp.screen.profile.FriendsScreen
 import ru.hse.app.androidApp.screen.profile.ProfileScreen
 import ru.hse.app.androidApp.screen.profile.SettingsScreen
-import ru.hse.app.androidApp.screen.profile.UserSettingsScreen
 import ru.hse.app.androidApp.screen.profile.SystemSettingsScreen
-import ru.hse.app.androidApp.ui.components.common.box.NoItemsBox
+import ru.hse.app.androidApp.screen.profile.UserSettingsScreen
 
 @Composable
 fun ProfileNavigation(bottomNavHostController: NavHostController) {
@@ -23,7 +23,7 @@ fun ProfileNavigation(bottomNavHostController: NavHostController) {
         startDestination = NavigationItem.ProfileMain.route
     ) {
         composable(NavigationItem.ProfileMain.route) {
-            ProfileScreen(profileNavController)
+            ProfileScreen(bottomNavHostController, profileNavController)
         }
         composable(NavigationItem.Settings.route) {
             SettingsScreen(profileNavController)
@@ -34,11 +34,11 @@ fun ProfileNavigation(bottomNavHostController: NavHostController) {
         composable(NavigationItem.SystemSettings.route) {
             SystemSettingsScreen(profileNavController)
         }
-//        composable(NavigationItem.MyFriends.route) {
-//            CompletedRoutesScreen(profileNavController)
-//        }
+        composable(NavigationItem.MyFriends.route) {
+            FriendsScreen(profileNavController)
+        }
 //        composable(NavigationItem.MyServers.route) {
-//            FavouriteRoutesScreen(profileNavController)
+//            ServersNavigation(bottomNavHostController)
 //        }
 //        composable(NavigationItem.Settings.route) {
 //            EditProfileScreen(profileNavController, profileViewModel)

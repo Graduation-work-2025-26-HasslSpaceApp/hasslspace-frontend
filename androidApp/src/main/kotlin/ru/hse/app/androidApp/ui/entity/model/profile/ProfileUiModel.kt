@@ -3,6 +3,7 @@ package ru.hse.app.androidApp.ui.entity.model.profile
 import android.net.Uri
 import androidx.compose.runtime.Immutable
 import ru.hse.app.androidApp.domain.model.entity.UserExpandedInfo
+import ru.hse.app.androidApp.ui.entity.model.FriendExtendedInfoUiModel
 import ru.hse.app.androidApp.ui.entity.model.FriendUiModel
 import ru.hse.app.androidApp.ui.entity.model.ServerShortUiModel
 import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
@@ -23,9 +24,12 @@ data class ProfileUiModel(
     val profilePictureUrl: String,
     val description: String,
     val friends: List<FriendUiModel>,
+    val applications: List<FriendUiModel>,
     val servers: List<ServerShortUiModel>,
     val isDarkCheck: Boolean,
-    val selectedImageUri: Uri?
+    val selectedImageUri: Uri?,
+    val chosenUser: FriendExtendedInfoUiModel?,
+    val chosenUserCommonServers: List<ServerShortUiModel>
 )
 
 fun getEmptyUiModel(): ProfileUiModel {
@@ -38,8 +42,11 @@ fun getEmptyUiModel(): ProfileUiModel {
         profilePictureUrl = "",
         friends = listOf(),
         servers = listOf(),
+        applications = listOf(),
         isDarkCheck = false,
-        selectedImageUri = null
+        selectedImageUri = null,
+        chosenUser = null,
+        chosenUserCommonServers = listOf()
     )
 }
 
@@ -49,11 +56,14 @@ fun UserExpandedInfo.toUI(): ProfileUiModel {
         nickname = this.nickname,
         status = this.status.toStatusPresentation(),
         email = this.email,
-        profilePictureUrl = this.avatarUrl?: "",
+        profilePictureUrl = this.avatarUrl ?: "",
         description = this.description,
         friends = listOf(),
         servers = listOf(),
+        applications = listOf(),
         isDarkCheck = false,
-        selectedImageUri = null
+        selectedImageUri = null,
+        chosenUser = null,
+        chosenUserCommonServers = listOf()
     )
 }

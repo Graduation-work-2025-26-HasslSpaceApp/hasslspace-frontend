@@ -15,7 +15,7 @@ import ru.hse.app.androidApp.ui.entity.model.profile.ProfileUiState
 import ru.hse.app.androidApp.ui.navigation.NavigationItem
 
 @Composable
-fun SettingsScreen (
+fun SettingsScreen(
     navController: NavController,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
