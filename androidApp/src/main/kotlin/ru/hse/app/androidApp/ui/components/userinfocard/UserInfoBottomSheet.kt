@@ -22,10 +22,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuDefaults
-import androidx.compose.material3.MenuItemColors
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -78,7 +75,7 @@ fun UserInfoBottomSheet(
 
     val headerColor = remember { mutableStateOf(Color.Transparent) }
     val expanded = remember { mutableStateOf(false) }
-    
+
     val textThirdOption = when (type) {
         TypeUiModel.FRIEND -> "Удалить из друзей"
         TypeUiModel.OUTGOING_REQUEST -> "Отозвать приглашение в друзья"
@@ -143,7 +140,7 @@ fun UserInfoBottomSheet(
                         .size(21.dp)
                         .clip(CircleShape)
                         .background(Color.LightGray, shape = CircleShape)
-                        .clickable(onClick = {expanded.value = true}),
+                        .clickable(onClick = { expanded.value = true }),
                     contentScale = ContentScale.Crop
                 )
 
@@ -271,11 +268,13 @@ fun UserInfoBottomSheet(
             )
             DropdownMenuItem(
                 modifier = Modifier.height(30.dp),
-                text = { VariableLight(
-                    text = textThirdOption,
-                    fontSize = 14.sp,
-                    fontColor = colorThirdOption
-                )},
+                text = {
+                    VariableLight(
+                        text = textThirdOption,
+                        fontSize = 14.sp,
+                        fontColor = colorThirdOption
+                    )
+                },
                 onClick = {
                     expanded.value = false
                     onThirdOptionClick()

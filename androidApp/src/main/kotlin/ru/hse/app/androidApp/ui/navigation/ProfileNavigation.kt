@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import ru.hse.app.androidApp.screen.profile.AddFriendsScreen
 import ru.hse.app.androidApp.screen.profile.FriendsScreen
 import ru.hse.app.androidApp.screen.profile.ProfileScreen
 import ru.hse.app.androidApp.screen.profile.SettingsScreen
@@ -36,6 +37,9 @@ fun ProfileNavigation(bottomNavHostController: NavHostController) {
         }
         composable(NavigationItem.MyFriends.route) {
             FriendsScreen(profileNavController)
+        }
+        composable(NavigationItem.AddFriends.route) {
+            AddFriendsScreen(profileNavController)
         }
 //        composable(NavigationItem.MyServers.route) {
 //            ServersNavigation(bottomNavHostController)

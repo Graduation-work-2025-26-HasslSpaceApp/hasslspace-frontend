@@ -22,6 +22,7 @@ import ru.hse.app.androidApp.ui.components.userinfocard.UserInfoBottomSheet
 import ru.hse.app.androidApp.ui.entity.model.profile.LoadChosenUserCommonServersEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.LoadChosenUserEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.ProfileUiState
+import ru.hse.app.androidApp.ui.entity.model.profile.RespondToFriendRequestEvent
 import ru.hse.app.androidApp.ui.navigation.NavigationItem
 
 @Composable
@@ -33,6 +34,25 @@ fun FriendsScreen(
 
     val loadChosenUserEvent by viewModel.loadChosenUserEvent.collectAsState()
     val loadChosenUserCommonServersEvent by viewModel.loadChosenUserCommonServersEvent.collectAsState()
+    val respondToFriendRequestEvent by viewModel.respondToFriendshipRequestEvent.collectAsState()
+
+    LaunchedEffect(respondToFriendRequestEvent) {
+        when (respondToFriendRequestEvent) {
+            is RespondToFriendRequestEvent.SuccessRespond -> {
+                viewModel.loadUserFriends()
+                viewModel.showToast("Успешно")
+            }
+
+            is RespondToFriendRequestEvent.Error -> {
+                val message =
+                    (respondToFriendRequestEvent as RespondToFriendRequestEvent.Error).message
+                viewModel.showToast(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetRespondToFriendRequestEvent()
+    }
 
     LaunchedEffect(loadChosenUserEvent) {
         when (loadChosenUserEvent) {
@@ -111,8 +131,8 @@ fun FriendsScreenWithStateContent(
             viewModel.loadChosenUserCommonServers(userId = it.id)
             viewModel.loadChosenUser(userId = it.id)
         },
-        onAcceptClick = viewModel::acceptFriend,
-        onDismissClick = viewModel::dismissFriend,
+        onAcceptClick = { viewModel.respondFriend(it, "ACCEPTED") },
+        onDismissClick = { viewModel.respondFriend(it, "DECLINED") },
         searchText = viewModel.searchValueFriends.value,
         onValueChange = viewModel::onSearchValueChange,
         isDarkTheme = data.isDarkCheck

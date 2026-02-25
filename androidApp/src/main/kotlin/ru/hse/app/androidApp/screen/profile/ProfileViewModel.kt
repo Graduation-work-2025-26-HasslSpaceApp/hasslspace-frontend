@@ -33,12 +33,15 @@ import ru.hse.app.androidApp.ui.entity.model.FriendUiModel
 import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
 import ru.hse.app.androidApp.ui.entity.model.TypeUiModel
 import ru.hse.app.androidApp.ui.entity.model.auth.SavePhotoEvent
+import ru.hse.app.androidApp.ui.entity.model.profile.CreateFriendRequestEvent
+import ru.hse.app.androidApp.ui.entity.model.profile.DeleteFriendshipEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.LoadChosenUserCommonServersEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.LoadChosenUserEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.LoadUserDataEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.LoadUserFriendsEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.LoadUserServersEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.ProfileUiState
+import ru.hse.app.androidApp.ui.entity.model.profile.RespondToFriendRequestEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.SaveUserDescEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.SaveUserNameEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.SaveUserStatusEvent
@@ -109,6 +112,17 @@ class ProfileViewModel @Inject constructor(
     private val _saveUserDescEvent = MutableStateFlow<SaveUserDescEvent?>(null)
     val saveUserDescEvent: StateFlow<SaveUserDescEvent?> = _saveUserDescEvent
 
+    private val _createFriendRequestEvent = MutableStateFlow<CreateFriendRequestEvent?>(null)
+    val createFriendRequestEvent: StateFlow<CreateFriendRequestEvent?> = _createFriendRequestEvent
+
+    private val _deleteFriendshipEvent = MutableStateFlow<DeleteFriendshipEvent?>(null)
+    val deleteFriendshipEvent: StateFlow<DeleteFriendshipEvent?> = _deleteFriendshipEvent
+
+    private val _respondToFriendshipRequestEvent =
+        MutableStateFlow<RespondToFriendRequestEvent?>(null)
+    val respondToFriendshipRequestEvent: StateFlow<RespondToFriendRequestEvent?> =
+        _respondToFriendshipRequestEvent
+
     val originalUsername = mutableStateOf("")
     val originalStatusPresentation = mutableStateOf(StatusPresentation.INVISIBLE)
     val originalDescription = mutableStateOf("")
@@ -121,6 +135,10 @@ class ProfileViewModel @Inject constructor(
     val showCommonServers = mutableStateOf(false)
 
     val searchValueFriends = mutableStateOf("")
+    val addFriendFieldValue = mutableStateOf("")
+
+    val errorAddFriends = mutableStateOf(false)
+    val infoTextAddFriend = mutableStateOf("")
 
     init {
         loadUserData()
@@ -454,12 +472,43 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun acceptFriend(user: FriendUiModel) {
-        //TODO
+    fun changeAddFriendValue(value: String) {
+        addFriendFieldValue.value = value
     }
 
-    fun dismissFriend(user: FriendUiModel) {
-        //TODO
+    fun respondFriend(user: FriendUiModel, status: String) {
+        viewModelScope.launch {
+            val result =
+                respondToFriendshipRequestUseCase(user.id/*todo не забыть про айди дружбы*/, status)
+
+            _respondToFriendshipRequestEvent.value = result.fold(
+                onSuccess = {
+                    RespondToFriendRequestEvent.SuccessRespond
+                },
+                onFailure = {
+                    RespondToFriendRequestEvent.Error("Ошибка при изменении данных. " + it.message)
+                }
+            )
+        }
+    }
+
+    fun deleteFriendship(userId: String) {
+        //todo
+    }
+
+    fun createFriendshipRequest(nickname: String) {
+        viewModelScope.launch {
+            val result = createFriendRequestUseCase(nickname)
+
+            _createFriendRequestEvent.value = result.fold(
+                onSuccess = {
+                    CreateFriendRequestEvent.SuccessRequest(nickname)
+                },
+                onFailure = {
+                    CreateFriendRequestEvent.Error("Ошибка при создании заявки" + it.message)
+                }
+            )
+        }
     }
 
     fun onCallClick(userId: String) {
@@ -513,5 +562,13 @@ class ProfileViewModel @Inject constructor(
 
     fun resetLoadChosenUserCommonServersEvent() {
         _loadChosenUserCommonServersEvent.value = null
+    }
+
+    fun resetRespondToFriendRequestEvent() {
+        _respondToFriendshipRequestEvent.value = null
+    }
+
+    fun resetCreateFriendRequestEvent() {
+        _createFriendRequestEvent.value = null
     }
 }

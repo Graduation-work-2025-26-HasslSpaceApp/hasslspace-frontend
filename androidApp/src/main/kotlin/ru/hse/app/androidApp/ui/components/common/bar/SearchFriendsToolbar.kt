@@ -40,7 +40,7 @@ fun SearchFriendsToolbar(
 
         SearchBar(
             text = searchValue,
-            placeholder = "Введите никнейм",
+            placeholder = "Введите никнейм (без @)",
             onValueChange = onValueChange,
             modifier = Modifier.fillMaxWidth()
         )
@@ -53,7 +53,8 @@ fun SearchFriendsToolbar(
         ) {
             AddTextButton(
                 onClick = onSendClick,
-                text = "Отправить заявку"
+                text = "Отправить заявку",
+                enabled = (searchValue != "")
             )
         }
         if (infoText != null) {
