@@ -1,4 +1,4 @@
-package ru.hse.app.androidApp.ui.components.servers.joinchannel
+package ru.hse.app.androidApp.ui.components.servers.joinserver
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,15 +29,20 @@ import ru.hse.app.androidApp.ui.components.common.text.VariableMedium
 import ru.hse.app.androidApp.ui.theme.AppTheme
 
 @Composable
-fun JoinChannelContent(
+fun JoinServerContent(
     onBackClick: () -> Unit,
     linkText: String,
     onLinkTextChanged: (String) -> Unit,
-    onButtonCLick: () -> Unit,
+    onButtonClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val exampleLink = "https://hasslspace.ru/hTKzmak"
+
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 50.dp)
+            .padding(16.dp)
     ) {
         Column(
             modifier = modifier.fillMaxSize()
@@ -76,28 +82,31 @@ fun JoinChannelContent(
 
             Spacer(Modifier.height(25.dp))
 
-            Text(
-                text = buildAnnotatedString {
-                    append("Приглашения должны выглядеть так «")
-                    withStyle(
-                        style = SpanStyle(
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-                    ) {
-                        append("https://hasslspace.ru/hTKzmak")
-                    }
-                    append("»")
-                },
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Light,
-                color = MaterialTheme.colorScheme.outline,
-            )
+            SelectionContainer {
+                Text(
+                    text = buildAnnotatedString {
+                        append("Приглашения должны выглядеть так \n«")
+                        withStyle(
+                            style = SpanStyle(
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                        ) {
+                            append("https://hasslspace.ru/hTKzmak")
+                        }
+                        append("»")
+                    },
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Light,
+                    color = MaterialTheme.colorScheme.outline,
+                )
+            }
+
 
             Spacer(Modifier.weight(1f))
 
             BigButton(
                 modifier = Modifier.padding(bottom = 20.dp),
-                onClick = onButtonCLick,
+                onClick = onButtonClick,
                 text = "Присоединиться по ссылке-приглашению",
                 fontSize = 16.sp
             )
@@ -107,26 +116,26 @@ fun JoinChannelContent(
 
 @Preview(showBackground = true, name = "Light - Empty")
 @Composable
-fun JoinChannelContentPreviewLight() {
+fun JoinServerContentPreviewLight() {
     AppTheme(isDark = false) {
-        JoinChannelContent(
+        JoinServerContent(
             onBackClick = {},
             linkText = "https://hasslspace.ru/hTKzmak",
             onLinkTextChanged = {},
-            onButtonCLick = {},
+            onButtonClick = {},
         )
     }
 }
 
 @Preview(showBackground = true, name = "Light - Empty")
 @Composable
-fun JoinChannelContentPreviewDark() {
+fun JoinServerContentPreviewDark() {
     AppTheme(isDark = true) {
-        JoinChannelContent(
+        JoinServerContent(
             onBackClick = {},
             linkText = "https://haserslspace.ru/hTKzmak",
             onLinkTextChanged = {},
-            onButtonCLick = {},
+            onButtonClick = {},
         )
     }
 }

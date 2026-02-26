@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import ru.hse.app.androidApp.screen.servers.CreateServerScreen
 import ru.hse.app.androidApp.screen.servers.ServersScreen
+import ru.hse.app.androidApp.screen.servers.JoinServerScreen
 import ru.hse.app.androidApp.ui.components.common.box.NoItemsBox
 
 @Composable
@@ -23,6 +24,10 @@ fun ServersNavigation(bottomNavHostController: NavHostController) {
 
         composable(NavigationItem.CreateServer.route) {
             CreateServerScreen(serversNavController)
+        }
+
+        composable(NavigationItem.JoinServer.route) {
+            JoinServerScreen(serversNavController)
         }
     }
 //    composable(NavigationItem.HomeMain.route) {

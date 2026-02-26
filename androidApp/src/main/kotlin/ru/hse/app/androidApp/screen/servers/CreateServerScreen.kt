@@ -21,6 +21,7 @@ import ru.hse.app.androidApp.ui.components.servers.createserver.CreateServerCont
 import ru.hse.app.androidApp.ui.entity.model.servers.ServersUiState
 import ru.hse.app.androidApp.ui.entity.model.servers.events.CreateServerEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetUserServersEvent
+import ru.hse.app.androidApp.ui.navigation.NavigationItem
 import ru.hse.app.androidApp.ui.notification.ToastManager
 
 @Composable
@@ -115,6 +116,6 @@ fun CreateServerScreenWithStateContent(
                 viewModel.selectedImageUri.value
             )
         },
-        onJoinClick = {/*todo*/ }
+        onJoinClick = { navController.navigate(NavigationItem.JoinServer.route) }
     )
 }

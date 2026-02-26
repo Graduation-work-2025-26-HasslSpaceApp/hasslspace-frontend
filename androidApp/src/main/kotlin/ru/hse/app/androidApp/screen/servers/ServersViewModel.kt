@@ -15,7 +15,6 @@ import kotlinx.coroutines.launch
 import ru.hse.app.androidApp.data.local.DataManager
 import ru.hse.app.androidApp.domain.model.entity.CreateChannel
 import ru.hse.app.androidApp.domain.model.entity.CreateRole
-import ru.hse.app.androidApp.domain.model.entity.CreateServer
 import ru.hse.app.androidApp.domain.service.common.CropProfilePhotoService
 import ru.hse.app.androidApp.domain.service.common.PhotoConverterService
 import ru.hse.app.androidApp.domain.usecase.servers.CreateChannelUseCase
@@ -36,13 +35,7 @@ import ru.hse.app.androidApp.domain.usecase.servers.PatchServerOwnerUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.PatchServerPropertiesUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.SearchServersUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.SendServerInvitationUseCase
-import ru.hse.app.androidApp.ui.entity.model.FriendUiModel
 import ru.hse.app.androidApp.ui.entity.model.ServerShortUiModel
-import ru.hse.app.androidApp.ui.entity.model.auth.AuthUiState
-import ru.hse.app.androidApp.ui.entity.model.profile.ProfileUiState
-import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadUserServersEvent
-import ru.hse.app.androidApp.ui.entity.model.profile.events.RespondToFriendRequestEvent
-import ru.hse.app.androidApp.ui.entity.model.profile.toUI
 import ru.hse.app.androidApp.ui.entity.model.servers.ServersUiModel
 import ru.hse.app.androidApp.ui.entity.model.servers.ServersUiState
 import ru.hse.app.androidApp.ui.entity.model.servers.events.CreateChannelEvent
@@ -152,7 +145,8 @@ class ServersViewModel @Inject constructor(
     val patchServerOwnerEvent: StateFlow<PatchServerOwnerEvent?> = _patchServerOwnerEvent
 
     private val _sendServerInvitationEvent = MutableStateFlow<SendServerInvitationEvent?>(null)
-    val sendServerInvitationEvent: StateFlow<SendServerInvitationEvent?> = _sendServerInvitationEvent
+    val sendServerInvitationEvent: StateFlow<SendServerInvitationEvent?> =
+        _sendServerInvitationEvent
 
     // Servers Screen
     val originalServers = mutableStateListOf<ServerShortUiModel>()
@@ -161,6 +155,9 @@ class ServersViewModel @Inject constructor(
     // Create Server Screen
     val selectedImageUri: MutableState<Uri?> = mutableStateOf(null)
     val selectedServerName = mutableStateOf("")
+
+    // Join server Screen
+    val linkTextServer = mutableStateOf("")
 
     init {
         loadUserServers()
@@ -206,6 +203,10 @@ class ServersViewModel @Inject constructor(
         }
     }
 
+    fun onLinkServerValueChange(value: String) {
+        linkTextServer.value = value
+    }
+
     fun onSelectedServerNameChanged(value: String) {
         selectedServerName.value = value
     }
@@ -214,7 +215,7 @@ class ServersViewModel @Inject constructor(
         selectedImageUri.value = uri
     }
 
-    fun createChannel (
+    fun createChannel(
         serverId: String,
         channelName: String,
         isPrivate: Boolean,
@@ -444,8 +445,35 @@ class ServersViewModel @Inject constructor(
         }
     }
 
-    fun joinServer() {
-        //TODO
+    fun joinServer(link: String) {
+        val linkPattern = Regex("^https://hasslspace\\.ru/[a-zA-Z0-9]+$")
+
+        when {
+            link.isBlank() -> {
+                toastManager.showToast("Ссылка не может быть пустой")
+                return
+            }
+
+            !linkPattern.matches(link) -> {
+                toastManager.showToast("Неверный формат ссылки. Ожидается: https://hasslspace.ru/код")
+                return
+            }
+
+            else -> {
+                viewModelScope.launch {
+                    val result = joinServerUseCase() //TODO параметром идет ссылка
+
+                    _joinServerEvent.value = result.fold(
+                        onSuccess = {
+                            JoinServerEvent.Success
+                        },
+                        onFailure = {error ->
+                            JoinServerEvent.Error("Ошибка при присоединении к серверу. ${error.message}")
+                        }
+                    )
+                }
+            }
+        }
     }
 
     fun patchServerOwner(
@@ -542,7 +570,7 @@ class ServersViewModel @Inject constructor(
         _getUserServersEvent.value = null
     }
 
-    fun resetJoinServer() {
+    fun resetJoinServerEvent() {
         _joinServerEvent.value = null
     }
 
