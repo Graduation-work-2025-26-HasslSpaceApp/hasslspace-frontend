@@ -155,6 +155,7 @@ class ProfileViewModel @Inject constructor(
                     originalStatusPresentation.value = updatedData.status
                     originalDescription.value = updatedData.description
 
+                    originalFriends.clear()
                     originalFriends.addAll(updatedData.friends)
 
                     _uiState.value = ProfileUiState.Success(updatedData)

@@ -1,5 +1,10 @@
 package ru.hse.app.androidApp.screen.servers
 
+import android.net.Uri
+import android.widget.Toast
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil3.ImageLoader
@@ -7,6 +12,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import ru.hse.app.androidApp.data.local.DataManager
 import ru.hse.app.androidApp.domain.model.entity.CreateChannel
 import ru.hse.app.androidApp.domain.model.entity.CreateRole
 import ru.hse.app.androidApp.domain.model.entity.CreateServer
@@ -28,8 +34,17 @@ import ru.hse.app.androidApp.domain.usecase.servers.JoinServerUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.PatchChannelPropertiesUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.PatchServerOwnerUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.PatchServerPropertiesUseCase
+import ru.hse.app.androidApp.domain.usecase.servers.SearchServersUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.SendServerInvitationUseCase
+import ru.hse.app.androidApp.ui.entity.model.FriendUiModel
+import ru.hse.app.androidApp.ui.entity.model.ServerShortUiModel
+import ru.hse.app.androidApp.ui.entity.model.auth.AuthUiState
+import ru.hse.app.androidApp.ui.entity.model.profile.ProfileUiState
+import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadUserServersEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.events.RespondToFriendRequestEvent
+import ru.hse.app.androidApp.ui.entity.model.profile.toUI
+import ru.hse.app.androidApp.ui.entity.model.servers.ServersUiModel
+import ru.hse.app.androidApp.ui.entity.model.servers.ServersUiState
 import ru.hse.app.androidApp.ui.entity.model.servers.events.CreateChannelEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.CreateServerEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.CreateServerRoleEvent
@@ -45,6 +60,7 @@ import ru.hse.app.androidApp.ui.entity.model.servers.events.GetUserServersEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.JoinServerEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.PatchServerOwnerEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.SendServerInvitationEvent
+import ru.hse.app.androidApp.ui.entity.model.toUi
 import ru.hse.coursework.godaily.ui.notification.ToastManager
 import javax.inject.Inject
 
@@ -73,13 +89,21 @@ class ServersViewModel @Inject constructor(
     private val patchServerRoleUseCase: PatchServerOwnerUseCase,
 
     private val sendServerInvitationUseCase: SendServerInvitationUseCase,
+    private val searchServersUseCase: SearchServersUseCase,
 
+    private val dataManager: DataManager,
     private val photoConverterService: PhotoConverterService,
     private val toastManager: ToastManager,
     val cropProfilePhotoService: CropProfilePhotoService,
     val imageLoader: ImageLoader
 
 ) : ViewModel() {
+
+    val isDarkTheme = dataManager.isDark.value
+
+    private val _uiState =
+        MutableStateFlow<ServersUiState>(ServersUiState.Loading)
+    val uiState: StateFlow<ServersUiState> = _uiState
 
     private val _createChannelEvent = MutableStateFlow<CreateChannelEvent?>(null)
     val createChannelEvent: StateFlow<CreateChannelEvent?> = _createChannelEvent
@@ -130,6 +154,66 @@ class ServersViewModel @Inject constructor(
     private val _sendServerInvitationEvent = MutableStateFlow<SendServerInvitationEvent?>(null)
     val sendServerInvitationEvent: StateFlow<SendServerInvitationEvent?> = _sendServerInvitationEvent
 
+    // Servers Screen
+    val originalServers = mutableStateListOf<ServerShortUiModel>()
+    val searchServersText = mutableStateOf("")
+
+    // Create Server Screen
+    val selectedImageUri: MutableState<Uri?> = mutableStateOf(null)
+    val selectedServerName = mutableStateOf("")
+
+    init {
+        loadUserServers()
+    }
+
+    fun loadUserServers() {
+        viewModelScope.launch {
+            val result = getUserServersUseCase()
+
+            _getUserServersEvent.value = result.fold(
+                onSuccess = { servers ->
+                    val serversUi = servers.map { it.toUi() }
+                    _uiState.value = ServersUiState.Success(
+                        data = ServersUiModel(
+                            userServers = serversUi
+                        )
+                    )
+                    originalServers.clear()
+                    originalServers.addAll(serversUi)
+
+                    GetUserServersEvent.SuccessLoad
+                },
+                onFailure = {
+                    GetUserServersEvent.Error(
+                        ("Ошибка при загрузке серверов. " + it.message)
+                    )
+                }
+            )
+        }
+    }
+
+    fun onSearchServersValueChange(value: String) {
+        searchServersText.value = value
+        val currentState = _uiState.value
+        if (currentState is ServersUiState.Success) {
+            viewModelScope.launch {
+                val result = searchServersUseCase(originalServers.map { it }, value)
+                val updatedData = currentState.data.copy(
+                    userServers = result.map { it }
+                )
+                _uiState.value = ServersUiState.Success(updatedData)
+            }
+        }
+    }
+
+    fun onSelectedServerNameChanged(value: String) {
+        selectedServerName.value = value
+    }
+
+    fun onPhotoUriChanged(uri: Uri?) {
+        selectedImageUri.value = uri
+    }
+
     fun createChannel (
         serverId: String,
         channelName: String,
@@ -163,14 +247,14 @@ class ServersViewModel @Inject constructor(
 
     fun createServer(
         serverName: String,
-        serverPhoto: String? = null,
+        serverPhoto: Uri? = null,
     ) {
+        if (serverName.isEmpty()) {
+            showToast("Название сервера не может быть пустым")
+            return
+        }
         viewModelScope.launch {
-            val data = CreateServer(
-                name = serverName,
-                photoUrl = serverPhoto
-            )
-            val result = createServerUseCase(data)
+            val result = createServerUseCase(serverName, serverPhoto)
 
             _createServerEvent.value = result.fold(
                 onSuccess = { server ->
@@ -400,6 +484,13 @@ class ServersViewModel @Inject constructor(
                 }
             )
         }
+    }
+
+    fun showToast(message: String, duration: Int = Toast.LENGTH_SHORT) {
+        toastManager.showToast(
+            message = message,
+            duration = duration
+        )
     }
 
 

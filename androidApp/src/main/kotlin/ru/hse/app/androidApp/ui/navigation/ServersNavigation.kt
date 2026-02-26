@@ -5,20 +5,24 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import ru.hse.app.androidApp.screen.servers.CreateServerScreen
+import ru.hse.app.androidApp.screen.servers.ServersScreen
 import ru.hse.app.androidApp.ui.components.common.box.NoItemsBox
 
 @Composable
 fun ServersNavigation(bottomNavHostController: NavHostController) {
-    val homeNavController = rememberNavController()
-//
-//    val routeDetailsViewModel: RouteDetailsViewModel = hiltViewModel()
-//
+    val serversNavController = rememberNavController()
+
     NavHost(
-        navController = homeNavController,
+        navController = serversNavController,
         startDestination = NavigationItem.ServersMain.route
     ) {
         composable(NavigationItem.ServersMain.route) {
-            NoItemsBox("Серверы")
+            ServersScreen(serversNavController)
+        }
+
+        composable(NavigationItem.CreateServer.route) {
+            CreateServerScreen(serversNavController)
         }
     }
 //    composable(NavigationItem.HomeMain.route) {

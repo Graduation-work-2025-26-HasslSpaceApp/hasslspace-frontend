@@ -27,7 +27,6 @@ import ru.hse.app.androidApp.ui.theme.AppTheme
 fun ServersContent(
     imageLoader: ImageLoader,
     servers: List<ServerShortUiModel>,
-    onBackClick: () -> Unit,
     onServerClick: (ServerShortUiModel) -> Unit,
     searchText: String,
     onValueChange: (String) -> Unit,
@@ -40,8 +39,6 @@ fun ServersContent(
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            BackButton(onClick = onBackClick)
-            Spacer(Modifier.width(10.dp))
             VariableBold(
                 text = "Серверы",
                 fontSize = 28.sp,
@@ -105,7 +102,6 @@ fun ServersContentPreviewLight() {
         ServersContent(
             imageLoader = ImageLoader(LocalContext.current),
             servers = servers,
-            onBackClick = {},
             onServerClick = {},
             searchText = "",
             onValueChange = {},
@@ -122,7 +118,6 @@ fun ServersContentPreviewWithRequestsDark() {
         ServersContent(
             imageLoader = ImageLoader(LocalContext.current),
             servers = servers,
-            onBackClick = {},
             onServerClick = {},
             searchText = "",
             onValueChange = {},
