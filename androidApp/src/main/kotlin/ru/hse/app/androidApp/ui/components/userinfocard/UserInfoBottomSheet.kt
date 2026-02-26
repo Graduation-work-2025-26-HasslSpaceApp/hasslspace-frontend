@@ -14,9 +14,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -34,6 +37,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.ImageLoader
@@ -44,6 +48,7 @@ import ru.hse.app.androidApp.ui.components.common.state.StatusCircle
 import ru.hse.app.androidApp.ui.components.common.text.VariableLight
 import ru.hse.app.androidApp.ui.components.common.text.VariableMedium
 import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
+import ru.hse.app.androidApp.ui.entity.model.TypeUiModel
 import ru.hse.app.androidApp.ui.theme.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -65,15 +70,30 @@ fun UserInfoBottomSheet(
     onInvite: () -> Unit,
     onCopyNickname: () -> Unit,
     onThirdOptionClick: () -> Unit,
-    //TODO параметр, определяющий статус принять/Отправить заявку/ удалить из друзей
+    type: TypeUiModel
 ) {
 
     val headerColor = remember { mutableStateOf(Color.Transparent) }
+    val expanded = remember { mutableStateOf(false) }
+
+    val textThirdOption = when (type) {
+        TypeUiModel.FRIEND -> "Удалить из друзей"
+        TypeUiModel.OUTGOING_REQUEST -> "Отозвать приглашение в друзья"
+        TypeUiModel.NONE -> "Добавить в друзья"
+        TypeUiModel.INCOMING_REQUEST -> "Принять приглашение в друзья" // todo опция для отклонения заявки
+    }
+    val colorThirdOption = when (type) {
+        TypeUiModel.FRIEND -> MaterialTheme.colorScheme.error
+        TypeUiModel.OUTGOING_REQUEST -> MaterialTheme.colorScheme.error
+        TypeUiModel.NONE -> MaterialTheme.colorScheme.primary
+        TypeUiModel.INCOMING_REQUEST -> MaterialTheme.colorScheme.primary
+    }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
         containerColor = MaterialTheme.colorScheme.background,
+        scrimColor = MaterialTheme.colorScheme.surfaceDim.copy(alpha = 0.5f),
         dragHandle = {
             BottomSheetDefaults.DragHandle(
                 color = MaterialTheme.colorScheme.outline
@@ -119,7 +139,8 @@ fun UserInfoBottomSheet(
                         .align(Alignment.End)
                         .size(21.dp)
                         .clip(CircleShape)
-                        .background(Color.LightGray, shape = CircleShape),
+                        .background(Color.LightGray, shape = CircleShape)
+                        .clickable(onClick = { expanded.value = true }),
                     contentScale = ContentScale.Crop
                 )
 
@@ -187,25 +208,27 @@ fun UserInfoBottomSheet(
 
                 Spacer(Modifier.height(10.dp))
 
-                Row(
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    horizontalArrangement = Arrangement.spacedBy(50.dp)
-                ) {
-                    IconTextButton(
-                        text = "Сообщение",
-                        iconResource = R.drawable.option_message,
-                        onClick = onMessageClick
-                    )
-                    IconTextButton(
-                        text = "Звонок",
-                        iconResource = R.drawable.option_call,
-                        onClick = onCallClick
-                    )
-                    IconTextButton(
-                        text = "Видеозвонок",
-                        iconResource = R.drawable.option_videocall,
-                        onClick = onVideoCallClick
-                    )
+                if (type != TypeUiModel.NONE && type != TypeUiModel.OUTGOING_REQUEST) {
+                    Row(
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                        horizontalArrangement = Arrangement.spacedBy(50.dp)
+                    ) {
+                        IconTextButton(
+                            text = "Сообщение",
+                            iconResource = R.drawable.option_message,
+                            onClick = onMessageClick
+                        )
+                        IconTextButton(
+                            text = "Звонок",
+                            iconResource = R.drawable.option_call,
+                            onClick = onCallClick
+                        )
+                        IconTextButton(
+                            text = "Видеозвонок",
+                            iconResource = R.drawable.option_videocall,
+                            onClick = onVideoCallClick
+                        )
+                    }
                 }
 
                 if (aboutUserInfo.isNotEmpty()) {
@@ -218,7 +241,46 @@ fun UserInfoBottomSheet(
 
         }
 
-
+        DropdownMenu(
+            expanded = expanded.value,
+            shape = RoundedCornerShape(12.dp),
+            offset = DpOffset(100.dp, 190.dp),
+            onDismissRequest = { expanded.value = false },
+            containerColor = MaterialTheme.colorScheme.background,
+            modifier = Modifier
+                .width(300.dp)
+        ) {
+            DropdownMenuItem(
+                modifier = Modifier.height(30.dp),
+                text = { VariableLight("Пригласить на сервер", 14.sp) },
+                onClick = {
+                    expanded.value = false
+                    onInvite()
+                },
+            )
+            DropdownMenuItem(
+                modifier = Modifier.height(30.dp),
+                text = { VariableLight("Скопировать никнейм пользователя", 14.sp) },
+                onClick = {
+                    expanded.value = false
+                    onCopyNickname()
+                }
+            )
+            DropdownMenuItem(
+                modifier = Modifier.height(30.dp),
+                text = {
+                    VariableLight(
+                        text = textThirdOption,
+                        fontSize = 14.sp,
+                        fontColor = colorThirdOption
+                    )
+                },
+                onClick = {
+                    expanded.value = false
+                    onThirdOptionClick()
+                },
+            )
+        }
     }
 }
 
@@ -258,7 +320,8 @@ fun UserInfoBottomSheetLightPreview() {
             onDismiss = {},
             onInvite = {},
             onCopyNickname = {},
-            onThirdOptionClick = {}
+            onThirdOptionClick = {},
+            type = TypeUiModel.FRIEND
         )
     }
 }
@@ -287,7 +350,8 @@ fun UserInfoBottomSheetLightPreviewWithPhoto() {
             onDismiss = {},
             onInvite = {},
             onCopyNickname = {},
-            onThirdOptionClick = {}
+            onThirdOptionClick = {},
+            type = TypeUiModel.INCOMING_REQUEST
         )
     }
 }
@@ -316,7 +380,8 @@ fun UserInfoBottomSheetLightPreviewWithPhoto2() {
             onDismiss = {},
             onInvite = {},
             onCopyNickname = {},
-            onThirdOptionClick = {}
+            onThirdOptionClick = {},
+            type = TypeUiModel.OUTGOING_REQUEST
         )
     }
 }
@@ -345,7 +410,8 @@ fun UserInfoBottomSheetDarkPreview() {
             onDismiss = {},
             onInvite = {},
             onCopyNickname = {},
-            onThirdOptionClick = {}
+            onThirdOptionClick = {},
+            type = TypeUiModel.NONE
         )
     }
 }
@@ -374,7 +440,8 @@ fun UserInfoBottomSheetDarkPreviewWithPhoto() {
             onDismiss = {},
             onInvite = {},
             onCopyNickname = {},
-            onThirdOptionClick = {}
+            onThirdOptionClick = {},
+            type = TypeUiModel.FRIEND
         )
     }
 }
@@ -403,7 +470,8 @@ fun UserInfoBottomSheetDarkPreviewWithPhoto2() {
             onDismiss = {},
             onInvite = {},
             onCopyNickname = {},
-            onThirdOptionClick = {}
+            onThirdOptionClick = {},
+            type = TypeUiModel.FRIEND
         )
     }
 }

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -22,7 +21,7 @@ import ru.hse.app.androidApp.ui.theme.AppTheme
 @Composable
 fun SearchFriendsToolbar(
     modifier: Modifier = Modifier,
-    searchValue: MutableState<String>,
+    searchValue: String,
     onValueChange: (String) -> Unit,
     onSendClick: () -> Unit,
     infoText: String? = null,
@@ -41,7 +40,7 @@ fun SearchFriendsToolbar(
 
         SearchBar(
             text = searchValue,
-            placeholder = "Введите никнейм",
+            placeholder = "Введите никнейм (без @)",
             onValueChange = onValueChange,
             modifier = Modifier.fillMaxWidth()
         )
@@ -54,7 +53,8 @@ fun SearchFriendsToolbar(
         ) {
             AddTextButton(
                 onClick = onSendClick,
-                text = "Отправить заявку"
+                text = "Отправить заявку",
+                enabled = (searchValue != "")
             )
         }
         if (infoText != null) {
@@ -77,7 +77,7 @@ fun SearchFriendsToolbarPreviewLight() {
         isDark = false
     ) {
         SearchFriendsToolbar(
-            searchValue = text,
+            searchValue = text.value,
             onValueChange = { text.value = it },
             onSendClick = {}
         )
@@ -92,7 +92,7 @@ fun SearchFriendsToolbarPreviewLightNotEmpty() {
         isDark = false
     ) {
         SearchFriendsToolbar(
-            searchValue = text,
+            searchValue = text.value,
             onValueChange = { text.value = it },
             onSendClick = {}
         )
@@ -107,7 +107,7 @@ fun SearchFriendsToolbarPreviewLightError() {
         isDark = false
     ) {
         SearchFriendsToolbar(
-            searchValue = text,
+            searchValue = text.value,
             onValueChange = { text.value = it },
             onSendClick = {},
             infoText = "Хм... Не получилось. Проверьте, что вы ввели правильное имя пользователя",
@@ -124,7 +124,7 @@ fun SearchFriendsToolbarPreviewLightSuccess() {
         isDark = false
     ) {
         SearchFriendsToolbar(
-            searchValue = text,
+            searchValue = text.value,
             onValueChange = { text.value = it },
             onSendClick = {},
             infoText = "Получилось! Отправили заявку в друзья пользователю @yuulkht"
@@ -140,7 +140,7 @@ fun SearchFriendsToolbarPreviewDark() {
         isDark = true
     ) {
         SearchFriendsToolbar(
-            searchValue = text,
+            searchValue = text.value,
             onValueChange = { text.value = it },
             onSendClick = {}
         )
@@ -155,7 +155,7 @@ fun SearchFriendsToolbarPreviewDarkNotEmpty() {
         isDark = true
     ) {
         SearchFriendsToolbar(
-            searchValue = text,
+            searchValue = text.value,
             onValueChange = { text.value = it },
             onSendClick = {}
         )
@@ -170,7 +170,7 @@ fun SearchFriendsToolbarPreviewDarkError() {
         isDark = true
     ) {
         SearchFriendsToolbar(
-            searchValue = text,
+            searchValue = text.value,
             onValueChange = { text.value = it },
             onSendClick = {},
             infoText = "Хм... Не получилось. Проверьте, что вы ввели правильное имя пользователя",
@@ -187,7 +187,7 @@ fun SearchFriendsToolbarPreviewDarkSuccess() {
         isDark = true
     ) {
         SearchFriendsToolbar(
-            searchValue = text,
+            searchValue = text.value,
             onValueChange = { text.value = it },
             onSendClick = {},
             infoText = "Получилось! Отправили заявку в друзья пользователю @yuulkht"

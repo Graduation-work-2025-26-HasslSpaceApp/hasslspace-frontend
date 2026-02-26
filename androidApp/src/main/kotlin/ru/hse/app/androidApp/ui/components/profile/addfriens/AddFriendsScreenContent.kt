@@ -6,11 +6,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -27,6 +25,7 @@ import ru.hse.app.androidApp.ui.components.common.text.VariableLight
 import ru.hse.app.androidApp.ui.entity.model.FriendUiModel
 import ru.hse.app.androidApp.ui.entity.model.ServerShortUiModel
 import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
+import ru.hse.app.androidApp.ui.entity.model.TypeUiModel
 import ru.hse.app.androidApp.ui.theme.AppTheme
 
 @Composable
@@ -35,7 +34,7 @@ fun AddFriendsScreenContent(
     requests: List<FriendUiModel>,
     onBackClick: () -> Unit,
     onRequestClick: (FriendUiModel) -> Unit,
-    searchText: MutableState<String>,
+    searchText: String,
     onValueChange: (String) -> Unit,
     onSendClick: () -> Unit,
     onUndoClick: (FriendUiModel) -> Unit,
@@ -45,7 +44,10 @@ fun AddFriendsScreenContent(
     isDarkTheme: Boolean
 ) {
     Column(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
+            .padding(top = 50.dp)
+            .padding(16.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -108,7 +110,8 @@ private fun previewFriend(id: String, name: String) = FriendUiModel(
     name = name,
     nickname = name.lowercase().replace(" ", "_"),
     avatarUrl = "",
-    status = StatusPresentation.ACTIVE
+    status = StatusPresentation.ACTIVE,
+    type = TypeUiModel.FRIEND
 )
 
 @Preview(showBackground = true)
@@ -137,7 +140,7 @@ fun FriendsContentPreviewWithRequestsLight() {
             onRequestClick = {},
             onSendClick = {},
             onUndoClick = {},
-            searchText = remember { mutableStateOf("") },
+            searchText = "",
             onValueChange = {},
             isDarkTheme = false,
             infoText = null,
@@ -172,7 +175,7 @@ fun FriendsContentPreviewWithRequestsLightOk() {
             onRequestClick = {},
             onSendClick = {},
             onUndoClick = {},
-            searchText = remember { mutableStateOf("") },
+            searchText = "",
             onValueChange = {},
             isDarkTheme = false,
             infoText = "Получилось! Отправили заявку в друзья пользователю @yuulkht",
@@ -207,7 +210,7 @@ fun FriendsContentPreviewWithRequestsLightError() {
             onRequestClick = {},
             onSendClick = {},
             onUndoClick = {},
-            searchText = remember { mutableStateOf("") },
+            searchText = "",
             onValueChange = {},
             isDarkTheme = false,
             infoText = "Хм... Не получилось. Проверьте, что вы ввели правильное имя пользователя",
@@ -242,7 +245,7 @@ fun FriendsContentPreviewWithRequestsDark() {
             onRequestClick = {},
             onSendClick = {},
             onUndoClick = {},
-            searchText = remember { mutableStateOf("") },
+            searchText = "",
             onValueChange = {},
             isDarkTheme = false,
             infoText = null,
@@ -277,7 +280,7 @@ fun FriendsContentPreviewWithRequestsDarkOk() {
             onRequestClick = {},
             onSendClick = {},
             onUndoClick = {},
-            searchText = remember { mutableStateOf("") },
+            searchText = "",
             onValueChange = {},
             isDarkTheme = false,
             infoText = "Получилось! Отправили заявку в друзья пользователю @yuulkht",
@@ -312,7 +315,7 @@ fun FriendsContentPreviewWithRequestsDarkError() {
             onRequestClick = {},
             onSendClick = {},
             onUndoClick = {},
-            searchText = remember { mutableStateOf("") },
+            searchText = "",
             onValueChange = {},
             isDarkTheme = false,
             infoText = "Хм... Не получилось. Проверьте, что вы ввели правильное имя пользователя",

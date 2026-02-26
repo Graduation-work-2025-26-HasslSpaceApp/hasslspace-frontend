@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name" translatable="false">HasslSpace</string>
+
+    <string name="ucrop_label_original">Original</string>
+    <string name="ucrop_label_edit_photo">Редактировать фото</string>
+    <string name="ucrop_menu_next">Далее</string>
+    <string name="ucrop_rotate">Вращать</string>
+    <string name="ucrop_scale">Масштабировать</string>
+    <string name="ucrop_crop">Обрезать</string>
 </resources>

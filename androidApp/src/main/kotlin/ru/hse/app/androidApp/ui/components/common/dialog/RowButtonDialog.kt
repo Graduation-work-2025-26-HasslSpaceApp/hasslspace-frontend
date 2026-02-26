@@ -36,7 +36,7 @@ fun RowButtonDialog(
     onDismissClick: () -> Unit
 ) {
     if (showDialog.value) {
-        Dialog(onDismissRequest = {}) {
+        Dialog(onDismissRequest = { showDialog.value = false }) {
             Box(
                 modifier = Modifier
                     .width(343.dp)

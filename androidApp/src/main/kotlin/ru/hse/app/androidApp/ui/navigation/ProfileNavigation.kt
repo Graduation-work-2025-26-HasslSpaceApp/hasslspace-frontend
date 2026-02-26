@@ -5,7 +5,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import ru.hse.app.androidApp.ui.components.common.box.NoItemsBox
+import ru.hse.app.androidApp.screen.profile.AddFriendsScreen
+import ru.hse.app.androidApp.screen.profile.FriendsScreen
+import ru.hse.app.androidApp.screen.profile.ProfileScreen
+import ru.hse.app.androidApp.screen.profile.SettingsScreen
+import ru.hse.app.androidApp.screen.profile.SystemSettingsScreen
+import ru.hse.app.androidApp.screen.profile.UserSettingsScreen
 
 @Composable
 fun ProfileNavigation(bottomNavHostController: NavHostController) {
@@ -19,19 +24,27 @@ fun ProfileNavigation(bottomNavHostController: NavHostController) {
         startDestination = NavigationItem.ProfileMain.route
     ) {
         composable(NavigationItem.ProfileMain.route) {
-            NoItemsBox("Профиль")
+            ProfileScreen(bottomNavHostController, profileNavController)
         }
-    }
-//        composable(NavigationItem.ProfileMain.route) {
-//            ProfileScreen(profileNavController, profileViewModel)
+        composable(NavigationItem.Settings.route) {
+            SettingsScreen(profileNavController)
+        }
+        composable(NavigationItem.UserSettings.route) {
+            UserSettingsScreen(profileNavController)
+        }
+        composable(NavigationItem.SystemSettings.route) {
+            SystemSettingsScreen(profileNavController)
+        }
+        composable(NavigationItem.MyFriends.route) {
+            FriendsScreen(profileNavController)
+        }
+        composable(NavigationItem.AddFriends.route) {
+            AddFriendsScreen(profileNavController)
+        }
+//        composable(NavigationItem.MyServers.route) {
+//            ServersNavigation(bottomNavHostController)
 //        }
-//        composable(NavigationItem.CompletedRoutes.route) {
-//            CompletedRoutesScreen(profileNavController, routeDetailsViewModel, profileViewModel)
-//        }
-//        composable(NavigationItem.FavouriteRoutes.route) {
-//            FavouriteRoutesScreen(profileNavController, routeDetailsViewModel, profileViewModel)
-//        }
-//        composable(NavigationItem.EditProfile.route) {
+//        composable(NavigationItem.Settings.route) {
 //            EditProfileScreen(profileNavController, profileViewModel)
 //        }
 //        composable(NavigationItem.AboutProgram.route) {
@@ -78,4 +91,5 @@ fun ProfileNavigation(bottomNavHostController: NavHostController) {
 //            }
 //        }
 //    }
+    }
 }

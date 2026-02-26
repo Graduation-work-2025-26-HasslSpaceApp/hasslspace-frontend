@@ -10,9 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,7 +40,8 @@ fun NewRoleContent(
     onSaveClick: () -> Unit,
     onToggle: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
-    selectedColor: MutableState<Color>,
+    selectedColor: Color,
+    onColorChanged: (Color) -> Unit,
     onColorPickClick: () -> Unit,
     isDarkTheme: Boolean
 ) {
@@ -192,8 +190,9 @@ fun NewRoleContentPreviewWithRequestsLight() {
             onSaveClick = {},
             onToggle = {},
             isDarkTheme = false,
-            selectedColor = remember { mutableStateOf(Color.Blue) },
-            onColorPickClick = {}
+            selectedColor = Color.Blue,
+            onColorPickClick = {},
+            onColorChanged = {}
         )
     }
 }
@@ -211,8 +210,9 @@ fun NewRoleContentPreviewWithRequestsDark() {
             onSaveClick = {},
             onToggle = {},
             isDarkTheme = true,
-            selectedColor = remember { mutableStateOf(Color.Blue) },
-            onColorPickClick = {}
+            selectedColor = Color.Blue,
+            onColorPickClick = {},
+            onColorChanged = {}
         )
     }
 }

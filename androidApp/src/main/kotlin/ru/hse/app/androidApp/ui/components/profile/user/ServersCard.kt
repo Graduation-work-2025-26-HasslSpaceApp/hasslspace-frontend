@@ -13,12 +13,14 @@ import ru.hse.app.androidApp.ui.theme.AppTheme
 @Composable
 fun ServersCard(
     count: Int,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     ProfileCard(
         type = "Серверы",
         label = serversLabel(count),
         modifier = modifier,
+        onClick = onClick,
         cardColor = MaterialTheme.colorScheme.tertiary,
         typeColor = MaterialTheme.colorScheme.onTertiary,
         labelColor = MaterialTheme.colorScheme.onSurface
@@ -42,13 +44,13 @@ fun serversLabel(count: Int): String {
 fun ServersCardPreviewAllLight() {
     AppTheme(isDark = false) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            ServersCard(1)
-            ServersCard(2)
-            ServersCard(5)
-            ServersCard(11)
-            ServersCard(21)
-            ServersCard(24)
-            ServersCard(100)
+            ServersCard(1, onClick = {})
+            ServersCard(2, onClick = {})
+            ServersCard(5, onClick = {})
+            ServersCard(11, onClick = {})
+            ServersCard(21, onClick = {})
+            ServersCard(24, onClick = {})
+            ServersCard(100, onClick = {})
         }
     }
 }
@@ -58,13 +60,13 @@ fun ServersCardPreviewAllLight() {
 fun ServersCardPreviewAllDark() {
     AppTheme(isDark = true) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            ServersCard(1)
-            ServersCard(2)
-            ServersCard(5)
-            ServersCard(11)
-            ServersCard(21)
-            ServersCard(24)
-            ServersCard(100)
+            ServersCard(1, onClick = {})
+            ServersCard(2, onClick = {})
+            ServersCard(5, onClick = {})
+            ServersCard(11, onClick = {})
+            ServersCard(21, onClick = {})
+            ServersCard(24, onClick = {})
+            ServersCard(100, onClick = {})
         }
     }
 }

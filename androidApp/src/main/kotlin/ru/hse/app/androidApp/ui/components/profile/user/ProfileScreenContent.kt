@@ -1,7 +1,6 @@
 package ru.hse.app.androidApp.ui.components.profile.user
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -56,7 +55,8 @@ fun ProfileScreenContent(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = 16.dp)
+                .padding(top = 30.dp),
             verticalArrangement = Arrangement.Top
         ) {
             Row(
@@ -92,13 +92,13 @@ fun ProfileScreenContent(
             ) {
                 FriendsCard(
                     count = friendsCount,
-                    modifier = Modifier.clickable { onFriendsClick() }
+                    onClick = onFriendsClick
                 )
 
                 Spacer(modifier = Modifier.width(15.dp))
                 ServersCard(
                     count = serversCount,
-                    modifier = Modifier.clickable { onServersClick() }
+                    onClick = onServersClick
                 )
             }
         }

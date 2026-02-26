@@ -12,9 +12,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,7 +36,7 @@ fun ServerMembersContent(
     friends: List<ServerMemberUiModel>,
     onBackClick: () -> Unit,
     onFriendClick: (ServerMemberUiModel) -> Unit,
-    searchText: MutableState<String>,
+    searchText: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     isDarkTheme: Boolean
@@ -136,7 +133,7 @@ fun ServerMembersContentPreviewWithRequestsLight() {
             friends = friends,
             onBackClick = {},
             onFriendClick = {},
-            searchText = remember { mutableStateOf("") },
+            searchText = "",
             onValueChange = {},
             isDarkTheme = false
         )
@@ -153,7 +150,7 @@ fun ServerMembersContentPreviewOnlyFriendsLight() {
             friends = friends,
             onBackClick = {},
             onFriendClick = {},
-            searchText = remember { mutableStateOf("") },
+            searchText = "",
             onValueChange = {},
             isDarkTheme = true
         )

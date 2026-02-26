@@ -7,9 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -32,7 +29,7 @@ fun MyChatsScreenContent(
     chats: List<ChatShortUiModel>,
     onAddClick: () -> Unit,
     onChatClick: (ChatShortUiModel) -> Unit,
-    searchText: MutableState<String>,
+    searchText: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     isDarkTheme: Boolean
@@ -142,7 +139,7 @@ fun MyChatsScreenContentPreviewLight() {
             chats = mockChats,
             onAddClick = {},
             onChatClick = {},
-            searchText = remember { mutableStateOf("") },
+            searchText = "",
             onValueChange = {},
             isDarkTheme = false
         )
@@ -185,7 +182,7 @@ fun MyChatsScreenContentPreviewDark() {
             chats = mockChats,
             onAddClick = {},
             onChatClick = {},
-            searchText = remember { mutableStateOf("поиск") },
+            searchText = "поиск",
             onValueChange = {},
             isDarkTheme = true
         )
@@ -201,7 +198,7 @@ fun MyChatsScreenContentPreviewEmptyLight() {
             chats = emptyList(),
             onAddClick = {},
             onChatClick = {},
-            searchText = remember { mutableStateOf("") },
+            searchText = "",
             onValueChange = {},
             isDarkTheme = false
         )
@@ -236,7 +233,7 @@ fun MyChatsScreenContentPreviewWithSearchLight() {
             chats = mockChats,
             onAddClick = {},
             onChatClick = {},
-            searchText = remember { mutableStateOf("мар") },
+            searchText = "мар",
             onValueChange = {},
             isDarkTheme = false
         )

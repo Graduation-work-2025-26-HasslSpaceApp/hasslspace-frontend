@@ -33,7 +33,7 @@ fun BottomNavigationBar(navController: NavController) {
 
     NavigationBar(
         containerColor = MaterialTheme.colorScheme.background,
-        modifier = Modifier.height(70.dp)
+        modifier = Modifier.height(60.dp)
     ) {
         val backStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = backStackEntry?.destination?.route
@@ -43,7 +43,7 @@ fun BottomNavigationBar(navController: NavController) {
                 selected = currentRoute == item.route,
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
-                    .padding(top = 10.dp)
+                    .padding(top = 5.dp)
                     .size(50.dp),
                 onClick = {
                     navController.navigate(item.route)
@@ -84,7 +84,7 @@ fun MainScreen(
     Scaffold(
         bottomBar = { BottomNavigationBar(navController) }
     ) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)) {
+        Box(modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding())) {
             BottomNavigation(navController)
         }
     }

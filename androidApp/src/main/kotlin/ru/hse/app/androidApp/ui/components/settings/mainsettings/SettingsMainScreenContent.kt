@@ -105,10 +105,9 @@ fun SettingsMainScreenContent(
             Spacer(Modifier.height(18.dp))
             VariableMedium(text = "Задать вопросы о приложении", fontSize = 20.sp)
             Spacer(Modifier.height(8.dp))
-            //TODO добавить актуальную почту
             ClickableTextLink(
-                text = "НАША ПОЧТА",
-                url = "mailto:godaily.appnotification@gmail.com",
+                text = "hasslspace.appnotification@gmail.com",
+                url = "mailto:hasslspace.appnotification@gmail.com",
                 onClick = ::openLink
             )
         }

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -33,15 +32,16 @@ fun UserSettingsScreenContent(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     isDarkTheme: Boolean,
-    selectedStatus: MutableState<StatusPresentation>,
+    selectedStatus: StatusPresentation,
     onStatusArrowClick: () -> Unit,
-    selectedImageUri: MutableState<Uri?>,
+    selectedImageUri: Uri?,
     onPhotoPickClick: () -> Unit,
     editedUsername: String,
     onEditedUsernameChanged: (String) -> Unit,
     enabledChangeUsername: Boolean,
     onApplyNewUsername: () -> Unit,
-    description: MutableState<String>,
+    description: String,
+    onDescChanged: (String) -> Unit,
     onApplyDescClick: () -> Unit,
     onExit: () -> Unit
 ) {
@@ -75,7 +75,7 @@ fun UserSettingsScreenContent(
                 fontSize = 20.sp,
             )
 
-            Spacer(Modifier.height(15.dp))
+            Spacer(Modifier.height(25.dp))
 
             StatusSetting(
                 selectedOption = selectedStatus,
@@ -98,6 +98,7 @@ fun UserSettingsScreenContent(
 
             DescriptionSetting(
                 description = description,
+                onDescChanged = onDescChanged,
                 onApplyClick = onApplyDescClick
             )
 
@@ -129,14 +130,15 @@ fun UserSettingsContentPreview() {
             modifier = Modifier.fillMaxSize(),
             onBackClick = {},
             isDarkTheme = isDarkTheme.value,
-            selectedStatus = selectedOption,
+            selectedStatus = selectedOption.value,
             onStatusArrowClick = {},
-            selectedImageUri = selectedImageUri,
+            selectedImageUri = selectedImageUri.value,
             onPhotoPickClick = {},
             editedUsername = username,
             enabledChangeUsername = true,
             onApplyNewUsername = {},
-            description = description,
+            description = description.value,
+            onDescChanged = {},
             onApplyDescClick = {},
             onExit = {},
             onEditedUsernameChanged = {}
@@ -167,14 +169,15 @@ fun UserSettingsContentPreview1() {
             modifier = Modifier.fillMaxSize(),
             onBackClick = {},
             isDarkTheme = isDarkTheme.value,
-            selectedStatus = selectedOption,
+            selectedStatus = selectedOption.value,
             onStatusArrowClick = {},
-            selectedImageUri = selectedImageUri,
+            selectedImageUri = selectedImageUri.value,
             onPhotoPickClick = {},
             editedUsername = username,
             enabledChangeUsername = true,
             onApplyNewUsername = {},
-            description = description,
+            description = description.value,
+            onDescChanged = {},
             onApplyDescClick = {},
             onExit = {},
             onEditedUsernameChanged = {}

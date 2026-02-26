@@ -7,14 +7,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -32,6 +30,7 @@ import ru.hse.app.androidApp.ui.components.common.text.VariableBold
 import ru.hse.app.androidApp.ui.components.common.text.VariableLight
 import ru.hse.app.androidApp.ui.entity.model.FriendUiModel
 import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
+import ru.hse.app.androidApp.ui.entity.model.TypeUiModel
 import ru.hse.app.androidApp.ui.theme.AppTheme
 
 @Composable
@@ -47,13 +46,16 @@ fun FriendsContent(
     onApplicationClick: (FriendUiModel) -> Unit,
     onAcceptClick: (FriendUiModel) -> Unit,
     onDismissClick: (FriendUiModel) -> Unit,
-    searchText: MutableState<String>,
+    searchText: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     isDarkTheme: Boolean
 ) {
     Column(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
+            .padding(top = 50.dp)
+            .padding(16.dp),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -152,7 +154,8 @@ private fun previewFriend(id: String, name: String) = FriendUiModel(
     name = name,
     nickname = name.lowercase().replace(" ", "_"),
     avatarUrl = "",
-    status = StatusPresentation.ACTIVE
+    status = StatusPresentation.ACTIVE,
+    type = TypeUiModel.FRIEND
 )
 
 @Preview(showBackground = true, name = "Friends Screen - With Requests (Light)")
@@ -191,7 +194,7 @@ fun FriendsContentPreviewWithRequestsLight() {
             onApplicationClick = {},
             onAcceptClick = {},
             onDismissClick = {},
-            searchText = remember { mutableStateOf("") },
+            searchText = "",
             onValueChange = {},
             isDarkTheme = false
         )
@@ -221,7 +224,7 @@ fun FriendsContentPreviewOnlyFriendsLight() {
             onApplicationClick = {},
             onAcceptClick = {},
             onDismissClick = {},
-            searchText = remember { mutableStateOf("") },
+            searchText = "",
             onValueChange = {},
             isDarkTheme = false
         )
@@ -255,7 +258,7 @@ fun FriendsContentPreviewWithRequestsDark() {
             onApplicationClick = {},
             onAcceptClick = {},
             onDismissClick = {},
-            searchText = remember { mutableStateOf("") },
+            searchText = "",
             onValueChange = {},
             isDarkTheme = true
         )

@@ -10,7 +10,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,7 +22,7 @@ import ru.hse.app.androidApp.ui.components.common.text.VariableLight
 
 @Composable
 fun ColorSetting(
-    selectedColor: MutableState<Color>,
+    selectedColor: Color,
     modifier: Modifier = Modifier,
     onColorPickClick: () -> Unit,
 ) {
@@ -43,7 +42,7 @@ fun ColorSetting(
                 modifier = Modifier
                     .size(45.dp)
                     .clip(CircleShape)
-                    .background(selectedColor.value, shape = CircleShape),
+                    .background(selectedColor, shape = CircleShape),
             )
 
             Icon(

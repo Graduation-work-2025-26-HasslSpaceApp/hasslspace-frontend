@@ -2,17 +2,25 @@ package ru.hse.app.androidApp.domain.repository
 
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import ru.hse.app.androidApp.domain.model.entity.UserInfo
+import ru.hse.app.androidApp.domain.model.entity.ServerInfo
+import ru.hse.app.androidApp.domain.model.entity.UserExpandedInfo
 
 interface UserRepository {
 
-    suspend fun registerUser(email: String, password: String, username: String, nickname: String): Result<String>
+    suspend fun registerUser(
+        email: String,
+        password: String,
+        username: String,
+        nickname: String
+    ): Result<String>
+
     suspend fun loginUser(email: String, password: String): Result<String>
     suspend fun sendVerificationCode(email: String): Result<String>
     suspend fun checkVerificationCode(code: String): Result<String>
     suspend fun checkEmailVerification(): Result<Boolean>
-    suspend fun getUserInfo(): Result<UserInfo>
+    suspend fun getUserInfo(): Result<UserExpandedInfo>
     suspend fun saveUserPhoto(photoUrl: String): Result<String>
+
     //TODO подумать как поменять
     suspend fun uploadPhoto(
         photo: MultipartBody.Part,
@@ -20,4 +28,9 @@ interface UserRepository {
         photoUrl: RequestBody?
     ): Result<String>
 
+    suspend fun getServers(): Result<List<ServerInfo>>
+
+    suspend fun changeUserName(newName: String): Result<String>
+    suspend fun changeUserStatus(status: String): Result<String>
+    suspend fun changeUserDesc(desc: String): Result<String>
 }

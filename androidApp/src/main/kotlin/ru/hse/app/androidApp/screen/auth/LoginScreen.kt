@@ -52,7 +52,8 @@ fun LoginScreen(
             }
 
             is CheckEmailVerificationEvent.Error -> {
-                val message = (checkEmailVerificationEvent as CheckEmailVerificationEvent.Error).message
+                val message =
+                    (checkEmailVerificationEvent as CheckEmailVerificationEvent.Error).message
                 viewModel.showToast(message)
             }
 

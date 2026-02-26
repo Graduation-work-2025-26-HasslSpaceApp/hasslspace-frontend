@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -32,7 +30,7 @@ import ru.hse.app.androidApp.ui.theme.AppTheme
 fun SettingsServer(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
-    selectedImageUri: MutableState<Uri?>,
+    selectedImageUri: Uri?,
     onPhotoPickClick: () -> Unit,
     editedServerName: String,
     onEditedServernameChanged: (String) -> Unit,
@@ -147,7 +145,7 @@ fun SettingsServerPreviewWithRequestsLight() {
     AppTheme(isDark = false) {
         SettingsServer(
             onBackClick = {},
-            selectedImageUri = mutableStateOf(Uri.EMPTY),
+            selectedImageUri = Uri.EMPTY,
             onPhotoPickClick = {},
             editedServerName = "Тест сервер",
             onEditedServernameChanged = {},
@@ -167,7 +165,7 @@ fun SettingsServerPreviewWithRequestsDark() {
     AppTheme(isDark = true) {
         SettingsServer(
             onBackClick = {},
-            selectedImageUri = mutableStateOf(Uri.EMPTY),
+            selectedImageUri = Uri.EMPTY,
             onPhotoPickClick = {},
             editedServerName = "Тест сервер",
             onEditedServernameChanged = {},

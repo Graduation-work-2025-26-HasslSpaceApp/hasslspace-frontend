@@ -27,12 +27,12 @@ class SessionValidationViewModel @Inject constructor(
     @param:ApplicationContext private val context: Context
 ) : ViewModel() {
     //TODO потом заменить на null
-    private val _isTokenValid = MutableStateFlow<Boolean?>(null)
-    //    private val _isTokenValid = MutableStateFlow<Boolean?>(true)
+    //private val _isTokenValid = MutableStateFlow<Boolean?>(null)
+    private val _isTokenValid = MutableStateFlow<Boolean?>(true)
     val isTokenValid: StateFlow<Boolean?> = _isTokenValid.asStateFlow()
 
-   private val _isVerified = MutableStateFlow<Boolean?>(null)
-    //  private val _isVerified = MutableStateFlow<Boolean?>(true)
+    //private val _isVerified = MutableStateFlow<Boolean?>(null)
+    private val _isVerified = MutableStateFlow<Boolean?>(true)
     val isVerified: StateFlow<Boolean?> = _isVerified.asStateFlow()
 
     private val _isDark = MutableStateFlow<Boolean>(false)
@@ -44,7 +44,7 @@ class SessionValidationViewModel @Inject constructor(
 
     init {
         //TODO для теста
- //       clear()
+//        clear()
 
         loadTheme()
 
@@ -52,12 +52,17 @@ class SessionValidationViewModel @Inject constructor(
             launch {
                 jwtFlow.collect { jwt ->
                     jwt?.let { checkTokenValidity() }
-                        ?: _isTokenValid.update { false }
+                        ?: _isTokenValid.update { true } //TODO исправить на false потом
                 }
             }
             launch {
                 verificationFlow.collect {
                     checkVerification()
+                }
+            }
+            launch {
+                isDarkFlow.collect { isDarkTheme ->
+                    _isDark.update { isDarkTheme }
                 }
             }
         }
@@ -103,7 +108,8 @@ class SessionValidationViewModel @Inject constructor(
     }
 
     private fun loadTheme() {
-        val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        val currentNightMode =
+            context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         val isDarkTheme = when (currentNightMode) {
             Configuration.UI_MODE_NIGHT_YES -> true
             Configuration.UI_MODE_NIGHT_NO -> false

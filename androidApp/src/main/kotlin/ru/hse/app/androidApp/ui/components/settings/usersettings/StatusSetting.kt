@@ -11,7 +11,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -30,7 +29,7 @@ import ru.hse.app.androidApp.ui.theme.AppTheme
 
 @Composable
 fun StatusSetting(
-    selectedOption: MutableState<StatusPresentation>,
+    selectedOption: StatusPresentation,
     modifier: Modifier = Modifier,
     onArrowClick: () -> Unit,
 ) {
@@ -61,11 +60,11 @@ fun StatusSetting(
                     horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     StatusCircle(
-                        selectedOption.value,
+                        selectedOption,
                         size = 20.dp
                     )
                     VariableLight(
-                        text = selectedOption.value.label,
+                        text = selectedOption.label,
                         fontSize = 16.sp
                     )
                 }
@@ -94,7 +93,7 @@ fun ThemeChangeSettingLightOffPreview() {
     AppTheme(isDark = false) {
 
         StatusSetting(
-            selectedOption = selectedOption,
+            selectedOption = selectedOption.value,
             onArrowClick = {},
         )
     }
@@ -111,7 +110,7 @@ fun ThemeChangeSettingLightOffPreview1() {
     AppTheme(isDark = false) {
 
         StatusSetting(
-            selectedOption = selectedOption,
+            selectedOption = selectedOption.value,
             onArrowClick = {},
         )
     }
@@ -128,7 +127,7 @@ fun ThemeChangeSettingLightOffPreview2() {
     AppTheme(isDark = false) {
 
         StatusSetting(
-            selectedOption = selectedOption,
+            selectedOption = selectedOption.value,
             onArrowClick = {},
         )
     }
@@ -145,7 +144,7 @@ fun ThemeChangeSettingLightOffPreview3() {
     AppTheme(isDark = false) {
 
         StatusSetting(
-            selectedOption = selectedOption,
+            selectedOption = selectedOption.value,
             onArrowClick = {},
         )
     }
@@ -162,7 +161,7 @@ fun ThemeChangeSettingDarkOffPreview() {
     AppTheme(isDark = true) {
 
         StatusSetting(
-            selectedOption = selectedOption,
+            selectedOption = selectedOption.value,
             onArrowClick = {},
         )
     }
@@ -179,7 +178,7 @@ fun ThemeChangeSettingDarkOffPreview1() {
     AppTheme(isDark = true) {
 
         StatusSetting(
-            selectedOption = selectedOption,
+            selectedOption = selectedOption.value,
             onArrowClick = {},
         )
     }
@@ -196,7 +195,7 @@ fun ThemeChangeSettingDarkOffPreview2() {
     AppTheme(isDark = true) {
 
         StatusSetting(
-            selectedOption = selectedOption,
+            selectedOption = selectedOption.value,
             onArrowClick = {},
         )
     }
@@ -213,7 +212,7 @@ fun ThemeChangeSettingDarkOffPreview3() {
     AppTheme(isDark = true) {
 
         StatusSetting(
-            selectedOption = selectedOption,
+            selectedOption = selectedOption.value,
             onArrowClick = {},
         )
     }

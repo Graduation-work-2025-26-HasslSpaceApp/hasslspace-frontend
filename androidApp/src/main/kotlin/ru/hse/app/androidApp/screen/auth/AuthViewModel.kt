@@ -3,7 +3,6 @@ package ru.hse.app.androidApp.screen.auth
 import android.net.Uri
 import android.util.Patterns
 import android.widget.Toast
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +17,6 @@ import ru.hse.app.androidApp.domain.usecase.auth.LoginUserUseCase
 import ru.hse.app.androidApp.domain.usecase.auth.RegisterUserUseCase
 import ru.hse.app.androidApp.domain.usecase.auth.SendVerificationCodeUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.SaveUserPhotoUseCase
-import ru.hse.app.androidApp.ui.entity.model.auth.AuthUiModel
 import ru.hse.app.androidApp.ui.entity.model.auth.AuthUiState
 import ru.hse.app.androidApp.ui.entity.model.auth.CheckEmailVerificationEvent
 import ru.hse.app.androidApp.ui.entity.model.auth.LoginUserEvent
@@ -345,14 +343,6 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun onSelectedImageUriChanged(selectedImageUri: Uri?) {
-        val currentState = _uiState.value
-        if (currentState is AuthUiState.Success) {
-            val updatedData = currentState.data.copy(selectedImageUri = selectedImageUri)
-            _uiState.value = AuthUiState.Success(updatedData)
-        }
-    }
-
     fun onDigitInCodeChanged(index: Int, value: String) {
         val currentState = _uiState.value
         if (currentState is AuthUiState.Success) {
@@ -398,15 +388,19 @@ class AuthViewModel @Inject constructor(
     fun resetSavePhotoEvent() {
         _savePhotoEvent.value = null
     }
+
     fun resetRegisterEvent() {
         _registerEvent.value = null
     }
+
     fun resetLoginEvent() {
         _loginEvent.value = null
     }
+
     fun resetSendCodeEvent() {
         _sendCodeEvent.value = null
     }
+
     fun resetVerifyCodeEvent() {
         _verifyCodeEvent.value = null
     }

@@ -11,9 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -40,7 +37,7 @@ fun NewGroupScreenContent(
     onCreateClick: () -> Unit,
     onFriendClick: (FriendCheckboxUiModel) -> Unit,
     onToggle: (Boolean) -> Unit,
-    searchText: MutableState<String>,
+    searchText: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     userCount: Int,
@@ -175,7 +172,7 @@ fun NewGroupScreenContentPreviewLight() {
             onCreateClick = {},
             onFriendClick = {},
             onToggle = {},
-            searchText = remember { mutableStateOf("") },
+            searchText = "",
             onValueChange = {},
             isDarkTheme = false,
             userCount = 3
@@ -229,7 +226,7 @@ fun NewGroupScreenContentPreviewDark() {
             onCreateClick = {},
             onFriendClick = {},
             onToggle = {},
-            searchText = remember { mutableStateOf("мар") },
+            searchText = "мар",
             onValueChange = {},
             isDarkTheme = true,
             userCount = 3
@@ -248,7 +245,7 @@ fun NewGroupScreenContentPreviewEmptyLight() {
             onCreateClick = {},
             onFriendClick = {},
             onToggle = {},
-            searchText = remember { mutableStateOf("") },
+            searchText = "",
             onValueChange = {},
             isDarkTheme = false,
             userCount = 3
@@ -286,7 +283,7 @@ fun NewGroupScreenContentPreviewWithSearchLight() {
             onCreateClick = {},
             onFriendClick = {},
             onToggle = {},
-            searchText = remember { mutableStateOf("мар") },
+            searchText = "Mah",
             onValueChange = {},
             isDarkTheme = false,
             userCount = 3
@@ -340,7 +337,7 @@ fun NewGroupScreenContentPreviewMultiSelectionLight() {
             onCreateClick = {},
             onFriendClick = {},
             onToggle = {},
-            searchText = remember { mutableStateOf("") },
+            searchText = "",
             onValueChange = {},
             isDarkTheme = false,
             userCount = 3

@@ -1,8 +1,8 @@
 package ru.hse.app.androidApp.screen.auth
 
 import android.app.Activity
-import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,7 +15,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.yalantis.ucrop.UCrop
-import ru.hse.app.androidApp.domain.service.common.CropProfilePhotoService
 import ru.hse.app.androidApp.ui.components.auth.photoloading.AddPhotoScreenContent
 import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
 import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
@@ -90,11 +89,10 @@ fun AddPhotoScreenWithStateContent(
         }
     )
 
-    val imagePickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent(),
-        onResult = { uri: Uri? ->
+    val pickMedia =
+        rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             uri?.let {
-                val fileSizeInBytes = CropProfilePhotoService().getImageSize(context, it)
+                val fileSizeInBytes = viewModel.cropProfilePhotoService.getImageSize(context, it)
                 val maxSizeInBytes = 20 * 1024 * 1024
 
                 if (fileSizeInBytes > maxSizeInBytes) {
@@ -104,17 +102,16 @@ fun AddPhotoScreenWithStateContent(
                 }
             }
         }
-    )
 
     AddPhotoScreenContent(
         selectedImageUri = data.selectedImageUri,
-        onPickImageClick = { imagePickerLauncher.launch("image/*") },
+        onPickImageClick = { pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
         onContinueClick = {
             viewModel.addProfilePhoto()
             viewModel.saveVerificationStatusToStorageFromState()
         },
         onSkipClick = {
-                viewModel.saveVerificationStatusToStorageFromState()
+            viewModel.saveVerificationStatusToStorageFromState()
         },
         isDarkTheme = viewModel.isDarkTheme
     )
