@@ -12,7 +12,7 @@ data class ServerInfo(
 fun ServerInfoDto.toDomain(): ServerInfo {
     return ServerInfo(
         id = this.id,
-        title = this.title,
+        title = this.name,
         usersCount = this.usersCount,
         photoUrl = this.photoURL
     )
