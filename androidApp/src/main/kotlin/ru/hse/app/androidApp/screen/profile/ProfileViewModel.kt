@@ -26,7 +26,7 @@ import ru.hse.app.androidApp.domain.usecase.friends.SearchFriendsUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.ChangeUserDescUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.ChangeUserNameUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.ChangeUserStatusUseCase
-import ru.hse.app.androidApp.domain.usecase.profile.GetUserServersUseCase
+import ru.hse.app.androidApp.domain.usecase.servers.GetUserServersUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.LoadUserInfoUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.SaveUserPhotoUseCase
 import ru.hse.app.androidApp.ui.entity.model.FriendUiModel
@@ -54,7 +54,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    @ApplicationContext context: Context,
     // Profile and settings
     private val dataManager: DataManager,
     private val loadUserInfoUseCase: LoadUserInfoUseCase,
