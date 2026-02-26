@@ -7,8 +7,10 @@ import dagger.hilt.components.SingletonComponent
 import ru.hse.app.androidApp.data.network.ApiCaller
 import ru.hse.app.androidApp.data.network.ApiService
 import ru.hse.app.androidApp.data.repository.FriendRepositoryImpl
+import ru.hse.app.androidApp.data.repository.ServerRepositoryImpl
 import ru.hse.app.androidApp.data.repository.UserRepositoryImpl
 import ru.hse.app.androidApp.domain.repository.FriendRepository
+import ru.hse.app.androidApp.domain.repository.ServerRepository
 import ru.hse.app.androidApp.domain.repository.UserRepository
 
 @Module
@@ -23,5 +25,10 @@ object RepositoryModule {
     @Provides
     fun provideFriendRepository(apiService: ApiService, apiCaller: ApiCaller): FriendRepository {
         return FriendRepositoryImpl(apiService, apiCaller)
+    }
+
+    @Provides
+    fun provideServerRepository(apiService: ApiService, apiCaller: ApiCaller): ServerRepository {
+        return ServerRepositoryImpl(apiService, apiCaller)
     }
 }

@@ -13,7 +13,7 @@ import ru.hse.app.androidApp.ui.components.auth.verification.VerificationScreenC
 import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
 import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
 import ru.hse.app.androidApp.ui.entity.model.auth.AuthUiState
-import ru.hse.app.androidApp.ui.entity.model.auth.VerifyUserEvent
+import ru.hse.app.androidApp.ui.entity.model.auth.events.VerifyUserEvent
 import ru.hse.app.androidApp.ui.navigation.AuthNavigationItem
 
 @Composable

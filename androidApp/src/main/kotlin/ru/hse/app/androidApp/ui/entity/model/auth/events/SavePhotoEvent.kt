@@ -1,4 +1,4 @@
-package ru.hse.app.androidApp.ui.entity.model.auth
+package ru.hse.app.androidApp.ui.entity.model.auth.events
 
 sealed class SavePhotoEvent {
     data object SuccessSave : SavePhotoEvent()

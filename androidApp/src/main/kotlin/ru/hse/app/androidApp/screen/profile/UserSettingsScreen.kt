@@ -20,11 +20,11 @@ import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
 import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
 import ru.hse.app.androidApp.ui.components.settings.usersettings.StatusChangeBottomSheet
 import ru.hse.app.androidApp.ui.components.settings.usersettings.UserSettingsScreenContent
-import ru.hse.app.androidApp.ui.entity.model.auth.SavePhotoEvent
+import ru.hse.app.androidApp.ui.entity.model.auth.events.SavePhotoEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.ProfileUiState
-import ru.hse.app.androidApp.ui.entity.model.profile.SaveUserDescEvent
-import ru.hse.app.androidApp.ui.entity.model.profile.SaveUserNameEvent
-import ru.hse.app.androidApp.ui.entity.model.profile.SaveUserStatusEvent
+import ru.hse.app.androidApp.ui.entity.model.profile.events.SaveUserDescEvent
+import ru.hse.app.androidApp.ui.entity.model.profile.events.SaveUserNameEvent
+import ru.hse.app.androidApp.ui.entity.model.profile.events.SaveUserStatusEvent
 import ru.hse.app.androidApp.ui.notification.ToastManager
 
 

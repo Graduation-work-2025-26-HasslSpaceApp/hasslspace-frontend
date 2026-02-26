@@ -1,4 +1,4 @@
-package ru.hse.app.androidApp.ui.entity.model.profile
+package ru.hse.app.androidApp.ui.entity.model.profile.events
 
 sealed class SaveUserNameEvent {
     data object SuccessSave : SaveUserNameEvent()

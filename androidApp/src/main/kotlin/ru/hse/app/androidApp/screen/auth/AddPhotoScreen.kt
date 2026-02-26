@@ -19,7 +19,7 @@ import ru.hse.app.androidApp.ui.components.auth.photoloading.AddPhotoScreenConte
 import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
 import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
 import ru.hse.app.androidApp.ui.entity.model.auth.AuthUiState
-import ru.hse.app.androidApp.ui.entity.model.auth.SavePhotoEvent
+import ru.hse.app.androidApp.ui.entity.model.auth.events.SavePhotoEvent
 import ru.hse.app.androidApp.ui.notification.ToastManager
 
 @Composable
