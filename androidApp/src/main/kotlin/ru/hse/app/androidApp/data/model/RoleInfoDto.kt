@@ -2,7 +2,7 @@ package ru.hse.app.androidApp.data.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
-data class RoleInfoDto (
+data class RoleInfoDto(
     @JsonProperty("id")
     val id: String,
 
@@ -15,7 +15,7 @@ data class RoleInfoDto (
     @JsonProperty("members")
     val members: List<RoleMemberDto>,
 ) {
-    data class RoleMemberDto (
+    data class RoleMemberDto(
         @JsonProperty("id")
         val id: String,
 

@@ -2,7 +2,6 @@ package ru.hse.app.androidApp.ui.entity.model.servers
 
 import androidx.compose.runtime.Immutable
 import ru.hse.app.androidApp.ui.entity.model.ServerShortUiModel
-import ru.hse.app.androidApp.ui.entity.model.profile.ProfileUiModel
 
 sealed interface ServersUiState {
     data object Loading : ServersUiState
@@ -12,6 +11,6 @@ sealed interface ServersUiState {
 
 //TODO
 @Immutable
-data class ServersUiModel (
-    val userServers: List<ServerShortUiModel>
+data class ServersUiModel(
+    val userServers: List<ServerShortUiModel>,
 )

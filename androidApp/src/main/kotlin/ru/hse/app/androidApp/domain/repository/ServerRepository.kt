@@ -5,9 +5,7 @@ import ru.hse.app.androidApp.domain.model.entity.CreateRole
 import ru.hse.app.androidApp.domain.model.entity.CreateServer
 import ru.hse.app.androidApp.domain.model.entity.Invitation
 import ru.hse.app.androidApp.domain.model.entity.RoleInfo
-import ru.hse.app.androidApp.domain.model.entity.ServerInfo
 import ru.hse.app.androidApp.domain.model.entity.ServerInfoExpanded
-import ru.hse.app.androidApp.domain.model.entity.UserExpandedInfoWithStatus
 import ru.hse.app.androidApp.domain.model.entity.UserInfo
 
 interface ServerRepository {
@@ -24,6 +22,7 @@ interface ServerRepository {
     suspend fun getServerInvitations(serverId: String): Result<List<Invitation>>
     suspend fun getServerRoles(serverId: String): Result<List<RoleInfo>>
     suspend fun getServerUserRoles(userId: String, serverId: String): Result<List<RoleInfo>>
+    suspend fun getFriendsNotInServer(serverId: String): Result<List<UserInfo>>
 
     suspend fun joinServer(): Result<String>
 

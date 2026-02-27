@@ -8,6 +8,7 @@ import ru.hse.app.androidApp.domain.model.entity.CreateServer
 import ru.hse.app.androidApp.domain.model.entity.Invitation
 import ru.hse.app.androidApp.domain.model.entity.RoleInfo
 import ru.hse.app.androidApp.domain.model.entity.ServerInfoExpanded
+import ru.hse.app.androidApp.domain.model.entity.UserInfo
 import ru.hse.app.androidApp.domain.model.entity.toDomain
 import ru.hse.app.androidApp.domain.model.entity.toDto
 import ru.hse.app.androidApp.domain.repository.ServerRepository
@@ -71,6 +72,13 @@ class ServerRepositoryImpl @Inject constructor(
         return apiCaller.safeApiCall { apiService.getServerRoles(serverId) }.mapCatching { roles ->
             roles.map { it.toDomain() }
         }
+    }
+
+    override suspend fun getFriendsNotInServer(serverId: String): Result<List<UserInfo>> {
+        return apiCaller.safeApiCall { apiService.getFriendsNotInServer(serverId) }
+            .mapCatching { users ->
+                users.map { it.toDomain() }
+            }
     }
 
     override suspend fun getServerUserRoles(

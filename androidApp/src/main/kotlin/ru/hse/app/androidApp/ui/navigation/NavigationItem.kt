@@ -15,6 +15,7 @@ sealed class NavigationItem(val route: String, val title: String) {
     data object ServersMain : NavigationItem("servers_main", "Мои серверы")
     data object CreateServer : NavigationItem("create_server", "Создать сервер")
     data object JoinServer : NavigationItem("join_server", "Присоединиться к серверу")
+    data object MainServerScreen : NavigationItem("main_server", "Главная страница сервера")
 
     // Chats
     data object ChatsMain : NavigationItem("chats_main", "Мои чаты")

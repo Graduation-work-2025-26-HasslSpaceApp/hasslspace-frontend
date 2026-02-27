@@ -13,8 +13,8 @@ import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Query
 import ru.hse.app.androidApp.data.model.CreateChannelDto
-import ru.hse.app.androidApp.data.model.CreateServerDto
 import ru.hse.app.androidApp.data.model.CreateRoleDto
+import ru.hse.app.androidApp.data.model.CreateServerDto
 import ru.hse.app.androidApp.data.model.InvitationDto
 import ru.hse.app.androidApp.data.model.RoleInfoDto
 import ru.hse.app.androidApp.data.model.ServerInfoDto
@@ -185,6 +185,11 @@ interface ApiService {
     suspend fun getServerInvitations(
         @Query("serverId") serverId: String,
     ): Response<List<InvitationDto>>
+
+    @GET("") //TODO
+    suspend fun getFriendsNotInServer(
+        @Query("serverId") serverId: String,
+    ): Response<List<UserInfoDto>>
 
     // Получить роли на сервере
     @GET("") //TODO

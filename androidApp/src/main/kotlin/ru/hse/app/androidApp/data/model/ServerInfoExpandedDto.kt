@@ -24,7 +24,7 @@ data class ServerInfoExpandedDto(
     @JsonProperty("voice_channels")
     val voiceChannels: List<VoiceChannelDto>,
 ) {
-    data class TextChannelDto (
+    data class TextChannelDto(
         @JsonProperty("id")
         val id: String,
 
@@ -32,14 +32,15 @@ data class ServerInfoExpandedDto(
         val name: String,
     )
 
-    data class VoiceChannelDto (
+    data class VoiceChannelDto(
         @JsonProperty("id")
         val id: String,
 
         @JsonProperty("name")
         val name: String,
     )
-    data class ServerMemberDto (
+
+    data class ServerMemberDto(
         @JsonProperty("id")
         val id: String,
 
@@ -58,7 +59,7 @@ data class ServerInfoExpandedDto(
         @JsonProperty("roles")
         val roles: List<ServerRoleDto>? = null,
     ) {
-        data class ServerRoleDto (
+        data class ServerRoleDto(
             @JsonProperty("id")
             val id: String,
 

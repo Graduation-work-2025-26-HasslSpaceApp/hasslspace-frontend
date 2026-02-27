@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,7 +15,6 @@ import androidx.compose.ui.unit.sp
 import coil3.ImageLoader
 import ru.hse.app.androidApp.ui.components.common.bar.SearchBar
 import ru.hse.app.androidApp.ui.components.common.box.NoItemsBox
-import ru.hse.app.androidApp.ui.components.common.button.BackButton
 import ru.hse.app.androidApp.ui.components.common.card.ServerCard
 import ru.hse.app.androidApp.ui.components.common.grid.UniversalVerticalGrid
 import ru.hse.app.androidApp.ui.components.common.text.VariableBold

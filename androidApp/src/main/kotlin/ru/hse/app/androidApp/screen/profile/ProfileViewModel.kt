@@ -24,13 +24,14 @@ import ru.hse.app.androidApp.domain.usecase.friends.SearchFriendsUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.ChangeUserDescUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.ChangeUserNameUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.ChangeUserStatusUseCase
-import ru.hse.app.androidApp.domain.usecase.servers.GetUserServersUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.LoadUserInfoUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.SaveUserPhotoUseCase
+import ru.hse.app.androidApp.domain.usecase.servers.GetUserServersUseCase
 import ru.hse.app.androidApp.ui.entity.model.FriendUiModel
 import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
 import ru.hse.app.androidApp.ui.entity.model.TypeUiModel
 import ru.hse.app.androidApp.ui.entity.model.auth.events.SavePhotoEvent
+import ru.hse.app.androidApp.ui.entity.model.profile.ProfileUiState
 import ru.hse.app.androidApp.ui.entity.model.profile.events.CreateFriendRequestEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.events.DeleteFriendshipEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadChosenUserCommonServersEvent
@@ -38,7 +39,6 @@ import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadChosenUserEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadUserDataEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadUserFriendsEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadUserServersEvent
-import ru.hse.app.androidApp.ui.entity.model.profile.ProfileUiState
 import ru.hse.app.androidApp.ui.entity.model.profile.events.RespondToFriendRequestEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.events.SaveUserDescEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.events.SaveUserNameEvent

@@ -481,6 +481,10 @@ class FakeApiService : ApiService {
         return Response.success(fakeInvitations)
     }
 
+    override suspend fun getFriendsNotInServer(serverId: String): Response<List<UserInfoDto>> {
+        return Response.success(fakeFriends)
+    }
+
     override suspend fun getServerRoles(serverId: String): Response<List<RoleInfoDto>> {
         return Response.success(serverRoles)
     }

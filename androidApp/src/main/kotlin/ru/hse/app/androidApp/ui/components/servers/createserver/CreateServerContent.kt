@@ -40,7 +40,8 @@ fun CreateServerContent(
     onJoinClick: () -> Unit
 ) {
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .padding(top = 50.dp)
             .padding(16.dp)
     ) {

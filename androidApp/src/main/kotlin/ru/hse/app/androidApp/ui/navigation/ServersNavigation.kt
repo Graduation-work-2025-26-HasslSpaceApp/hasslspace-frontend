@@ -6,9 +6,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import ru.hse.app.androidApp.screen.servers.CreateServerScreen
-import ru.hse.app.androidApp.screen.servers.ServersScreen
 import ru.hse.app.androidApp.screen.servers.JoinServerScreen
-import ru.hse.app.androidApp.ui.components.common.box.NoItemsBox
+import ru.hse.app.androidApp.screen.servers.MainServerScreen
+import ru.hse.app.androidApp.screen.servers.ServersScreen
 
 @Composable
 fun ServersNavigation(bottomNavHostController: NavHostController) {
@@ -28,6 +28,14 @@ fun ServersNavigation(bottomNavHostController: NavHostController) {
 
         composable(NavigationItem.JoinServer.route) {
             JoinServerScreen(serversNavController)
+        }
+
+
+        composable(NavigationItem.MainServerScreen.route + "/{serverId}") { backStackEntry ->
+            val serverId = backStackEntry.arguments?.getString("serverId")
+            if (serverId != null) {
+                MainServerScreen(serversNavController, serverId)
+            }
         }
     }
 //    composable(NavigationItem.HomeMain.route) {

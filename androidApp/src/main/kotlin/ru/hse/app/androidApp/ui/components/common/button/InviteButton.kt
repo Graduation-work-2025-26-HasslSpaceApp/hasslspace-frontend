@@ -21,6 +21,7 @@ import ru.hse.app.androidApp.ui.theme.AppTheme
 fun InviteButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     text: String = "Пригласить",
     fontSize: TextUnit = 12.sp,
     fontColor: Color = MaterialTheme.colorScheme.onBackground,
@@ -30,6 +31,7 @@ fun InviteButton(
     )
 ) {
     Button(
+        enabled = enabled,
         onClick = onClick,
         shape = RoundedCornerShape(13.dp),
         colors = colors,

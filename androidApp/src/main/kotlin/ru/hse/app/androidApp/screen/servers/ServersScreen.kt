@@ -74,7 +74,9 @@ fun ServersScreenWithStateContent(
     MyServersContent(
         imageLoader = context.imageLoader,
         servers = data.userServers,
-        onServerClick = {/*todo*/ },
+        onServerClick = { server ->
+            navController.navigate(NavigationItem.MainServerScreen.route + "/${server.id}")
+        },
         searchText = viewModel.searchServersText.value,
         onValueChange = viewModel::onSearchServersValueChange,
         isDarkTheme = viewModel.isDarkTheme,

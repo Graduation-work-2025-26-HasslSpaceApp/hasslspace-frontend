@@ -14,7 +14,6 @@ import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
 import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
 import ru.hse.app.androidApp.ui.components.servers.joinserver.JoinServerContent
 import ru.hse.app.androidApp.ui.entity.model.servers.ServersUiState
-import ru.hse.app.androidApp.ui.entity.model.servers.events.CreateServerEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.JoinServerEvent
 
 @Composable

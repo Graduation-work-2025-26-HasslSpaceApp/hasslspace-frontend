@@ -20,17 +20,17 @@ import coil3.imageLoader
 import ru.hse.app.androidApp.ui.components.common.card.UserCardInvite
 import ru.hse.app.androidApp.ui.components.common.grid.UniversalVerticalGrid
 import ru.hse.app.androidApp.ui.components.common.text.VariableBold
-import ru.hse.app.androidApp.ui.entity.model.FriendUiModel
+import ru.hse.app.androidApp.ui.entity.model.FriendUiModelInvitation
 import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
-import ru.hse.app.androidApp.ui.entity.model.TypeUiModel
 import ru.hse.app.androidApp.ui.theme.AppTheme
+import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddMembersSheet(
     imageLoader: ImageLoader,
-    friends: List<FriendUiModel>,
-    onInviteClick: (FriendUiModel) -> Unit,
+    friends: List<FriendUiModelInvitation>,
+    onInviteClick: (FriendUiModelInvitation) -> Unit,
     modifier: Modifier = Modifier,
     isDarkTheme: Boolean,
     onDismiss: () -> Unit,
@@ -66,6 +66,7 @@ fun AddMembersSheet(
                 UserCardInvite(
                     imageLoader = imageLoader,
                     username = friend.name,
+                    sent = friend.sent,
                     profilePictureUrl = friend.avatarUrl,
                     isDarkTheme = isDarkTheme,
                     onInviteClick = { onInviteClick(friend) },
@@ -75,13 +76,13 @@ fun AddMembersSheet(
     }
 }
 
-private fun previewFriend(id: String, name: String) = FriendUiModel(
+private fun previewFriend(id: String, name: String) = FriendUiModelInvitation(
     id = id,
     name = name,
     nickname = name.lowercase().replace(" ", "_"),
     avatarUrl = "",
     status = StatusPresentation.ACTIVE,
-    type = TypeUiModel.FRIEND
+    sent = Random.nextInt(0, 1) == 1
 )
 
 private val friends = listOf(

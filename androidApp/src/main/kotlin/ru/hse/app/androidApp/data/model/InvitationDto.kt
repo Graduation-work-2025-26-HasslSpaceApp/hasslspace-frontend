@@ -3,7 +3,7 @@ package ru.hse.app.androidApp.data.model
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.LocalDateTime
 
-data class InvitationDto (
+data class InvitationDto(
     @JsonProperty("id")
     val id: String,
 

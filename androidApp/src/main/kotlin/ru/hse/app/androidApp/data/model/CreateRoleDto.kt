@@ -2,7 +2,7 @@ package ru.hse.app.androidApp.data.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
-data class CreateRoleDto (
+data class CreateRoleDto(
     @JsonProperty("name")
     val name: String,
 
