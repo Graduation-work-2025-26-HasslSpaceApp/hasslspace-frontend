@@ -3,7 +3,11 @@ package ru.hse.app.androidApp.screen.servers
 import android.net.Uri
 import android.widget.Toast
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.graphics.Color
+import androidx.core.graphics.toColorInt
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil3.ImageLoader
@@ -32,10 +36,14 @@ import ru.hse.app.androidApp.domain.usecase.servers.PatchChannelPropertiesUseCas
 import ru.hse.app.androidApp.domain.usecase.servers.PatchServerOwnerUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.PatchServerPropertiesUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.SendServerInvitationUseCase
+import ru.hse.app.androidApp.ui.entity.model.FriendCheckboxUiModel
+import ru.hse.app.androidApp.ui.entity.model.RoleMiniCheckboxUiModel
 import ru.hse.app.androidApp.ui.entity.model.TextChannelUiModel
 import ru.hse.app.androidApp.ui.entity.model.VoiceChannelUiModel
+import ru.hse.app.androidApp.ui.entity.model.profile.ProfileUiState
 import ru.hse.app.androidApp.ui.entity.model.servers.ServerCardUiModel
 import ru.hse.app.androidApp.ui.entity.model.servers.ServerCardUiState
+import ru.hse.app.androidApp.ui.entity.model.servers.ServerExpandedUiModel
 import ru.hse.app.androidApp.ui.entity.model.servers.events.CreateChannelEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.CreateServerEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.CreateServerRoleEvent
@@ -54,8 +62,10 @@ import ru.hse.app.androidApp.ui.entity.model.servers.events.PatchServerOwnerEven
 import ru.hse.app.androidApp.ui.entity.model.servers.events.SendServerInvitationEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.toUi
 import ru.hse.app.androidApp.ui.entity.model.toInvitationUi
+import ru.hse.app.androidApp.ui.entity.model.toUi
 import ru.hse.coursework.godaily.ui.notification.ToastManager
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 @HiltViewModel
 class ServerCardViewModel @Inject constructor(
@@ -162,23 +172,52 @@ class ServerCardViewModel @Inject constructor(
     val showVoiceChannelOptions = mutableStateOf(false)
     val chosenVoiceChannel: MutableState<VoiceChannelUiModel?> = mutableStateOf(null)
 
+    // Create Channel
+    val creatingChannel = mutableStateOf(false)
+    val showChooseMembersAndRoles = mutableStateOf(false)
+    val typeOfCreatingChannel = mutableStateOf("text")
+    val newChannelName = mutableStateOf("")
+    val newChannelIsPrivate = mutableStateOf(false)
+    val limitNewChannel = mutableFloatStateOf(0f)
+//    val newChannelMembers = mutableStateListOf<FriendCheckboxUiModel>()
+//    val newChannelRoles = mutableStateListOf<RoleMiniCheckboxUiModel>()
+
+    fun onNewChannelNameChanged(value: String) {
+        newChannelName.value = value
+    }
+
+    fun onNewChannelIsPrivate(isPrivate: Boolean) {
+        newChannelIsPrivate.value = isPrivate
+    }
+
+    fun onLimitValueChange(value: Float) {
+        limitNewChannel.floatValue = value
+    }
+
     fun createChannel(
         serverId: String,
         channelName: String,
         isPrivate: Boolean,
         type: String,
-        limit: Int? = null,
-        members: List<String> = listOf(),
-        roles: List<String> = listOf()
+        limit: Float,
+        members: List<FriendCheckboxUiModel> = listOf(),
+        roles: List<RoleMiniCheckboxUiModel> = listOf()
     ) {
+        if (channelName.isEmpty()) {
+            showToast("Название канала не может быть пустым")
+            return
+        }
+        val roundLimit = limit.roundToInt()
+        val membersId = members.filter { it.isChosen }.map { it.id }
+        val rolesId = roles.filter { it.isChosen }.map { it.id }
         viewModelScope.launch {
             val data = CreateChannel(
                 name = channelName,
                 isPrivate = isPrivate,
                 type = type,
-                limit = limit,
-                members = members,
-                roles = roles
+                limit = if (roundLimit > 0f) roundLimit else null,
+                members = membersId,
+                roles = rolesId
             )
             val result = createChannelUseCase(serverId, data)
 
@@ -318,7 +357,9 @@ class ServerCardViewModel @Inject constructor(
                     _uiState.value = ServerCardUiState.Success(
                         data = ServerCardUiModel(
                             chosenServer = serverInfo.toUi(),
-                            friendsNotInServer = listOf()
+                            friendsNotInServer = listOf(),
+                            newChannelMembers = listOf(),
+                            newChannelRoles = listOf()
                         )
                     )
                     GetServerInfoEvent.SuccessLoad
@@ -445,22 +486,110 @@ class ServerCardViewModel @Inject constructor(
         viewModelScope.launch {
             val currentState = _uiState.value
             if (currentState is ServerCardUiState.Success) {
-                val updatedState = ServerCardUiState.Success(
-                    data = ServerCardUiModel(
-                        chosenServer = currentState.data.chosenServer,
-                        friendsNotInServer = currentState.data.friendsNotInServer.map {
-                            if (it.id == userId) {
-                                it.copy(sent = true)
-                            } else {
-                                it
-                            }
+                val updatedData = currentState.data.copy(
+                    friendsNotInServer = currentState.data.friendsNotInServer.map {
+                        if (it.id == userId) {
+                            it.copy(sent = true)
+                        } else {
+                            it
                         }
-                    )
+                    }
                 )
-                _uiState.value = updatedState
+                _uiState.value = ServerCardUiState.Success(updatedData)
             }
         }
     }
+
+    fun loadCheckboxFriends(server: ServerExpandedUiModel) {
+        val currentState = _uiState.value
+        if (currentState is ServerCardUiState.Success && currentState.data.newChannelMembers.isEmpty()) {
+            val updatedData = currentState.data.copy(
+                newChannelMembers = server.members.map { member ->
+                    FriendCheckboxUiModel(
+                        id = member.id,
+                        name = member.name,
+                        nickname = member.nickname,
+                        status = member.status,
+                        avatarUrl = member.avatarUrl,
+                        isChosen = false
+                    )
+                }
+            )
+            _uiState.value = ServerCardUiState.Success(updatedData)
+        }
+    }
+
+    fun loadCheckboxRoles(server: ServerExpandedUiModel) {
+        val currentState = _uiState.value
+        if (currentState is ServerCardUiState.Success && currentState.data.newChannelRoles.isEmpty()) {
+            viewModelScope.launch {
+                val result = getServerRolesUseCase(server.id)
+
+                result.fold(
+                    onSuccess = { roles ->
+                        val updatedData = currentState.data.copy(
+                            newChannelRoles = roles.map { role ->
+                                RoleMiniCheckboxUiModel(
+                                    id = role.id,
+                                    title = role.name,
+                                    color = Color(role.color.toColorInt()),
+                                    isChosen = false,
+                                )
+                            }
+                        )
+                        _uiState.value = ServerCardUiState.Success(updatedData)
+                    },
+                    onFailure = {}
+                )
+            }
+        }
+
+    }
+
+    fun onToggleFriend(user: FriendCheckboxUiModel) {
+        val currentState = _uiState.value
+        if (currentState is ServerCardUiState.Success) {
+            val updatedMembers = currentState.data.newChannelMembers.map { friend ->
+                if (friend.id == user.id) {
+                    friend.copy(isChosen = !friend.isChosen)
+                } else {
+                    friend
+                }
+            }
+            _uiState.value = currentState.copy(
+                data = currentState.data.copy(newChannelMembers = updatedMembers)
+            )
+        }
+    }
+
+    fun resetMembersAndRoles() {
+        val currentState = _uiState.value
+        if (currentState is ServerCardUiState.Success) {
+            val updatedData = currentState.data.copy(
+                newChannelMembers = listOf(),
+                newChannelRoles = listOf()
+            )
+            _uiState.value = ServerCardUiState.Success(updatedData)
+        }
+    }
+
+    fun onToggleRole(role: RoleMiniCheckboxUiModel) {
+        val currentState = _uiState.value
+        if (currentState is ServerCardUiState.Success) {
+            val updatedRoles = currentState.data.newChannelRoles.map { r ->
+                if (r.id == role.id) {
+                    r.copy(isChosen = !r.isChosen)
+                } else {
+                    r
+                }
+            }
+
+            _uiState.value = currentState.copy(
+                data = currentState.data.copy(newChannelRoles = updatedRoles)
+            )
+        }
+    }
+
 
     fun showToast(message: String, duration: Int = Toast.LENGTH_SHORT) {
         toastManager.showToast(

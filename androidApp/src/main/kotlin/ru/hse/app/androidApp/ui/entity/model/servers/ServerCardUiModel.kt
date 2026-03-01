@@ -1,7 +1,9 @@
 package ru.hse.app.androidApp.ui.entity.model.servers
 
 import androidx.compose.runtime.Immutable
+import ru.hse.app.androidApp.ui.entity.model.FriendCheckboxUiModel
 import ru.hse.app.androidApp.ui.entity.model.FriendUiModelInvitation
+import ru.hse.app.androidApp.ui.entity.model.RoleMiniCheckboxUiModel
 
 sealed interface ServerCardUiState {
     data object Loading : ServerCardUiState
@@ -13,5 +15,8 @@ sealed interface ServerCardUiState {
 @Immutable
 data class ServerCardUiModel(
     val chosenServer: ServerExpandedUiModel,
-    val friendsNotInServer: List<FriendUiModelInvitation>
+    val friendsNotInServer: List<FriendUiModelInvitation>,
+
+    val newChannelMembers: List<FriendCheckboxUiModel>,
+    val newChannelRoles: List<RoleMiniCheckboxUiModel>,
 )

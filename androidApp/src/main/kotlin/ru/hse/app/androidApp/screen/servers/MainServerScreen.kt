@@ -14,11 +14,14 @@ import coil3.imageLoader
 import ru.hse.app.androidApp.R
 import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
 import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
+import ru.hse.app.androidApp.ui.components.servers.configurechannel.ConfigureMembersAndRoles
+import ru.hse.app.androidApp.ui.components.servers.createchannel.CreateChannelContent
 import ru.hse.app.androidApp.ui.components.servers.members.AddMembersSheet
 import ru.hse.app.androidApp.ui.components.servers.servercard.ChannelCardBottomSheet
 import ru.hse.app.androidApp.ui.components.servers.servercard.ChannelsBottomSheet
 import ru.hse.app.androidApp.ui.components.servers.servercard.ServerCardContent
 import ru.hse.app.androidApp.ui.entity.model.servers.ServerCardUiState
+import ru.hse.app.androidApp.ui.entity.model.servers.events.CreateChannelEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetFriendsNotInServerEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerInfoEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.SendServerInvitationEvent
@@ -34,9 +37,26 @@ fun MainServerScreen(
     val getServerInfoEvent by viewModel.getServerInfoEvent.collectAsState()
     val getFriendsNotInServerEvent by viewModel.getFriendsNotInServerEvent.collectAsState()
     val sendServerInvitationEvent by viewModel.sendServerInvitationEvent.collectAsState()
+    val createChannelEvent by viewModel.createChannelEvent.collectAsState()
 
     LaunchedEffect(serverId) {
         viewModel.getServerInfo(serverId)
+    }
+
+    LaunchedEffect(createChannelEvent) {
+        when (createChannelEvent) {
+            is CreateChannelEvent.SuccessCreate -> {
+                viewModel.getServerInfo(serverId)
+                viewModel.creatingChannel.value = false
+            }
+            is CreateChannelEvent.Error -> {
+                val message = (createChannelEvent as CreateChannelEvent.Error).message
+                viewModel.showToast(message)
+                viewModel.creatingChannel.value = false
+            }
+            null -> {}
+        }
+        viewModel.resetCreateChannelEvent()
     }
 
     LaunchedEffect(getServerInfoEvent) {
@@ -116,31 +136,33 @@ fun MainServerScreenWithStateContent(
     val data = uiState.data
     val context = LocalContext.current
 
-    ServerCardContent(
-        onBackClick = { navController.popBackStack() },
-        onServerNameClick = {/*todo*/ },
-        onAddPeopleClick = {
-            viewModel.getFriendsNotInServer(data.chosenServer.id)
-            viewModel.showAddFriendsSheet.value = true
-        },
-        serverName = data.chosenServer.name,
-        textChannels = data.chosenServer.textChannels,
-        voiceChannels = data.chosenServer.voiceChannels,
-        onTextChannelShortClick = {/*todo*/ },
-        onTextChannelLongClick = {
-            viewModel.chosenTextChannel.value = it
-            viewModel.showTextChannelOptions.value = true
-        },
-        onVoiceChannelShortClick = {/*todo*/ },
-        onVoiceChannelLongClick = {
-            viewModel.chosenVoiceChannel.value = it
-            viewModel.showVoiceChannelOptions.value = true
-        },
-        onTextChannelsClick = { viewModel.showTextChannelsSettings.value = true },
-        onVoiceChannelsClick = { viewModel.showVoiceChannelsSettings.value = true },
-        isDarkTheme = viewModel.isDarkTheme,
-        isOwner = data.chosenServer.isOwner
-    )
+    if (!viewModel.creatingChannel.value) {
+        ServerCardContent(
+            onBackClick = { navController.popBackStack() },
+            onServerNameClick = {/*todo*/ },
+            onAddPeopleClick = {
+                viewModel.getFriendsNotInServer(data.chosenServer.id)
+                viewModel.showAddFriendsSheet.value = true
+            },
+            serverName = data.chosenServer.name,
+            textChannels = data.chosenServer.textChannels,
+            voiceChannels = data.chosenServer.voiceChannels,
+            onTextChannelShortClick = {/*todo*/ },
+            onTextChannelLongClick = {
+                viewModel.chosenTextChannel.value = it
+                viewModel.showTextChannelOptions.value = true
+            },
+            onVoiceChannelShortClick = {/*todo*/ },
+            onVoiceChannelLongClick = {
+                viewModel.chosenVoiceChannel.value = it
+                viewModel.showVoiceChannelOptions.value = true
+            },
+            onTextChannelsClick = { viewModel.showTextChannelsSettings.value = true },
+            onVoiceChannelsClick = { viewModel.showVoiceChannelsSettings.value = true },
+            isDarkTheme = viewModel.isDarkTheme,
+            isOwner = data.chosenServer.isOwner
+        )
+    }
 
     if (viewModel.showAddFriendsSheet.value) {
         AddMembersSheet(
@@ -164,7 +186,11 @@ fun MainServerScreenWithStateContent(
             isDarkTheme = viewModel.isDarkTheme,
             serverPictureUrl = data.chosenServer.photoUrl,
             onReadClick = {/*todo*/ },
-            onCreateChannel = {/*todo*/ },
+            onCreateChannel = {
+                viewModel.showTextChannelsSettings.value = false
+                viewModel.creatingChannel.value = true
+                viewModel.typeOfCreatingChannel.value = "text"
+            },
             onDismiss = { viewModel.showTextChannelsSettings.value = false },
             isModerator = data.chosenServer.isOwner
         )
@@ -177,7 +203,11 @@ fun MainServerScreenWithStateContent(
             isDarkTheme = viewModel.isDarkTheme,
             serverPictureUrl = data.chosenServer.photoUrl,
             onReadClick = {/*todo*/ },
-            onCreateChannel = {/*todo*/ },
+            onCreateChannel = {
+                viewModel.showVoiceChannelsSettings.value = false
+                viewModel.creatingChannel.value = true
+                viewModel.typeOfCreatingChannel.value = "voice"
+            },
             onDismiss = { viewModel.showVoiceChannelsSettings.value = false },
             isModerator = data.chosenServer.isOwner
         )
@@ -210,6 +240,56 @@ fun MainServerScreenWithStateContent(
                 viewModel.chosenVoiceChannel.value = null
             },
             isModerator = data.chosenServer.isOwner
+        )
+    }
+    
+    if (viewModel.creatingChannel.value) {
+        CreateChannelContent(
+            onCloseClick = {
+                viewModel.creatingChannel.value = false
+                viewModel.newChannelName.value = ""
+                viewModel.newChannelIsPrivate.value = false
+                viewModel.limitNewChannel.floatValue = 0f
+                viewModel.resetMembersAndRoles()
+            },
+            channelName = viewModel.newChannelName.value,
+            onChannelNameChanged = viewModel::onNewChannelNameChanged,
+            onCreateChannelClick = {
+                viewModel.createChannel(
+                    serverId = data.chosenServer.id,
+                    channelName = viewModel.newChannelName.value,
+                    isPrivate = viewModel.newChannelIsPrivate.value,
+                    type = viewModel.typeOfCreatingChannel.value,
+                    limit = viewModel.limitNewChannel.floatValue,
+                    members = data.newChannelMembers,
+                    roles = data.newChannelRoles
+                )
+                viewModel.resetMembersAndRoles()
+            },
+            type = viewModel.typeOfCreatingChannel.value,
+            isDarkTheme = viewModel.isDarkTheme,
+            isPrivate = viewModel.newChannelIsPrivate.value,
+            onPrivateChange = viewModel::onNewChannelIsPrivate,
+            onAddMembers = {
+                viewModel.loadCheckboxRoles(data.chosenServer)
+                viewModel.loadCheckboxFriends(data.chosenServer)
+                viewModel.showChooseMembersAndRoles.value = true
+            },
+            sliderValue = viewModel.limitNewChannel.floatValue,
+            onSliderValueChange = viewModel::onLimitValueChange
+        )
+    }
+
+    if (viewModel.showChooseMembersAndRoles.value) {
+        ConfigureMembersAndRoles(
+            imageLoader = context.imageLoader,
+            friends = data.newChannelMembers,
+            roles = data.newChannelRoles,
+            onBackClick = { viewModel.showChooseMembersAndRoles.value = false },
+            onSaveClick = { viewModel.showChooseMembersAndRoles.value = false },
+            onToggleRole = { viewModel.onToggleRole(it) },
+            onToggleFriend = { viewModel.onToggleFriend(it)},
+            isDarkTheme = viewModel.isDarkTheme
         )
     }
 }

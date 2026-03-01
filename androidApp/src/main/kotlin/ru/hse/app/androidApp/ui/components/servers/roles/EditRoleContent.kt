@@ -52,7 +52,7 @@ fun EditRoleContent(
     roleName: String,
     onRoleTextChanged: (String) -> Unit,
     onSaveClick: () -> Unit,
-    onToggle: (Boolean) -> Unit,
+    onToggle: (FriendCheckboxUiModel) -> Unit,
     onDeleteRoleClick: () -> Unit,
     modifier: Modifier = Modifier,
     selectedColor: Color,
@@ -153,8 +153,7 @@ fun EditRoleContent(
                         status = friend.status,
                         profilePictureUrl = friend.avatarUrl,
                         isDarkTheme = isDarkTheme,
-                        onCardClick = {},
-                        onToggle = onToggle,
+                        onClick = { onToggle(friend) },
                         isChosen = friend.isChosen
                     )
                 }

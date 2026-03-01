@@ -38,7 +38,7 @@ fun NewRoleContent(
     roleName: String,
     onRoleNameChanged: (String) -> Unit,
     onSaveClick: () -> Unit,
-    onToggle: (Boolean) -> Unit,
+    onToggle: (FriendCheckboxUiModel) -> Unit,
     modifier: Modifier = Modifier,
     selectedColor: Color,
     onColorChanged: (Color) -> Unit,
@@ -110,8 +110,7 @@ fun NewRoleContent(
                 status = friend.status,
                 profilePictureUrl = friend.avatarUrl,
                 isDarkTheme = isDarkTheme,
-                onCardClick = {},
-                onToggle = onToggle,
+                onClick = { onToggle(friend) },
                 isChosen = friend.isChosen
             )
         }
