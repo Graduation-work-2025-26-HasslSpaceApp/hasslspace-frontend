@@ -1,4 +1,4 @@
-package ru.hse.app.androidApp.screen.servers
+package ru.hse.app.androidApp.screen.servercard
 
 import android.net.Uri
 import android.widget.Toast
@@ -20,6 +20,8 @@ import ru.hse.app.androidApp.domain.model.entity.CreateChannel
 import ru.hse.app.androidApp.domain.model.entity.CreateRole
 import ru.hse.app.androidApp.domain.service.common.CropProfilePhotoService
 import ru.hse.app.androidApp.domain.service.common.PhotoConverterService
+import ru.hse.app.androidApp.domain.usecase.friends.GetChosenUserCommonServersUseCase
+import ru.hse.app.androidApp.domain.usecase.friends.GetUserInfoExtendedUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.CreateChannelUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.CreateServerRoleUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.CreateServerUseCase
@@ -35,12 +37,15 @@ import ru.hse.app.androidApp.domain.usecase.servers.GetServerUserRolesUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.PatchChannelPropertiesUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.PatchServerOwnerUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.PatchServerPropertiesUseCase
+import ru.hse.app.androidApp.domain.usecase.servers.SearchMembersUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.SendServerInvitationUseCase
 import ru.hse.app.androidApp.ui.entity.model.FriendCheckboxUiModel
 import ru.hse.app.androidApp.ui.entity.model.RoleMiniCheckboxUiModel
+import ru.hse.app.androidApp.ui.entity.model.ServerMemberUiModel
 import ru.hse.app.androidApp.ui.entity.model.TextChannelUiModel
 import ru.hse.app.androidApp.ui.entity.model.VoiceChannelUiModel
-import ru.hse.app.androidApp.ui.entity.model.profile.ProfileUiState
+import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadChosenUserCommonServersEvent
+import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadChosenUserEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.ServerCardUiModel
 import ru.hse.app.androidApp.ui.entity.model.servers.ServerCardUiState
 import ru.hse.app.androidApp.ui.entity.model.servers.ServerExpandedUiModel
@@ -83,6 +88,8 @@ class ServerCardViewModel @Inject constructor(
     private val getServerRolesUseCase: GetServerRolesUseCase,
     private val getServerUserRolesUseCase: GetServerUserRolesUseCase,
     private val getFriendsNotInServerUseCase: GetFriendsNotInServerUseCase,
+    private val getUserInfoExtendedUseCase: GetUserInfoExtendedUseCase,
+    private val getChosenUserCommonServersUseCase: GetChosenUserCommonServersUseCase,
 
     private val patchChannelPropertiesUseCase: PatchChannelPropertiesUseCase,
     private val patchServerOwnerUseCase: PatchServerOwnerUseCase,
@@ -90,6 +97,7 @@ class ServerCardViewModel @Inject constructor(
     private val patchServerRoleUseCase: PatchServerOwnerUseCase,
 
     private val sendServerInvitationUseCase: SendServerInvitationUseCase,
+    private val searchMembersUseCase: SearchMembersUseCase,
 
     private val dataManager: DataManager,
     private val photoConverterService: PhotoConverterService,
@@ -149,6 +157,14 @@ class ServerCardViewModel @Inject constructor(
     val getFriendsNotInServerEvent: StateFlow<GetFriendsNotInServerEvent?> =
         _getFriendsNotInServerEvent
 
+    private val _loadChosenUserEvent = MutableStateFlow<LoadChosenUserEvent?>(null)
+    val loadChosenUserEvent: StateFlow<LoadChosenUserEvent?> = _loadChosenUserEvent
+
+    private val _loadChosenUserCommonServersEvent =
+        MutableStateFlow<LoadChosenUserCommonServersEvent?>(null)
+    val loadChosenUserCommonServersEvent: StateFlow<LoadChosenUserCommonServersEvent?> =
+        _loadChosenUserCommonServersEvent
+
     private val _joinServerEvent = MutableStateFlow<JoinServerEvent?>(null)
     val joinServerEvent: StateFlow<JoinServerEvent?> = _joinServerEvent
 
@@ -158,6 +174,12 @@ class ServerCardViewModel @Inject constructor(
     private val _sendServerInvitationEvent = MutableStateFlow<SendServerInvitationEvent?>(null)
     val sendServerInvitationEvent: StateFlow<SendServerInvitationEvent?> =
         _sendServerInvitationEvent
+
+    // Members
+    val searchMembersText = mutableStateOf("")
+    val searchedMembers = mutableStateListOf<ServerMemberUiModel>()
+    val showFriendCard = mutableStateOf(false)
+    val showCommonServers = mutableStateOf(false)
 
     // AddPeopleToServer
     val showAddFriendsSheet = mutableStateOf(false)
@@ -179,8 +201,9 @@ class ServerCardViewModel @Inject constructor(
     val newChannelName = mutableStateOf("")
     val newChannelIsPrivate = mutableStateOf(false)
     val limitNewChannel = mutableFloatStateOf(0f)
-//    val newChannelMembers = mutableStateListOf<FriendCheckboxUiModel>()
-//    val newChannelRoles = mutableStateListOf<RoleMiniCheckboxUiModel>()
+
+    // Server Settings Bar
+    val showServerSettingsSheet = mutableStateOf(false)
 
     fun onNewChannelNameChanged(value: String) {
         newChannelName.value = value
@@ -192,6 +215,18 @@ class ServerCardViewModel @Inject constructor(
 
     fun onLimitValueChange(value: Float) {
         limitNewChannel.floatValue = value
+    }
+
+    fun onSearchMembersText(value: String) {
+        searchMembersText.value = value
+        val currentState = _uiState.value
+        if (currentState is ServerCardUiState.Success) {
+            viewModelScope.launch {
+                val result = searchMembersUseCase(currentState.data.chosenServer.members.map { it }, value)
+                searchedMembers.clear()
+                searchedMembers.addAll(result)
+            }
+        }
     }
 
     fun createChannel(
@@ -354,14 +389,19 @@ class ServerCardViewModel @Inject constructor(
 
             _getServerInfoEvent.value = result.fold(
                 onSuccess = { serverInfo ->
+                    val serverUi = serverInfo.toUi()
                     _uiState.value = ServerCardUiState.Success(
                         data = ServerCardUiModel(
                             chosenServer = serverInfo.toUi(),
                             friendsNotInServer = listOf(),
                             newChannelMembers = listOf(),
-                            newChannelRoles = listOf()
+                            newChannelRoles = listOf(),
+                            chosenUser = null,
+                            chosenUserCommonServers = listOf()
                         )
                     )
+                    searchedMembers.clear()
+                    searchedMembers.addAll(serverUi.members)
                     GetServerInfoEvent.SuccessLoad
                 },
                 onFailure = { error ->
@@ -546,6 +586,55 @@ class ServerCardViewModel @Inject constructor(
 
     }
 
+    fun loadChosenUser(userId: String) {
+        viewModelScope.launch {
+            val result = getUserInfoExtendedUseCase(userId)
+
+            _loadChosenUserEvent.value = result.fold(
+                onSuccess = { user ->
+                    val currentState = _uiState.value
+                    if (currentState is ServerCardUiState.Success) {
+                        val updatedData = currentState.data.copy(
+                            chosenUser = user.toUi()
+                        )
+                        _uiState.value = ServerCardUiState.Success(updatedData)
+                    }
+                    LoadChosenUserEvent.SuccessLoad
+                },
+                onFailure = {
+                    LoadChosenUserEvent.Error(
+                        ("Ошибка при загрузке информации о пользователе. " + it.message)
+                    )
+                }
+            )
+        }
+    }
+
+    fun loadChosenUserCommonServers(userId: String) {
+        viewModelScope.launch {
+            val result = getChosenUserCommonServersUseCase(userId)
+
+            _loadChosenUserCommonServersEvent.value = result.fold(
+                onSuccess = { servers ->
+                    val currentState = _uiState.value
+                    if (currentState is ServerCardUiState.Success) {
+                        val updatedData = currentState.data.copy(
+                            chosenUserCommonServers = servers.map { it.toUi() }
+                        )
+                        _uiState.value = ServerCardUiState.Success(updatedData)
+                    }
+                    LoadChosenUserCommonServersEvent.SuccessLoad
+                },
+                onFailure = {
+                    LoadChosenUserCommonServersEvent.Error(
+                        ("Ошибка при загрузке информации об общих серверах с пользователем. " + it.message)
+                    )
+                }
+            )
+        }
+    }
+
+
     fun onToggleFriend(user: FriendCheckboxUiModel) {
         val currentState = _uiState.value
         if (currentState is ServerCardUiState.Success) {
@@ -663,4 +752,11 @@ class ServerCardViewModel @Inject constructor(
         _getFriendsNotInServerEvent.value = null
     }
 
+    fun resetLoadChosenUserEvent() {
+        _loadChosenUserEvent.value = null
+    }
+
+    fun resetLoadChosenUserCommonServersEvent() {
+        _loadChosenUserCommonServersEvent.value = null
+    }
 }

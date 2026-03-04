@@ -1,6 +1,7 @@
 package ru.hse.app.androidApp.ui.components.common.card
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -47,6 +48,7 @@ fun RoleCardArrow(
             .fillMaxWidth()
             .height(height)
             .clip(RoundedCornerShape(22.dp))
+            .clickable(onClick = onArrowClick)
             .background(MaterialTheme.colorScheme.surfaceContainer)
             .padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically
     ) {

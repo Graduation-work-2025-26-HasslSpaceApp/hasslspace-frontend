@@ -1,4 +1,4 @@
-package ru.hse.app.androidApp.screen.profile
+package ru.hse.app.androidApp.screen.servercard
 
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -16,42 +16,43 @@ import androidx.navigation.NavController
 import coil3.imageLoader
 import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
 import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
-import ru.hse.app.androidApp.ui.components.profile.friends.FriendsContent
+import ru.hse.app.androidApp.ui.components.servers.members.ServerMembersContent
 import ru.hse.app.androidApp.ui.components.userinfocard.CommonServersBottomSheet
 import ru.hse.app.androidApp.ui.components.userinfocard.UserInfoBottomSheet
-import ru.hse.app.androidApp.ui.entity.model.profile.ProfileUiState
 import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadChosenUserCommonServersEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadChosenUserEvent
-import ru.hse.app.androidApp.ui.entity.model.profile.events.RespondToFriendRequestEvent
+import ru.hse.app.androidApp.ui.entity.model.servers.ServerCardUiState
+import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerInfoEvent
 import ru.hse.app.androidApp.ui.navigation.NavigationItem
 
 @Composable
-fun FriendsScreen(
+fun ServerMembersInfoScreen(
     navController: NavController,
-    viewModel: ProfileViewModel = hiltViewModel()
+    serverId: String,
+    viewModel: ServerCardViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    val getServerInfoEvent by viewModel.getServerInfoEvent.collectAsState()
     val loadChosenUserEvent by viewModel.loadChosenUserEvent.collectAsState()
     val loadChosenUserCommonServersEvent by viewModel.loadChosenUserCommonServersEvent.collectAsState()
-    val respondToFriendRequestEvent by viewModel.respondToFriendshipRequestEvent.collectAsState()
 
-    LaunchedEffect(respondToFriendRequestEvent) {
-        when (respondToFriendRequestEvent) {
-            is RespondToFriendRequestEvent.SuccessRespond -> {
-                viewModel.loadUserFriends()
-                viewModel.showToast("Успешно")
-            }
+    LaunchedEffect(serverId) {
+        viewModel.getServerInfo(serverId)
+    }
 
-            is RespondToFriendRequestEvent.Error -> {
-                val message =
-                    (respondToFriendRequestEvent as RespondToFriendRequestEvent.Error).message
+    LaunchedEffect(getServerInfoEvent) {
+        when (getServerInfoEvent) {
+            is GetServerInfoEvent.SuccessLoad -> {}
+
+            is GetServerInfoEvent.Error -> {
+                val message = (getServerInfoEvent as GetServerInfoEvent.Error).message
                 viewModel.showToast(message)
             }
 
             null -> {}
         }
-        viewModel.resetRespondToFriendRequestEvent()
+        viewModel.resetGetServerInfoEvent()
     }
 
     LaunchedEffect(loadChosenUserEvent) {
@@ -87,17 +88,18 @@ fun FriendsScreen(
 
     Box(modifier = Modifier.fillMaxSize()) {
         when (uiState) {
-            is ProfileUiState.Loading -> {
+            is ServerCardUiState.Loading -> {
                 LoadingScreen()
             }
 
-            is ProfileUiState.Error -> {
+            is ServerCardUiState.Error -> {
                 ErrorScreen()
             }
 
-            is ProfileUiState.Success -> {
-                FriendsScreenWithStateContent(
-                    uiState = uiState as ProfileUiState.Success,
+            is ServerCardUiState.Success -> {
+                ServerMembersInfoScreenWithStateContent(
+                    uiState = uiState as ServerCardUiState.Success,
+                    serverId = serverId,
                     navController = navController,
                     viewModel = viewModel,
                 )
@@ -107,40 +109,31 @@ fun FriendsScreen(
 }
 
 @Composable
-fun FriendsScreenWithStateContent(
-    uiState: ProfileUiState.Success,
+fun ServerMembersInfoScreenWithStateContent(
+    uiState: ServerCardUiState.Success,
+    serverId: String,
     navController: NavController,
-    viewModel: ProfileViewModel,
+    viewModel: ServerCardViewModel,
 ) {
     val data = uiState.data
     val context = LocalContext.current
 
-    FriendsContent(
+    ServerMembersContent(
         imageLoader = context.imageLoader,
-        friends = viewModel.getFriends(data.friends),
-        applications = viewModel.getIncomingRequests(data.friends),
+        friends = viewModel.searchedMembers,
         onBackClick = { navController.popBackStack() },
-        onAddClick = { navController.navigate(NavigationItem.AddFriends.route) },
         onFriendClick = {
             viewModel.loadChosenUserCommonServers(userId = it.id)
             viewModel.loadChosenUser(userId = it.id)
         },
-        onCallClick = { viewModel.onCallClick(userId = it.id) },
-        onMessageClick = { viewModel.onMessageClick(userId = it.id) },
-        onApplicationClick = {
-            viewModel.loadChosenUserCommonServers(userId = it.id)
-            viewModel.loadChosenUser(userId = it.id)
-        },
-        onAcceptClick = { viewModel.respondFriend(it, "ACCEPTED") },
-        onDismissClick = { viewModel.respondFriend(it, "DECLINED") },
-        searchText = viewModel.searchValueFriends.value,
-        onValueChange = viewModel::onSearchValueChange,
-        isDarkTheme = data.isDarkCheck
+        searchText = viewModel.searchMembersText.value,
+        onValueChange = viewModel::onSearchMembersText,
+        isDarkTheme = viewModel.isDarkTheme
     )
 
     if (viewModel.showFriendCard.value && data.chosenUser != null) {
         UserInfoBottomSheet(
-            isDarkTheme = data.isDarkCheck,
+            isDarkTheme = viewModel.isDarkTheme,
             profilePictureUrl = data.chosenUser.avatarUrl,
             imageLoader = context.imageLoader,
             status = data.chosenUser.status,
@@ -152,13 +145,13 @@ fun FriendsScreenWithStateContent(
                     viewModel.showCommonServers.value = true
                 }
             },
-            onMessageClick = { viewModel.onMessageClick(userId = data.chosenUser.id) },
-            onCallClick = { viewModel.onCallClick(userId = data.chosenUser.id) },
-            onVideoCallClick = { viewModel.onVideoCallClick(userId = data.chosenUser.id) },
+            onMessageClick = { /* todo viewModel.onMessageClick(userId = data.chosenUser.id) */ },
+            onCallClick = { /* todo viewModel.onCallClick(userId = data.chosenUser.id) */},
+            onVideoCallClick = { /* todo viewModel.onVideoCallClick(userId = data.chosenUser.id) */},
             aboutUserInfo = data.chosenUser.description,
             onDismiss = { viewModel.showFriendCard.value = false },
             onInvite = { /*todo*/ },
-            onCopyNickname = {
+            onCopyNickname = { //todo зачем копировать если поиска пока нет
                 val clipboard =
                     context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                 val clip = ClipData.newPlainText("Copied Text", data.chosenUser.nickname)
@@ -176,7 +169,7 @@ fun FriendsScreenWithStateContent(
             imageLoader = context.imageLoader,
             servers = data.chosenUserCommonServers,
             onServerClick = {server -> navController.navigate(NavigationItem.MainServerScreen.route + "/${server.id}") },
-            isDarkTheme = data.isDarkCheck,
+            isDarkTheme = viewModel.isDarkTheme,
             onDismiss = { viewModel.showCommonServers.value = false }
         )
     }

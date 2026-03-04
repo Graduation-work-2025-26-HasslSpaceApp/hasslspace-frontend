@@ -1,4 +1,4 @@
-package ru.hse.app.androidApp.screen.servers
+package ru.hse.app.androidApp.screen.servercard
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +16,7 @@ import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
 import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
 import ru.hse.app.androidApp.ui.components.servers.configurechannel.ConfigureMembersAndRoles
 import ru.hse.app.androidApp.ui.components.servers.createchannel.CreateChannelContent
+import ru.hse.app.androidApp.ui.components.servers.editserver.InfoServerBottomSheet
 import ru.hse.app.androidApp.ui.components.servers.members.AddMembersSheet
 import ru.hse.app.androidApp.ui.components.servers.servercard.ChannelCardBottomSheet
 import ru.hse.app.androidApp.ui.components.servers.servercard.ChannelsBottomSheet
@@ -25,6 +26,7 @@ import ru.hse.app.androidApp.ui.entity.model.servers.events.CreateChannelEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetFriendsNotInServerEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerInfoEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.SendServerInvitationEvent
+import ru.hse.app.androidApp.ui.navigation.NavigationItem
 
 @Composable
 fun MainServerScreen(
@@ -139,7 +141,9 @@ fun MainServerScreenWithStateContent(
     if (!viewModel.creatingChannel.value) {
         ServerCardContent(
             onBackClick = { navController.popBackStack() },
-            onServerNameClick = {/*todo*/ },
+            onServerNameClick = {
+                viewModel.showServerSettingsSheet.value = true
+            },
             onAddPeopleClick = {
                 viewModel.getFriendsNotInServer(data.chosenServer.id)
                 viewModel.showAddFriendsSheet.value = true
@@ -290,6 +294,32 @@ fun MainServerScreenWithStateContent(
             onToggleRole = { viewModel.onToggleRole(it) },
             onToggleFriend = { viewModel.onToggleFriend(it)},
             isDarkTheme = viewModel.isDarkTheme
+        )
+    }
+
+    if (viewModel.showServerSettingsSheet.value) {
+        InfoServerBottomSheet(
+            imageLoader = context.imageLoader,
+            serverName = data.chosenServer.name,
+            serverAvatarUrl = data.chosenServer.photoUrl,
+            countOfMembers = data.chosenServer.members.count(),
+            onInviteClick = {
+                viewModel.getFriendsNotInServer(data.chosenServer.id)
+                viewModel.showServerSettingsSheet.value = false
+                viewModel.showAddFriendsSheet.value = true
+            },
+            onSettingsClick = {
+                navController.navigate(NavigationItem.ServerSettings.route + "/${data.chosenServer.id}")
+                viewModel.showServerSettingsSheet.value = false
+            },
+            onDeleteClick = {/*todo*/},
+            isDarkTheme = viewModel.isDarkTheme,
+            onDismiss = { viewModel.showServerSettingsSheet.value = false },
+            onMembersClick = {
+                navController.navigate(NavigationItem.ServerMembersInfo.route + "/${data.chosenServer.id}")
+                viewModel.showServerSettingsSheet.value = false
+            },
+            isOwner = data.chosenServer.isOwner
         )
     }
 }

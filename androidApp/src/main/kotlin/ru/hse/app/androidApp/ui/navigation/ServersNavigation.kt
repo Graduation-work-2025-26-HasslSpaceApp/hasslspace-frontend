@@ -7,8 +7,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import ru.hse.app.androidApp.screen.servers.CreateServerScreen
 import ru.hse.app.androidApp.screen.servers.JoinServerScreen
-import ru.hse.app.androidApp.screen.servers.MainServerScreen
+import ru.hse.app.androidApp.screen.servercard.MainServerScreen
+import ru.hse.app.androidApp.screen.servercard.ServerMembersInfoScreen
 import ru.hse.app.androidApp.screen.servers.ServersScreen
+import ru.hse.app.androidApp.screen.serversettings.MembersScreen
+import ru.hse.app.androidApp.screen.serversettings.RolesScreen
+import ru.hse.app.androidApp.screen.serversettings.ServerSettingsMainScreen
 
 @Composable
 fun ServersNavigation(bottomNavHostController: NavHostController) {
@@ -37,50 +41,33 @@ fun ServersNavigation(bottomNavHostController: NavHostController) {
                 MainServerScreen(serversNavController, serverId)
             }
         }
+
+        composable(NavigationItem.ServerMembersInfo.route + "/{serverId}") { backStackEntry ->
+            val serverId = backStackEntry.arguments?.getString("serverId")
+            if (serverId != null) {
+                ServerMembersInfoScreen(serversNavController, serverId)
+            }
+        }
+
+        composable(NavigationItem.ServerSettings.route + "/{serverId}") { backStackEntry ->
+            val serverId = backStackEntry.arguments?.getString("serverId")
+            if (serverId != null) {
+                ServerSettingsMainScreen(serversNavController, serverId)
+            }
+        }
+
+        composable(NavigationItem.MembersSettings.route + "/{serverId}") { backStackEntry ->
+            val serverId = backStackEntry.arguments?.getString("serverId")
+            if (serverId != null) {
+                MembersScreen(serversNavController, serverId)
+            }
+        }
+
+        composable(NavigationItem.RolesSettings.route + "/{serverId}") { backStackEntry ->
+            val serverId = backStackEntry.arguments?.getString("serverId")
+            if (serverId != null) {
+                RolesScreen(serversNavController, serverId)
+            }
+        }
     }
-//    composable(NavigationItem.HomeMain.route) {
-//        HomeScreen(homeNavController, routeDetailsViewModel)
-//    }
-//        composable(NavigationItem.RouteDetails.route + "/{routeId}") { backStackEntry ->
-//            val routeId = backStackEntry.arguments?.getString("routeId")
-//            if (routeId != null) {
-//                RouteDetailsScreen(homeNavController, routeId, routeDetailsViewModel)
-//            }
-//        }
-//        composable(NavigationItem.RouteReviews.route + "/{routeId}") { backStackEntry ->
-//            val routeId = backStackEntry.arguments?.getString("routeId")
-//            if (routeId != null) {
-//                RouteReviewsScreen(homeNavController, routeId, routeDetailsViewModel)
-//            }
-//        }
-//
-//        composable(NavigationItem.RoutePassing.route + "/{routeId}") { backStackEntry ->
-//            val routeId = backStackEntry.arguments?.getString("routeId")
-//            if (routeId != null) {
-//                RoutePassingScreen(
-//                    bottomNavHostController,
-//                    homeNavController,
-//                    routeId,
-//                    routeDetailsViewModel
-//                )
-//            }
-//        }
-//        composable(
-//            route = NavigationItem.RouteRate.route + "/{routeId}/{averageMark}",
-//            arguments = listOf(
-//                navArgument(name = "routeId") {
-//                    type = NavType.StringType
-//                },
-//                navArgument(name = "averageMark") {
-//                    type = NavType.IntType
-//                },
-//            )
-//        ) { backStackEntry ->
-//            val routeId = backStackEntry.arguments?.getString("routeId")
-//            val mark = backStackEntry.arguments?.getInt("averageMark")
-//            if (routeId != null && mark != null) {
-//                RateRouteScreen(homeNavController, routeId, mark, routeDetailsViewModel)
-//            }
-//        }
-//    }
 }

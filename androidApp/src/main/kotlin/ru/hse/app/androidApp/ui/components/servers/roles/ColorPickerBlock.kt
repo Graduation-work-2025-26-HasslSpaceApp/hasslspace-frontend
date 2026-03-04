@@ -36,18 +36,14 @@ import ru.hse.app.androidApp.ui.theme.AppTheme
 
 @Composable
 fun ColorPickerBlock(
-    modifier: Modifier = Modifier,
-    selectedColor: Color,
-    onColorChanged: (Color) -> Unit,
     onSaveClick: (Color) -> Unit,
     showDialog: MutableState<Boolean>,
-    onDismissClick: () -> Unit
 ) {
     //TODO допилить логику
     val controller = rememberColorPickerController()
 
     if (showDialog.value) {
-        Dialog(onDismissRequest = {}) {
+        Dialog(onDismissRequest = { showDialog.value = false }) {
             Box(
                 modifier = Modifier
                     .width(370.dp)
@@ -126,9 +122,6 @@ fun ColorPickerBlockPreview1() {
     AppTheme(isDark = false) {
         ColorPickerBlock(
             showDialog = remember { mutableStateOf(true) },
-            onDismissClick = {},
-            selectedColor = Color.Blue,
-            onColorChanged = {},
             onSaveClick = {}
         )
     }

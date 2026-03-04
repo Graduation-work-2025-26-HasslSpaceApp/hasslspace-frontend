@@ -43,7 +43,7 @@ fun RolesChoosingDialog(
     onDismissClick: () -> Unit
 ) {
     if (showDialog.value) {
-        Dialog(onDismissRequest = {}) {
+        Dialog(onDismissRequest = { onDismissClick() }) {
             Box(
                 modifier = Modifier
                     .width(343.dp)

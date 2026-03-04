@@ -1,12 +1,19 @@
 package ru.hse.app.androidApp.ui.components.servers.members
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,15 +40,26 @@ fun EditMemberContent(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     isDarkTheme: Boolean,
-    onMemberClick: (ServerMemberUiModel) -> Unit,
-    isOwner: Boolean,
     onEditRoles: () -> Unit,
     onDeleteMember: (ServerMemberUiModel) -> Unit,
     onTransferRightsToMember: (ServerMemberUiModel) -> Unit
 ) {
+    BackHandler {
+        onBackClick()
+    }
 
     Column(
         modifier = modifier.fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .clickable(
+                indication = null,
+                onClick = {},
+                enabled = false,
+                interactionSource = remember { MutableInteractionSource() },
+            )
+            .padding(top = 50.dp)
+            .padding(16.dp)
+
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -63,7 +81,6 @@ fun EditMemberContent(
             isDarkTheme = isDarkTheme,
             status = member.status,
             profilePictureUrl = member.avatarUrl,
-            onCardClick = { onMemberClick(member) }
         )
 
         Spacer(Modifier.height(15.dp))
@@ -82,24 +99,17 @@ fun EditMemberContent(
 
         Spacer(Modifier.height(30.dp))
 
-
-        if (isOwner) {
-            Exit(
-                text = "Удалить \"${member.name}\" с сервера",
-                onClick = { onDeleteMember(member) }
-            )
-        }
+        Exit(
+            text = "Удалить \"${member.name}\" с сервера",
+            onClick = { onDeleteMember(member) }
+        )
 
         Spacer(Modifier.height(15.dp))
 
-        if (isOwner) {
-            Exit(
-                text = "Передать \"${member.name}\" права на сервер",
-                onClick = { onTransferRightsToMember(member) }
-            )
-        }
-
-
+        Exit(
+            text = "Передать \"${member.name}\" права на сервер",
+            onClick = { onTransferRightsToMember(member) }
+        )
     }
 }
 
@@ -138,8 +148,6 @@ fun EditMemberContentPreviewWithRequestsLight() {
             imageLoader = LocalContext.current.imageLoader,
             onBackClick = {},
             member = member,
-            onMemberClick = {},
-            isOwner = false,
             onDeleteMember = {},
             onTransferRightsToMember = {},
             isDarkTheme = false,
@@ -157,8 +165,6 @@ fun EditMemberContentPreviewWithRequestsLight1() {
             imageLoader = LocalContext.current.imageLoader,
             onBackClick = {},
             member = member1,
-            onMemberClick = {},
-            isOwner = false,
             onDeleteMember = {},
             onTransferRightsToMember = {},
             isDarkTheme = false,
@@ -176,8 +182,6 @@ fun EditMemberContentPreviewOnlyFriendsLight() {
             imageLoader = LocalContext.current.imageLoader,
             onBackClick = {},
             member = member,
-            onMemberClick = {},
-            isOwner = true,
             onDeleteMember = {},
             onTransferRightsToMember = {},
             isDarkTheme = true,

@@ -2,8 +2,10 @@ package ru.hse.app.androidApp.ui.entity.model.servers
 
 import androidx.compose.runtime.Immutable
 import ru.hse.app.androidApp.ui.entity.model.FriendCheckboxUiModel
+import ru.hse.app.androidApp.ui.entity.model.FriendExtendedInfoUiModel
 import ru.hse.app.androidApp.ui.entity.model.FriendUiModelInvitation
 import ru.hse.app.androidApp.ui.entity.model.RoleMiniCheckboxUiModel
+import ru.hse.app.androidApp.ui.entity.model.ServerShortUiModel
 
 sealed interface ServerCardUiState {
     data object Loading : ServerCardUiState
@@ -19,4 +21,7 @@ data class ServerCardUiModel(
 
     val newChannelMembers: List<FriendCheckboxUiModel>,
     val newChannelRoles: List<RoleMiniCheckboxUiModel>,
+
+    val chosenUser: FriendExtendedInfoUiModel?,
+    val chosenUserCommonServers: List<ServerShortUiModel>
 )

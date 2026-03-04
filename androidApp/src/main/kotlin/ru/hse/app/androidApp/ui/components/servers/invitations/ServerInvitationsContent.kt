@@ -68,10 +68,10 @@ fun ServerInvitationsContent(
             items(invitations, key = { it.id }) { invitation ->
                 InviteCard(
                     imageLoader = imageLoader,
-                    name = invitation.userName,
+                    name = "",//todo invitation.userName ,
                     expirationDate = invitation.expirationDate,
                     onCancelClick = { onCancelClick(invitation) },
-                    profilePictureUrl = invitation.avatarUrl,
+                    profilePictureUrl = "",//todo invitation.avatarUrl,
                     isDarkTheme = isDarkTheme,
                 )
             }
@@ -89,14 +89,16 @@ fun ServerInvitationsContentPreviewLight() {
             invitations = listOf(
                 InvitationUiModel(
                     id = "1",
-                    userName = "Иван Иванов",
-                    avatarUrl = "https://example.com/avatar.jpg",
+                    link = "https://asdads",
+                    //userName = "Иван Иванов",
+                    //avatarUrl = "https://example.com/avatar.jpg",
                     expirationDate = LocalDateTime.now().plusDays(5)
                 ),
                 InvitationUiModel(
                     id = "2",
-                    userName = "Марина Ландышева",
-                    avatarUrl = "https://example.com/avatar2.jpg",
+                    link = "https://jkljlkjk",
+//                    userName = "Марина Ландышева",
+//                    avatarUrl = "https://example.com/avatar2.jpg",
                     expirationDate = LocalDateTime.now().plusDays(3)
                 )
             ),
@@ -117,14 +119,16 @@ fun ServerInvitationsContentPreviewDark() {
             invitations = listOf(
                 InvitationUiModel(
                     id = "1",
-                    userName = "Иван Иванов",
-                    avatarUrl = "https://example.com/avatar.jpg",
+                    link = "https://asdads",
+                    //userName = "Иван Иванов",
+                    //avatarUrl = "https://example.com/avatar.jpg",
                     expirationDate = LocalDateTime.now().plusDays(5)
                 ),
                 InvitationUiModel(
                     id = "2",
-                    userName = "Марина Ландышева",
-                    avatarUrl = "https://example.com/avatar2.jpg",
+                    link = "https://jkljlkjk",
+//                    userName = "Марина Ландышева",
+//                    avatarUrl = "https://example.com/avatar2.jpg",
                     expirationDate = LocalDateTime.now().plusDays(3)
                 )
             ),

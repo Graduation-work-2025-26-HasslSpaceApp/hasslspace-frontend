@@ -198,6 +198,22 @@ class FakeApiService : ApiService {
                 status = "dnd",
                 photoURL = null,
                 roles = emptyList()
+            ),
+            ServerInfoExpandedDto.ServerMemberDto(
+                id = "user_73451",
+                name = "Мария3",
+                username = "maria_codes3",
+                status = "dnd",
+                photoURL = null,
+                roles = emptyList()
+            ),
+            ServerInfoExpandedDto.ServerMemberDto(
+                id = "user_73452",
+                name = "Мария4",
+                username = "maria_codes4",
+                status = "dnd",
+                photoURL = null,
+                roles = emptyList()
             )
         ),
         textChannels = listOf(

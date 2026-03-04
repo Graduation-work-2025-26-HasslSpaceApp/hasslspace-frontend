@@ -1,6 +1,9 @@
 package ru.hse.app.androidApp.ui.components.servers.roles
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -56,14 +60,26 @@ fun EditRoleContent(
     onDeleteRoleClick: () -> Unit,
     modifier: Modifier = Modifier,
     selectedColor: Color,
-    onColorChanged: (Color) -> Unit,
     onColorPickClick: () -> Unit,
     isDarkTheme: Boolean
 ) {
     val areMembersShown = remember { mutableStateOf(false) }
 
+    BackHandler() {
+        onBackClick()
+    }
+
     Column(
         modifier = modifier.fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .clickable(
+                indication = null,
+                onClick = {},
+                enabled = false,
+                interactionSource = remember { MutableInteractionSource() },
+            )
+            .padding(top = 50.dp)
+            .padding(16.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -250,7 +266,6 @@ fun EditRoleContentPreviewWithRequestsLight() {
             onToggle = {},
             isDarkTheme = false,
             selectedColor = Color.Blue,
-            onColorChanged = {},
             onColorPickClick = {},
             onDeleteRoleClick = {},
             originalTitle = "role 1"
@@ -272,7 +287,6 @@ fun EditRoleContentPreviewWithRequestsDark() {
             onToggle = {},
             isDarkTheme = true,
             selectedColor = Color.Blue,
-            onColorChanged = {},
             onColorPickClick = {},
             onDeleteRoleClick = {},
             originalTitle = "role 1"
