@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,7 +35,10 @@ fun MyServersContent(
     isDarkTheme: Boolean
 ) {
     Column(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
+            .padding(top = 50.dp)
+            .padding(16.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -56,7 +60,7 @@ fun MyServersContent(
         Spacer(Modifier.height(15.dp))
 
         if (servers.isEmpty()) {
-            NoItemsBox("Вы пока не являетесь участником серверов")
+            NoItemsBox("Серверов пока нет")
         }
 
         UniversalVerticalGrid(

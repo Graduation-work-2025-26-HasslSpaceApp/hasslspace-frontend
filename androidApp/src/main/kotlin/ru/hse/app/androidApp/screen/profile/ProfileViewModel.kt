@@ -1,6 +1,5 @@
 package ru.hse.app.androidApp.screen.profile
 
-import android.content.Context
 import android.net.Uri
 import android.widget.Toast
 import androidx.compose.runtime.mutableStateListOf
@@ -9,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil3.ImageLoader
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -26,25 +24,25 @@ import ru.hse.app.androidApp.domain.usecase.friends.SearchFriendsUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.ChangeUserDescUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.ChangeUserNameUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.ChangeUserStatusUseCase
-import ru.hse.app.androidApp.domain.usecase.profile.GetUserServersUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.LoadUserInfoUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.SaveUserPhotoUseCase
+import ru.hse.app.androidApp.domain.usecase.servers.GetUserServersUseCase
 import ru.hse.app.androidApp.ui.entity.model.FriendUiModel
 import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
 import ru.hse.app.androidApp.ui.entity.model.TypeUiModel
-import ru.hse.app.androidApp.ui.entity.model.auth.SavePhotoEvent
-import ru.hse.app.androidApp.ui.entity.model.profile.CreateFriendRequestEvent
-import ru.hse.app.androidApp.ui.entity.model.profile.DeleteFriendshipEvent
-import ru.hse.app.androidApp.ui.entity.model.profile.LoadChosenUserCommonServersEvent
-import ru.hse.app.androidApp.ui.entity.model.profile.LoadChosenUserEvent
-import ru.hse.app.androidApp.ui.entity.model.profile.LoadUserDataEvent
-import ru.hse.app.androidApp.ui.entity.model.profile.LoadUserFriendsEvent
-import ru.hse.app.androidApp.ui.entity.model.profile.LoadUserServersEvent
+import ru.hse.app.androidApp.ui.entity.model.auth.events.SavePhotoEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.ProfileUiState
-import ru.hse.app.androidApp.ui.entity.model.profile.RespondToFriendRequestEvent
-import ru.hse.app.androidApp.ui.entity.model.profile.SaveUserDescEvent
-import ru.hse.app.androidApp.ui.entity.model.profile.SaveUserNameEvent
-import ru.hse.app.androidApp.ui.entity.model.profile.SaveUserStatusEvent
+import ru.hse.app.androidApp.ui.entity.model.profile.events.CreateFriendRequestEvent
+import ru.hse.app.androidApp.ui.entity.model.profile.events.DeleteFriendshipEvent
+import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadChosenUserCommonServersEvent
+import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadChosenUserEvent
+import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadUserDataEvent
+import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadUserFriendsEvent
+import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadUserServersEvent
+import ru.hse.app.androidApp.ui.entity.model.profile.events.RespondToFriendRequestEvent
+import ru.hse.app.androidApp.ui.entity.model.profile.events.SaveUserDescEvent
+import ru.hse.app.androidApp.ui.entity.model.profile.events.SaveUserNameEvent
+import ru.hse.app.androidApp.ui.entity.model.profile.events.SaveUserStatusEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.toUI
 import ru.hse.app.androidApp.ui.entity.model.toDomain
 import ru.hse.app.androidApp.ui.entity.model.toUi
@@ -54,7 +52,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    @ApplicationContext context: Context,
     // Profile and settings
     private val dataManager: DataManager,
     private val loadUserInfoUseCase: LoadUserInfoUseCase,
@@ -158,6 +155,7 @@ class ProfileViewModel @Inject constructor(
                     originalStatusPresentation.value = updatedData.status
                     originalDescription.value = updatedData.description
 
+                    originalFriends.clear()
                     originalFriends.addAll(updatedData.friends)
 
                     _uiState.value = ProfileUiState.Success(updatedData)

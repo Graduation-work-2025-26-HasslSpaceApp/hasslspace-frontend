@@ -1,6 +1,7 @@
 package ru.hse.app.androidApp.ui.components.common.card
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,7 +37,7 @@ fun RoleCardCheckbox(
     modifier: Modifier = Modifier,
     height: Dp = 77.dp,
     color: Color,
-    onToggle: (Boolean) -> Unit,
+    onClick: () -> Unit,
     isChosen: Boolean = false,
 ) {
     Row(
@@ -45,7 +46,10 @@ fun RoleCardCheckbox(
             .height(height)
             .clip(RoundedCornerShape(22.dp))
             .background(MaterialTheme.colorScheme.surfaceContainer)
-            .padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically
+            .clickable(onClick = onClick)
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+
     ) {
 
         Box(
@@ -76,7 +80,7 @@ fun RoleCardCheckbox(
 
             CheckboxToggle(
                 isChosen = isChosen,
-                onToggle = onToggle,
+                onClick = onClick,
                 modifier = Modifier.size(26.dp)
             )
         }
@@ -93,7 +97,7 @@ fun RoleCardCheckboxPreviewAllLight() {
                 title = "role 1",
                 color = Color.Blue,
                 isChosen = isChosen.value,
-                onToggle = { isChosen.value = it },
+                onClick = {isChosen.value = !isChosen.value},
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -102,7 +106,7 @@ fun RoleCardCheckboxPreviewAllLight() {
                 title = "role 2",
                 color = Color.Red,
                 isChosen = isChosen.value,
-                onToggle = { isChosen.value = it },
+                onClick = {},
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -111,7 +115,7 @@ fun RoleCardCheckboxPreviewAllLight() {
                 title = "role 3",
                 color = Color.Green,
                 isChosen = isChosen.value,
-                onToggle = { isChosen.value = it },
+                onClick = {},
             )
         }
     }
@@ -127,7 +131,7 @@ fun RoleCardCheckboxPreviewAllDark() {
                 title = "role 1",
                 color = Color.Blue,
                 isChosen = isChosen.value,
-                onToggle = { isChosen.value = it },
+                onClick = {},
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -136,7 +140,7 @@ fun RoleCardCheckboxPreviewAllDark() {
                 title = "role 2",
                 color = Color.Red,
                 isChosen = isChosen.value,
-                onToggle = { isChosen.value = it },
+                onClick = {},
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -145,7 +149,7 @@ fun RoleCardCheckboxPreviewAllDark() {
                 title = "role 3",
                 color = Color.Green,
                 isChosen = isChosen.value,
-                onToggle = { isChosen.value = it },
+                onClick = {},
             )
         }
     }

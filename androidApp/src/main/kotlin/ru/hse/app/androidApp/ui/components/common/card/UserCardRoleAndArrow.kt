@@ -57,6 +57,7 @@ fun UserCardRoleAndArrow(
             .height(77.dp)
             .clip(RoundedCornerShape(22.dp))
             .background(MaterialTheme.colorScheme.surfaceContainer)
+            .clickable(onClick = onArrowClick)
             .padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically
     ) {
 

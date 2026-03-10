@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -37,6 +38,8 @@ fun ServerRolesContent(
 ) {
     Column(
         modifier = modifier.fillMaxSize()
+            .padding(top = 50.dp)
+            .padding(16.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -44,7 +47,7 @@ fun ServerRolesContent(
         ) {
             BackButton(onClick = onBackClick)
 
-            Spacer(Modifier.weight(0.2f))
+            Spacer(Modifier.weight(0.15f))
 
             Column(
                 modifier = Modifier

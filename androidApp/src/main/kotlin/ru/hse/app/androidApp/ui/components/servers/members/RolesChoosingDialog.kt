@@ -38,12 +38,12 @@ import ru.hse.app.androidApp.ui.theme.AppTheme
 fun RolesChoosingDialog(
     showDialog: MutableState<Boolean>,
     roles: List<RoleMiniCheckboxUiModel>,
-    onToggleRole: (Boolean) -> Unit,
+    onToggleRole: (RoleMiniCheckboxUiModel) -> Unit,
     onApplyClick: () -> Unit,
     onDismissClick: () -> Unit
 ) {
     if (showDialog.value) {
-        Dialog(onDismissRequest = {}) {
+        Dialog(onDismissRequest = { onDismissClick() }) {
             Box(
                 modifier = Modifier
                     .width(343.dp)
@@ -83,7 +83,7 @@ fun RolesChoosingDialog(
                                 height = 50.dp,
                                 title = role.title,
                                 color = role.color,
-                                onToggle = onToggleRole,
+                                onClick = { onToggleRole(role) },
                                 isChosen = role.isChosen
                             )
                         }

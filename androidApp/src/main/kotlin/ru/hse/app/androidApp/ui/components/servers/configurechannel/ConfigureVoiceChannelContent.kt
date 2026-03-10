@@ -1,5 +1,9 @@
 package ru.hse.app.androidApp.ui.components.servers.configurechannel
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -7,8 +11,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,11 +42,27 @@ fun ConfigureVoiceChannelContent(
     onAddMembers: () -> Unit,
     onSaveClick: () -> Unit,
     onDeleteChannel: () -> Unit,
-    sliderValue: Float,
-    onSliderValueChange: (Float) -> Unit
+    type: String,
+    sliderValue: Float = 0f,
+    onSliderValueChange: (Float) -> Unit = {}
 ) {
+    BackHandler() {
+        onBackClick()
+    }
+
     Column(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
+            .clickable(
+                indication = null,
+                onClick = {},
+                enabled = false,
+                interactionSource = remember { MutableInteractionSource() },
+            )
+            .background(MaterialTheme.colorScheme.background)
+            .padding(top = 50.dp)
+            .padding(16.dp)
+
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -51,10 +73,14 @@ fun ConfigureVoiceChannelContent(
             )
             Spacer(modifier = Modifier.weight(1f))
             InviteButton(
-                fontSize = 16.sp,
+                fontSize = 14.sp,
                 onClick = onSaveClick,
-                text = "Соханить",
-                fontColor = MaterialTheme.colorScheme.primary
+                text = "Сохранить",
+                fontColor = MaterialTheme.colorScheme.primary,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                    contentColor = MaterialTheme.colorScheme.onSurface
+                )
             )
         }
 
@@ -73,7 +99,7 @@ fun ConfigureVoiceChannelContent(
         AuthCustomField(
             text = channelName,
             onTextChanged = onChannelNameChanged,
-            placeholder = "Новый канал",
+            placeholder = "Новое название",
             description = "Название канала",
             maxCharacters = 30,
             modifier = Modifier.fillMaxWidth()
@@ -96,15 +122,21 @@ fun ConfigureVoiceChannelContent(
         }
 
         Spacer(Modifier.height(25.dp))
-        UserLimitSlider(
-            sliderValue = sliderValue,
-            onSliderValueChange = onSliderValueChange
-        )
+        if (type != "text") {
+            UserLimitSlider(
+                sliderValue = sliderValue,
+                onSliderValueChange = onSliderValueChange
+            )
+            Spacer(Modifier.height(25.dp))
+        }
 
-        Spacer(Modifier.height(25.dp))
         DeleteButton(
             onClick = onDeleteChannel,
-            text = "Удалить канал"
+            text = "Удалить канал",
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.background,
+                contentColor = MaterialTheme.colorScheme.onSurface
+            )
         )
     }
 }
@@ -124,7 +156,8 @@ fun ConfigureVoiceChannelContentPreviewLightEmpty() {
             onDeleteChannel = {},
             onAddMembers = {},
             sliderValue = 25f,
-            onSliderValueChange = {}
+            onSliderValueChange = {},
+            type = "text"
         )
     }
 }
@@ -144,7 +177,8 @@ fun ConfigureVoiceChannelContentPreviewLight1() {
             onDeleteChannel = {},
             onAddMembers = {},
             sliderValue = 25f,
-            onSliderValueChange = {}
+            onSliderValueChange = {},
+            type = "voice"
         )
     }
 }
@@ -164,7 +198,8 @@ fun ConfigureVoiceChannelContentPreviewDarkEmpty() {
             onDeleteChannel = {},
             onAddMembers = {},
             sliderValue = 25f,
-            onSliderValueChange = {}
+            onSliderValueChange = {},
+            type = "text"
         )
     }
 }
@@ -184,7 +219,8 @@ fun ConfigureVoiceChannelContentPreviewDark1() {
             onDeleteChannel = {},
             onAddMembers = {},
             sliderValue = 25f,
-            onSliderValueChange = {}
+            onSliderValueChange = {},
+            type = "voice"
         )
     }
 }

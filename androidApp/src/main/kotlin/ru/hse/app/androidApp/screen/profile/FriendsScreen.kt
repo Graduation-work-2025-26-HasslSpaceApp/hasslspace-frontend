@@ -19,10 +19,10 @@ import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
 import ru.hse.app.androidApp.ui.components.profile.friends.FriendsContent
 import ru.hse.app.androidApp.ui.components.userinfocard.CommonServersBottomSheet
 import ru.hse.app.androidApp.ui.components.userinfocard.UserInfoBottomSheet
-import ru.hse.app.androidApp.ui.entity.model.profile.LoadChosenUserCommonServersEvent
-import ru.hse.app.androidApp.ui.entity.model.profile.LoadChosenUserEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.ProfileUiState
-import ru.hse.app.androidApp.ui.entity.model.profile.RespondToFriendRequestEvent
+import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadChosenUserCommonServersEvent
+import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadChosenUserEvent
+import ru.hse.app.androidApp.ui.entity.model.profile.events.RespondToFriendRequestEvent
 import ru.hse.app.androidApp.ui.navigation.NavigationItem
 
 @Composable
@@ -175,7 +175,7 @@ fun FriendsScreenWithStateContent(
         CommonServersBottomSheet(
             imageLoader = context.imageLoader,
             servers = data.chosenUserCommonServers,
-            onServerClick = {/*todo*/ },
+            onServerClick = {server -> navController.navigate(NavigationItem.MainServerScreen.route + "/${server.id}") },
             isDarkTheme = data.isDarkCheck,
             onDismiss = { viewModel.showCommonServers.value = false }
         )

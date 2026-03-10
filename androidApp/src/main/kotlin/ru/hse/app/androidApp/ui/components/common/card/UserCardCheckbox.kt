@@ -49,8 +49,7 @@ fun UserCardCheckbox(
     modifier: Modifier = Modifier,
     status: StatusPresentation = StatusPresentation.INVISIBLE,
     profilePictureUrl: String = "",
-    onCardClick: () -> Unit,
-    onToggle: (Boolean) -> Unit,
+    onClick: () -> Unit,
     isChosen: Boolean = false,
 ) {
     Row(
@@ -59,7 +58,7 @@ fun UserCardCheckbox(
             .height(77.dp)
             .clip(RoundedCornerShape(22.dp))
             .background(MaterialTheme.colorScheme.surfaceContainer)
-            .clickable { onCardClick() }
+            .clickable { onClick() }
             .padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically
     ) {
 
@@ -122,7 +121,7 @@ fun UserCardCheckbox(
 
             CheckboxToggle(
                 isChosen = isChosen,
-                onToggle = onToggle,
+                onClick = onClick,
                 modifier = Modifier.size(26.dp)
             )
         }
@@ -140,9 +139,9 @@ fun UserCardCheckboxPreviewAllLight() {
                 nickname = "alex_ivanov",
                 status = StatusPresentation.ACTIVE,
                 profilePictureUrl = "",
-                onCardClick = {},
+               
                 isChosen = isChosen.value,
-                onToggle = { isChosen.value = it },
+                onClick = {},
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -154,9 +153,9 @@ fun UserCardCheckboxPreviewAllLight() {
                 nickname = "maria_petrova",
                 status = StatusPresentation.INVISIBLE,
                 profilePictureUrl = "",
-                onCardClick = {},
+               
                 isChosen = isChosen.value,
-                onToggle = { isChosen.value = it },
+                onClick = {},
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -168,9 +167,9 @@ fun UserCardCheckboxPreviewAllLight() {
                 nickname = "dmitry_sidorov",
                 status = StatusPresentation.DO_NOT_DISTURB,
                 profilePictureUrl = "",
-                onCardClick = {},
+               
                 isChosen = isChosen.value,
-                onToggle = { isChosen.value = it },
+                onClick = {},
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -182,9 +181,9 @@ fun UserCardCheckboxPreviewAllLight() {
                 nickname = "ekaterina_volkova",
                 status = StatusPresentation.INVISIBLE,
                 profilePictureUrl = "",
-                onCardClick = {},
+               
                 isChosen = isChosen.value,
-                onToggle = { isChosen.value = it },
+                onClick = {},
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -196,9 +195,9 @@ fun UserCardCheckboxPreviewAllLight() {
                 nickname = "ivan_nikolaev",
                 status = StatusPresentation.NOT_ACTIVE,
                 profilePictureUrl = "",
-                onCardClick = {},
+               
                 isChosen = isChosen.value,
-                onToggle = { isChosen.value = it },
+                onClick = {},
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -217,9 +216,9 @@ fun UserCardCheckboxPreviewAllDark() {
                 nickname = "alex_ivanov",
                 status = StatusPresentation.ACTIVE,
                 profilePictureUrl = "",
-                onCardClick = {},
+               
                 isChosen = isChosen.value,
-                onToggle = { isChosen.value = it },
+                onClick = {},
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -231,9 +230,9 @@ fun UserCardCheckboxPreviewAllDark() {
                 nickname = "maria_petrova",
                 status = StatusPresentation.NOT_ACTIVE,
                 profilePictureUrl = "",
-                onCardClick = {},
+               
                 isChosen = isChosen.value,
-                onToggle = { isChosen.value = it },
+                onClick = {},
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -245,9 +244,9 @@ fun UserCardCheckboxPreviewAllDark() {
                 nickname = "dmitry_sidorov",
                 status = StatusPresentation.DO_NOT_DISTURB,
                 profilePictureUrl = "",
-                onCardClick = {},
+               
                 isChosen = isChosen.value,
-                onToggle = { isChosen.value = it },
+                onClick = {},
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -259,9 +258,9 @@ fun UserCardCheckboxPreviewAllDark() {
                 nickname = "ekaterina_volkova",
                 status = StatusPresentation.INVISIBLE,
                 profilePictureUrl = "",
-                onCardClick = {},
+               
                 isChosen = isChosen.value,
-                onToggle = { isChosen.value = it },
+                onClick = {},
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -273,9 +272,9 @@ fun UserCardCheckboxPreviewAllDark() {
                 nickname = "ivan_nikolaev",
                 status = StatusPresentation.INVISIBLE,
                 profilePictureUrl = "",
-                onCardClick = {},
+               
                 isChosen = isChosen.value,
-                onToggle = { isChosen.value = it },
+                onClick = {},
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -292,9 +291,9 @@ fun UserCardCheckboxPreviewDefaultLight() {
             UserCardCheckbox(
                 username = "Анна Смирнова",
                 nickname = "anna_smirnova",
-                onCardClick = {},
+               
                 isChosen = isChosen.value,
-                onToggle = { isChosen.value = it },
+                onClick = {},
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -305,9 +304,9 @@ fun UserCardCheckboxPreviewDefaultLight() {
                 username = "ДлинноеИмяДлинноеИмяДлинноеИмя",
                 nickname = "очень_длинный_никнейм_пользователя",
                 profilePictureUrl = "https://example.com/photo.jpg",
-                onCardClick = {},
+               
                 isChosen = isChosen.value,
-                onToggle = { isChosen.value = it },
+                onClick = {},
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -324,9 +323,9 @@ fun UserCardCheckboxPreviewDefaultDark() {
             UserCardCheckbox(
                 username = "Анна Смирнова",
                 nickname = "anna_smirnova",
-                onCardClick = {},
+               
                 isChosen = isChosen.value,
-                onToggle = { isChosen.value = it },
+                onClick = {},
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -337,9 +336,9 @@ fun UserCardCheckboxPreviewDefaultDark() {
                 username = "ДлинноеИмяДлинноеИмяДлинноеИмя",
                 nickname = "очень_длинный_никнейм_пользователя",
                 profilePictureUrl = "https://example.com/photo.jpg",
-                onCardClick = {},
+               
                 isChosen = isChosen.value,
-                onToggle = { isChosen.value = it },
+                onClick = {},
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)
             )

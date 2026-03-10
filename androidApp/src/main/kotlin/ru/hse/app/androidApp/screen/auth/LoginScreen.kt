@@ -13,8 +13,8 @@ import ru.hse.app.androidApp.ui.components.auth.login.LoginScreenContent
 import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
 import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
 import ru.hse.app.androidApp.ui.entity.model.auth.AuthUiState
-import ru.hse.app.androidApp.ui.entity.model.auth.CheckEmailVerificationEvent
-import ru.hse.app.androidApp.ui.entity.model.auth.LoginUserEvent
+import ru.hse.app.androidApp.ui.entity.model.auth.events.CheckEmailVerificationEvent
+import ru.hse.app.androidApp.ui.entity.model.auth.events.LoginUserEvent
 import ru.hse.app.androidApp.ui.navigation.AuthNavigationItem
 
 @Composable

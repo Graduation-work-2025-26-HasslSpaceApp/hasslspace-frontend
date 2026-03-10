@@ -11,6 +11,8 @@ import ru.hse.app.androidApp.screen.profile.ProfileScreen
 import ru.hse.app.androidApp.screen.profile.SettingsScreen
 import ru.hse.app.androidApp.screen.profile.SystemSettingsScreen
 import ru.hse.app.androidApp.screen.profile.UserSettingsScreen
+import ru.hse.app.androidApp.screen.servercard.MainServerScreen
+import ru.hse.app.androidApp.screen.servercard.ServerMembersInfoScreen
 
 @Composable
 fun ProfileNavigation(bottomNavHostController: NavHostController) {
@@ -41,55 +43,19 @@ fun ProfileNavigation(bottomNavHostController: NavHostController) {
         composable(NavigationItem.AddFriends.route) {
             AddFriendsScreen(profileNavController)
         }
-//        composable(NavigationItem.MyServers.route) {
-//            ServersNavigation(bottomNavHostController)
-//        }
-//        composable(NavigationItem.Settings.route) {
-//            EditProfileScreen(profileNavController, profileViewModel)
-//        }
-//        composable(NavigationItem.AboutProgram.route) {
-//            AboutUsScreen(profileNavController, profileViewModel)
-//        }
-//        composable(NavigationItem.RouteDetails.route + "/{routeId}") { backStackEntry ->
-//            val routeId = backStackEntry.arguments?.getString("routeId")
-//            if (routeId != null) {
-//                RouteDetailsScreen(profileNavController, routeId, routeDetailsViewModel)
-//            }
-//        }
-//        composable(NavigationItem.RoutePassing.route + "/{routeId}") { backStackEntry ->
-//            val routeId = backStackEntry.arguments?.getString("routeId")
-//            if (routeId != null) {
-//                RoutePassingScreen(
-//                    bottomNavHostController,
-//                    profileNavController,
-//                    routeId,
-//                    routeDetailsViewModel
-//                )
-//            }
-//        }
-//        composable(NavigationItem.RouteReviews.route + "/{routeId}") { backStackEntry ->
-//            val routeId = backStackEntry.arguments?.getString("routeId")
-//            if (routeId != null) {
-//                RouteReviewsScreen(profileNavController, routeId, routeDetailsViewModel)
-//            }
-//        }
-//        composable(
-//            route = NavigationItem.RouteRate.route + "/{routeId}/{averageMark}",
-//            arguments = listOf(
-//                navArgument(name = "routeId") {
-//                    type = NavType.StringType
-//                },
-//                navArgument(name = "averageMark") {
-//                    type = NavType.IntType
-//                },
-//            )
-//        ) { backStackEntry ->
-//            val routeId = backStackEntry.arguments?.getString("routeId")
-//            val mark = backStackEntry.arguments?.getInt("averageMark")
-//            if (routeId != null && mark != null) {
-//                RateRouteScreen(profileNavController, routeId, mark, routeDetailsViewModel)
-//            }
-//        }
-//    }
+
+        composable(NavigationItem.MainServerScreen.route + "/{serverId}") { backStackEntry ->
+            val serverId = backStackEntry.arguments?.getString("serverId")
+            if (serverId != null) {
+                MainServerScreen(profileNavController, serverId)
+            }
+        }
+
+        composable(NavigationItem.ServerMembersInfo.route + "/{serverId}") { backStackEntry ->
+            val serverId = backStackEntry.arguments?.getString("serverId")
+            if (serverId != null) {
+                ServerMembersInfoScreen(profileNavController, serverId)
+            }
+        }
     }
 }

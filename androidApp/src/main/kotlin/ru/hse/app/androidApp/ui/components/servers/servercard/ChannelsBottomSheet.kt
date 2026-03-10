@@ -51,6 +51,7 @@ fun ChannelsBottomSheet(
         onDismissRequest = onDismiss,
         shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
         containerColor = MaterialTheme.colorScheme.background,
+        scrimColor = MaterialTheme.colorScheme.surfaceDim.copy(alpha = 0.5f),
         dragHandle = {
             BottomSheetDefaults.DragHandle(
                 color = MaterialTheme.colorScheme.outline

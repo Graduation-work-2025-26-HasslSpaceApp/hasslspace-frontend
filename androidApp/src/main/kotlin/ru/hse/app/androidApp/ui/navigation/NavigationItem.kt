@@ -13,6 +13,14 @@ sealed class NavigationItem(val route: String, val title: String) {
 
     // Servers
     data object ServersMain : NavigationItem("servers_main", "Мои серверы")
+    data object CreateServer : NavigationItem("create_server", "Создать сервер")
+    data object JoinServer : NavigationItem("join_server", "Присоединиться к серверу")
+    data object MainServerScreen : NavigationItem("main_server", "Главная страница сервера")
+    data object ServerMembersInfo : NavigationItem("server_members_info", "Страница с информацией об участниках сервера")
+    data object ServerSettings : NavigationItem("server_settings", "Редактирование сервера")
+    data object MembersSettings : NavigationItem("server_members_settings", "Редактирование участников сервера")
+    data object RolesSettings : NavigationItem("server_roles_settings", "Редактирование ролей сервера")
+    data object InvitationsSettings : NavigationItem("server_invitations_settings", "Редактирование приглашений сервера")
 
     // Chats
     data object ChatsMain : NavigationItem("chats_main", "Мои чаты")

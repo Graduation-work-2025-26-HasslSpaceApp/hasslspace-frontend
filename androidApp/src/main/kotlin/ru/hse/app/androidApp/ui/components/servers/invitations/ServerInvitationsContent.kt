@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -14,12 +15,9 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil3.ImageLoader
-import coil3.imageLoader
 import ru.hse.app.androidApp.ui.components.common.box.NoItemsBox
 import ru.hse.app.androidApp.ui.components.common.button.BackButton
 import ru.hse.app.androidApp.ui.components.common.card.InviteCard
@@ -32,13 +30,15 @@ import java.time.LocalDateTime
 fun ServerInvitationsContent(
     onBackClick: () -> Unit,
     invitations: List<InvitationUiModel>,
-    imageLoader: ImageLoader,
+    onInvitationClick: (InvitationUiModel) -> Unit,
     onCancelClick: (InvitationUiModel) -> Unit,
     modifier: Modifier = Modifier,
-    isDarkTheme: Boolean
 ) {
     Column(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
+            .padding(top = 50.dp)
+            .padding(16.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -67,12 +67,10 @@ fun ServerInvitationsContent(
 
             items(invitations, key = { it.id }) { invitation ->
                 InviteCard(
-                    imageLoader = imageLoader,
-                    name = invitation.userName,
+                    link = invitation.link,
                     expirationDate = invitation.expirationDate,
+                    onInvitationClick =  { onInvitationClick(invitation) },
                     onCancelClick = { onCancelClick(invitation) },
-                    profilePictureUrl = invitation.avatarUrl,
-                    isDarkTheme = isDarkTheme,
                 )
             }
         }
@@ -89,20 +87,21 @@ fun ServerInvitationsContentPreviewLight() {
             invitations = listOf(
                 InvitationUiModel(
                     id = "1",
-                    userName = "Иван Иванов",
-                    avatarUrl = "https://example.com/avatar.jpg",
+                    link = "https://asdads",
+                    //userName = "Иван Иванов",
+                    //avatarUrl = "https://example.com/avatar.jpg",
                     expirationDate = LocalDateTime.now().plusDays(5)
                 ),
                 InvitationUiModel(
                     id = "2",
-                    userName = "Марина Ландышева",
-                    avatarUrl = "https://example.com/avatar2.jpg",
+                    link = "https://jkljlkjk",
+//                    userName = "Марина Ландышева",
+//                    avatarUrl = "https://example.com/avatar2.jpg",
                     expirationDate = LocalDateTime.now().plusDays(3)
                 )
             ),
-            imageLoader = LocalContext.current.imageLoader,
             onCancelClick = {},
-            isDarkTheme = false
+            onInvitationClick = {},
         )
     }
 }
@@ -117,20 +116,17 @@ fun ServerInvitationsContentPreviewDark() {
             invitations = listOf(
                 InvitationUiModel(
                     id = "1",
-                    userName = "Иван Иванов",
-                    avatarUrl = "https://example.com/avatar.jpg",
+                    link = "https://asdads",
                     expirationDate = LocalDateTime.now().plusDays(5)
                 ),
                 InvitationUiModel(
                     id = "2",
-                    userName = "Марина Ландышева",
-                    avatarUrl = "https://example.com/avatar2.jpg",
+                    link = "https://jkljlkjk",
                     expirationDate = LocalDateTime.now().plusDays(3)
                 )
             ),
-            imageLoader = LocalContext.current.imageLoader,
             onCancelClick = {},
-            isDarkTheme = true
+            onInvitationClick = {},
         )
     }
 }

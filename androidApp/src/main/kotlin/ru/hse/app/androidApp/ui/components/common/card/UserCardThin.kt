@@ -45,7 +45,6 @@ fun UserCardThin(
     modifier: Modifier = Modifier,
     status: StatusPresentation = StatusPresentation.INVISIBLE,
     profilePictureUrl: String = "",
-    onCardClick: () -> Unit,
 ) {
     Row(
         modifier
@@ -53,7 +52,6 @@ fun UserCardThin(
             .height(55.dp)
             .clip(RoundedCornerShape(22.dp))
             .background(MaterialTheme.colorScheme.surfaceContainer)
-            .clickable(onClick = onCardClick)
             .padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically
     ) {
 
@@ -120,7 +118,7 @@ fun UserCardThinPreviewAllLight() {
                 nickname = "alex_ivanov",
                 status = StatusPresentation.ACTIVE,
                 profilePictureUrl = "",
-                onCardClick = {},
+                
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -132,7 +130,7 @@ fun UserCardThinPreviewAllLight() {
                 nickname = "maria_petrova",
                 status = StatusPresentation.INVISIBLE,
                 profilePictureUrl = "",
-                onCardClick = {},
+                
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -144,7 +142,7 @@ fun UserCardThinPreviewAllLight() {
                 nickname = "dmitry_sidorov",
                 status = StatusPresentation.DO_NOT_DISTURB,
                 profilePictureUrl = "",
-                onCardClick = {},
+                
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -156,7 +154,7 @@ fun UserCardThinPreviewAllLight() {
                 nickname = "ekaterina_volkova",
                 status = StatusPresentation.INVISIBLE,
                 profilePictureUrl = "",
-                onCardClick = {},
+                
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -168,7 +166,7 @@ fun UserCardThinPreviewAllLight() {
                 nickname = "ivan_nikolaev",
                 status = StatusPresentation.NOT_ACTIVE,
                 profilePictureUrl = "",
-                onCardClick = {},
+                
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -186,7 +184,7 @@ fun UserCardThinPreviewAllDark() {
                 nickname = "alex_ivanov",
                 status = StatusPresentation.ACTIVE,
                 profilePictureUrl = "",
-                onCardClick = {},
+                
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -198,7 +196,7 @@ fun UserCardThinPreviewAllDark() {
                 nickname = "maria_petrova",
                 status = StatusPresentation.NOT_ACTIVE,
                 profilePictureUrl = "",
-                onCardClick = {},
+                
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -210,7 +208,7 @@ fun UserCardThinPreviewAllDark() {
                 nickname = "dmitry_sidorov",
                 status = StatusPresentation.DO_NOT_DISTURB,
                 profilePictureUrl = "",
-                onCardClick = {},
+                
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -222,7 +220,7 @@ fun UserCardThinPreviewAllDark() {
                 nickname = "ekaterina_volkova",
                 status = StatusPresentation.INVISIBLE,
                 profilePictureUrl = "",
-                onCardClick = {},
+                
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -234,7 +232,7 @@ fun UserCardThinPreviewAllDark() {
                 nickname = "ivan_nikolaev",
                 status = StatusPresentation.INVISIBLE,
                 profilePictureUrl = "",
-                onCardClick = {},
+                
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -251,7 +249,7 @@ fun UserCardThinPreviewMixedLight() {
             UserCardThin(
                 username = "Анна Смирнова",
                 nickname = "anna_smirnova",
-                onCardClick = {},
+                
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -263,7 +261,7 @@ fun UserCardThinPreviewMixedLight() {
                 username = "Петр Кузнецов",
                 nickname = "petr_kuznetsov",
                 status = StatusPresentation.ACTIVE,
-                onCardClick = {},
+                
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -275,7 +273,7 @@ fun UserCardThinPreviewMixedLight() {
                 username = "ДлинноеИмяДлинноеИмяДлинноеИмя",
                 nickname = "очень_длинный_никнейм_пользователя",
                 profilePictureUrl = "https://example.com/photo.jpg",
-                onCardClick = {},
+                
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -287,7 +285,7 @@ fun UserCardThinPreviewMixedLight() {
                 username = "Ольга Соколова",
                 nickname = "olga_sokolova",
                 status = StatusPresentation.DO_NOT_DISTURB,
-                onCardClick = {},
+                
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -304,7 +302,7 @@ fun UserCardThinPreviewMixedDark() {
             UserCardThin(
                 username = "Анна Смирнова",
                 nickname = "anna_smirnova",
-                onCardClick = {},
+                
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -316,7 +314,7 @@ fun UserCardThinPreviewMixedDark() {
                 username = "Петр Кузнецов",
                 nickname = "petr_kuznetsov",
                 status = StatusPresentation.ACTIVE,
-                onCardClick = {},
+                
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -328,7 +326,7 @@ fun UserCardThinPreviewMixedDark() {
                 username = "ДлинноеИмяДлинноеИмяДлинноеИмя",
                 nickname = "очень_длинный_никнейм_пользователя",
                 profilePictureUrl = "https://example.com/photo.jpg",
-                onCardClick = {},
+                
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -340,7 +338,7 @@ fun UserCardThinPreviewMixedDark() {
                 username = "Ольга Соколова",
                 nickname = "olga_sokolova",
                 status = StatusPresentation.DO_NOT_DISTURB,
-                onCardClick = {},
+                
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -357,7 +355,7 @@ fun UserCardThinPreviewEdgeCasesLight() {
             UserCardThin(
                 username = "Иван Иванов",
                 nickname = "ivanov",
-                onCardClick = {},
+                
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -368,7 +366,7 @@ fun UserCardThinPreviewEdgeCasesLight() {
             UserCardThin(
                 username = "Мария Петрова",
                 nickname = "petrova",
-                onCardClick = {},
+                
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -378,7 +376,7 @@ fun UserCardThinPreviewEdgeCasesLight() {
             UserCardThin(
                 username = "Алексей",
                 nickname = "alex",
-                onCardClick = {},
+                
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -388,7 +386,7 @@ fun UserCardThinPreviewEdgeCasesLight() {
             UserCardThin(
                 username = "Тест",
                 nickname = "test",
-                onCardClick = {},
+                
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )

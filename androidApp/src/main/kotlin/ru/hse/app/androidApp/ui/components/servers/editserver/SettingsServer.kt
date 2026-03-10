@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
@@ -39,9 +40,12 @@ fun SettingsServer(
     onMembersClick: () -> Unit,
     onRolesClick: () -> Unit,
     onInvitationsClick: () -> Unit,
+    isDark: Boolean
 ) {
     Column(
         modifier = modifier.fillMaxSize()
+            .padding(top = 50.dp)
+            .padding(16.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -58,7 +62,8 @@ fun SettingsServer(
 
         PhotoSetting(
             selectedImageUri = selectedImageUri,
-            onPhotoPickClick = onPhotoPickClick
+            onPhotoPickClick = onPhotoPickClick,
+            isDark = isDark
         )
 
         Spacer(Modifier.height(15.dp))
@@ -74,6 +79,7 @@ fun SettingsServer(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .height(40.dp)
                 .clickable { onMembersClick() },
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -91,11 +97,12 @@ fun SettingsServer(
                     .size(14.dp)
             )
         }
-        Spacer(Modifier.height(30.dp))
+        Spacer(Modifier.height(10.dp))
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .height(40.dp)
                 .clickable { onRolesClick() },
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -113,11 +120,12 @@ fun SettingsServer(
                     .size(14.dp)
             )
         }
-        Spacer(Modifier.height(30.dp))
+        Spacer(Modifier.height(10.dp))
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .height(40.dp)
                 .clickable { onInvitationsClick() },
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -153,7 +161,8 @@ fun SettingsServerPreviewWithRequestsLight() {
             onApplyNewServerName = {},
             onMembersClick = {},
             onRolesClick = {},
-            onInvitationsClick = {}
+            onInvitationsClick = {},
+            isDark = false
         )
     }
 }
@@ -173,7 +182,8 @@ fun SettingsServerPreviewWithRequestsDark() {
             onApplyNewServerName = {},
             onMembersClick = {},
             onRolesClick = {},
-            onInvitationsClick = {}
+            onInvitationsClick = {},
+            isDark = true
         )
     }
 }

@@ -2,6 +2,7 @@ package ru.hse.app.androidApp.ui.components.common.card
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,56 +34,35 @@ import ru.hse.app.androidApp.R
 import ru.hse.app.androidApp.ui.components.common.button.InviteButton
 import ru.hse.app.androidApp.ui.components.common.text.VariableLight
 import ru.hse.app.androidApp.ui.components.common.text.VariableMedium
+import ru.hse.app.androidApp.ui.entity.model.InvitationUiModel
 import ru.hse.app.androidApp.ui.theme.AppTheme
 import java.time.Duration
 import java.time.LocalDateTime
 
 @Composable
 fun InviteCard(
-    imageLoader: ImageLoader,
-    name: String,
+    link: String,
     expirationDate: LocalDateTime,
-    isDarkTheme: Boolean,
     modifier: Modifier = Modifier,
-    profilePictureUrl: String = "",
+    onInvitationClick: () -> Unit,
     onCancelClick: () -> Unit,
 ) {
     Row(
         modifier
             .fillMaxWidth()
-            .height(77.dp)
-            .clip(RoundedCornerShape(22.dp))
+            .height(50.dp)
+            .clip(RoundedCornerShape(10.dp))
+            .clickable(onClick = onInvitationClick)
             .background(MaterialTheme.colorScheme.surfaceContainer)
-            .padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically
+            .padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
     ) {
-
-        Image(
-            painter = rememberAsyncImagePainter(
-                model = profilePictureUrl,
-                imageLoader = imageLoader,
-                error = painterResource(
-                    if (isDarkTheme)
-                        R.drawable.avatar_default_dark
-                    else
-                        R.drawable.avatar_default_light
-                )
-            ),
-            contentDescription = null,
-            modifier = Modifier
-                .size(59.dp)
-                .clip(CircleShape)
-                .background(Color.LightGray, shape = CircleShape),
-            contentScale = ContentScale.Crop
-        )
-
-        Spacer(modifier = Modifier.width(14.dp))
-
         Column(
             modifier = Modifier.weight(1f)
         ) {
             VariableMedium(
-                text = name,
-                fontSize = 16.sp,
+                text = link,
+                fontSize = 14.sp,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -139,55 +119,45 @@ fun InviteCardPreviewAllLight() {
     AppTheme(isDark = false) {
         Column(modifier = Modifier.padding(16.dp)) {
             InviteCard(
-                name = "Александр Иванов",
-                profilePictureUrl = "",
+                link = "https://hasslspace.ru/adajsdlkjei",
                 onCancelClick = {},
-                isDarkTheme = false,
-                imageLoader = ImageLoader(LocalContext.current),
+                onInvitationClick = {},
                 expirationDate = LocalDateTime.now().plusDays(3),
             )
 
             Spacer(modifier = Modifier.height(12.dp))
 
             InviteCard(
-                name = "Мария Петрова",
-                profilePictureUrl = "",
+                link = "https://hasslspace.ru/adajsdlkjei",
                 onCancelClick = {},
-                isDarkTheme = false,
-                imageLoader = ImageLoader(LocalContext.current),
+                onInvitationClick = {},
                 expirationDate = LocalDateTime.now().plusDays(3),
             )
 
             Spacer(modifier = Modifier.height(12.dp))
 
             InviteCard(
-                name = "Дмитрий Сидоров",
-                profilePictureUrl = "",
+                link = "https://hasslspace.ru/adajsdlkjei",
                 onCancelClick = {},
-                isDarkTheme = false,
-                imageLoader = ImageLoader(LocalContext.current),
+                onInvitationClick = {},
                 expirationDate = LocalDateTime.now().plusDays(3),
             )
 
             Spacer(modifier = Modifier.height(12.dp))
 
             InviteCard(
-                name = "Екатерина Волкова",
-                profilePictureUrl = "",
+                link = "https://hasslspace.ru/adajsdlkjei",
                 onCancelClick = {},
-                isDarkTheme = false,
-                imageLoader = ImageLoader(LocalContext.current),
+                onInvitationClick = {},
                 expirationDate = LocalDateTime.now().plusDays(3),
             )
 
             Spacer(modifier = Modifier.height(12.dp))
 
             InviteCard(
-                name = "Иван Николаев",
-                profilePictureUrl = "",
+                link = "https://hasslspace.ru/adajsdlkjei",
                 onCancelClick = {},
-                isDarkTheme = false,
-                imageLoader = ImageLoader(LocalContext.current),
+                onInvitationClick = {},
                 expirationDate = LocalDateTime.now().plusDays(3),
             )
         }
@@ -200,55 +170,45 @@ fun InviteCardPreviewAllDark() {
     AppTheme(isDark = true) {
         Column(modifier = Modifier.padding(16.dp)) {
             InviteCard(
-                name = "Александр Иванов",
-                profilePictureUrl = "",
+                link = "https://hasslspace.ru/adajsdlkjei",
                 onCancelClick = {},
-                isDarkTheme = true,
-                imageLoader = ImageLoader(LocalContext.current),
+                onInvitationClick = {},
                 expirationDate = LocalDateTime.now().plusDays(3),
             )
 
             Spacer(modifier = Modifier.height(12.dp))
 
             InviteCard(
-                name = "Мария Петрова",
-                profilePictureUrl = "",
+                link = "https://hasslspace.ru/adajsdlkjei",
                 onCancelClick = {},
-                isDarkTheme = true,
-                imageLoader = ImageLoader(LocalContext.current),
+                onInvitationClick = {},
                 expirationDate = LocalDateTime.now().plusDays(3),
             )
 
             Spacer(modifier = Modifier.height(12.dp))
 
             InviteCard(
-                name = "Дмитрий Сидоров",
-                profilePictureUrl = "",
+                link = "https://hasslspace.ru/adajsdlkjei",
                 onCancelClick = {},
-                isDarkTheme = true,
-                imageLoader = ImageLoader(LocalContext.current),
+                onInvitationClick = {},
                 expirationDate = LocalDateTime.now().plusDays(3),
             )
 
             Spacer(modifier = Modifier.height(12.dp))
 
             InviteCard(
-                name = "Екатерина Волкова",
-                profilePictureUrl = "",
+                link = "https://hasslspace.ru/adajsdlkjei",
                 onCancelClick = {},
-                isDarkTheme = true,
-                imageLoader = ImageLoader(LocalContext.current),
+                onInvitationClick = {},
                 expirationDate = LocalDateTime.now().plusDays(3),
             )
 
             Spacer(modifier = Modifier.height(12.dp))
 
             InviteCard(
-                name = "Иван Николаев",
-                profilePictureUrl = "",
+                link = "https://hasslspace.ru/adajsdlkjei",
                 onCancelClick = {},
-                isDarkTheme = true,
-                imageLoader = ImageLoader(LocalContext.current),
+                onInvitationClick = {},
                 expirationDate = LocalDateTime.now().plusDays(3),
             )
         }
@@ -261,21 +221,18 @@ fun InviteCardPreviewDefaultLight() {
     AppTheme(isDark = false) {
         Column(modifier = Modifier.padding(16.dp)) {
             InviteCard(
-                name = "Анна Смирнова",
+                link = "https://hasslspace.ru/adajsdlkjei",
                 onCancelClick = {},
-                isDarkTheme = false,
-                imageLoader = ImageLoader(LocalContext.current),
+                onInvitationClick = {},
                 expirationDate = LocalDateTime.now().plusDays(3),
             )
 
             Spacer(modifier = Modifier.height(12.dp))
 
             InviteCard(
-                name = "ДлинноеИмяДлинноеИмяДлинноеИмя",
-                profilePictureUrl = "https://example.com/photo.jpg",
+                link = "https://hasslspace.ru/adajsdlkjeijjfopishcowihecopwheofhosdhaoasoasodasdha",
                 onCancelClick = {},
-                isDarkTheme = false,
-                imageLoader = ImageLoader(LocalContext.current),
+                onInvitationClick = {},
                 expirationDate = LocalDateTime.now().plusDays(3),
             )
         }
@@ -288,21 +245,18 @@ fun InviteCardPreviewDefaultDark() {
     AppTheme(isDark = true) {
         Column(modifier = Modifier.padding(16.dp)) {
             InviteCard(
-                name = "Анна Смирнова",
+                link = "https://hasslspace.ru/adajsdlkjei",
                 onCancelClick = {},
-                isDarkTheme = true,
-                imageLoader = ImageLoader(LocalContext.current),
+                onInvitationClick = {},
                 expirationDate = LocalDateTime.now().plusDays(3),
             )
 
             Spacer(modifier = Modifier.height(12.dp))
 
             InviteCard(
-                name = "ДлинноеИмяДлинноеИмяДлинноеИмя",
-                profilePictureUrl = "https://example.com/photo.jpg",
+                link = "https://hasslspace.ru/adajsdlkjeijjfopishcowihecopwheofhosdhaoasoasodasdha",
                 onCancelClick = {},
-                isDarkTheme = true,
-                imageLoader = ImageLoader(LocalContext.current),
+                onInvitationClick = {},
                 expirationDate = LocalDateTime.now().plusDays(3),
             )
         }

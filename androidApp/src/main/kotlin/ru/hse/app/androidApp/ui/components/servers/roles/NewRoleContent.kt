@@ -1,5 +1,9 @@
 package ru.hse.app.androidApp.ui.components.servers.roles
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -8,8 +12,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,15 +45,26 @@ fun NewRoleContent(
     roleName: String,
     onRoleNameChanged: (String) -> Unit,
     onSaveClick: () -> Unit,
-    onToggle: (Boolean) -> Unit,
+    onToggle: (FriendCheckboxUiModel) -> Unit,
     modifier: Modifier = Modifier,
     selectedColor: Color,
-    onColorChanged: (Color) -> Unit,
     onColorPickClick: () -> Unit,
     isDarkTheme: Boolean
 ) {
+    BackHandler() {
+        onBackClick()
+    }
     Column(
         modifier = modifier.fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .clickable(
+                indication = null,
+                onClick = {},
+                enabled = false,
+                interactionSource = remember { MutableInteractionSource() },
+            )
+            .padding(top = 50.dp)
+            .padding(16.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -110,8 +128,7 @@ fun NewRoleContent(
                 status = friend.status,
                 profilePictureUrl = friend.avatarUrl,
                 isDarkTheme = isDarkTheme,
-                onCardClick = {},
-                onToggle = onToggle,
+                onClick = { onToggle(friend) },
                 isChosen = friend.isChosen
             )
         }
@@ -192,7 +209,6 @@ fun NewRoleContentPreviewWithRequestsLight() {
             isDarkTheme = false,
             selectedColor = Color.Blue,
             onColorPickClick = {},
-            onColorChanged = {}
         )
     }
 }
@@ -212,7 +228,6 @@ fun NewRoleContentPreviewWithRequestsDark() {
             isDarkTheme = true,
             selectedColor = Color.Blue,
             onColorPickClick = {},
-            onColorChanged = {}
         )
     }
 }

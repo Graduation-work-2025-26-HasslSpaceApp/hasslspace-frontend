@@ -14,8 +14,8 @@ import coil3.imageLoader
 import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
 import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
 import ru.hse.app.androidApp.ui.components.profile.addfriens.AddFriendsScreenContent
-import ru.hse.app.androidApp.ui.entity.model.profile.CreateFriendRequestEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.ProfileUiState
+import ru.hse.app.androidApp.ui.entity.model.profile.events.CreateFriendRequestEvent
 
 @Composable
 fun AddFriendsScreen(

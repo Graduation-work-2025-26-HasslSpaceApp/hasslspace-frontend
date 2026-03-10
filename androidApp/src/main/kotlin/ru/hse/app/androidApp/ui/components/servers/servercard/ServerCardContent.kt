@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -39,6 +40,7 @@ fun ServerCardContent(
     onServerNameClick: () -> Unit,
     onAddPeopleClick: () -> Unit,
     serverName: String,
+    isOwner: Boolean,
     textChannels: List<TextChannelUiModel>,
     voiceChannels: List<VoiceChannelUiModel>,
     onTextChannelShortClick: (TextChannelUiModel) -> Unit,
@@ -51,7 +53,10 @@ fun ServerCardContent(
     isDarkTheme: Boolean
 ) {
     Column(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
+            .padding(top = 50.dp)
+            .padding(16.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -79,14 +84,16 @@ fun ServerCardContent(
                 )
             }
 
-            Icon(
-                painter = painterResource(if (isDarkTheme) R.drawable.add_people_dark else R.drawable.add_people_light),
-                contentDescription = "add",
-                tint = null,
-                modifier = Modifier
-                    .size(35.dp)
-                    .clickable(onClick = onAddPeopleClick)
-            )
+            if (isOwner) {
+                Icon(
+                    painter = painterResource(if (isDarkTheme) R.drawable.add_people_dark else R.drawable.add_people_light),
+                    contentDescription = "add",
+                    tint = null,
+                    modifier = Modifier
+                        .size(35.dp)
+                        .clickable(onClick = onAddPeopleClick)
+                )
+            }
         }
         Spacer(Modifier.height(15.dp))
         LazyVerticalGrid(
@@ -102,8 +109,7 @@ fun ServerCardContent(
                     fontSize = 16.sp,
                     modifier = Modifier
                         .combinedClickable(
-                            onClick = {},
-                            onLongClick = onTextChannelsClick
+                            onClick = onTextChannelsClick,
                         )
                 )
                 Spacer(Modifier.height(5.dp))
@@ -123,8 +129,7 @@ fun ServerCardContent(
                     fontSize = 16.sp,
                     modifier = Modifier
                         .combinedClickable(
-                            onClick = {},
-                            onLongClick = onVoiceChannelsClick
+                            onClick = onVoiceChannelsClick,
                         )
                 )
                 Spacer(Modifier.height(5.dp))
@@ -211,7 +216,8 @@ fun ServerCardContentPreviewWithRequestsLight() {
             onVoiceChannelLongClick = {},
             isDarkTheme = false,
             onTextChannelsClick = {},
-            onVoiceChannelsClick = {}
+            onVoiceChannelsClick = {},
+            isOwner = false
         )
     }
 }

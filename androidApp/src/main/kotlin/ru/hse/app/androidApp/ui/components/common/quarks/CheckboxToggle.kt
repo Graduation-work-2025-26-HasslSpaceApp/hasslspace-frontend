@@ -1,5 +1,8 @@
 package ru.hse.app.androidApp.ui.components.common.quarks
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -16,11 +19,11 @@ import ru.hse.app.androidApp.R
 @Composable
 fun CheckboxToggle(
     isChosen: Boolean,
-    onToggle: (Boolean) -> Unit,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     IconButton(
-        onClick = { onToggle(!isChosen) },
+        onClick = onClick,
         modifier = modifier
     ) {
         Icon(
@@ -32,14 +35,17 @@ fun CheckboxToggle(
             tint = Color.Unspecified
         )
     }
+
 }
 
 @Preview(showBackground = true)
 @Composable
 fun CheckboxTogglePreview() {
     val isChosen = remember { mutableStateOf(false) }
-    CheckboxToggle(
-        isChosen = isChosen.value,
-        onToggle = { isChosen.value = it }
-    )
+    Box(modifier = Modifier.padding(top = 50.dp)){
+        CheckboxToggle(
+            isChosen = isChosen.value,
+            onClick = { isChosen.value = !isChosen.value }
+        )
+    }
 }

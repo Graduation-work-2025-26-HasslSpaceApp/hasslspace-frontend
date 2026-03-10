@@ -13,7 +13,7 @@ import ru.hse.app.androidApp.ui.components.auth.register.RegisterScreenContent
 import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
 import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
 import ru.hse.app.androidApp.ui.entity.model.auth.AuthUiState
-import ru.hse.app.androidApp.ui.entity.model.auth.RegisterUserEvent
+import ru.hse.app.androidApp.ui.entity.model.auth.events.RegisterUserEvent
 import ru.hse.app.androidApp.ui.navigation.AuthNavigationItem
 
 @Composable

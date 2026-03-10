@@ -36,7 +36,7 @@ fun LinkCustomField(
 
     val linkRegex = Regex("^https://hasslspace\\.ru/[a-zA-Z0-9]+$")
 
-    val isError = !text.matches(linkRegex)
+    val isError = text != "" && !text.matches(linkRegex)
 
     Column(
         modifier = modifier

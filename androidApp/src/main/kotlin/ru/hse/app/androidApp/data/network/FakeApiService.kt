@@ -3,11 +3,19 @@ package ru.hse.app.androidApp.data.network
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
+import ru.hse.app.androidApp.data.model.ChannelInfoDto
+import ru.hse.app.androidApp.data.model.CreateChannelDto
+import ru.hse.app.androidApp.data.model.CreateRoleDto
+import ru.hse.app.androidApp.data.model.CreateServerDto
+import ru.hse.app.androidApp.data.model.InvitationDto
+import ru.hse.app.androidApp.data.model.RoleInfoDto
 import ru.hse.app.androidApp.data.model.ServerInfoDto
+import ru.hse.app.androidApp.data.model.ServerInfoExpandedDto
 import ru.hse.app.androidApp.data.model.TypeDto
 import ru.hse.app.androidApp.data.model.UserDto
 import ru.hse.app.androidApp.data.model.UserInfoDto
 import ru.hse.app.androidApp.data.model.UserInfoExtendedDto
+import java.time.LocalDateTime
 
 class FakeApiService : ApiService {
 
@@ -129,6 +137,231 @@ class FakeApiService : ApiService {
         ServerInfoDto("10", "Сервер 10", 600, "https://i.postimg.cc/QcY6h8tT/server10.jpg")
     )
 
+    private val fakeServer = ServerInfoExpandedDto(
+        id = "serverId",
+        name = "Kotlin Developers",
+        photoURL = "https://example.com/servers/kotlin/avatar.png",
+        isOwner = true,
+        members = listOf(
+            ServerInfoExpandedDto.ServerMemberDto(
+                id = "user_123",
+                name = "Анна",
+                username = "anna_dev",
+                status = "online",
+                photoURL = "https://example.com/users/anna/avatar.png",
+                roles = listOf(
+                    ServerInfoExpandedDto.ServerMemberDto.ServerRoleDto(
+                        id = "role_admin",
+                        name = "Admin",
+                        color = "#FF0000"
+                    ),
+                    ServerInfoExpandedDto.ServerMemberDto.ServerRoleDto(
+                        id = "role_mod",
+                        name = "Moderator",
+                        color = "#00FF00"
+                    )
+                )
+            ),
+            ServerInfoExpandedDto.ServerMemberDto(
+                id = "user_456",
+                name = "Петр",
+                username = "petr_kotlin",
+                status = "idle",
+                photoURL = "https://example.com/users/petr/avatar.png",
+                roles = listOf(
+                    ServerInfoExpandedDto.ServerMemberDto.ServerRoleDto(
+                        id = "role_dev",
+                        name = "Developer",
+                        color = "#0000FF"
+                    )
+                )
+            ),
+            ServerInfoExpandedDto.ServerMemberDto(
+                id = "user_789",
+                name = "Мария",
+                username = "maria_codes",
+                status = "dnd",
+                photoURL = null,
+                roles = emptyList()
+            ),
+            ServerInfoExpandedDto.ServerMemberDto(
+                id = "user_765",
+                name = "Мария1",
+                username = "maria_codes1",
+                status = "dnd",
+                photoURL = null,
+                roles = emptyList()
+            ),
+            ServerInfoExpandedDto.ServerMemberDto(
+                id = "user_7345",
+                name = "Мария2",
+                username = "maria_codes2",
+                status = "dnd",
+                photoURL = null,
+                roles = emptyList()
+            ),
+            ServerInfoExpandedDto.ServerMemberDto(
+                id = "user_73451",
+                name = "Мария3",
+                username = "maria_codes3",
+                status = "dnd",
+                photoURL = null,
+                roles = emptyList()
+            ),
+            ServerInfoExpandedDto.ServerMemberDto(
+                id = "user_73452",
+                name = "Мария4",
+                username = "maria_codes4",
+                status = "dnd",
+                photoURL = null,
+                roles = emptyList()
+            )
+        ),
+        textChannels = listOf(
+            ServerInfoExpandedDto.TextChannelDto(
+                id = "channel_1",
+                name = "общий"
+            ),
+            ServerInfoExpandedDto.TextChannelDto(
+                id = "channel_2",
+                name = "вопросы-ответы"
+            ),
+            ServerInfoExpandedDto.TextChannelDto(
+                id = "channel_3",
+                name = "код-ревью"
+            )
+        ),
+        voiceChannels = listOf(
+            ServerInfoExpandedDto.VoiceChannelDto(
+                id = "voice_1",
+                name = "General"
+            ),
+            ServerInfoExpandedDto.VoiceChannelDto(
+                id = "voice_2",
+                name = "Work Together"
+            )
+        )
+    )
+
+    private val fakeInvitations = listOf(
+        InvitationDto(
+            id = "inv_001",
+            link = "https://hasslspace.ru/asdpasdpoadpa",
+            expTime = LocalDateTime.now().plusDays(7)
+        ),
+        InvitationDto(
+            id = "inv_002",
+            link = "https://hasslspace.ru/asdjrhrgevv",
+            expTime = LocalDateTime.now().plusDays(3)
+        ),
+        InvitationDto(
+            id = "inv_003",
+            link = "https://hasslspace.ru/awerwfcserw",
+            expTime = LocalDateTime.now().minusDays(2)
+        ),
+        InvitationDto(
+            id = "inv_004",
+            link = "https://hasslspace.ru/gergefscwer",
+            expTime = LocalDateTime.now().plusDays(14)
+        )
+    )
+
+    private val serverRoles = listOf(
+        RoleInfoDto(
+            id = "role_admin",
+            name = "Admin",
+            color = "#FF0000",
+            members = listOf(
+                RoleInfoDto.RoleMemberDto(
+                    id = "user_123",
+                    name = "Анна",
+                    username = "anna_dev",
+                    status = "online",
+                    photoURL = "https://example.com/users/anna/avatar.png"
+                )
+            )
+        ),
+        RoleInfoDto(
+            id = "role_mod",
+            name = "Moderator",
+            color = "#00FF00",
+            members = listOf(
+                RoleInfoDto.RoleMemberDto(
+                    id = "user_123",
+                    name = "Анна",
+                    username = "anna_dev",
+                    status = "online",
+                    photoURL = "https://example.com/users/anna/avatar.png"
+                ),
+                RoleInfoDto.RoleMemberDto(
+                    id = "user_456",
+                    name = "Петр",
+                    username = "petr_kotlin",
+                    status = "idle",
+                    photoURL = "https://example.com/users/petr/avatar.png"
+                )
+            )
+        ),
+        RoleInfoDto(
+            id = "role_dev",
+            name = "Developer",
+            color = "#0000FF",
+            members = listOf(
+                RoleInfoDto.RoleMemberDto(
+                    id = "user_456",
+                    name = "Петр",
+                    username = "petr_kotlin",
+                    status = "idle",
+                    photoURL = "https://example.com/users/petr/avatar.png"
+                ),
+                RoleInfoDto.RoleMemberDto(
+                    id = "user_789",
+                    name = "Мария",
+                    username = "maria_codes",
+                    status = "dnd",
+                    photoURL = null
+                )
+            )
+        ),
+        RoleInfoDto(
+            id = "role_muted",
+            name = "Muted",
+            color = "#808080",
+            members = emptyList()
+        )
+    )
+
+    private val fakeUserRoles = listOf(
+        RoleInfoDto(
+            id = "role_admin",
+            name = "Admin",
+            color = "#FF0000",
+            members = listOf(
+                RoleInfoDto.RoleMemberDto(
+                    id = "user_123",
+                    name = "Анна",
+                    username = "anna_dev",
+                    status = "online",
+                    photoURL = "https://example.com/users/anna/avatar.png"
+                )
+            )
+        ),
+        RoleInfoDto(
+            id = "role_mod",
+            name = "Moderator",
+            color = "#00FF00",
+            members = listOf(
+                RoleInfoDto.RoleMemberDto(
+                    id = "user_123",
+                    name = "Анна",
+                    username = "anna_dev",
+                    status = "online",
+                    photoURL = "https://example.com/users/anna/avatar.png"
+                )
+            )
+        )
+    )
+
     override suspend fun registerUser(
         email: String,
         password: String,
@@ -212,5 +445,177 @@ class FakeApiService : ApiService {
 
     override suspend fun getCommonServers(userId: String): Response<List<ServerInfoDto>> {
         return Response.success(fakeServers)
+    }
+
+    override suspend fun createServerRole(
+        serverId: String,
+        createRoleDto: CreateRoleDto
+    ): Response<String> {
+        return Response.success("true")
+    }
+
+    override suspend fun createServer(createServerDto: CreateServerDto): Response<String> {
+        return Response.success("true")
+    }
+
+    override suspend fun createChannel(
+        serverId: String,
+        createChannelDto: CreateChannelDto
+    ): Response<String> {
+        return Response.success("true")
+    }
+
+    override suspend fun deleteChannel(
+        serverId: String,
+        channelId: String
+    ): Response<String> {
+        return Response.success("true")
+    }
+
+    override suspend fun deleteServerInvitation(
+        serverId: String,
+        invitationId: String
+    ): Response<String> {
+        return Response.success("true")
+    }
+
+    override suspend fun deleteServerMember(
+        serverId: String,
+        userId: String
+    ): Response<String> {
+        return Response.success("true")
+    }
+
+    override suspend fun deleteServer(serverId: String): Response<String> {
+        return Response.success("true")
+    }
+
+    override suspend fun getServerInfo(serverId: String): Response<ServerInfoExpandedDto> {
+        return Response.success(fakeServer)
+    }
+
+    override suspend fun getServerInvitations(serverId: String): Response<List<InvitationDto>> {
+        return Response.success(fakeInvitations)
+    }
+
+    override suspend fun getFriendsNotInServer(serverId: String): Response<List<UserInfoDto>> {
+        return Response.success(fakeFriends)
+    }
+
+    override suspend fun getServerRoles(serverId: String): Response<List<RoleInfoDto>> {
+        return Response.success(serverRoles)
+    }
+
+    override suspend fun getServerUserRoles(
+        userId: String,
+        serverId: String
+    ): Response<List<RoleInfoDto>> {
+        return Response.success(fakeUserRoles)
+    }
+
+    override suspend fun joinServer(): Response<String> {
+        return Response.success("true")
+    }
+
+    override suspend fun patchChannel(): Response<String> {
+        return Response.success("true")
+    }
+
+    override suspend fun patchServerOwner(
+        userId: String,
+        serverId: String
+    ): Response<String> {
+        return Response.success("true")
+    }
+
+    override suspend fun patchServer(): Response<String> {
+        return Response.success("true")
+    }
+
+    override suspend fun patchRole(): Response<String> {
+        return Response.success("true")
+    }
+
+    override suspend fun sendServerInvitation(
+        userId: String,
+        serverId: String
+    ): Response<String> {
+        return Response.success("true")
+    }
+
+    override suspend fun getChannelInfo(
+        serverId: String,
+        channelId: String
+    ): Response<ChannelInfoDto> {
+
+        val channel = when (channelId) {
+            "channel_1" -> ServerInfoExpandedDto.TextChannelDto("channel_1", "общий")
+            "channel_2" -> ServerInfoExpandedDto.TextChannelDto("channel_2", "вопросы-ответы")
+            "channel_3" -> ServerInfoExpandedDto.TextChannelDto("channel_3", "код-ревью")
+            "voice_1" -> ServerInfoExpandedDto.VoiceChannelDto("voice_1", "General")
+            "voice_2" -> ServerInfoExpandedDto.VoiceChannelDto("voice_2", "Work Together")
+            else -> return Response.success(
+                ChannelInfoDto(
+                    name = "Unknown Channel",
+                    isPrivate = false,
+                    type = "text",
+                    limit = null,
+                    members = emptyList(),
+                    roles = emptyList(),
+                    id = "1"
+                )
+            )
+        }
+
+        val isPrivate = when (channelId) {
+            "channel_2", "voice_2" -> true
+            else -> false
+        }
+
+        val channelType = when (channel) {
+            is ServerInfoExpandedDto.TextChannelDto -> "text"
+            is ServerInfoExpandedDto.VoiceChannelDto -> "voice"
+            else -> "text"
+        }
+
+        val limit = when (channelType) {
+            "voice" -> 10
+            else -> null
+        }
+
+
+        val members = fakeServer.members.map { it.id }
+
+
+        val roles = serverRoles.map { it.id }
+
+
+        val (finalMembers, finalRoles) = if (isPrivate) {
+            when (channelId) {
+                "channel_2" -> Pair(
+                    listOf("user_123", "user_456"),
+                    listOf("role_admin", "role_mod")
+                )
+                "voice_2" -> Pair(
+                    listOf("user_123", "user_456", "user_789"),
+                    listOf("role_admin", "role_mod", "role_dev")
+                )
+                else -> Pair(members.take(3), roles.take(2))
+            }
+        } else {
+            Pair(members, roles)
+        }
+
+        return Response.success(
+            ChannelInfoDto(
+                name = "основной",
+                isPrivate = isPrivate,
+                type = channelType,
+                limit = limit,
+                members = finalMembers,
+                roles = finalRoles,
+                id = "1"
+            )
+        )
     }
 }

@@ -1,5 +1,6 @@
 package ru.hse.app.androidApp.ui.components.servers.createchannel
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,6 +20,7 @@ import ru.hse.app.androidApp.ui.components.common.button.PrivateChannelToggle
 import ru.hse.app.androidApp.ui.components.common.button.TextArrowButton
 import ru.hse.app.androidApp.ui.components.common.field.AuthCustomField
 import ru.hse.app.androidApp.ui.components.common.text.VariableMedium
+import ru.hse.app.androidApp.ui.components.servers.configurechannel.UserLimitSlider
 import ru.hse.app.androidApp.ui.theme.AppTheme
 
 @Composable
@@ -26,21 +28,29 @@ fun CreateChannelContent(
     modifier: Modifier = Modifier,
     onCloseClick: () -> Unit,
     channelName: String,
+    type: String,
     onChannelNameChanged: (String) -> Unit,
     onCreateChannelClick: () -> Unit,
     isDarkTheme: Boolean,
     isPrivate: Boolean,
     onPrivateChange: (Boolean) -> Unit,
-    onAddMembers: () -> Unit
+    onAddMembers: () -> Unit,
+    sliderValue: Float,
+    onSliderValueChange: (Float) -> Unit
 ) {
+    BackHandler {
+        onCloseClick()
+    }
     Column(
         modifier = modifier.fillMaxSize()
+            .padding(top=50.dp)
+            .padding(16.dp)
     ) {
         CloseButton(onClick = onCloseClick)
         Spacer(Modifier.height(15.dp))
 
         VariableMedium(
-            text = "Создать канал",
+            text = if (type == "text") "Создать текстовый канал" else "Создать голосовой канал",
             fontSize = 20.sp,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
@@ -73,7 +83,13 @@ fun CreateChannelContent(
                 text = "Настроить участников или роли"
             )
         }
-
+        if (type != "text") {
+            Spacer(Modifier.height(30.dp))
+            UserLimitSlider(
+                sliderValue = sliderValue,
+                onSliderValueChange = onSliderValueChange
+            )
+        }
 
         Spacer(Modifier.weight(1f))
 
@@ -96,7 +112,10 @@ fun CreateChannelContentPreviewLightEmpty() {
             onChannelNameChanged = {},
             onCreateChannelClick = {},
             isDarkTheme = false,
-            onAddMembers = {}
+            onAddMembers = {},
+            type = "text",
+            sliderValue = 25f,
+            onSliderValueChange = {}
         )
     }
 }
@@ -113,7 +132,10 @@ fun CreateChannelContentPreviewLight1() {
             onChannelNameChanged = {},
             onCreateChannelClick = {},
             isDarkTheme = false,
-            onAddMembers = {}
+            onAddMembers = {},
+            type = "voice",
+            sliderValue = 25f,
+            onSliderValueChange = {}
         )
     }
 }
@@ -130,7 +152,10 @@ fun CreateChannelContentPreviewDarkEmpty() {
             onChannelNameChanged = {},
             onCreateChannelClick = {},
             isDarkTheme = true,
-            onAddMembers = {}
+            onAddMembers = {},
+            type = "voice",
+            sliderValue = 25f,
+            onSliderValueChange = {}
         )
     }
 }
@@ -147,7 +172,10 @@ fun CreateChannelContentPreviewDark1() {
             onChannelNameChanged = {},
             onCreateChannelClick = {},
             isDarkTheme = true,
-            onAddMembers = {}
+            onAddMembers = {},
+            type = "text",
+            sliderValue = 25f,
+            onSliderValueChange = {}
         )
     }
 }

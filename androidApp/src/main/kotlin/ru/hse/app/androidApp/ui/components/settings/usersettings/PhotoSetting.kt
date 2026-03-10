@@ -1,9 +1,11 @@
 package ru.hse.app.androidApp.ui.components.settings.usersettings
 
 import android.net.Uri
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -29,6 +31,7 @@ fun PhotoSetting(
     selectedImageUri: Uri?,
     onPhotoPickClick: () -> Unit,
     modifier: Modifier = Modifier,
+    isDark: Boolean = false,
 ) {
 
     Row(
@@ -55,6 +58,16 @@ fun PhotoSetting(
                         .clip(CircleShape)
                         .background(Color.LightGray, shape = CircleShape),
                     contentScale = ContentScale.Crop
+                )
+            }
+
+            if (selectedImageUri == null) {
+                Image(
+                    painter = if (isDark) painterResource(id = R.drawable.default_server_photo_dark) else  painterResource(id = R.drawable.default_server_photo_light),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(45.dp)
+                        .clip(CircleShape)
                 )
             }
 

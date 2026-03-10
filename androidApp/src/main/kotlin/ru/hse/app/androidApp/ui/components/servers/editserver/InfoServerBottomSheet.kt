@@ -2,7 +2,9 @@ package ru.hse.app.androidApp.ui.components.servers.editserver
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -49,11 +51,14 @@ fun InfoServerBottomSheet(
     modifier: Modifier = Modifier,
     isDarkTheme: Boolean,
     onDismiss: () -> Unit,
+    onMembersClick: () -> Unit,
+    isOwner: Boolean,
 ) {
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
         containerColor = MaterialTheme.colorScheme.background,
+        scrimColor = MaterialTheme.colorScheme.surfaceDim.copy(alpha = 0.5f),
         dragHandle = {
             BottomSheetDefaults.DragHandle(
                 color = MaterialTheme.colorScheme.outline
@@ -91,33 +96,40 @@ fun InfoServerBottomSheet(
                 fontSize = 24.sp
             )
 
-            VariableLight(
-                text = participantsLabel(count = countOfMembers),
-                fontSize = 16.sp
-            )
+            Box(
+                modifier = Modifier
+                    .clickable(onClick = onMembersClick)
+            ) {
+                VariableLight(
+                    text = participantsLabel(count = countOfMembers),
+                    fontSize = 16.sp
+                )
+            }
+
 
             Spacer(Modifier.height(5.dp))
 
-            IconTextButton(
-                onClick = onInviteClick,
-                text = "Пригласить",
-                iconResource = if (isDarkTheme) R.drawable.new_friend_dark else R.drawable.new_friend_light
-            )
+            if (isOwner) {
+                IconTextButton(
+                    onClick = onInviteClick,
+                    text = "Пригласить",
+                    iconResource = if (isDarkTheme) R.drawable.new_friend_dark else R.drawable.new_friend_light
+                )
 
-            IconTextButton(
-                onClick = onSettingsClick,
-                text = "Настройки",
-                iconResource = if (isDarkTheme) R.drawable.settings_dark else R.drawable.settings_light
-            )
+                IconTextButton(
+                    onClick = onSettingsClick,
+                    text = "Настройки",
+                    iconResource = if (isDarkTheme) R.drawable.settings_dark else R.drawable.settings_light
+                )
 
-            Spacer(Modifier.height(5.dp))
+                Spacer(Modifier.height(5.dp))
 
-            Exit(
-                onClick = onDeleteClick,
-                text = "Удалить сервер"
-            )
-            Spacer(Modifier.height(5.dp))
-
+                Exit(
+                    onClick = onDeleteClick,
+                    text = "Удалить сервер"
+                )
+                Spacer(Modifier.height(5.dp))
+            }
 
         }
     }
@@ -138,7 +150,9 @@ fun InfoServerBottomSheetPreviewWithRequestsLight() {
             serverAvatarUrl = "https://",
             onInviteClick = {},
             onSettingsClick = {},
-            onDeleteClick = {}
+            onDeleteClick = {},
+            onMembersClick = {},
+            isOwner = false
         )
     }
 }
@@ -158,7 +172,9 @@ fun InfoServerBottomSheetPreviewWithRequestsDark() {
             serverAvatarUrl = "https://",
             onInviteClick = {},
             onSettingsClick = {},
-            onDeleteClick = {}
+            onDeleteClick = {},
+            onMembersClick = {},
+            isOwner = true
         )
     }
 }

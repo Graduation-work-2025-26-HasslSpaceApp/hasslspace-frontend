@@ -6,8 +6,8 @@ data class ServerInfoDto(
     @JsonProperty("id")
     val id: String,
 
-    @JsonProperty("title")
-    val title: String,
+    @JsonProperty("name")
+    val name: String,
 
     @JsonProperty("usersCount")
     val usersCount: Int,

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -38,6 +39,7 @@ fun UserCardInvite(
     imageLoader: ImageLoader,
     username: String,
     isDarkTheme: Boolean,
+    sent: Boolean,
     modifier: Modifier = Modifier,
     profilePictureUrl: String = "",
     onInviteClick: () -> Unit,
@@ -89,9 +91,23 @@ fun UserCardInvite(
             modifier = Modifier.padding(start = 5.dp),
         ) {
 
-            InviteButton(
-                onClick = onInviteClick
-            )
+            if (!sent) {
+                InviteButton(
+                    onClick = onInviteClick
+                )
+            } else {
+                InviteButton(
+                    enabled = false,
+                    onClick = {},
+                    text = "Отправлено",
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.outline,
+                        contentColor = MaterialTheme.colorScheme.onSurface
+                    )
+                )
+            }
+
+
         }
     }
 }
@@ -106,7 +122,8 @@ fun UserCardInvitePreviewAllLight() {
                 profilePictureUrl = "",
                 onInviteClick = {},
                 isDarkTheme = false,
-                imageLoader = ImageLoader(LocalContext.current)
+                imageLoader = ImageLoader(LocalContext.current),
+                sent = true
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -116,7 +133,8 @@ fun UserCardInvitePreviewAllLight() {
                 profilePictureUrl = "",
                 onInviteClick = {},
                 isDarkTheme = false,
-                imageLoader = ImageLoader(LocalContext.current)
+                imageLoader = ImageLoader(LocalContext.current),
+                sent = true
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -126,7 +144,8 @@ fun UserCardInvitePreviewAllLight() {
                 profilePictureUrl = "",
                 onInviteClick = {},
                 isDarkTheme = false,
-                imageLoader = ImageLoader(LocalContext.current)
+                imageLoader = ImageLoader(LocalContext.current),
+                sent = false
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -136,7 +155,8 @@ fun UserCardInvitePreviewAllLight() {
                 profilePictureUrl = "",
                 onInviteClick = {},
                 isDarkTheme = false,
-                imageLoader = ImageLoader(LocalContext.current)
+                imageLoader = ImageLoader(LocalContext.current),
+                sent = true
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -146,7 +166,8 @@ fun UserCardInvitePreviewAllLight() {
                 profilePictureUrl = "",
                 onInviteClick = {},
                 isDarkTheme = false,
-                imageLoader = ImageLoader(LocalContext.current)
+                imageLoader = ImageLoader(LocalContext.current),
+                sent = false
             )
         }
     }
@@ -162,7 +183,8 @@ fun UserCardInvitePreviewAllDark() {
                 profilePictureUrl = "",
                 onInviteClick = {},
                 isDarkTheme = true,
-                imageLoader = ImageLoader(LocalContext.current)
+                imageLoader = ImageLoader(LocalContext.current),
+                sent = false
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -172,7 +194,8 @@ fun UserCardInvitePreviewAllDark() {
                 profilePictureUrl = "",
                 onInviteClick = {},
                 isDarkTheme = true,
-                imageLoader = ImageLoader(LocalContext.current)
+                imageLoader = ImageLoader(LocalContext.current),
+                sent = true
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -182,7 +205,8 @@ fun UserCardInvitePreviewAllDark() {
                 profilePictureUrl = "",
                 onInviteClick = {},
                 isDarkTheme = true,
-                imageLoader = ImageLoader(LocalContext.current)
+                imageLoader = ImageLoader(LocalContext.current),
+                sent = true
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -192,7 +216,8 @@ fun UserCardInvitePreviewAllDark() {
                 profilePictureUrl = "",
                 onInviteClick = {},
                 isDarkTheme = true,
-                imageLoader = ImageLoader(LocalContext.current)
+                imageLoader = ImageLoader(LocalContext.current),
+                sent = false
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -202,7 +227,8 @@ fun UserCardInvitePreviewAllDark() {
                 profilePictureUrl = "",
                 onInviteClick = {},
                 isDarkTheme = true,
-                imageLoader = ImageLoader(LocalContext.current)
+                imageLoader = ImageLoader(LocalContext.current),
+                sent = true
             )
         }
     }
@@ -217,7 +243,8 @@ fun UserCardInvitePreviewDefaultLight() {
                 username = "Анна Смирнова",
                 onInviteClick = {},
                 isDarkTheme = false,
-                imageLoader = ImageLoader(LocalContext.current)
+                imageLoader = ImageLoader(LocalContext.current),
+                sent = false
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -227,7 +254,8 @@ fun UserCardInvitePreviewDefaultLight() {
                 profilePictureUrl = "https://example.com/photo.jpg",
                 onInviteClick = {},
                 isDarkTheme = false,
-                imageLoader = ImageLoader(LocalContext.current)
+                imageLoader = ImageLoader(LocalContext.current),
+                sent = true
             )
         }
     }
@@ -242,7 +270,8 @@ fun UserCardInvitePreviewDefaultDark() {
                 username = "Анна Смирнова",
                 onInviteClick = {},
                 isDarkTheme = true,
-                imageLoader = ImageLoader(LocalContext.current)
+                imageLoader = ImageLoader(LocalContext.current),
+                sent = true
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -252,7 +281,8 @@ fun UserCardInvitePreviewDefaultDark() {
                 profilePictureUrl = "https://example.com/photo.jpg",
                 onInviteClick = {},
                 isDarkTheme = true,
-                imageLoader = ImageLoader(LocalContext.current)
+                imageLoader = ImageLoader(LocalContext.current),
+                sent = true
             )
         }
     }
