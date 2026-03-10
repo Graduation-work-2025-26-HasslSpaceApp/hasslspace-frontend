@@ -1,8 +1,9 @@
 package ru.hse.app.androidApp.domain.model.entity
 
-import ru.hse.app.androidApp.data.model.CreateChannelDto
+import ru.hse.app.androidApp.data.model.ChannelInfoDto
 
-data class CreateChannel(
+data class ChannelInfo(
+    val id: String,
     val name: String,
     val isPrivate: Boolean = false,
     val type: String = "text",
@@ -11,8 +12,9 @@ data class CreateChannel(
     val roles: List<String>,
 )
 
-fun CreateChannel.toDto(): CreateChannelDto {
-    return CreateChannelDto(
+fun ChannelInfoDto.toDomain(): ChannelInfo {
+    return ChannelInfo(
+        id = this.id,
         name = this.name,
         isPrivate = this.isPrivate,
         type = this.type,

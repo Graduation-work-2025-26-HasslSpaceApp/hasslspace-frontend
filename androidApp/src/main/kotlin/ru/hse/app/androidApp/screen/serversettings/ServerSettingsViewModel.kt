@@ -39,6 +39,7 @@ import ru.hse.app.androidApp.ui.entity.model.serversettings.toRoleInfoUiModel
 import ru.hse.app.androidApp.ui.entity.model.serversettings.toServerSettingsUiModel
 import ru.hse.app.androidApp.ui.entity.model.toRoleMiniCheckboxUiModel
 import ru.hse.app.androidApp.ui.entity.model.toRoleMiniIfChosen
+import ru.hse.app.androidApp.ui.entity.model.toUi
 import ru.hse.coursework.godaily.ui.notification.ToastManager
 import javax.inject.Inject
 
@@ -357,10 +358,16 @@ class ServerSettingsViewModel @Inject constructor(
     fun getServerInvitations(serverId: String) {
         viewModelScope.launch {
             val result = getServerInvitationsUseCase(serverId)
+            val currentState = _uiState.value
 
             _getServerInvitationsEvent.value = result.fold(
                 onSuccess = { invitations ->
-                    //TODO
+                    if (currentState is ServerSettingsUiState.Success) {
+                        val updatedData = currentState.data.copy(
+                            invitations = invitations.map { invitation -> invitation.toUi() }
+                        )
+                        _uiState.value = ServerSettingsUiState.Success(updatedData)
+                    }
                     GetServerInvitationsEvent.SuccessLoad
                 },
                 onFailure = { error ->
@@ -491,26 +498,6 @@ class ServerSettingsViewModel @Inject constructor(
     fun deleteMember(member: ServerMemberUiModel?) {
         //todo
     }
-
-
-//    fun getServerUserRoles(
-//        serverId: String,
-//        userId: String
-//    ) {
-//        viewModelScope.launch {
-//            val result = getServerUserRolesUseCase(serverId, userId)
-//
-//            _getServerUserRolesEvent.value = result.fold(
-//                onSuccess = { roles ->
-//                    //TODO
-//                    GetServerUserRolesEvent.SuccessLoad
-//                },
-//                onFailure = { error ->
-//                    GetServerUserRolesEvent.Error("Ошибка при получении ролей пользователя. ${error.message}")
-//                }
-//            )
-//        }
-//    }
 
     fun isEnabledChange(value: String): Boolean {
         val currentState = _uiState.value

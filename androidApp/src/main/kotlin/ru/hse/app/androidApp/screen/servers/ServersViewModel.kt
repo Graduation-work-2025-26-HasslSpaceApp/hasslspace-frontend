@@ -17,10 +17,10 @@ import ru.hse.app.androidApp.domain.model.entity.CreateChannel
 import ru.hse.app.androidApp.domain.model.entity.CreateRole
 import ru.hse.app.androidApp.domain.service.common.CropProfilePhotoService
 import ru.hse.app.androidApp.domain.service.common.PhotoConverterService
-import ru.hse.app.androidApp.domain.usecase.servers.CreateChannelUseCase
+import ru.hse.app.androidApp.domain.usecase.channel.CreateChannelUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.CreateServerRoleUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.CreateServerUseCase
-import ru.hse.app.androidApp.domain.usecase.servers.DeleteChannelUseCase
+import ru.hse.app.androidApp.domain.usecase.channel.DeleteChannelUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.DeleteServerInvitationUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.DeleteServerMemberUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.DeleteServerUseCase
@@ -30,7 +30,7 @@ import ru.hse.app.androidApp.domain.usecase.servers.GetServerRolesUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.GetServerUserRolesUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.GetUserServersUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.JoinServerUseCase
-import ru.hse.app.androidApp.domain.usecase.servers.PatchChannelPropertiesUseCase
+import ru.hse.app.androidApp.domain.usecase.channel.PatchChannelPropertiesUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.PatchServerOwnerUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.PatchServerPropertiesUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.SearchServersUseCase

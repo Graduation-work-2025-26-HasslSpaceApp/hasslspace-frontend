@@ -3,6 +3,7 @@ package ru.hse.app.androidApp.data.network
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
+import ru.hse.app.androidApp.data.model.ChannelInfoDto
 import ru.hse.app.androidApp.data.model.CreateChannelDto
 import ru.hse.app.androidApp.data.model.CreateRoleDto
 import ru.hse.app.androidApp.data.model.CreateServerDto
@@ -245,38 +246,22 @@ class FakeApiService : ApiService {
     private val fakeInvitations = listOf(
         InvitationDto(
             id = "inv_001",
-            userId = "user_123",
-            name = "Анна",
-            username = "anna_dev",
-            status = "pending",
-            photoURL = "https://example.com/users/anna/avatar.png",
+            link = "https://hasslspace.ru/asdpasdpoadpa",
             expTime = LocalDateTime.now().plusDays(7)
         ),
         InvitationDto(
             id = "inv_002",
-            userId = "user_789",
-            name = "Мария",
-            username = "maria_codes",
-            status = "accepted",
-            photoURL = null,
+            link = "https://hasslspace.ru/asdjrhrgevv",
             expTime = LocalDateTime.now().plusDays(3)
         ),
         InvitationDto(
             id = "inv_003",
-            userId = "user_101",
-            name = "Дмитрий",
-            username = "dmitry_android",
-            status = "expired",
-            photoURL = "https://example.com/users/dmitry/avatar.png",
+            link = "https://hasslspace.ru/awerwfcserw",
             expTime = LocalDateTime.now().minusDays(2)
         ),
         InvitationDto(
             id = "inv_004",
-            userId = "user_202",
-            name = "Елена",
-            username = "elena_dev",
-            status = "pending",
-            photoURL = "https://example.com/users/elena/avatar.png",
+            link = "https://hasslspace.ru/gergefscwer",
             expTime = LocalDateTime.now().plusDays(14)
         )
     )
@@ -556,5 +541,81 @@ class FakeApiService : ApiService {
         serverId: String
     ): Response<String> {
         return Response.success("true")
+    }
+
+    override suspend fun getChannelInfo(
+        serverId: String,
+        channelId: String
+    ): Response<ChannelInfoDto> {
+
+        val channel = when (channelId) {
+            "channel_1" -> ServerInfoExpandedDto.TextChannelDto("channel_1", "общий")
+            "channel_2" -> ServerInfoExpandedDto.TextChannelDto("channel_2", "вопросы-ответы")
+            "channel_3" -> ServerInfoExpandedDto.TextChannelDto("channel_3", "код-ревью")
+            "voice_1" -> ServerInfoExpandedDto.VoiceChannelDto("voice_1", "General")
+            "voice_2" -> ServerInfoExpandedDto.VoiceChannelDto("voice_2", "Work Together")
+            else -> return Response.success(
+                ChannelInfoDto(
+                    name = "Unknown Channel",
+                    isPrivate = false,
+                    type = "text",
+                    limit = null,
+                    members = emptyList(),
+                    roles = emptyList(),
+                    id = "1"
+                )
+            )
+        }
+
+        val isPrivate = when (channelId) {
+            "channel_2", "voice_2" -> true
+            else -> false
+        }
+
+        val channelType = when (channel) {
+            is ServerInfoExpandedDto.TextChannelDto -> "text"
+            is ServerInfoExpandedDto.VoiceChannelDto -> "voice"
+            else -> "text"
+        }
+
+        val limit = when (channelType) {
+            "voice" -> 10
+            else -> null
+        }
+
+
+        val members = fakeServer.members.map { it.id }
+
+
+        val roles = serverRoles.map { it.id }
+
+
+        val (finalMembers, finalRoles) = if (isPrivate) {
+            when (channelId) {
+                "channel_2" -> Pair(
+                    listOf("user_123", "user_456"),
+                    listOf("role_admin", "role_mod")
+                )
+                "voice_2" -> Pair(
+                    listOf("user_123", "user_456", "user_789"),
+                    listOf("role_admin", "role_mod", "role_dev")
+                )
+                else -> Pair(members.take(3), roles.take(2))
+            }
+        } else {
+            Pair(members, roles)
+        }
+
+        return Response.success(
+            ChannelInfoDto(
+                name = "основной",
+                isPrivate = isPrivate,
+                type = channelType,
+                limit = limit,
+                members = finalMembers,
+                roles = finalRoles,
+                id = "1"
+            )
+        )
     }
 }

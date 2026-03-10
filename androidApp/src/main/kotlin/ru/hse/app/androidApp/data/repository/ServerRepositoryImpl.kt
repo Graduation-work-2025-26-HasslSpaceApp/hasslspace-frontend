@@ -2,6 +2,7 @@ package ru.hse.app.androidApp.data.repository
 
 import ru.hse.app.androidApp.data.network.ApiCaller
 import ru.hse.app.androidApp.data.network.ApiService
+import ru.hse.app.androidApp.domain.model.entity.ChannelInfo
 import ru.hse.app.androidApp.domain.model.entity.CreateChannel
 import ru.hse.app.androidApp.domain.model.entity.CreateRole
 import ru.hse.app.androidApp.domain.model.entity.CreateServer
@@ -79,6 +80,14 @@ class ServerRepositoryImpl @Inject constructor(
             .mapCatching { users ->
                 users.map { it.toDomain() }
             }
+    }
+
+    override suspend fun getChannelInfo(
+        serverId: String,
+        channelId: String
+    ): Result<ChannelInfo> {
+        return apiCaller.safeApiCall { apiService.getChannelInfo(serverId, channelId) }
+            .mapCatching { it.toDomain() }
     }
 
     override suspend fun getServerUserRoles(

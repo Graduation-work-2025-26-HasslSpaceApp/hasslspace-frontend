@@ -7,20 +7,8 @@ data class InvitationDto(
     @JsonProperty("id")
     val id: String,
 
-    @JsonProperty("userId")
-    val userId: String,
-
-    @JsonProperty("name")
-    val name: String,
-
-    @JsonProperty("username")
-    val username: String,
-
-    @JsonProperty("status")
-    val status: String,
-
-    @JsonProperty("photoUrl")
-    val photoURL: String?,
+    @JsonProperty("link")
+    val link: String,
 
     @JsonProperty("expTime")
     val expTime: LocalDateTime

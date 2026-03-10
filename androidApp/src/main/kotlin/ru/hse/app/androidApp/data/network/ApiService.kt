@@ -12,6 +12,7 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Query
+import ru.hse.app.androidApp.data.model.ChannelInfoDto
 import ru.hse.app.androidApp.data.model.CreateChannelDto
 import ru.hse.app.androidApp.data.model.CreateRoleDto
 import ru.hse.app.androidApp.data.model.CreateServerDto
@@ -233,4 +234,10 @@ interface ApiService {
         @Query("userId") userId: String,
         @Query("serverId") serverId: String,
     ): Response<String>
+
+    @GET("") //TODO
+    suspend fun getChannelInfo(
+        @Query("serverId") serverId: String,
+        @Query("channelId") channelId: String,
+    ): Response<ChannelInfoDto>
 }

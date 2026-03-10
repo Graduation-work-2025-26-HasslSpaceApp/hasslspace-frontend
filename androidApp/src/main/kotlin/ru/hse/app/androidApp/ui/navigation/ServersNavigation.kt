@@ -10,6 +10,7 @@ import ru.hse.app.androidApp.screen.servers.JoinServerScreen
 import ru.hse.app.androidApp.screen.servercard.MainServerScreen
 import ru.hse.app.androidApp.screen.servercard.ServerMembersInfoScreen
 import ru.hse.app.androidApp.screen.servers.ServersScreen
+import ru.hse.app.androidApp.screen.serversettings.InvitationsScreen
 import ru.hse.app.androidApp.screen.serversettings.MembersScreen
 import ru.hse.app.androidApp.screen.serversettings.RolesScreen
 import ru.hse.app.androidApp.screen.serversettings.ServerSettingsMainScreen
@@ -67,6 +68,13 @@ fun ServersNavigation(bottomNavHostController: NavHostController) {
             val serverId = backStackEntry.arguments?.getString("serverId")
             if (serverId != null) {
                 RolesScreen(serversNavController, serverId)
+            }
+        }
+
+        composable(NavigationItem.InvitationsSettings.route + "/{serverId}") { backStackEntry ->
+            val serverId = backStackEntry.arguments?.getString("serverId")
+            if (serverId != null) {
+                InvitationsScreen(serversNavController, serverId)
             }
         }
     }

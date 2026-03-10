@@ -12,9 +12,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil3.ImageLoader
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ru.hse.app.androidApp.data.local.DataManager
 import ru.hse.app.androidApp.domain.model.entity.CreateChannel
 import ru.hse.app.androidApp.domain.model.entity.CreateRole
@@ -22,10 +24,11 @@ import ru.hse.app.androidApp.domain.service.common.CropProfilePhotoService
 import ru.hse.app.androidApp.domain.service.common.PhotoConverterService
 import ru.hse.app.androidApp.domain.usecase.friends.GetChosenUserCommonServersUseCase
 import ru.hse.app.androidApp.domain.usecase.friends.GetUserInfoExtendedUseCase
-import ru.hse.app.androidApp.domain.usecase.servers.CreateChannelUseCase
+import ru.hse.app.androidApp.domain.usecase.channel.CreateChannelUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.CreateServerRoleUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.CreateServerUseCase
-import ru.hse.app.androidApp.domain.usecase.servers.DeleteChannelUseCase
+import ru.hse.app.androidApp.domain.usecase.channel.DeleteChannelUseCase
+import ru.hse.app.androidApp.domain.usecase.channel.GetChannelInfoUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.DeleteServerInvitationUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.DeleteServerMemberUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.DeleteServerUseCase
@@ -34,7 +37,7 @@ import ru.hse.app.androidApp.domain.usecase.servers.GetServerInfoUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.GetServerInvitationsUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.GetServerRolesUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.GetServerUserRolesUseCase
-import ru.hse.app.androidApp.domain.usecase.servers.PatchChannelPropertiesUseCase
+import ru.hse.app.androidApp.domain.usecase.channel.PatchChannelPropertiesUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.PatchServerOwnerUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.PatchServerPropertiesUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.SearchMembersUseCase
@@ -90,6 +93,7 @@ class ServerCardViewModel @Inject constructor(
     private val getFriendsNotInServerUseCase: GetFriendsNotInServerUseCase,
     private val getUserInfoExtendedUseCase: GetUserInfoExtendedUseCase,
     private val getChosenUserCommonServersUseCase: GetChosenUserCommonServersUseCase,
+    private val getChannelInfoUseCase: GetChannelInfoUseCase,
 
     private val patchChannelPropertiesUseCase: PatchChannelPropertiesUseCase,
     private val patchServerOwnerUseCase: PatchServerOwnerUseCase,
@@ -202,8 +206,19 @@ class ServerCardViewModel @Inject constructor(
     val newChannelIsPrivate = mutableStateOf(false)
     val limitNewChannel = mutableFloatStateOf(0f)
 
+    // EditChannel
+    val showEditChannel = mutableStateOf(false)
+    val showChooseMembersAndRolesEditChannel = mutableStateOf(false)
+
+    val showDeleteChannel = mutableStateOf(false)
+
     // Server Settings Bar
     val showServerSettingsSheet = mutableStateOf(false)
+    val showDeleteServerDialog = mutableStateOf(false)
+
+    // Channel Settings
+    val loadedMembers = mutableStateListOf<FriendCheckboxUiModel>()
+    val loadedRoles = mutableStateListOf<RoleMiniCheckboxUiModel>()
 
     fun onNewChannelNameChanged(value: String) {
         newChannelName.value = value
@@ -215,6 +230,42 @@ class ServerCardViewModel @Inject constructor(
 
     fun onLimitValueChange(value: Float) {
         limitNewChannel.floatValue = value
+    }
+
+    fun onEditChannelNameChanged(value: String) {
+        val currentState = _uiState.value
+        if (currentState is ServerCardUiState.Success) {
+            val updatedData = currentState.data.copy(
+                editChannel = currentState.data.editChannel.copy(
+                    name = value
+                )
+            )
+            _uiState.value = currentState.copy( data = updatedData)
+        }
+    }
+
+    fun onEditChannelIsPrivate(isPrivate: Boolean) {
+        val currentState = _uiState.value
+        if (currentState is ServerCardUiState.Success) {
+            val updatedData = currentState.data.copy(
+                editChannel = currentState.data.editChannel.copy(
+                    isPrivate = isPrivate
+                )
+            )
+            _uiState.value = currentState.copy( data = updatedData)
+        }
+    }
+
+    fun onEditChannelLimitValueChange(value: Float) {
+        val currentState = _uiState.value
+        if (currentState is ServerCardUiState.Success) {
+            val updatedData = currentState.data.copy(
+                editChannel = currentState.data.editChannel.copy(
+                    limit = value
+                )
+            )
+            _uiState.value = currentState.copy( data = updatedData)
+        }
     }
 
     fun onSearchMembersText(value: String) {
@@ -397,7 +448,14 @@ class ServerCardViewModel @Inject constructor(
                             newChannelMembers = listOf(),
                             newChannelRoles = listOf(),
                             chosenUser = null,
-                            chosenUserCommonServers = listOf()
+                            chosenUserCommonServers = listOf(),
+                            editChannel = ServerCardUiModel.EditChannelUiModel(
+                                id = "",
+                                name = "",
+                                members = listOf(),
+                                roles = listOf(),
+                                isPrivate = false
+                            )
                         )
                     )
                     searchedMembers.clear()
@@ -483,6 +541,73 @@ class ServerCardViewModel @Inject constructor(
             )
         }
     }
+
+    fun loadChosenChannel(server: ServerExpandedUiModel, channelId: String) {
+        viewModelScope.launch {
+            val result = getChannelInfoUseCase(server.id, channelId)
+            // todo обновить значение ивента и при неуспешной загрузке не загружать страницу
+            val currentState = _uiState.value
+
+            result.fold(
+                onSuccess = { channel ->
+                    val checkboxRoles = idsToRolesCheckboxInChannel(server,channel.roles)
+                    if (currentState is ServerCardUiState.Success) {
+                        val updatedData = currentState.data.copy(
+                            editChannel = currentState.data.editChannel.copy(
+                                id = channel.id,
+                                type = channel.type,
+                                name = channel.name,
+                                isPrivate = channel.isPrivate,
+                                limit = channel.limit?.toFloat()?: 0f,
+                                members = idsToFriendCheckboxInChannel(server,channel.members),
+                                roles = checkboxRoles
+                            )
+                        )
+                        _uiState.value = ServerCardUiState.Success(updatedData)
+                    }
+                },
+                onFailure = {
+
+                }
+            )
+        }
+    }
+
+    fun idsToFriendCheckboxInChannel(server: ServerExpandedUiModel, ids: List<String>) : List<FriendCheckboxUiModel> {
+        return server.members.map { member ->
+            FriendCheckboxUiModel(
+                id = member.id,
+                name = member.name,
+                nickname = member.nickname,
+                status = member.status,
+                avatarUrl = member.avatarUrl,
+                isChosen = ids.contains(member.id)
+            )
+        }
+    }
+
+    suspend fun idsToRolesCheckboxInChannel(server: ServerExpandedUiModel, ids: List<String>): List<RoleMiniCheckboxUiModel> {
+        return withContext(Dispatchers.IO) {
+            val result = getServerRolesUseCase(server.id)
+
+            result.fold(
+                onSuccess = { roles ->
+                    roles.map { role ->
+                        RoleMiniCheckboxUiModel(
+                            id = role.id,
+                            title = role.name,
+                            color = Color(role.color.toColorInt()),
+                            isChosen = ids.contains(role.id)
+                        )
+                    }
+                },
+                onFailure = {
+                    emptyList<RoleMiniCheckboxUiModel>()
+                }
+            )
+        }
+    }
+
 
     fun patchServerOwner(
         serverId: String,
@@ -583,7 +708,6 @@ class ServerCardViewModel @Inject constructor(
                 )
             }
         }
-
     }
 
     fun loadChosenUser(userId: String) {
@@ -651,6 +775,23 @@ class ServerCardViewModel @Inject constructor(
         }
     }
 
+    fun onToggleFriendEditChannel(user: FriendCheckboxUiModel) {
+        val currentState = _uiState.value
+        if (currentState is ServerCardUiState.Success) {
+            //todo сразу обновлять бэк
+            val updatedMembers = currentState.data.editChannel.members.map { friend ->
+                if (friend.id == user.id) {
+                    friend.copy(isChosen = !friend.isChosen)
+                } else {
+                    friend
+                }
+            }
+            _uiState.value = currentState.copy(
+                data = currentState.data.copy(editChannel = currentState.data.editChannel.copy(members = updatedMembers))
+            )
+        }
+    }
+
     fun resetMembersAndRoles() {
         val currentState = _uiState.value
         if (currentState is ServerCardUiState.Success) {
@@ -675,6 +816,24 @@ class ServerCardViewModel @Inject constructor(
 
             _uiState.value = currentState.copy(
                 data = currentState.data.copy(newChannelRoles = updatedRoles)
+            )
+        }
+    }
+
+    fun onToggleRoleEditChannel(role: RoleMiniCheckboxUiModel) {
+        //todo сразу обновлять бэк
+        val currentState = _uiState.value
+        if (currentState is ServerCardUiState.Success) {
+            val updatedRoles = currentState.data.editChannel.roles.map { r ->
+                if (r.id == role.id) {
+                    r.copy(isChosen = !r.isChosen)
+                } else {
+                    r
+                }
+            }
+
+            _uiState.value = currentState.copy(
+                data = currentState.data.copy(editChannel = currentState.data.editChannel.copy(roles = updatedRoles))
             )
         }
     }

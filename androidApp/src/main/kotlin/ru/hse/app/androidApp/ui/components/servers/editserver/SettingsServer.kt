@@ -79,6 +79,7 @@ fun SettingsServer(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .height(40.dp)
                 .clickable { onMembersClick() },
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -96,11 +97,12 @@ fun SettingsServer(
                     .size(14.dp)
             )
         }
-        Spacer(Modifier.height(30.dp))
+        Spacer(Modifier.height(10.dp))
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .height(40.dp)
                 .clickable { onRolesClick() },
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -118,11 +120,12 @@ fun SettingsServer(
                     .size(14.dp)
             )
         }
-        Spacer(Modifier.height(30.dp))
+        Spacer(Modifier.height(10.dp))
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .height(40.dp)
                 .clickable { onInvitationsClick() },
             verticalAlignment = Alignment.CenterVertically
         ) {

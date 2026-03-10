@@ -20,6 +20,7 @@ sealed class NavigationItem(val route: String, val title: String) {
     data object ServerSettings : NavigationItem("server_settings", "Редактирование сервера")
     data object MembersSettings : NavigationItem("server_members_settings", "Редактирование участников сервера")
     data object RolesSettings : NavigationItem("server_roles_settings", "Редактирование ролей сервера")
+    data object InvitationsSettings : NavigationItem("server_invitations_settings", "Редактирование приглашений сервера")
 
     // Chats
     data object ChatsMain : NavigationItem("chats_main", "Мои чаты")

@@ -1,5 +1,6 @@
 package ru.hse.app.androidApp.domain.repository
 
+import ru.hse.app.androidApp.domain.model.entity.ChannelInfo
 import ru.hse.app.androidApp.domain.model.entity.CreateChannel
 import ru.hse.app.androidApp.domain.model.entity.CreateRole
 import ru.hse.app.androidApp.domain.model.entity.CreateServer
@@ -23,6 +24,7 @@ interface ServerRepository {
     suspend fun getServerRoles(serverId: String): Result<List<RoleInfo>>
     suspend fun getServerUserRoles(userId: String, serverId: String): Result<List<RoleInfo>>
     suspend fun getFriendsNotInServer(serverId: String): Result<List<UserInfo>>
+    suspend fun getChannelInfo(serverId: String, channelId: String): Result<ChannelInfo>
 
     suspend fun joinServer(): Result<String>
 

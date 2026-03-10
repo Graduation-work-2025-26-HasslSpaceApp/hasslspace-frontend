@@ -132,7 +132,7 @@ fun ServerSettingsMainScreenWithStateContent(
         onApplyNewServerName = { viewModel.onSaveEditedServername(data.name) },
         onMembersClick = { navController.navigate(NavigationItem.MembersSettings.route + "/${data.id}") },
         onRolesClick = { navController.navigate(NavigationItem.RolesSettings.route + "/${data.id}") },
-        onInvitationsClick = {/*todo*/ },
+        onInvitationsClick = { navController.navigate(NavigationItem.InvitationsSettings.route + "/${data.id}") },
         isDark = viewModel.isDarkTheme
     )
 

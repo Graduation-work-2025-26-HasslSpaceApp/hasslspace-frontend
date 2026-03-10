@@ -2,7 +2,10 @@ package ru.hse.app.androidApp.data.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
-data class CreateChannelDto(
+data class ChannelInfoDto(
+    @JsonProperty("id")
+    val id: String,
+
     @JsonProperty("name")
     val name: String,
 

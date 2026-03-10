@@ -7,7 +7,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -145,7 +144,7 @@ fun RolesScreenWithStateContent(
             onSaveClick = { viewModel.createServerRole(data.id, data.newRole) },
             onToggle = viewModel::onToggleNewRoleMember,
             selectedColor = data.newRole.color,
-            onColorPickClick = { viewModel.showColorPicker.value = true},
+            onColorPickClick = { viewModel.showColorPicker.value = true },
             isDarkTheme = viewModel.isDarkTheme
         )
     }
@@ -169,7 +168,7 @@ fun RolesScreenWithStateContent(
             showDialog = viewModel.showColorPickerEdit,
         )
     }
-    
+
     if (viewModel.showEditRole.value) {
         EditRoleContent(
             imageLoader = context.imageLoader,
@@ -183,7 +182,7 @@ fun RolesScreenWithStateContent(
             isDarkTheme = viewModel.isDarkTheme,
             originalTitle = viewModel.originalEditRoleTitle.value,
             onRoleTextChanged = viewModel::onEditRoleNameChanged,
-            onDeleteRoleClick = { viewModel.showDeleteRoleDialog.value = true},
+            onDeleteRoleClick = { viewModel.showDeleteRoleDialog.value = true },
         )
     }
 
@@ -194,7 +193,7 @@ fun RolesScreenWithStateContent(
             apply = "Удалить",
             dismiss = "Оставить",
             onApplyClick = { viewModel.deleteRole(serverId, data.editedRole.id) },
-            onDismissClick = {viewModel.showDeleteRoleDialog.value = false}
+            onDismissClick = { viewModel.showDeleteRoleDialog.value = false }
         )
     }
 

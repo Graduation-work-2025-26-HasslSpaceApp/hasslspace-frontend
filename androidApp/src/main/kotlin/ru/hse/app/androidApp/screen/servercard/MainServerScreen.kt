@@ -12,9 +12,11 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil3.imageLoader
 import ru.hse.app.androidApp.R
+import ru.hse.app.androidApp.ui.components.common.dialog.RowButtonDialog
 import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
 import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
 import ru.hse.app.androidApp.ui.components.servers.configurechannel.ConfigureMembersAndRoles
+import ru.hse.app.androidApp.ui.components.servers.configurechannel.ConfigureVoiceChannelContent
 import ru.hse.app.androidApp.ui.components.servers.createchannel.CreateChannelContent
 import ru.hse.app.androidApp.ui.components.servers.editserver.InfoServerBottomSheet
 import ru.hse.app.androidApp.ui.components.servers.members.AddMembersSheet
@@ -23,6 +25,8 @@ import ru.hse.app.androidApp.ui.components.servers.servercard.ChannelsBottomShee
 import ru.hse.app.androidApp.ui.components.servers.servercard.ServerCardContent
 import ru.hse.app.androidApp.ui.entity.model.servers.ServerCardUiState
 import ru.hse.app.androidApp.ui.entity.model.servers.events.CreateChannelEvent
+import ru.hse.app.androidApp.ui.entity.model.servers.events.DeleteChannelEvent
+import ru.hse.app.androidApp.ui.entity.model.servers.events.DeleteServerEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetFriendsNotInServerEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerInfoEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.SendServerInvitationEvent
@@ -41,8 +45,53 @@ fun MainServerScreen(
     val sendServerInvitationEvent by viewModel.sendServerInvitationEvent.collectAsState()
     val createChannelEvent by viewModel.createChannelEvent.collectAsState()
 
+    val deleteServerEvent by viewModel.deleteServerEvent.collectAsState()
+    val deleteChannelEvent by viewModel.deleteChannelEvent.collectAsState()
+
     LaunchedEffect(serverId) {
         viewModel.getServerInfo(serverId)
+    }
+
+    LaunchedEffect(deleteServerEvent) {
+        when (deleteServerEvent) {
+            is DeleteServerEvent.SuccessDelete -> {
+                viewModel.showDeleteServerDialog.value = false
+                viewModel.showServerSettingsSheet.value = false
+                navController.navigate(NavigationItem.ServersMain.route) {
+                    popUpTo(NavigationItem.ServersMain.route) { inclusive = true }
+                }
+            }
+
+            is DeleteServerEvent.Error -> {
+                val message = (deleteServerEvent as CreateChannelEvent.Error).message
+                viewModel.showToast(message)
+                viewModel.showDeleteServerDialog.value = false
+                viewModel.showServerSettingsSheet.value = false
+            }
+
+            null -> {}
+        }
+        viewModel.resetDeleteServerEvent()
+    }
+
+    LaunchedEffect(deleteChannelEvent) {
+        when (deleteChannelEvent) {
+            is DeleteChannelEvent.SuccessDelete -> {
+                viewModel.showDeleteChannel.value = false
+                viewModel.showEditChannel.value = false
+                viewModel.getServerInfo(serverId)
+            }
+
+            is DeleteChannelEvent.Error -> {
+                val message = (deleteChannelEvent as DeleteChannelEvent.Error).message
+                viewModel.showToast(message)
+                viewModel.showDeleteChannel.value = false
+                viewModel.showEditChannel.value = false
+            }
+
+            null -> {}
+        }
+        viewModel.resetDeleteChannelEvent()
     }
 
     LaunchedEffect(createChannelEvent) {
@@ -51,11 +100,13 @@ fun MainServerScreen(
                 viewModel.getServerInfo(serverId)
                 viewModel.creatingChannel.value = false
             }
+
             is CreateChannelEvent.Error -> {
                 val message = (createChannelEvent as CreateChannelEvent.Error).message
                 viewModel.showToast(message)
                 viewModel.creatingChannel.value = false
             }
+
             null -> {}
         }
         viewModel.resetCreateChannelEvent()
@@ -223,7 +274,11 @@ fun MainServerScreenWithStateContent(
             icon = R.drawable.hashtag,
             isDarkTheme = viewModel.isDarkTheme,
             onReadClick = {/*todo*/ },
-            onSetUpChannel = {/*todo*/ },
+            onSetUpChannel = {
+                viewModel.loadChosenChannel(data.chosenServer, viewModel.chosenTextChannel.value!!.id)
+                viewModel.showTextChannelOptions.value = false
+                viewModel.showEditChannel.value = true
+            },
             onDismiss = {
                 viewModel.showTextChannelOptions.value = false
                 viewModel.chosenTextChannel.value = null
@@ -238,7 +293,11 @@ fun MainServerScreenWithStateContent(
             icon = R.drawable.voice,
             isDarkTheme = viewModel.isDarkTheme,
             onReadClick = {/*todo*/ },
-            onSetUpChannel = {/*todo*/ },
+            onSetUpChannel = {
+                viewModel.loadChosenChannel(data.chosenServer, viewModel.chosenVoiceChannel.value!!.id)
+                viewModel.showVoiceChannelOptions.value = false
+                viewModel.showEditChannel.value = true
+            },
             onDismiss = {
                 viewModel.showVoiceChannelOptions.value = false
                 viewModel.chosenVoiceChannel.value = null
@@ -246,7 +305,7 @@ fun MainServerScreenWithStateContent(
             isModerator = data.chosenServer.isOwner
         )
     }
-    
+
     if (viewModel.creatingChannel.value) {
         CreateChannelContent(
             onCloseClick = {
@@ -284,6 +343,27 @@ fun MainServerScreenWithStateContent(
         )
     }
 
+    if (viewModel.showEditChannel.value) {
+        ConfigureVoiceChannelContent(
+            onBackClick = {
+                viewModel.showEditChannel.value = false
+            },
+            channelName = data.editChannel.name,
+            onChannelNameChanged = viewModel::onEditChannelNameChanged,
+            isDarkTheme = viewModel.isDarkTheme,
+            isPrivate = data.editChannel.isPrivate,
+            onPrivateChange = viewModel::onEditChannelIsPrivate,
+            onAddMembers = {
+                viewModel.showChooseMembersAndRolesEditChannel.value = true
+            },
+            onSaveClick = {/*todo*/},
+            onDeleteChannel = { viewModel.showDeleteChannel.value = true},
+            sliderValue = data.editChannel.limit,
+            onSliderValueChange = viewModel::onEditChannelLimitValueChange,
+            type = data.editChannel.type
+        )
+    }
+
     if (viewModel.showChooseMembersAndRoles.value) {
         ConfigureMembersAndRoles(
             imageLoader = context.imageLoader,
@@ -292,7 +372,20 @@ fun MainServerScreenWithStateContent(
             onBackClick = { viewModel.showChooseMembersAndRoles.value = false },
             onSaveClick = { viewModel.showChooseMembersAndRoles.value = false },
             onToggleRole = { viewModel.onToggleRole(it) },
-            onToggleFriend = { viewModel.onToggleFriend(it)},
+            onToggleFriend = { viewModel.onToggleFriend(it) },
+            isDarkTheme = viewModel.isDarkTheme
+        )
+    }
+
+    if (viewModel.showChooseMembersAndRolesEditChannel.value) {
+        ConfigureMembersAndRoles(
+            imageLoader = context.imageLoader,
+            friends = data.editChannel.members,
+            roles = data.editChannel.roles,
+            onBackClick = { viewModel.showChooseMembersAndRolesEditChannel.value = false },
+            onSaveClick = { viewModel.showChooseMembersAndRolesEditChannel.value = false },
+            onToggleRole = { viewModel.onToggleRoleEditChannel(it) },
+            onToggleFriend = { viewModel.onToggleFriendEditChannel(it) },
             isDarkTheme = viewModel.isDarkTheme
         )
     }
@@ -312,7 +405,7 @@ fun MainServerScreenWithStateContent(
                 navController.navigate(NavigationItem.ServerSettings.route + "/${data.chosenServer.id}")
                 viewModel.showServerSettingsSheet.value = false
             },
-            onDeleteClick = {/*todo*/},
+            onDeleteClick = { viewModel.showDeleteServerDialog.value = true },
             isDarkTheme = viewModel.isDarkTheme,
             onDismiss = { viewModel.showServerSettingsSheet.value = false },
             onMembersClick = {
@@ -320,6 +413,28 @@ fun MainServerScreenWithStateContent(
                 viewModel.showServerSettingsSheet.value = false
             },
             isOwner = data.chosenServer.isOwner
+        )
+    }
+
+    if (viewModel.showDeleteChannel.value) {
+        RowButtonDialog(
+            showDialog = viewModel.showDeleteChannel,
+            questionText = "Вы действительно хотите удалить канал?",
+            apply = "Удалить",
+            dismiss = "Оставить",
+            onApplyClick = { viewModel.deleteChannel(data.chosenServer.id, data.editChannel.id) },
+            onDismissClick = { viewModel.showDeleteChannel.value = false}
+        )
+    }
+
+    if (viewModel.showDeleteServerDialog.value) {
+        RowButtonDialog(
+            showDialog = viewModel.showDeleteServerDialog,
+            questionText = "Вы действительно хотите удалить сервер?",
+            apply = "Удалить",
+            dismiss = "Оставить",
+            onApplyClick = { viewModel.deleteServer(data.chosenServer.id) },
+            onDismissClick = { viewModel.showDeleteServerDialog.value = false}
         )
     }
 }
