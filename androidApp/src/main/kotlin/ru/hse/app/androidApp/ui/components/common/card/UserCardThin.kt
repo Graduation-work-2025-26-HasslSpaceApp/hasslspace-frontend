@@ -2,7 +2,6 @@ package ru.hse.app.androidApp.ui.components.common.card
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -118,7 +117,7 @@ fun UserCardThinPreviewAllLight() {
                 nickname = "alex_ivanov",
                 status = StatusPresentation.ACTIVE,
                 profilePictureUrl = "",
-                
+
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -130,7 +129,7 @@ fun UserCardThinPreviewAllLight() {
                 nickname = "maria_petrova",
                 status = StatusPresentation.INVISIBLE,
                 profilePictureUrl = "",
-                
+
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -142,7 +141,7 @@ fun UserCardThinPreviewAllLight() {
                 nickname = "dmitry_sidorov",
                 status = StatusPresentation.DO_NOT_DISTURB,
                 profilePictureUrl = "",
-                
+
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -154,7 +153,7 @@ fun UserCardThinPreviewAllLight() {
                 nickname = "ekaterina_volkova",
                 status = StatusPresentation.INVISIBLE,
                 profilePictureUrl = "",
-                
+
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -166,7 +165,7 @@ fun UserCardThinPreviewAllLight() {
                 nickname = "ivan_nikolaev",
                 status = StatusPresentation.NOT_ACTIVE,
                 profilePictureUrl = "",
-                
+
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -184,7 +183,7 @@ fun UserCardThinPreviewAllDark() {
                 nickname = "alex_ivanov",
                 status = StatusPresentation.ACTIVE,
                 profilePictureUrl = "",
-                
+
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -196,7 +195,7 @@ fun UserCardThinPreviewAllDark() {
                 nickname = "maria_petrova",
                 status = StatusPresentation.NOT_ACTIVE,
                 profilePictureUrl = "",
-                
+
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -208,7 +207,7 @@ fun UserCardThinPreviewAllDark() {
                 nickname = "dmitry_sidorov",
                 status = StatusPresentation.DO_NOT_DISTURB,
                 profilePictureUrl = "",
-                
+
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -220,7 +219,7 @@ fun UserCardThinPreviewAllDark() {
                 nickname = "ekaterina_volkova",
                 status = StatusPresentation.INVISIBLE,
                 profilePictureUrl = "",
-                
+
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -232,7 +231,7 @@ fun UserCardThinPreviewAllDark() {
                 nickname = "ivan_nikolaev",
                 status = StatusPresentation.INVISIBLE,
                 profilePictureUrl = "",
-                
+
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -249,7 +248,7 @@ fun UserCardThinPreviewMixedLight() {
             UserCardThin(
                 username = "Анна Смирнова",
                 nickname = "anna_smirnova",
-                
+
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -261,7 +260,7 @@ fun UserCardThinPreviewMixedLight() {
                 username = "Петр Кузнецов",
                 nickname = "petr_kuznetsov",
                 status = StatusPresentation.ACTIVE,
-                
+
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -273,7 +272,7 @@ fun UserCardThinPreviewMixedLight() {
                 username = "ДлинноеИмяДлинноеИмяДлинноеИмя",
                 nickname = "очень_длинный_никнейм_пользователя",
                 profilePictureUrl = "https://example.com/photo.jpg",
-                
+
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -285,7 +284,7 @@ fun UserCardThinPreviewMixedLight() {
                 username = "Ольга Соколова",
                 nickname = "olga_sokolova",
                 status = StatusPresentation.DO_NOT_DISTURB,
-                
+
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -302,7 +301,7 @@ fun UserCardThinPreviewMixedDark() {
             UserCardThin(
                 username = "Анна Смирнова",
                 nickname = "anna_smirnova",
-                
+
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -314,7 +313,7 @@ fun UserCardThinPreviewMixedDark() {
                 username = "Петр Кузнецов",
                 nickname = "petr_kuznetsov",
                 status = StatusPresentation.ACTIVE,
-                
+
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -326,7 +325,7 @@ fun UserCardThinPreviewMixedDark() {
                 username = "ДлинноеИмяДлинноеИмяДлинноеИмя",
                 nickname = "очень_длинный_никнейм_пользователя",
                 profilePictureUrl = "https://example.com/photo.jpg",
-                
+
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -338,7 +337,7 @@ fun UserCardThinPreviewMixedDark() {
                 username = "Ольга Соколова",
                 nickname = "olga_sokolova",
                 status = StatusPresentation.DO_NOT_DISTURB,
-                
+
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -355,7 +354,7 @@ fun UserCardThinPreviewEdgeCasesLight() {
             UserCardThin(
                 username = "Иван Иванов",
                 nickname = "ivanov",
-                
+
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -366,7 +365,7 @@ fun UserCardThinPreviewEdgeCasesLight() {
             UserCardThin(
                 username = "Мария Петрова",
                 nickname = "petrova",
-                
+
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -376,7 +375,7 @@ fun UserCardThinPreviewEdgeCasesLight() {
             UserCardThin(
                 username = "Алексей",
                 nickname = "alex",
-                
+
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -386,7 +385,7 @@ fun UserCardThinPreviewEdgeCasesLight() {
             UserCardThin(
                 username = "Тест",
                 nickname = "test",
-                
+
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )

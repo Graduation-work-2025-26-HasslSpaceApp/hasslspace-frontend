@@ -97,7 +97,7 @@ fun RoleCardCheckboxPreviewAllLight() {
                 title = "role 1",
                 color = Color.Blue,
                 isChosen = isChosen.value,
-                onClick = {isChosen.value = !isChosen.value},
+                onClick = { isChosen.value = !isChosen.value },
             )
 
             Spacer(modifier = Modifier.height(12.dp))

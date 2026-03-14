@@ -32,7 +32,6 @@ import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerInfoEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerInvitationsEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerRolesEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerUserRolesEvent
-import ru.hse.app.androidApp.ui.entity.model.serversettings.RoleInfoUiModel
 import ru.hse.app.androidApp.ui.entity.model.serversettings.ServerSettingsUiModel
 import ru.hse.app.androidApp.ui.entity.model.serversettings.ServerSettingsUiState
 import ru.hse.app.androidApp.ui.entity.model.serversettings.toRoleInfoUiModel

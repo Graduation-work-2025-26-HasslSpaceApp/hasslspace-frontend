@@ -175,7 +175,7 @@ fun FriendsScreenWithStateContent(
         CommonServersBottomSheet(
             imageLoader = context.imageLoader,
             servers = data.chosenUserCommonServers,
-            onServerClick = {server -> navController.navigate(NavigationItem.MainServerScreen.route + "/${server.id}") },
+            onServerClick = { server -> navController.navigate(NavigationItem.MainServerScreen.route + "/${server.id}") },
             isDarkTheme = data.isDarkCheck,
             onDismiss = { viewModel.showCommonServers.value = false }
         )

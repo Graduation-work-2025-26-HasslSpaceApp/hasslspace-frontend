@@ -5,77 +5,26 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import ru.hse.app.androidApp.ui.components.common.box.NoItemsBox
+import ru.hse.app.androidApp.screen.chats.ChatScreen
+import ru.hse.app.androidApp.screen.chats.ChatsScreen
 
 @Composable
 fun ChatsNavigation(bottomNavHostController: NavHostController) {
-    val routesNavController = rememberNavController()
-//
-//    val createViewModel: CreateRouteViewModel = hiltViewModel()
-//    val routeDetailsViewModel: RouteDetailsViewModel = hiltViewModel()
-//
+    val chatsNavController = rememberNavController()
+
     NavHost(
-        navController = routesNavController,
+        navController = chatsNavController,
         startDestination = NavigationItem.ChatsMain.route
     ) {
         composable(NavigationItem.ChatsMain.route) {
-            NoItemsBox("Чаты")
+            ChatsScreen(chatsNavController)
+        }
+
+        composable(NavigationItem.Chat.route + "/{chatId}") { backStackEntry ->
+            val chatId = backStackEntry.arguments?.getString("chatId")
+            if (chatId != null) {
+                ChatScreen(chatId, chatsNavController)
+            }
         }
     }
-//        composable(NavigationItem.RoutesMain.route) {
-//            RoutesScreen(routesNavController, createViewModel, routeDetailsViewModel)
-//        }
-//        composable(NavigationItem.Drafts.route) {
-//            DraftsScreen(routesNavController, createViewModel)
-//        }
-//        composable(NavigationItem.RouteDetails.route + "/{routeId}") { backStackEntry ->
-//            val routeId = backStackEntry.arguments?.getString("routeId")
-//            if (routeId != null) {
-//                RouteDetailsScreen(routesNavController, routeId, routeDetailsViewModel)
-//            }
-//        }
-//        composable(NavigationItem.RouteReviews.route + "/{routeId}") { backStackEntry ->
-//            val routeId = backStackEntry.arguments?.getString("routeId")
-//            if (routeId != null) {
-//                RouteReviewsScreen(routesNavController, routeId, routeDetailsViewModel)
-//            }
-//        }
-//        composable(NavigationItem.RoutePassing.route + "/{routeId}") { backStackEntry ->
-//            val routeId = backStackEntry.arguments?.getString("routeId")
-//            if (routeId != null) {
-//                RoutePassingScreen(
-//                    bottomNavHostController,
-//                    routesNavController,
-//                    routeId,
-//                    routeDetailsViewModel
-//                )
-//            }
-//        }
-//        composable(
-//            route = NavigationItem.RouteRate.route + "/{routeId}/{averageMark}",
-//            arguments = listOf(
-//                navArgument(name = "routeId") {
-//                    type = NavType.StringType
-//                },
-//                navArgument(name = "averageMark") {
-//                    type = NavType.IntType
-//                },
-//            )
-//        ) { backStackEntry ->
-//            val routeId = backStackEntry.arguments?.getString("routeId")
-//            val mark = backStackEntry.arguments?.getInt("averageMark")
-//            if (routeId != null && mark != null) {
-//                RateRouteScreen(routesNavController, routeId, mark, routeDetailsViewModel)
-//            }
-//        }
-//        composable(NavigationItem.RouteCreationInfo.route) { backStackEntry ->
-//            CreateRouteInfoScreen(routesNavController, bottomNavHostController, createViewModel)
-//        }
-//        composable(NavigationItem.RouteCreationOnMap.route + "/{routeId}") { backStackEntry ->
-//            val routeId = backStackEntry.arguments?.getString("routeId")
-//            if (routeId != null) {
-//                CreateRouteMapScreen(routesNavController, routeId, createViewModel)
-//            }
-//        }
-//    }
 }

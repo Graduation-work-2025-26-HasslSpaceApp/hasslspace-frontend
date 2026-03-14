@@ -3,8 +3,6 @@ package ru.hse.app.androidApp.ui.entity.model
 import androidx.compose.runtime.Immutable
 import ru.hse.app.androidApp.domain.model.entity.Type
 import ru.hse.app.androidApp.domain.model.entity.UserInfo
-import ru.hse.app.androidApp.ui.entity.model.FriendUiModel
-import ru.hse.app.androidApp.ui.entity.model.toUi
 
 @Immutable
 data class FriendUiModel(

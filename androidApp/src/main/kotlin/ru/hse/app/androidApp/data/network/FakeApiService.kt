@@ -596,10 +596,12 @@ class FakeApiService : ApiService {
                     listOf("user_123", "user_456"),
                     listOf("role_admin", "role_mod")
                 )
+
                 "voice_2" -> Pair(
                     listOf("user_123", "user_456", "user_789"),
                     listOf("role_admin", "role_mod", "role_dev")
                 )
+
                 else -> Pair(members.take(3), roles.take(2))
             }
         } else {

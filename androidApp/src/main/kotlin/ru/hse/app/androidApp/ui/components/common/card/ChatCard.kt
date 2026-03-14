@@ -52,8 +52,7 @@ fun ChatCard(
             .fillMaxWidth()
             .height(45.dp)
             .background(Color.Transparent)
-            .clickable { onChatClick() }
-            .padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically
+            .clickable { onChatClick() }, verticalAlignment = Alignment.CenterVertically
     ) {
 
         Box {

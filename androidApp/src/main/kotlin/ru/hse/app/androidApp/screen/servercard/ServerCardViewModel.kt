@@ -22,13 +22,14 @@ import ru.hse.app.androidApp.domain.model.entity.CreateChannel
 import ru.hse.app.androidApp.domain.model.entity.CreateRole
 import ru.hse.app.androidApp.domain.service.common.CropProfilePhotoService
 import ru.hse.app.androidApp.domain.service.common.PhotoConverterService
-import ru.hse.app.androidApp.domain.usecase.friends.GetChosenUserCommonServersUseCase
-import ru.hse.app.androidApp.domain.usecase.friends.GetUserInfoExtendedUseCase
 import ru.hse.app.androidApp.domain.usecase.channel.CreateChannelUseCase
-import ru.hse.app.androidApp.domain.usecase.servers.CreateServerRoleUseCase
-import ru.hse.app.androidApp.domain.usecase.servers.CreateServerUseCase
 import ru.hse.app.androidApp.domain.usecase.channel.DeleteChannelUseCase
 import ru.hse.app.androidApp.domain.usecase.channel.GetChannelInfoUseCase
+import ru.hse.app.androidApp.domain.usecase.channel.PatchChannelPropertiesUseCase
+import ru.hse.app.androidApp.domain.usecase.friends.GetChosenUserCommonServersUseCase
+import ru.hse.app.androidApp.domain.usecase.friends.GetUserInfoExtendedUseCase
+import ru.hse.app.androidApp.domain.usecase.servers.CreateServerRoleUseCase
+import ru.hse.app.androidApp.domain.usecase.servers.CreateServerUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.DeleteServerInvitationUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.DeleteServerMemberUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.DeleteServerUseCase
@@ -37,7 +38,6 @@ import ru.hse.app.androidApp.domain.usecase.servers.GetServerInfoUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.GetServerInvitationsUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.GetServerRolesUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.GetServerUserRolesUseCase
-import ru.hse.app.androidApp.domain.usecase.channel.PatchChannelPropertiesUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.PatchServerOwnerUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.PatchServerPropertiesUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.SearchMembersUseCase
@@ -240,7 +240,7 @@ class ServerCardViewModel @Inject constructor(
                     name = value
                 )
             )
-            _uiState.value = currentState.copy( data = updatedData)
+            _uiState.value = currentState.copy(data = updatedData)
         }
     }
 
@@ -252,7 +252,7 @@ class ServerCardViewModel @Inject constructor(
                     isPrivate = isPrivate
                 )
             )
-            _uiState.value = currentState.copy( data = updatedData)
+            _uiState.value = currentState.copy(data = updatedData)
         }
     }
 
@@ -264,7 +264,7 @@ class ServerCardViewModel @Inject constructor(
                     limit = value
                 )
             )
-            _uiState.value = currentState.copy( data = updatedData)
+            _uiState.value = currentState.copy(data = updatedData)
         }
     }
 
@@ -273,7 +273,8 @@ class ServerCardViewModel @Inject constructor(
         val currentState = _uiState.value
         if (currentState is ServerCardUiState.Success) {
             viewModelScope.launch {
-                val result = searchMembersUseCase(currentState.data.chosenServer.members.map { it }, value)
+                val result =
+                    searchMembersUseCase(currentState.data.chosenServer.members.map { it }, value)
                 searchedMembers.clear()
                 searchedMembers.addAll(result)
             }
@@ -550,7 +551,7 @@ class ServerCardViewModel @Inject constructor(
 
             result.fold(
                 onSuccess = { channel ->
-                    val checkboxRoles = idsToRolesCheckboxInChannel(server,channel.roles)
+                    val checkboxRoles = idsToRolesCheckboxInChannel(server, channel.roles)
                     if (currentState is ServerCardUiState.Success) {
                         val updatedData = currentState.data.copy(
                             editChannel = currentState.data.editChannel.copy(
@@ -558,8 +559,8 @@ class ServerCardViewModel @Inject constructor(
                                 type = channel.type,
                                 name = channel.name,
                                 isPrivate = channel.isPrivate,
-                                limit = channel.limit?.toFloat()?: 0f,
-                                members = idsToFriendCheckboxInChannel(server,channel.members),
+                                limit = channel.limit?.toFloat() ?: 0f,
+                                members = idsToFriendCheckboxInChannel(server, channel.members),
                                 roles = checkboxRoles
                             )
                         )
@@ -573,7 +574,10 @@ class ServerCardViewModel @Inject constructor(
         }
     }
 
-    fun idsToFriendCheckboxInChannel(server: ServerExpandedUiModel, ids: List<String>) : List<FriendCheckboxUiModel> {
+    fun idsToFriendCheckboxInChannel(
+        server: ServerExpandedUiModel,
+        ids: List<String>
+    ): List<FriendCheckboxUiModel> {
         return server.members.map { member ->
             FriendCheckboxUiModel(
                 id = member.id,
@@ -586,7 +590,10 @@ class ServerCardViewModel @Inject constructor(
         }
     }
 
-    suspend fun idsToRolesCheckboxInChannel(server: ServerExpandedUiModel, ids: List<String>): List<RoleMiniCheckboxUiModel> {
+    suspend fun idsToRolesCheckboxInChannel(
+        server: ServerExpandedUiModel,
+        ids: List<String>
+    ): List<RoleMiniCheckboxUiModel> {
         return withContext(Dispatchers.IO) {
             val result = getServerRolesUseCase(server.id)
 
@@ -787,7 +794,11 @@ class ServerCardViewModel @Inject constructor(
                 }
             }
             _uiState.value = currentState.copy(
-                data = currentState.data.copy(editChannel = currentState.data.editChannel.copy(members = updatedMembers))
+                data = currentState.data.copy(
+                    editChannel = currentState.data.editChannel.copy(
+                        members = updatedMembers
+                    )
+                )
             )
         }
     }

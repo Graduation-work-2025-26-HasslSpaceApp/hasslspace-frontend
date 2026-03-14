@@ -93,7 +93,7 @@ fun NewGroupScreenContent(
                 status = friend.status,
                 profilePictureUrl = friend.avatarUrl,
                 isDarkTheme = isDarkTheme,
-                onClick = { onToggle(friend)} ,
+                onClick = { onToggle(friend) },
                 isChosen = friend.isChosen
             )
         }

@@ -1,19 +1,14 @@
-package ru.hse.app.androidApp.screen.chats.ui
+package ru.hse.app.androidApp.ui.components.chats.chat
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,21 +19,16 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import coil3.ImageLoader
 import coil3.imageLoader
 import kotlinx.coroutines.launch
-import ru.hse.app.androidApp.R
-import ru.hse.app.androidApp.screen.chats.MessageUiModel
 import ru.hse.app.androidApp.ui.components.common.card.participantsLabel
 import ru.hse.app.androidApp.ui.entity.model.ServerMemberUiModel
+import ru.hse.app.androidApp.ui.entity.model.chats.MessageUiModel
 import ru.hse.app.androidApp.ui.theme.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -112,7 +102,7 @@ fun ChatContent(
 @Preview(showBackground = true)
 @Composable
 fun ChatContentLight() {
-    AppTheme(isDark = false) { 
+    AppTheme(isDark = false) {
         ChatContent(
             channelName = "# composers",
             channelSubtitle = participantsLabel(count = 10),

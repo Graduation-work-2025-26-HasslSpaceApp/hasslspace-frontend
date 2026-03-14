@@ -1,4 +1,4 @@
-package ru.hse.app.androidApp.screen.chats
+package ru.hse.app.androidApp.ui.entity.model.chats
 
 import androidx.compose.runtime.Immutable
 import ru.hse.app.androidApp.ui.entity.model.ServerMemberUiModel

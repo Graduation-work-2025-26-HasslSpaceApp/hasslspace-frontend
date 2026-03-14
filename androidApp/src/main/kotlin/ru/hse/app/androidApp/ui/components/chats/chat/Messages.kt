@@ -1,4 +1,4 @@
-package ru.hse.app.androidApp.screen.chats.ui
+package ru.hse.app.androidApp.ui.components.chats.chat
 
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -10,9 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFrom
 import androidx.compose.foundation.layout.size
@@ -51,11 +49,11 @@ import coil3.compose.rememberAsyncImagePainter
 import coil3.imageLoader
 import kotlinx.coroutines.launch
 import ru.hse.app.androidApp.R
-import ru.hse.app.androidApp.screen.chats.MessageUiModel
 import ru.hse.app.androidApp.ui.components.common.text.VariableLight
 import ru.hse.app.androidApp.ui.components.common.text.VariableMedium
 import ru.hse.app.androidApp.ui.entity.model.ServerMemberUiModel
 import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
+import ru.hse.app.androidApp.ui.entity.model.chats.MessageUiModel
 import ru.hse.app.androidApp.ui.theme.AppTheme
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -90,7 +88,7 @@ fun Messages(
                 .fillMaxSize(),
         ) {
 
-            Log.println(Log.INFO, "ad", messages.map{it.timestamp}.toString())
+            Log.println(Log.INFO, "ad", messages.map { it.timestamp }.toString())
 
             for (index in messages.indices) {
                 val prevAuthor = messages.getOrNull(index - 1)?.author
@@ -142,6 +140,7 @@ fun Messages(
             }
         }
 
+        // todo нехорошие цвета в темной теме
         JumpToBottom(
             enabled = jumpToBottomButtonEnabled,
             onClicked = {

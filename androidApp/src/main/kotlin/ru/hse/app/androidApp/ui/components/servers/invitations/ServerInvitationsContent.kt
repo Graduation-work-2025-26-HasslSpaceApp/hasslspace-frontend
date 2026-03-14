@@ -69,7 +69,7 @@ fun ServerInvitationsContent(
                 InviteCard(
                     link = invitation.link,
                     expirationDate = invitation.expirationDate,
-                    onInvitationClick =  { onInvitationClick(invitation) },
+                    onInvitationClick = { onInvitationClick(invitation) },
                     onCancelClick = { onCancelClick(invitation) },
                 )
             }

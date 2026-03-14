@@ -5,10 +5,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import ru.hse.app.androidApp.screen.servers.CreateServerScreen
-import ru.hse.app.androidApp.screen.servers.JoinServerScreen
 import ru.hse.app.androidApp.screen.servercard.MainServerScreen
 import ru.hse.app.androidApp.screen.servercard.ServerMembersInfoScreen
+import ru.hse.app.androidApp.screen.servers.CreateServerScreen
+import ru.hse.app.androidApp.screen.servers.JoinServerScreen
 import ru.hse.app.androidApp.screen.servers.ServersScreen
 import ru.hse.app.androidApp.screen.serversettings.InvitationsScreen
 import ru.hse.app.androidApp.screen.serversettings.MembersScreen

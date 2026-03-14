@@ -1,7 +1,6 @@
 package ru.hse.app.androidApp.ui.components.common.quarks
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
@@ -42,7 +41,7 @@ fun CheckboxToggle(
 @Composable
 fun CheckboxTogglePreview() {
     val isChosen = remember { mutableStateOf(false) }
-    Box(modifier = Modifier.padding(top = 50.dp)){
+    Box(modifier = Modifier.padding(top = 50.dp)) {
         CheckboxToggle(
             isChosen = isChosen.value,
             onClick = { isChosen.value = !isChosen.value }

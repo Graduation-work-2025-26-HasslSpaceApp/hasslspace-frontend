@@ -1,4 +1,4 @@
-package ru.hse.app.androidApp.screen.chats.ui
+package ru.hse.app.androidApp.ui.components.chats.chat
 
 import android.view.ContextThemeWrapper
 import android.view.ViewGroup

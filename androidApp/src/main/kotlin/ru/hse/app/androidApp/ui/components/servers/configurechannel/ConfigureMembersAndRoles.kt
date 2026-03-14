@@ -56,7 +56,8 @@ fun ConfigureMembersAndRoles(
         onBackClick()
     }
     Column(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .padding(top = 50.dp)
             .padding(16.dp)
@@ -143,31 +144,34 @@ private fun previewFriend(id: String, name: String, isChosen: Boolean) = FriendC
 )
 
 
-
 @Preview(showBackground = true)
 @Composable
 fun ConfigureMembersContentPreviewLightEmpty() {
-    val friends = remember {mutableStateListOf(
-        previewFriend("1", "Александр Иванов", false),
-        previewFriend("2", "Мария Петрова", false),
-        previewFriend("3", "Дмитрий Сидоров", true),
-        previewFriend("4", "Александр Иванов", true),
-        previewFriend("5", "Мария Петрова", false),
-        previewFriend("6", "Дмитрий Сидоров", false),
-        previewFriend("7", "Александр Иванов", false),
-        previewFriend("8", "Мария Петрова", false),
-        previewFriend("9", "Дмитрий Сидоров", true),
-        previewFriend("10", "Александр Иванов", false),
-        previewFriend("11", "Мария Петрова", false),
-        previewFriend("12", "Дмитрий Сидоров", false),
-    )}
+    val friends = remember {
+        mutableStateListOf(
+            previewFriend("1", "Александр Иванов", false),
+            previewFriend("2", "Мария Петрова", false),
+            previewFriend("3", "Дмитрий Сидоров", true),
+            previewFriend("4", "Александр Иванов", true),
+            previewFriend("5", "Мария Петрова", false),
+            previewFriend("6", "Дмитрий Сидоров", false),
+            previewFriend("7", "Александр Иванов", false),
+            previewFriend("8", "Мария Петрова", false),
+            previewFriend("9", "Дмитрий Сидоров", true),
+            previewFriend("10", "Александр Иванов", false),
+            previewFriend("11", "Мария Петрова", false),
+            previewFriend("12", "Дмитрий Сидоров", false),
+        )
+    }
 
-    val roles = remember {mutableStateListOf(
-        RoleMiniCheckboxUiModel("13", "role 1", Color.Blue, isChosen = false),
-        RoleMiniCheckboxUiModel("14", "role 2", Color.Red, isChosen = true),
-        RoleMiniCheckboxUiModel("15", "role 3", Color.Magenta, isChosen = true),
-        RoleMiniCheckboxUiModel("16", "role 4", Color.Yellow, isChosen = false),
-    )}
+    val roles = remember {
+        mutableStateListOf(
+            RoleMiniCheckboxUiModel("13", "role 1", Color.Blue, isChosen = false),
+            RoleMiniCheckboxUiModel("14", "role 2", Color.Red, isChosen = true),
+            RoleMiniCheckboxUiModel("15", "role 3", Color.Magenta, isChosen = true),
+            RoleMiniCheckboxUiModel("16", "role 4", Color.Yellow, isChosen = false),
+        )
+    }
     AppTheme(isDark = false) {
         ConfigureMembersAndRoles(
             imageLoader = LocalContext.current.imageLoader,

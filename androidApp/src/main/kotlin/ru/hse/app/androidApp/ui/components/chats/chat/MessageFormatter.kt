@@ -1,4 +1,4 @@
-package ru.hse.app.androidApp.screen.chats.ui
+package ru.hse.app.androidApp.ui.components.chats.chat
 
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.sp
 val symbolPattern by lazy {
     Regex("""(https?://[^\s\t\n]+)|(`[^`]+`)|(@\w+)|(\*[\w]+\*)|(_[\w]+_)|(~[\w]+~)""")
 }
+
 enum class SymbolAnnotationType {
     PERSON,
     LINK,

@@ -1,7 +1,6 @@
-package ru.hse.app.androidApp.screen.chats.ui
+package ru.hse.app.androidApp.ui.components.chats.chat
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -60,7 +59,9 @@ fun ChannelNameBar(
             Image(
                 painter = painterResource(id = R.drawable.app_icon),
                 contentDescription = "App Icon",
-                modifier = Modifier.padding(end = 16.dp).size(30.dp),
+                modifier = Modifier
+                    .padding(end = 16.dp)
+                    .size(30.dp),
                 contentScale = ContentScale.Crop
             )
         }

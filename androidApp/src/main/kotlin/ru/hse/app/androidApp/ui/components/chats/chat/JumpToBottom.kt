@@ -1,4 +1,4 @@
-package ru.hse.app.androidApp.screen.chats.ui
+package ru.hse.app.androidApp.ui.components.chats.chat
 
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.updateTransition
@@ -13,9 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.hse.app.androidApp.R
@@ -47,7 +45,9 @@ fun JumpToBottom(enabled: Boolean, onClicked: () -> Unit, modifier: Modifier = M
             icon = {
                 Icon(
                     painter = painterResource(id = R.drawable.arrow),
-                    modifier = Modifier.height(18.dp).rotate(90F),
+                    modifier = Modifier
+                        .height(18.dp)
+                        .rotate(90F),
                     contentDescription = null,
                 )
             },
