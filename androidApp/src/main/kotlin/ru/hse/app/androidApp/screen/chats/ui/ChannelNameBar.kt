@@ -1,10 +1,12 @@
 package ru.hse.app.androidApp.screen.chats.ui
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -30,7 +32,7 @@ import ru.hse.app.androidApp.ui.theme.AppTheme
 @Composable
 fun ChannelNameBar(
     channelName: String,
-    channelMembers: Int,
+    channelSubtitle: String,
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior? = null,
     onNavIconPressed: () -> Unit = { },
@@ -44,11 +46,11 @@ fun ChannelNameBar(
                 VariableMedium(
                     text = channelName,
                     fontSize = 14.sp,
-                    fontColor = MaterialTheme.colorScheme.primary
+                    fontColor = MaterialTheme.colorScheme.onSecondary
                 )
                 Spacer(Modifier.height(5.dp))
                 VariableLight(
-                    text = participantsLabel(count = channelMembers),
+                    text = channelSubtitle,
                     fontSize = 12.sp,
                     fontColor = MaterialTheme.colorScheme.onSurface
                 )
@@ -58,7 +60,7 @@ fun ChannelNameBar(
             Image(
                 painter = painterResource(id = R.drawable.app_icon),
                 contentDescription = "App Icon",
-                modifier = Modifier.size(30.dp),
+                modifier = Modifier.padding(end = 16.dp).size(30.dp),
                 contentScale = ContentScale.Crop
             )
         }
@@ -81,11 +83,16 @@ fun ChatAppBar(
         scrollBehavior = scrollBehavior,
         navigationIcon = {
             BackButton(
+                modifier = Modifier.padding(start = 16.dp),
                 onClick = onNavIconPressed,
                 buttonSize = 30.dp,
                 iconSize = 15.dp
             )
         },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.secondary,
+            scrolledContainerColor = MaterialTheme.colorScheme.secondary,
+        )
     )
 }
 
@@ -97,7 +104,7 @@ fun ChannelNameBarPreview() {
     AppTheme(isDark = false) {
         ChannelNameBar(
             channelName = "# composers",
-            channelMembers = 10,
+            channelSubtitle = participantsLabel(count = 10),
             scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
             onNavIconPressed = {}
         )
@@ -112,7 +119,7 @@ fun ChannelNameBarPreviewD() {
     AppTheme(isDark = true) {
         ChannelNameBar(
             channelName = "# composers",
-            channelMembers = 10,
+            channelSubtitle = "subtitle",
             scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
             onNavIconPressed = {}
         )
