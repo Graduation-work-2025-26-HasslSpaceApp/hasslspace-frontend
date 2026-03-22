@@ -1,7 +1,9 @@
 package ru.hse.app.androidApp.ui.navigation
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
@@ -11,6 +13,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,6 +25,23 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import ru.hse.app.androidApp.screen.chats.ChatScreen
+import ru.hse.app.androidApp.screen.chats.ChatsScreen
+import ru.hse.app.androidApp.screen.profile.AddFriendsScreen
+import ru.hse.app.androidApp.screen.profile.FriendsScreen
+import ru.hse.app.androidApp.screen.profile.ProfileScreen
+import ru.hse.app.androidApp.screen.profile.SettingsScreen
+import ru.hse.app.androidApp.screen.profile.SystemSettingsScreen
+import ru.hse.app.androidApp.screen.profile.UserSettingsScreen
+import ru.hse.app.androidApp.screen.servercard.MainServerScreen
+import ru.hse.app.androidApp.screen.servercard.ServerMembersInfoScreen
+import ru.hse.app.androidApp.screen.servers.CreateServerScreen
+import ru.hse.app.androidApp.screen.servers.JoinServerScreen
+import ru.hse.app.androidApp.screen.servers.ServersScreen
+import ru.hse.app.androidApp.screen.serversettings.InvitationsScreen
+import ru.hse.app.androidApp.screen.serversettings.MembersScreen
+import ru.hse.app.androidApp.screen.serversettings.RolesScreen
+import ru.hse.app.androidApp.screen.serversettings.ServerSettingsMainScreen
 
 @Composable
 fun BottomNavigationBar(navController: NavController) {
@@ -69,22 +89,138 @@ fun BottomNavigationBar(navController: NavController) {
 @Composable
 fun BottomNavigation(bottomNavController: NavHostController) {
     NavHost(bottomNavController, startDestination = BottomNavigationItem.Servers.route) {
-        composable(BottomNavigationItem.Servers.route) { ServersNavigation(bottomNavController) }
-        composable(BottomNavigationItem.Chats.route) { ChatsNavigation(bottomNavController) }
-        composable(BottomNavigationItem.Profile.route) { ProfileNavigation(bottomNavController) }
+        composable(BottomNavigationItem.Servers.route) { ServersScreen(bottomNavController) }
+        composable(BottomNavigationItem.Chats.route) { ChatsScreen(bottomNavController) }
+        composable(BottomNavigationItem.Profile.route) { ProfileScreen(bottomNavController) }
+
+        // Servers
+        composable(NavigationItem.ServersMain.route) {
+            ServersScreen(bottomNavController)
+        }
+
+        composable(NavigationItem.CreateServer.route) {
+            CreateServerScreen(bottomNavController)
+        }
+
+        composable(NavigationItem.JoinServer.route) {
+            JoinServerScreen(bottomNavController)
+        }
+
+
+        composable(NavigationItem.MainServerScreen.route + "/{serverId}") { backStackEntry ->
+            val serverId = backStackEntry.arguments?.getString("serverId")
+            if (serverId != null) {
+                MainServerScreen(bottomNavController, serverId)
+            }
+        }
+
+        composable(NavigationItem.ServerMembersInfo.route + "/{serverId}") { backStackEntry ->
+            val serverId = backStackEntry.arguments?.getString("serverId")
+            if (serverId != null) {
+                ServerMembersInfoScreen(bottomNavController, serverId)
+            }
+        }
+
+        composable(NavigationItem.ServerSettings.route + "/{serverId}") { backStackEntry ->
+            val serverId = backStackEntry.arguments?.getString("serverId")
+            if (serverId != null) {
+                ServerSettingsMainScreen(bottomNavController, serverId)
+            }
+        }
+
+        composable(NavigationItem.MembersSettings.route + "/{serverId}") { backStackEntry ->
+            val serverId = backStackEntry.arguments?.getString("serverId")
+            if (serverId != null) {
+                MembersScreen(bottomNavController, serverId)
+            }
+        }
+
+        composable(NavigationItem.RolesSettings.route + "/{serverId}") { backStackEntry ->
+            val serverId = backStackEntry.arguments?.getString("serverId")
+            if (serverId != null) {
+                RolesScreen(bottomNavController, serverId)
+            }
+        }
+
+        composable(NavigationItem.InvitationsSettings.route + "/{serverId}") { backStackEntry ->
+            val serverId = backStackEntry.arguments?.getString("serverId")
+            if (serverId != null) {
+                InvitationsScreen(bottomNavController, serverId)
+            }
+        }
+
+        // Chats
+
+        composable(NavigationItem.ChatsMain.route) {
+            ChatsScreen(bottomNavController)
+        }
+
+        composable(NavigationItem.Chat.route + "/{chatId}") { backStackEntry ->
+            val chatId = backStackEntry.arguments?.getString("chatId")
+            if (chatId != null) {
+                ChatScreen(chatId, bottomNavController)
+            }
+        }
+
+        // Profile
+
+        composable(NavigationItem.ProfileMain.route) {
+            ProfileScreen(bottomNavController)
+        }
+        composable(NavigationItem.Settings.route) {
+            SettingsScreen(bottomNavController)
+        }
+        composable(NavigationItem.UserSettings.route) {
+            UserSettingsScreen(bottomNavController)
+        }
+        composable(NavigationItem.SystemSettings.route) {
+            SystemSettingsScreen(bottomNavController)
+        }
+        composable(NavigationItem.MyFriends.route) {
+            FriendsScreen(bottomNavController)
+        }
+        composable(NavigationItem.AddFriends.route) {
+            AddFriendsScreen(bottomNavController)
+        }
+
+        composable(NavigationItem.MainServerScreen.route + "/{serverId}") { backStackEntry ->
+            val serverId = backStackEntry.arguments?.getString("serverId")
+            if (serverId != null) {
+                MainServerScreen(bottomNavController, serverId)
+            }
+        }
+
+        composable(NavigationItem.ServerMembersInfo.route + "/{serverId}") { backStackEntry ->
+            val serverId = backStackEntry.arguments?.getString("serverId")
+            if (serverId != null) {
+                ServerMembersInfoScreen(bottomNavController, serverId)
+            }
+        }
     }
 }
-
 
 @Composable
 fun MainScreen(
     navController: NavHostController
 ) {
 
+    val currentBackStackEntry by navController.currentBackStackEntryFlow.collectAsState(initial = null)
+    val currentRoute = currentBackStackEntry?.destination?.route
+
+    val isChatScreen = currentRoute?.startsWith(NavigationItem.Chat.route.substringBefore("/{")) == true
+
     Scaffold(
-        bottomBar = { BottomNavigationBar(navController) }
+        bottomBar = {
+            if (!isChatScreen) {
+                BottomNavigationBar(navController)
+            }
+        }
     ) { innerPadding ->
-        Box(modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding())) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = if (!isChatScreen) innerPadding.calculateBottomPadding() else 0.dp)
+        ) {
             BottomNavigation(navController)
         }
     }

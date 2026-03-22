@@ -5,7 +5,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -63,7 +62,9 @@ fun PhotoSetting(
 
             if (selectedImageUri == null) {
                 Image(
-                    painter = if (isDark) painterResource(id = R.drawable.default_server_photo_dark) else  painterResource(id = R.drawable.default_server_photo_light),
+                    painter = if (isDark) painterResource(id = R.drawable.default_server_photo_dark) else painterResource(
+                        id = R.drawable.default_server_photo_light
+                    ),
                     contentDescription = null,
                     modifier = Modifier
                         .size(45.dp)

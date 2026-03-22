@@ -21,10 +21,8 @@ fun PasswordColumn(
     onPasswordAgainChanged: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Box() {
-        Column(
-            modifier = modifier
-        ) {
+    Box(modifier = modifier) {
+        Column() {
             PasswordCustomField(
                 text = password,
                 onStringChanged = onPasswordChanged,

@@ -43,7 +43,8 @@ fun SettingsServer(
     isDark: Boolean
 ) {
     Column(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
             .padding(top = 50.dp)
             .padding(16.dp)
     ) {

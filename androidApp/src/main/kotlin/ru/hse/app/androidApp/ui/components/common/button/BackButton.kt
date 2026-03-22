@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ru.hse.app.androidApp.R
 import ru.hse.app.androidApp.ui.theme.AppTheme
@@ -18,7 +19,9 @@ import ru.hse.app.androidApp.ui.theme.AppTheme
 @Composable
 fun BackButton(
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    buttonSize: Dp = 51.dp,
+    iconSize: Dp = 29.dp
 ) {
     Button(
         onClick = onClick,
@@ -28,13 +31,13 @@ fun BackButton(
         ),
         contentPadding = PaddingValues(0.dp),
         modifier = modifier
-            .size(51.dp)
+            .size(buttonSize)
     ) {
         Icon(
             painter = painterResource(id = R.drawable.back),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSecondary,
-            modifier = Modifier.size(29.dp)
+            modifier = Modifier.size(iconSize)
         )
     }
 }

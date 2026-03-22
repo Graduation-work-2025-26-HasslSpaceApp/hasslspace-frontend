@@ -275,7 +275,10 @@ fun MainServerScreenWithStateContent(
             isDarkTheme = viewModel.isDarkTheme,
             onReadClick = {/*todo*/ },
             onSetUpChannel = {
-                viewModel.loadChosenChannel(data.chosenServer, viewModel.chosenTextChannel.value!!.id)
+                viewModel.loadChosenChannel(
+                    data.chosenServer,
+                    viewModel.chosenTextChannel.value!!.id
+                )
                 viewModel.showTextChannelOptions.value = false
                 viewModel.showEditChannel.value = true
             },
@@ -294,7 +297,10 @@ fun MainServerScreenWithStateContent(
             isDarkTheme = viewModel.isDarkTheme,
             onReadClick = {/*todo*/ },
             onSetUpChannel = {
-                viewModel.loadChosenChannel(data.chosenServer, viewModel.chosenVoiceChannel.value!!.id)
+                viewModel.loadChosenChannel(
+                    data.chosenServer,
+                    viewModel.chosenVoiceChannel.value!!.id
+                )
                 viewModel.showVoiceChannelOptions.value = false
                 viewModel.showEditChannel.value = true
             },
@@ -356,8 +362,8 @@ fun MainServerScreenWithStateContent(
             onAddMembers = {
                 viewModel.showChooseMembersAndRolesEditChannel.value = true
             },
-            onSaveClick = {/*todo*/},
-            onDeleteChannel = { viewModel.showDeleteChannel.value = true},
+            onSaveClick = {/*todo*/ },
+            onDeleteChannel = { viewModel.showDeleteChannel.value = true },
             sliderValue = data.editChannel.limit,
             onSliderValueChange = viewModel::onEditChannelLimitValueChange,
             type = data.editChannel.type
@@ -423,7 +429,7 @@ fun MainServerScreenWithStateContent(
             apply = "Удалить",
             dismiss = "Оставить",
             onApplyClick = { viewModel.deleteChannel(data.chosenServer.id, data.editChannel.id) },
-            onDismissClick = { viewModel.showDeleteChannel.value = false}
+            onDismissClick = { viewModel.showDeleteChannel.value = false }
         )
     }
 
@@ -434,7 +440,7 @@ fun MainServerScreenWithStateContent(
             apply = "Удалить",
             dismiss = "Оставить",
             onApplyClick = { viewModel.deleteServer(data.chosenServer.id) },
-            onDismissClick = { viewModel.showDeleteServerDialog.value = false}
+            onDismissClick = { viewModel.showDeleteServerDialog.value = false }
         )
     }
 }

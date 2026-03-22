@@ -59,7 +59,10 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(json: Json, okHttp: Lazy<Call.Factory>, mapper: ObjectMapper): Retrofit {
+    fun provideRetrofit(
+        json: Json, okHttp: Lazy<Call.Factory>,
+        mapper: ObjectMapper
+    ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BuildConfig.SERVER_URL)
             .callFactory { okHttp.get().newCall(it) }

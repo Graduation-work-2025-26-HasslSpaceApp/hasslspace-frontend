@@ -8,7 +8,6 @@ import ru.hse.app.androidApp.ui.entity.model.InvitationUiModel
 import ru.hse.app.androidApp.ui.entity.model.RoleMiniCheckboxUiModel
 import ru.hse.app.androidApp.ui.entity.model.RoleMiniUiModel
 import ru.hse.app.androidApp.ui.entity.model.ServerMemberUiModel
-import ru.hse.app.androidApp.ui.entity.model.servers.ServerCardUiModel
 import ru.hse.app.androidApp.ui.entity.model.toStatusPresentation
 
 sealed interface ServerSettingsUiState {
@@ -88,7 +87,7 @@ fun ServerInfoExpanded.toServerSettingsUiModel(): ServerSettingsUiModel {
                     name = member.name,
                     nickname = member.username,
                     status = member.status.toStatusPresentation(),
-                    avatarUrl = member.photoURL?: "",
+                    avatarUrl = member.photoURL ?: "",
                     isChosen = false
                 )
             }
@@ -103,7 +102,7 @@ fun ServerInfoExpanded.toServerSettingsUiModel(): ServerSettingsUiModel {
                     name = member.name,
                     nickname = member.username,
                     status = member.status.toStatusPresentation(),
-                    avatarUrl = member.photoURL?: "",
+                    avatarUrl = member.photoURL ?: "",
                     isChosen = false
                 )
             }

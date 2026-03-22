@@ -139,7 +139,7 @@ fun UserCardCheckboxPreviewAllLight() {
                 nickname = "alex_ivanov",
                 status = StatusPresentation.ACTIVE,
                 profilePictureUrl = "",
-               
+
                 isChosen = isChosen.value,
                 onClick = {},
                 isDarkTheme = false,
@@ -153,7 +153,7 @@ fun UserCardCheckboxPreviewAllLight() {
                 nickname = "maria_petrova",
                 status = StatusPresentation.INVISIBLE,
                 profilePictureUrl = "",
-               
+
                 isChosen = isChosen.value,
                 onClick = {},
                 isDarkTheme = false,
@@ -167,7 +167,7 @@ fun UserCardCheckboxPreviewAllLight() {
                 nickname = "dmitry_sidorov",
                 status = StatusPresentation.DO_NOT_DISTURB,
                 profilePictureUrl = "",
-               
+
                 isChosen = isChosen.value,
                 onClick = {},
                 isDarkTheme = false,
@@ -181,7 +181,7 @@ fun UserCardCheckboxPreviewAllLight() {
                 nickname = "ekaterina_volkova",
                 status = StatusPresentation.INVISIBLE,
                 profilePictureUrl = "",
-               
+
                 isChosen = isChosen.value,
                 onClick = {},
                 isDarkTheme = false,
@@ -195,7 +195,7 @@ fun UserCardCheckboxPreviewAllLight() {
                 nickname = "ivan_nikolaev",
                 status = StatusPresentation.NOT_ACTIVE,
                 profilePictureUrl = "",
-               
+
                 isChosen = isChosen.value,
                 onClick = {},
                 isDarkTheme = false,
@@ -216,7 +216,7 @@ fun UserCardCheckboxPreviewAllDark() {
                 nickname = "alex_ivanov",
                 status = StatusPresentation.ACTIVE,
                 profilePictureUrl = "",
-               
+
                 isChosen = isChosen.value,
                 onClick = {},
                 isDarkTheme = true,
@@ -230,7 +230,7 @@ fun UserCardCheckboxPreviewAllDark() {
                 nickname = "maria_petrova",
                 status = StatusPresentation.NOT_ACTIVE,
                 profilePictureUrl = "",
-               
+
                 isChosen = isChosen.value,
                 onClick = {},
                 isDarkTheme = true,
@@ -244,7 +244,7 @@ fun UserCardCheckboxPreviewAllDark() {
                 nickname = "dmitry_sidorov",
                 status = StatusPresentation.DO_NOT_DISTURB,
                 profilePictureUrl = "",
-               
+
                 isChosen = isChosen.value,
                 onClick = {},
                 isDarkTheme = true,
@@ -258,7 +258,7 @@ fun UserCardCheckboxPreviewAllDark() {
                 nickname = "ekaterina_volkova",
                 status = StatusPresentation.INVISIBLE,
                 profilePictureUrl = "",
-               
+
                 isChosen = isChosen.value,
                 onClick = {},
                 isDarkTheme = true,
@@ -272,7 +272,7 @@ fun UserCardCheckboxPreviewAllDark() {
                 nickname = "ivan_nikolaev",
                 status = StatusPresentation.INVISIBLE,
                 profilePictureUrl = "",
-               
+
                 isChosen = isChosen.value,
                 onClick = {},
                 isDarkTheme = true,
@@ -291,7 +291,7 @@ fun UserCardCheckboxPreviewDefaultLight() {
             UserCardCheckbox(
                 username = "Анна Смирнова",
                 nickname = "anna_smirnova",
-               
+
                 isChosen = isChosen.value,
                 onClick = {},
                 isDarkTheme = false,
@@ -304,7 +304,7 @@ fun UserCardCheckboxPreviewDefaultLight() {
                 username = "ДлинноеИмяДлинноеИмяДлинноеИмя",
                 nickname = "очень_длинный_никнейм_пользователя",
                 profilePictureUrl = "https://example.com/photo.jpg",
-               
+
                 isChosen = isChosen.value,
                 onClick = {},
                 isDarkTheme = false,
@@ -323,7 +323,7 @@ fun UserCardCheckboxPreviewDefaultDark() {
             UserCardCheckbox(
                 username = "Анна Смирнова",
                 nickname = "anna_smirnova",
-               
+
                 isChosen = isChosen.value,
                 onClick = {},
                 isDarkTheme = true,
@@ -336,7 +336,7 @@ fun UserCardCheckboxPreviewDefaultDark() {
                 username = "ДлинноеИмяДлинноеИмяДлинноеИмя",
                 nickname = "очень_длинный_никнейм_пользователя",
                 profilePictureUrl = "https://example.com/photo.jpg",
-               
+
                 isChosen = isChosen.value,
                 onClick = {},
                 isDarkTheme = true,

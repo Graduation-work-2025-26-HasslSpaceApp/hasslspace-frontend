@@ -70,7 +70,8 @@ fun EditRoleContent(
     }
 
     Column(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .clickable(
                 indication = null,

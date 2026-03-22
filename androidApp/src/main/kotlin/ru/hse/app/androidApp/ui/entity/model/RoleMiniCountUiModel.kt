@@ -12,7 +12,7 @@ data class RoleMiniCountUiModel(
     val count: Int
 )
 
-fun RoleInfoUiModel.toRoleMiniCount() : RoleMiniCountUiModel {
+fun RoleInfoUiModel.toRoleMiniCount(): RoleMiniCountUiModel {
     return RoleMiniCountUiModel(
         id = this.id,
         title = this.name,

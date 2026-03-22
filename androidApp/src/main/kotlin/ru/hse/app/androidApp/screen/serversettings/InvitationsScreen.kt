@@ -13,22 +13,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil3.imageLoader
-import ru.hse.app.androidApp.ui.components.common.dialog.RowButtonDialog
 import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
 import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
 import ru.hse.app.androidApp.ui.components.servers.invitations.ServerInvitationsContent
-import ru.hse.app.androidApp.ui.components.servers.roles.ColorPickerBlock
-import ru.hse.app.androidApp.ui.components.servers.roles.EditRoleContent
-import ru.hse.app.androidApp.ui.components.servers.roles.NewRoleContent
-import ru.hse.app.androidApp.ui.components.servers.roles.ServerRolesContent
-import ru.hse.app.androidApp.ui.entity.model.servers.events.CreateServerRoleEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerInfoEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerInvitationsEvent
-import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerRolesEvent
 import ru.hse.app.androidApp.ui.entity.model.serversettings.ServerSettingsUiState
-import ru.hse.app.androidApp.ui.entity.model.toRoleMiniCount
-import ru.hse.app.androidApp.ui.navigation.NavigationItem
 
 @Composable
 fun InvitationsScreen(
@@ -117,6 +107,6 @@ fun InvitationsScreenWithStateContent(
 
             viewModel.showToast("Ссылка скопирована в буфер обмена")
         },
-        onCancelClick = {/*todo*/},
+        onCancelClick = {/*todo*/ },
     )
 }

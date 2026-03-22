@@ -27,7 +27,7 @@ data class ServerCardUiModel(
 
     val editChannel: EditChannelUiModel
 ) {
-    data class EditChannelUiModel (
+    data class EditChannelUiModel(
         val id: String,
         val type: String = "text",
         val name: String,

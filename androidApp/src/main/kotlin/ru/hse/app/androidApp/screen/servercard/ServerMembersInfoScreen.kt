@@ -146,8 +146,8 @@ fun ServerMembersInfoScreenWithStateContent(
                 }
             },
             onMessageClick = { /* todo viewModel.onMessageClick(userId = data.chosenUser.id) */ },
-            onCallClick = { /* todo viewModel.onCallClick(userId = data.chosenUser.id) */},
-            onVideoCallClick = { /* todo viewModel.onVideoCallClick(userId = data.chosenUser.id) */},
+            onCallClick = { /* todo viewModel.onCallClick(userId = data.chosenUser.id) */ },
+            onVideoCallClick = { /* todo viewModel.onVideoCallClick(userId = data.chosenUser.id) */ },
             aboutUserInfo = data.chosenUser.description,
             onDismiss = { viewModel.showFriendCard.value = false },
             onInvite = { /*todo*/ },
@@ -168,7 +168,7 @@ fun ServerMembersInfoScreenWithStateContent(
         CommonServersBottomSheet(
             imageLoader = context.imageLoader,
             servers = data.chosenUserCommonServers,
-            onServerClick = {server -> navController.navigate(NavigationItem.MainServerScreen.route + "/${server.id}") },
+            onServerClick = { server -> navController.navigate(NavigationItem.MainServerScreen.route + "/${server.id}") },
             isDarkTheme = viewModel.isDarkTheme,
             onDismiss = { viewModel.showCommonServers.value = false }
         )

@@ -35,6 +35,8 @@ fun AuthNavigation(authNavController: NavHostController) {
             }
         }
         composable(AuthNavigationItem.WelcomeScreen.route) {
+            //AddPhotoScreen(authNavController, authViewModel)
+            //VerificationScreen(authNavController, "login", authViewModel)
             WelcomeScreen(authNavController)
         }
     }
