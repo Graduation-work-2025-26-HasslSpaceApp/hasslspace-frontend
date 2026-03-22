@@ -194,7 +194,7 @@ private fun UserInputSelector(
         modifier = modifier
             .height(72.dp)
             .wrapContentHeight()
-            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+            .padding(start = 16.dp, end = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         InputSelectorButton(

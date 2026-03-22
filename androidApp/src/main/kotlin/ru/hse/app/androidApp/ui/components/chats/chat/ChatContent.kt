@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextFieldDefaults.contentPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.TopAppBarDefaults
@@ -49,7 +50,6 @@ fun ChatContent(
     val topBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topBarState)
     val scope = rememberCoroutineScope()
-
     Scaffold(
         topBar = {
             ChannelNameBar(
@@ -68,7 +68,6 @@ fun ChatContent(
         Column(
             Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
                 .background(color = MaterialTheme.colorScheme.background),
         ) {
             Messages(
@@ -91,7 +90,7 @@ fun ChatContent(
                 },
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.background)
-                    .navigationBarsPadding()
+//                    .navigationBarsPadding()
                     .imePadding(),
                 isDark = isDarkTheme,
             )
