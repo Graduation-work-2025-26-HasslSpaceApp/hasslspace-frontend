@@ -4,5 +4,7 @@ enum class TypeUiModel {
     FRIEND,
     INCOMING_REQUEST,
     OUTGOING_REQUEST,
+    BLOCKED,
+
     NONE
 }

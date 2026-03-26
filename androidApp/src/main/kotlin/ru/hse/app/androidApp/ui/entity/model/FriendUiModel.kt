@@ -30,5 +30,7 @@ fun Type.toUi(): TypeUiModel {
         Type.FRIEND -> TypeUiModel.FRIEND
         Type.OUTGOING_REQUEST -> TypeUiModel.OUTGOING_REQUEST
         Type.INCOMING_REQUEST -> TypeUiModel.INCOMING_REQUEST
+        Type.BLOCKED -> TypeUiModel.BLOCKED
+        Type.NONE -> TypeUiModel.NONE
     }
 }

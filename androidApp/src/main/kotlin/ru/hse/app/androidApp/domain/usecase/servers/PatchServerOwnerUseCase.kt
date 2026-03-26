@@ -7,6 +7,6 @@ class PatchServerOwnerUseCase @Inject constructor(
     private val serverRepository: ServerRepository
 ) {
     suspend operator fun invoke(userId: String, serverId: String): Result<String> {
-        return serverRepository.patchServerOwner(userId, serverId)
+        return serverRepository.updateServerOwner(userId, serverId)
     }
 }

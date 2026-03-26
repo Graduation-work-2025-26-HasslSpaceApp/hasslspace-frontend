@@ -7,7 +7,6 @@ data class UserExpandedInfoWithStatus(
     val username: String,
     val nickname: String,
     val status: String,
-    val email: String,
     val avatarUrl: String?,
     val description: String,
     val friendshipStatus: Type
@@ -19,7 +18,6 @@ fun UserInfoExtendedDto.toDomain(): UserExpandedInfoWithStatus {
         username = this.name,
         nickname = this.nickname,
         status = this.status,
-        email = this.email,
         avatarUrl = this.photoURL,
         description = this.description,
         friendshipStatus = this.friendshipStatus.toDomain()

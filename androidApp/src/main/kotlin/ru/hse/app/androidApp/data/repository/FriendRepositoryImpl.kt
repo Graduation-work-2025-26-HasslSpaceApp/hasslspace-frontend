@@ -25,10 +25,16 @@ class FriendRepositoryImpl @Inject constructor(
     }
 
     override suspend fun respondToFriendshipRequest(
-        friendshipId: String,
+        userId: String,
         status: String
     ): Result<String> {
-        return apiCaller.safeApiCall { apiService.respondToFriendshipRequest(friendshipId, status) }
+//        enum class FriendshipStatus {
+//            PENDING,
+//            ACCEPTED,
+//            DECLINED,
+//            BLOCKED
+//        }
+        return apiCaller.safeApiCall { apiService.respondToFriendshipRequest(userId, status) }
     }
 
     override suspend fun deleteFriendship(userId: String): Result<String> {

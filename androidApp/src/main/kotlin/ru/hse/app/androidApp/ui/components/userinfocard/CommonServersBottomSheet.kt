@@ -63,7 +63,7 @@ fun CommonServersBottomSheet(
                 ServerCard(
                     imageLoader = imageLoader,
                     name = server.name,
-                    participantCount = server.participantCount,
+//                    participantCount = server.participantCount,
                     serverPictureUrl = server.avatarUrl,
                     isDarkTheme = isDarkTheme,
                     onCardClick = { onServerClick(server) },
@@ -77,7 +77,7 @@ private fun previewServer(id: String, name: String, count: Int) = ServerShortUiM
     id = id,
     name = name,
     avatarUrl = "",
-    participantCount = count,
+//    participantCount = count,
 )
 
 val servers = listOf(

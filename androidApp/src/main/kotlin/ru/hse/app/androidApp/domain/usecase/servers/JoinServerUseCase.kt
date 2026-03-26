@@ -8,6 +8,6 @@ class JoinServerUseCase @Inject constructor(
 ) {
     //todo
     suspend operator fun invoke(): Result<String> {
-        return serverRepository.joinServer()
+        return serverRepository.joinServer("тут код")
     }
 }

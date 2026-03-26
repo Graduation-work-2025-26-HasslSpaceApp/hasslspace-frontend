@@ -7,11 +7,15 @@ import ru.hse.app.androidApp.data.model.ChannelInfoDto
 import ru.hse.app.androidApp.data.model.CreateChannelDto
 import ru.hse.app.androidApp.data.model.CreateRoleDto
 import ru.hse.app.androidApp.data.model.CreateServerDto
-import ru.hse.app.androidApp.data.model.InvitationDto
 import ru.hse.app.androidApp.data.model.RoleInfoDto
 import ru.hse.app.androidApp.data.model.ServerInfoDto
 import ru.hse.app.androidApp.data.model.ServerInfoExpandedDto
+import ru.hse.app.androidApp.data.model.ServerInviteDto
 import ru.hse.app.androidApp.data.model.TypeDto
+import ru.hse.app.androidApp.data.model.UpdateChannelDto
+import ru.hse.app.androidApp.data.model.UpdateProfileDto
+import ru.hse.app.androidApp.data.model.UpdateRoleDto
+import ru.hse.app.androidApp.data.model.UpdateServerDto
 import ru.hse.app.androidApp.data.model.UserDto
 import ru.hse.app.androidApp.data.model.UserInfoDto
 import ru.hse.app.androidApp.data.model.UserInfoExtendedDto
@@ -34,11 +38,10 @@ class FakeApiService : ApiService {
             "1",
             "Юлия Кухтина",
             "yuulkht",
-            "testuser@example.com",
             "В сети",
             "https://i.postimg.cc/J4DLnLCS/accountphoto.jpg",
             "Описание профиля описание профиля описание профиля описание профиля",
-            TypeDto.FRIEND
+            UserInfoExtendedDto.StatusType.FRIEND
         )
 
     private val fakeFriends = listOf(
@@ -125,16 +128,16 @@ class FakeApiService : ApiService {
     )
 
     private val fakeServers = listOf(
-        ServerInfoDto("1", "Сервер 1", 123, "https://i.postimg.cc/2yzCRhY8/server1.jpg"),
-        ServerInfoDto("2", "Сервер 2", 15, "https://i.postimg.cc/XJH1pcGs/server2.jpg"),
-        ServerInfoDto("3", "Сервер 3", 10, null),
-        ServerInfoDto("4", "Сервер 4", 2, "https://i.postimg.cc/mg9f6RYn/server4.jpg"),
-        ServerInfoDto("5", "Сервер 5", 28, "https://i.postimg.cc/BZkQQH7X/server5.jpg"),
-        ServerInfoDto("6", "Сервер 6", 500, "https://i.postimg.cc/vZq3ZyGG/server6.jpg"),
-        ServerInfoDto("7", "Сервер 7", 200, null),
-        ServerInfoDto("8", "Сервер 8", 850, "https://i.postimg.cc/mtJ7VHTN/server8.jpg"),
-        ServerInfoDto("9", "Сервер 9", 50, "https://i.postimg.cc/8C3bbFGG/server9.jpg"),
-        ServerInfoDto("10", "Сервер 10", 600, "https://i.postimg.cc/QcY6h8tT/server10.jpg")
+        ServerInfoDto("1", "Сервер 1", "https://i.postimg.cc/2yzCRhY8/server1.jpg"),
+        ServerInfoDto("2", "Сервер 2", "https://i.postimg.cc/XJH1pcGs/server2.jpg"),
+        ServerInfoDto("3", "Сервер 3", null),
+        ServerInfoDto("4", "Сервер 4", "https://i.postimg.cc/mg9f6RYn/server4.jpg"),
+        ServerInfoDto("5", "Сервер 5", "https://i.postimg.cc/BZkQQH7X/server5.jpg"),
+        ServerInfoDto("6", "Сервер 6", "https://i.postimg.cc/vZq3ZyGG/server6.jpg"),
+        ServerInfoDto("7", "Сервер 7", null),
+        ServerInfoDto("8", "Сервер 8", "https://i.postimg.cc/mtJ7VHTN/server8.jpg"),
+        ServerInfoDto("9", "Сервер 9", "https://i.postimg.cc/8C3bbFGG/server9.jpg"),
+        ServerInfoDto("10", "Сервер 10", "https://i.postimg.cc/QcY6h8tT/server10.jpg")
     )
 
     private val fakeServer = ServerInfoExpandedDto(
@@ -244,25 +247,41 @@ class FakeApiService : ApiService {
     )
 
     private val fakeInvitations = listOf(
-        InvitationDto(
-            id = "inv_001",
-            link = "https://hasslspace.ru/asdpasdpoadpa",
-            expTime = LocalDateTime.now().plusDays(7)
+        ServerInviteDto(
+            code = "jweiqjweiq",
+            serverId = "serverId",
+            creatorId = "id",
+            expiresAt = LocalDateTime.now().plusDays(7),
+            serverName = "composers",
+            creatorName = "vanya",
+            inviteUrl = "https://hasslspace.ru/jweiqjweiq"
         ),
-        InvitationDto(
-            id = "inv_002",
-            link = "https://hasslspace.ru/asdjrhrgevv",
-            expTime = LocalDateTime.now().plusDays(3)
+        ServerInviteDto(
+            code = "sdfsdfw",
+            serverId = "serverId",
+            creatorId = "id",
+            expiresAt = LocalDateTime.now().plusDays(3),
+            serverName = "composers",
+            creatorName = "vanya",
+            inviteUrl = "https://hassl-space.ru/sdfsdfw"
         ),
-        InvitationDto(
-            id = "inv_003",
-            link = "https://hasslspace.ru/awerwfcserw",
-            expTime = LocalDateTime.now().minusDays(2)
+        ServerInviteDto(
+            code = "joifjcsc",
+            serverId = "serverId",
+            creatorId = "id",
+            expiresAt = LocalDateTime.now().plusDays(2),
+            serverName = "composers",
+            creatorName = "vanya",
+            inviteUrl = "https://hassl-space.ru/joifjcsc"
         ),
-        InvitationDto(
-            id = "inv_004",
-            link = "https://hasslspace.ru/gergefscwer",
-            expTime = LocalDateTime.now().plusDays(14)
+        ServerInviteDto(
+            code = "cjprwjw[jcw",
+            serverId = "serverId",
+            creatorId = "id",
+            expiresAt = LocalDateTime.now().plusDays(14),
+            serverName = "composers",
+            creatorName = "vanya",
+            inviteUrl = "https://hassl-space.ru/cjprwjw"
         )
     )
 
@@ -271,6 +290,7 @@ class FakeApiService : ApiService {
             id = "role_admin",
             name = "Admin",
             color = "#FF0000",
+            position = null,
             members = listOf(
                 RoleInfoDto.RoleMemberDto(
                     id = "user_123",
@@ -285,6 +305,7 @@ class FakeApiService : ApiService {
             id = "role_mod",
             name = "Moderator",
             color = "#00FF00",
+            position = null,
             members = listOf(
                 RoleInfoDto.RoleMemberDto(
                     id = "user_123",
@@ -306,6 +327,7 @@ class FakeApiService : ApiService {
             id = "role_dev",
             name = "Developer",
             color = "#0000FF",
+            position = 1,
             members = listOf(
                 RoleInfoDto.RoleMemberDto(
                     id = "user_456",
@@ -327,6 +349,7 @@ class FakeApiService : ApiService {
             id = "role_muted",
             name = "Muted",
             color = "#808080",
+            position = null,
             members = emptyList()
         )
     )
@@ -336,6 +359,7 @@ class FakeApiService : ApiService {
             id = "role_admin",
             name = "Admin",
             color = "#FF0000",
+            position = null,
             members = listOf(
                 RoleInfoDto.RoleMemberDto(
                     id = "user_123",
@@ -350,6 +374,7 @@ class FakeApiService : ApiService {
             id = "role_mod",
             name = "Moderator",
             color = "#00FF00",
+            position = null,
             members = listOf(
                 RoleInfoDto.RoleMemberDto(
                     id = "user_123",
@@ -391,16 +416,16 @@ class FakeApiService : ApiService {
         return Response.success(fakeUser)
     }
 
-    override suspend fun saveUserPhoto(photoUrl: String): Response<String> {
-        return Response.success("Данные успешно сохранены")
-    }
-
     override suspend fun uploadPhoto(
         photo: MultipartBody.Part,
         type: RequestBody,
         photoUrl: RequestBody?
     ): Response<String> {
         return Response.success("Данные успешно сохранены")
+    }
+
+    override suspend fun updateUserProfile(updateProfileDto: UpdateProfileDto): Response<String> {
+        return Response.success("true")
     }
 
     override suspend fun getFriends(): Response<List<UserInfoDto>> {
@@ -411,16 +436,7 @@ class FakeApiService : ApiService {
         return Response.success(fakeServers)
     }
 
-    override suspend fun changeName(newName: String): Response<String> {
-        return Response.success("true")
-        //return Response.error(0, ResponseBody.EMPTY)
-    }
-
     override suspend fun changeStatus(status: String): Response<String> {
-        return Response.success("true")
-    }
-
-    override suspend fun changeDesc(desc: String): Response<String> {
         return Response.success("true")
     }
 
@@ -429,7 +445,7 @@ class FakeApiService : ApiService {
     }
 
     override suspend fun respondToFriendshipRequest(
-        friendshipId: String,
+        userId: String,
         status: String
     ): Response<String> {
         return Response.success("true")
@@ -481,7 +497,37 @@ class FakeApiService : ApiService {
 
     override suspend fun deleteServerMember(
         serverId: String,
-        userId: String
+        targetUserId: String
+    ): Response<String> {
+        return Response.success("true")
+    }
+
+    override suspend fun patchChannel(
+        serverId: String,
+        channelId: String,
+        updateChannelDto: UpdateChannelDto
+    ): Response<String> {
+        return Response.success("true")
+    }
+
+    override suspend fun updateServerOwner(
+        userId: String,
+        serverId: String
+    ): Response<String> {
+        return Response.success("true")
+    }
+
+    override suspend fun patchServer(
+        serverId: String,
+        updateServerDto: UpdateServerDto
+    ): Response<String> {
+        return Response.success("true")
+    }
+
+    override suspend fun patchRole(
+        serverId: String,
+        roleId: String,
+        updateRoleDto: UpdateRoleDto
     ): Response<String> {
         return Response.success("true")
     }
@@ -490,11 +536,38 @@ class FakeApiService : ApiService {
         return Response.success("true")
     }
 
+    override suspend fun deleteRole(
+        serverId: String,
+        roleId: String
+    ): Response<String> {
+        return Response.success("true")
+    }
+
+    override suspend fun assignRole(
+        serverId: String,
+        targetUserId: String,
+        roleId: String
+    ): Response<String> {
+        return Response.success("true")
+    }
+
+    override suspend fun revokeRole(
+        serverId: String,
+        targetUserId: String,
+        roleId: String
+    ): Response<String> {
+        return Response.success("true")
+    }
+
     override suspend fun getServerInfo(serverId: String): Response<ServerInfoExpandedDto> {
         return Response.success(fakeServer)
     }
 
-    override suspend fun getServerInvitations(serverId: String): Response<List<InvitationDto>> {
+    override suspend fun createInvitation(serverId: String): Response<ServerInviteDto> {
+        return Response.success(fakeInvitations.get(0))
+    }
+
+    override suspend fun getServerInvitations(serverId: String): Response<List<ServerInviteDto>> {
         return Response.success(fakeInvitations)
     }
 
@@ -506,40 +579,11 @@ class FakeApiService : ApiService {
         return Response.success(serverRoles)
     }
 
-    override suspend fun getServerUserRoles(
-        userId: String,
-        serverId: String
-    ): Response<List<RoleInfoDto>> {
-        return Response.success(fakeUserRoles)
-    }
-
-    override suspend fun joinServer(): Response<String> {
+    override suspend fun joinServer(code: String): Response<String> {
         return Response.success("true")
     }
 
-    override suspend fun patchChannel(): Response<String> {
-        return Response.success("true")
-    }
-
-    override suspend fun patchServerOwner(
-        userId: String,
-        serverId: String
-    ): Response<String> {
-        return Response.success("true")
-    }
-
-    override suspend fun patchServer(): Response<String> {
-        return Response.success("true")
-    }
-
-    override suspend fun patchRole(): Response<String> {
-        return Response.success("true")
-    }
-
-    override suspend fun sendServerInvitation(
-        userId: String,
-        serverId: String
-    ): Response<String> {
+    override suspend fun leaveServer(serverId: String): Response<String> {
         return Response.success("true")
     }
 

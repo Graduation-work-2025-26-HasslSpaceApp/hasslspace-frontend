@@ -102,7 +102,6 @@ private fun previewServer(id: String, name: String, count: Int) = ServerShortUiM
     id = id,
     name = name,
     avatarUrl = "",
-    participantCount = count,
 )
 
 private fun previewFriend(id: String, name: String) = FriendUiModel(

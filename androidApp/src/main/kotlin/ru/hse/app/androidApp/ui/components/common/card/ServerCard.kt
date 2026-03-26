@@ -38,7 +38,6 @@ import ru.hse.app.androidApp.ui.theme.AppTheme
 fun ServerCard(
     imageLoader: ImageLoader,
     name: String,
-    participantCount: Int,
     isDarkTheme: Boolean,
     modifier: Modifier = Modifier,
     serverPictureUrl: String = "",
@@ -86,16 +85,16 @@ fun ServerCard(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            VariableLight(
-                text = participantsLabel(count = participantCount),
-                fontSize = 12.sp,
-                fontColor = MaterialTheme.colorScheme.outline,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+//
+//            Spacer(modifier = Modifier.height(8.dp))
+//
+//            VariableLight(
+//                text = participantsLabel(count = participantCount),
+//                fontSize = 12.sp,
+//                fontColor = MaterialTheme.colorScheme.outline,
+//                maxLines = 1,
+//                overflow = TextOverflow.Ellipsis
+//            )
         }
     }
 }
@@ -122,7 +121,7 @@ fun ServerCardPreviewAllLight() {
                 name = "Сервер друзей",
                 serverPictureUrl = "",
                 onCardClick = {},
-                participantCount = 53,
+//                participantCount = 53,
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -139,7 +138,7 @@ fun ServerCardPreviewAllDark() {
                 name = "Сервер друзей",
                 serverPictureUrl = "",
                 onCardClick = {},
-                participantCount = 2,
+//                participantCount = 2,
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)
             )

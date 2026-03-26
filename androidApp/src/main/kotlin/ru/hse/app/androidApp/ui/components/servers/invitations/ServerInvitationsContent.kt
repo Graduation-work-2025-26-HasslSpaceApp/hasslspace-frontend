@@ -65,9 +65,9 @@ fun ServerInvitationsContent(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
 
-            items(invitations, key = { it.id }) { invitation ->
+            items(invitations, key = { it.code }) { invitation ->
                 InviteCard(
-                    link = invitation.link,
+                    link = invitation.link?: invitation.code,
                     expirationDate = invitation.expirationDate,
                     onInvitationClick = { onInvitationClick(invitation) },
                     onCancelClick = { onCancelClick(invitation) },
@@ -86,17 +86,17 @@ fun ServerInvitationsContentPreviewLight() {
             onBackClick = {},
             invitations = listOf(
                 InvitationUiModel(
-                    id = "1",
+                    code = "1",
                     link = "https://asdads",
-                    //userName = "Иван Иванов",
-                    //avatarUrl = "https://example.com/avatar.jpg",
+                    serverId = "djfsf",
+                    creatorId = "fsldf",
                     expirationDate = LocalDateTime.now().plusDays(5)
                 ),
                 InvitationUiModel(
-                    id = "2",
+                    code = "2",
                     link = "https://jkljlkjk",
-//                    userName = "Марина Ландышева",
-//                    avatarUrl = "https://example.com/avatar2.jpg",
+                    serverId = "djfsf",
+                    creatorId = "fsldf",
                     expirationDate = LocalDateTime.now().plusDays(3)
                 )
             ),
@@ -115,13 +115,17 @@ fun ServerInvitationsContentPreviewDark() {
             onBackClick = {},
             invitations = listOf(
                 InvitationUiModel(
-                    id = "1",
+                    code = "1",
                     link = "https://asdads",
+                    serverId = "djfsf",
+                    creatorId = "fsldf",
                     expirationDate = LocalDateTime.now().plusDays(5)
                 ),
                 InvitationUiModel(
-                    id = "2",
+                    code = "2",
                     link = "https://jkljlkjk",
+                    serverId = "djfsf",
+                    creatorId = "fsldf",
                     expirationDate = LocalDateTime.now().plusDays(3)
                 )
             ),

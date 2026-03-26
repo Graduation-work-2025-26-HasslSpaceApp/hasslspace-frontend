@@ -37,7 +37,6 @@ import ru.hse.app.androidApp.domain.usecase.servers.GetFriendsNotInServerUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.GetServerInfoUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.GetServerInvitationsUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.GetServerRolesUseCase
-import ru.hse.app.androidApp.domain.usecase.servers.GetServerUserRolesUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.PatchServerOwnerUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.PatchServerPropertiesUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.SearchMembersUseCase
@@ -89,7 +88,6 @@ class ServerCardViewModel @Inject constructor(
     private val getServerInfoUseCase: GetServerInfoUseCase,
     private val getServerInvitationsUseCase: GetServerInvitationsUseCase,
     private val getServerRolesUseCase: GetServerRolesUseCase,
-    private val getServerUserRolesUseCase: GetServerUserRolesUseCase,
     private val getFriendsNotInServerUseCase: GetFriendsNotInServerUseCase,
     private val getUserInfoExtendedUseCase: GetUserInfoExtendedUseCase,
     private val getChosenUserCommonServersUseCase: GetChosenUserCommonServersUseCase,
@@ -519,25 +517,6 @@ class ServerCardViewModel @Inject constructor(
                 },
                 onFailure = { error ->
                     GetServerRolesEvent.Error("Ошибка при получении ролей сервера. ${error.message}")
-                }
-            )
-        }
-    }
-
-    fun getServerUserRoles(
-        serverId: String,
-        userId: String
-    ) {
-        viewModelScope.launch {
-            val result = getServerUserRolesUseCase(serverId, userId)
-
-            _getServerUserRolesEvent.value = result.fold(
-                onSuccess = { roles ->
-                    //TODO
-                    GetServerUserRolesEvent.SuccessLoad
-                },
-                onFailure = { error ->
-                    GetServerUserRolesEvent.Error("Ошибка при получении ролей пользователя. ${error.message}")
                 }
             )
         }

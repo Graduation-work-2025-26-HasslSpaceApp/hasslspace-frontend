@@ -1,5 +1,8 @@
 package ru.hse.app.androidApp.data.repository
 
+import ru.hse.app.androidApp.data.model.UpdateChannelDto
+import ru.hse.app.androidApp.data.model.UpdateRoleDto
+import ru.hse.app.androidApp.data.model.UpdateServerDto
 import ru.hse.app.androidApp.data.network.ApiCaller
 import ru.hse.app.androidApp.data.network.ApiService
 import ru.hse.app.androidApp.domain.model.entity.ChannelInfo
@@ -8,6 +11,7 @@ import ru.hse.app.androidApp.domain.model.entity.CreateRole
 import ru.hse.app.androidApp.domain.model.entity.CreateServer
 import ru.hse.app.androidApp.domain.model.entity.Invitation
 import ru.hse.app.androidApp.domain.model.entity.RoleInfo
+import ru.hse.app.androidApp.domain.model.entity.ServerInfo
 import ru.hse.app.androidApp.domain.model.entity.ServerInfoExpanded
 import ru.hse.app.androidApp.domain.model.entity.UserInfo
 import ru.hse.app.androidApp.domain.model.entity.toDomain
@@ -38,6 +42,10 @@ class ServerRepositoryImpl @Inject constructor(
         return apiCaller.safeApiCall { apiService.createChannel(serverId, createChannel.toDto()) }
     }
 
+    override suspend fun createInvitation(serverId: String): Result<Invitation> {
+        return apiCaller.safeApiCall { apiService.createInvitation(serverId) }.map { it.toDomain() }
+    }
+
     override suspend fun deleteChannel(serverId: String, channelId: String): Result<String> {
         return apiCaller.safeApiCall { apiService.deleteChannel(serverId, channelId) }
     }
@@ -55,6 +63,16 @@ class ServerRepositoryImpl @Inject constructor(
 
     override suspend fun deleteServer(serverId: String): Result<String> {
         return apiCaller.safeApiCall { apiService.deleteServer(serverId) }
+    }
+
+    override suspend fun deleteRole(serverId: String, roleId: String): Result<String> {
+        return apiCaller.safeApiCall { apiService.deleteRole(serverId, roleId) }
+    }
+
+    override suspend fun getServers(): Result<List<ServerInfo>> {
+        return apiCaller.safeApiCall { apiService.getServers() }.mapCatching { serverDtoList ->
+            serverDtoList.map { it.toDomain() }
+        }
     }
 
     override suspend fun getServerInfo(serverId: String): Result<ServerInfoExpanded> {
@@ -90,26 +108,82 @@ class ServerRepositoryImpl @Inject constructor(
             .mapCatching { it.toDomain() }
     }
 
-    override suspend fun getServerUserRoles(
-        userId: String,
-        serverId: String
-    ): Result<List<RoleInfo>> {
-        return apiCaller.safeApiCall { apiService.getServerUserRoles(userId, serverId) }
-            .mapCatching { roles ->
-                roles.map { it.toDomain() }
-            }
+    //    override suspend fun getServerUserRoles(
+//        userId: String,
+//        serverId: String
+//    ): Result<List<RoleInfo>> {
+//        return apiCaller.safeApiCall { apiService.getServerUserRoles(userId, serverId) }
+//            .mapCatching { roles ->
+//                roles.map { it.toDomain() }
+//            }
+//    }
+    override suspend fun joinServer(code: String): Result<String> {
+        return apiCaller.safeApiCall { apiService.joinServer(code) }
     }
 
-    //TODO
-    override suspend fun joinServer(): Result<String> {
-        return apiCaller.safeApiCall { apiService.joinServer() }
+    override suspend fun leaveServer(serverId: String): Result<String> {
+        return apiCaller.safeApiCall { apiService.leaveServer(serverId) }
     }
 
-    override suspend fun patchServerOwner(userId: String, serverId: String): Result<String> {
-        return apiCaller.safeApiCall { apiService.patchServerOwner(userId, serverId) }
+    override suspend fun updateServerOwner(userId: String, serverId: String): Result<String> {
+        return apiCaller.safeApiCall { apiService.updateServerOwner(userId, serverId) }
     }
 
-    override suspend fun sendServerInvitation(userId: String, serverId: String): Result<String> {
-        return apiCaller.safeApiCall { apiService.sendServerInvitation(userId, serverId) }
+    override suspend fun assignRole(
+        serverId: String,
+        targetUserId: String,
+        roleId: String
+    ): Result<String> {
+        return apiCaller.safeApiCall { apiService.assignRole(serverId, targetUserId, roleId) }
     }
+
+    override suspend fun revokeRole(
+        serverId: String,
+        targetUserId: String,
+        roleId: String
+    ): Result<String> {
+        return apiCaller.safeApiCall { apiService.revokeRole(serverId, targetUserId, roleId) }
+    }
+
+    override suspend fun patchChannel(
+        serverId: String,
+        channelId: String,
+        name: String?,
+        position: Int?,
+        maxMembers: Int?,
+        isPrivate: Boolean?
+    ): Result<String> {
+        val updateChannelDto = UpdateChannelDto(name, position, maxMembers, isPrivate)
+        return apiCaller.safeApiCall {
+            apiService.patchChannel(
+                serverId,
+                channelId,
+                updateChannelDto
+            )
+        }
+    }
+
+    override suspend fun patchServer(
+        serverId: String,
+        name: String?,
+        photoUrl: String?
+    ): Result<String> {
+        val updateServerDto = UpdateServerDto(name, photoUrl)
+        return apiCaller.safeApiCall { apiService.patchServer(serverId, updateServerDto) }
+    }
+
+    override suspend fun patchRole(
+        serverId: String,
+        roleId: String,
+        name: String?,
+        position: Int?,
+        color: String?
+    ): Result<String> {
+        val updateRoleDto = UpdateRoleDto(name, color, position)
+        return apiCaller.safeApiCall { apiService.patchRole(serverId, roleId, updateRoleDto) }
+    }
+//
+//    override suspend fun sendServerInvitation(userId: String, serverId: String): Result<String> {
+//        return apiCaller.safeApiCall { apiService.sendServerInvitation(userId, serverId) }
+//    }
 }

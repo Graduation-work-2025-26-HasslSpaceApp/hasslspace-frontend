@@ -24,7 +24,7 @@ fun MyServersList(
         ServerCard(
             imageLoader = imageLoader,
             name = server.name,
-            participantCount = server.participantCount,
+//            participantCount = server.participantCount,
             isDarkTheme = isDarkTheme,
             serverPictureUrl = server.avatarUrl,
             onCardClick = { onServerClick(server) }

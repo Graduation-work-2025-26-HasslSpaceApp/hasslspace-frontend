@@ -6,15 +6,23 @@ import java.time.LocalDateTime
 
 @Immutable
 data class InvitationUiModel(
-    val id: String,
-    val link: String,
-    val expirationDate: LocalDateTime
+    val code: String,
+    val serverId: String,
+    val creatorId: String,
+    val expirationDate: LocalDateTime,
+    val serverName: String? = null,
+    val creatorName: String? = null,
+    val link : String? = null
 )
 
 fun Invitation.toUi(): InvitationUiModel {
     return InvitationUiModel(
-        id = this.id,
-        link = this.link,
-        expirationDate = this.expTime
+        code = this.code,
+        serverId = this.serverId,
+        creatorId = this.creatorId,
+        link = this.inviteUrl,
+        serverName = this.serverName,
+        creatorName = this.creatorName,
+        expirationDate = this.expiresAt
     )
 }

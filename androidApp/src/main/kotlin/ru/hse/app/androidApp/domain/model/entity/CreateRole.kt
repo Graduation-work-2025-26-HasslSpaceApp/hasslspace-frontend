@@ -12,6 +12,6 @@ fun CreateRole.toDto(): CreateRoleDto {
     return CreateRoleDto(
         name = this.name,
         color = this.color,
-        members = this.members
+//        members = this.members //todo
     )
 }

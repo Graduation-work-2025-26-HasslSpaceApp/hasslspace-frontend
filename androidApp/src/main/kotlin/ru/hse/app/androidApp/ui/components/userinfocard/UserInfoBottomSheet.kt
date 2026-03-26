@@ -79,12 +79,14 @@ fun UserInfoBottomSheet(
     val textThirdOption = when (type) {
         TypeUiModel.FRIEND -> "Удалить из друзей"
         TypeUiModel.OUTGOING_REQUEST -> "Отозвать приглашение в друзья"
+        TypeUiModel.BLOCKED -> "Блокировка"
         TypeUiModel.NONE -> "Добавить в друзья"
         TypeUiModel.INCOMING_REQUEST -> "Принять приглашение в друзья" // todo опция для отклонения заявки
     }
     val colorThirdOption = when (type) {
         TypeUiModel.FRIEND -> MaterialTheme.colorScheme.error
         TypeUiModel.OUTGOING_REQUEST -> MaterialTheme.colorScheme.error
+        TypeUiModel.BLOCKED -> MaterialTheme.colorScheme.error
         TypeUiModel.NONE -> MaterialTheme.colorScheme.primary
         TypeUiModel.INCOMING_REQUEST -> MaterialTheme.colorScheme.primary
     }
