@@ -1,36 +1,37 @@
-package ru.hse.app.androidApp.domain.usecase.profile
+package ru.hse.app.androidApp.domain.usecase.servers
 
 import android.net.Uri
-import coil3.ImageLoader
-import jakarta.inject.Inject
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody.Companion.toRequestBody
 import ru.hse.app.androidApp.data.exception.ApiException
-import ru.hse.app.androidApp.domain.repository.UserRepository
-import ru.hse.app.androidApp.domain.service.common.PhotoConverterService
 import ru.hse.app.androidApp.domain.usecase.photo.UploadPhotoUseCase
+import javax.inject.Inject
 
-class SaveUserPhotoUseCase @Inject constructor(
-    private val userRepository: UserRepository,
+class UpdateServerPhotoUseCase @Inject constructor(
     private val uploadPhotoUseCase: UploadPhotoUseCase,
+    private val patchServerPropertiesUseCase: PatchServerPropertiesUseCase
 ) {
-
     suspend operator fun invoke(
+        serverId: String,
         imageUri: Uri?,
         photoUrl: String?
     ): Result<String> {
         val uploadResult = uploadPhotoUseCase.invoke(imageUri, photoUrl)
         uploadResult.fold(
             onSuccess = {
-                return userRepository.saveUserPhoto(it)
+                if (photoUrl == null) {
+                    return patchServerPropertiesUseCase.invoke(serverId, null, it)
+                }
             },
             onFailure = {
                 return Result.failure(
                     uploadResult.exceptionOrNull()
-                    //TODO во всех юз кейсах сделать преобразование ошибки апи в ошибку UI
                         ?: ApiException(null, ApiException.PHOTO_UPLOADING_ERROR, null)
                 )
             }
+        )
+
+        return Result.failure(
+            uploadResult.exceptionOrNull()
+                ?: ApiException(null, ApiException.PHOTO_UPLOADING_ERROR, null)
         )
     }
 }
