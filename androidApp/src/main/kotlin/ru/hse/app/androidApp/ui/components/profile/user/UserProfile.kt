@@ -37,7 +37,7 @@ fun UserProfile(
     userName: String,
     nickname: String,
     isDarkTheme: Boolean,
-    status: StatusPresentation = StatusPresentation.ACTIVE,
+    status: StatusPresentation = StatusPresentation.ONLINE,
     profilePictureUrl: String = ""
 ) {
     Column(

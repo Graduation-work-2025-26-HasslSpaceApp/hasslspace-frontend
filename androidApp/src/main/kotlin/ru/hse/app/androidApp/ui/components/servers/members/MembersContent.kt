@@ -101,7 +101,7 @@ private fun previewServerMember(id: String, name: String, role: RoleMiniUiModel?
         name = name,
         nickname = name.lowercase().replace(" ", "_"),
         avatarUrl = "",
-        status = StatusPresentation.ACTIVE,
+        status = StatusPresentation.ONLINE,
         mainRole = role
     )
 

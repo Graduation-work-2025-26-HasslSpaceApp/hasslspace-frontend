@@ -114,7 +114,7 @@ fun NewMessageScreenContentPreviewLight() {
             name = "Марина Ландышева",
             nickname = "@marina_flower",
             avatarUrl = "",
-            status = StatusPresentation.ACTIVE,
+            status = StatusPresentation.ONLINE,
             type = TypeUiModel.FRIEND
         ),
         FriendUiModel(
@@ -138,7 +138,7 @@ fun NewMessageScreenContentPreviewLight() {
             name = "Екатерина Смирнова",
             nickname = "@katya_smirnova",
             avatarUrl = "",
-            status = StatusPresentation.NOT_ACTIVE,
+            status = StatusPresentation.OFFLINE,
             type = TypeUiModel.FRIEND
         ),
         FriendUiModel(
@@ -146,7 +146,7 @@ fun NewMessageScreenContentPreviewLight() {
             name = "Дмитрий Козлов",
             nickname = "@dmitry_k",
             avatarUrl = "",
-            status = StatusPresentation.ACTIVE,
+            status = StatusPresentation.ONLINE,
             type = TypeUiModel.FRIEND
         ),
         FriendUiModel(
@@ -154,7 +154,7 @@ fun NewMessageScreenContentPreviewLight() {
             name = "Анна Морозова",
             nickname = "@anna_moroz",
             avatarUrl = "",
-            status = StatusPresentation.ACTIVE,
+            status = StatusPresentation.ONLINE,
             type = TypeUiModel.FRIEND
         )
     )
@@ -183,7 +183,7 @@ fun NewMessageScreenContentPreviewDark() {
             name = "Марина Ландышева",
             nickname = "@marina_flower",
             avatarUrl = "",
-            status = StatusPresentation.ACTIVE,
+            status = StatusPresentation.ONLINE,
             type = TypeUiModel.FRIEND
         ),
         FriendUiModel(
@@ -191,7 +191,7 @@ fun NewMessageScreenContentPreviewDark() {
             name = "Александр Иванов",
             nickname = "@alex_ivanov",
             avatarUrl = "",
-            status = StatusPresentation.ACTIVE,
+            status = StatusPresentation.ONLINE,
             type = TypeUiModel.FRIEND
         ),
         FriendUiModel(
@@ -199,7 +199,7 @@ fun NewMessageScreenContentPreviewDark() {
             name = "Сергей Петров",
             nickname = "@sergey_p",
             avatarUrl = "",
-            status = StatusPresentation.ACTIVE,
+            status = StatusPresentation.ONLINE,
             type = TypeUiModel.FRIEND
         ),
         FriendUiModel(
@@ -207,7 +207,7 @@ fun NewMessageScreenContentPreviewDark() {
             name = "Екатерина Смирнова",
             nickname = "@katya_smirnova",
             avatarUrl = "",
-            status = StatusPresentation.ACTIVE,
+            status = StatusPresentation.ONLINE,
             type = TypeUiModel.FRIEND
         )
     )
@@ -272,7 +272,7 @@ fun NewMessageScreenContentPreviewWithSearchLight() {
             name = "Марина Ландышева",
             nickname = "@marina_flower",
             avatarUrl = "",
-            status = StatusPresentation.ACTIVE,
+            status = StatusPresentation.ONLINE,
             type = TypeUiModel.FRIEND
         ),
         FriendUiModel(
@@ -280,7 +280,7 @@ fun NewMessageScreenContentPreviewWithSearchLight() {
             name = "Мария Иванова",
             nickname = "@masha_ivanova",
             avatarUrl = "",
-            status = StatusPresentation.ACTIVE,
+            status = StatusPresentation.ONLINE,
             type = TypeUiModel.FRIEND
         )
     )

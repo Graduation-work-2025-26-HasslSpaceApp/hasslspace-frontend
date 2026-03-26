@@ -137,7 +137,7 @@ fun UserCardCheckboxPreviewAllLight() {
             UserCardCheckbox(
                 username = "Александр Иванов",
                 nickname = "alex_ivanov",
-                status = StatusPresentation.ACTIVE,
+                status = StatusPresentation.ONLINE,
                 profilePictureUrl = "",
 
                 isChosen = isChosen.value,
@@ -193,7 +193,7 @@ fun UserCardCheckboxPreviewAllLight() {
             UserCardCheckbox(
                 username = "Иван Николаев",
                 nickname = "ivan_nikolaev",
-                status = StatusPresentation.NOT_ACTIVE,
+                status = StatusPresentation.OFFLINE,
                 profilePictureUrl = "",
 
                 isChosen = isChosen.value,
@@ -214,7 +214,7 @@ fun UserCardCheckboxPreviewAllDark() {
             UserCardCheckbox(
                 username = "Александр Иванов",
                 nickname = "alex_ivanov",
-                status = StatusPresentation.ACTIVE,
+                status = StatusPresentation.ONLINE,
                 profilePictureUrl = "",
 
                 isChosen = isChosen.value,
@@ -228,7 +228,7 @@ fun UserCardCheckboxPreviewAllDark() {
             UserCardCheckbox(
                 username = "Мария Петрова",
                 nickname = "maria_petrova",
-                status = StatusPresentation.NOT_ACTIVE,
+                status = StatusPresentation.OFFLINE,
                 profilePictureUrl = "",
 
                 isChosen = isChosen.value,

@@ -141,7 +141,7 @@ private val mockFriends = listOf(
         id = "1",
         name = "Марина Ландышева",
         nickname = "marina_flower",
-        status = StatusPresentation.ACTIVE,
+        status = StatusPresentation.ONLINE,
         avatarUrl = "",
         isChosen = true
     ),
@@ -149,7 +149,7 @@ private val mockFriends = listOf(
         id = "2",
         name = "Александр Иванов",
         nickname = "alex_ivanov",
-        status = StatusPresentation.ACTIVE,
+        status = StatusPresentation.ONLINE,
         avatarUrl = "",
         isChosen = false
     ),
@@ -157,7 +157,7 @@ private val mockFriends = listOf(
         id = "3",
         name = "Сергей Петров",
         nickname = "sergey_p",
-        status = StatusPresentation.ACTIVE,
+        status = StatusPresentation.ONLINE,
         avatarUrl = "",
         isChosen = true
     ),
@@ -165,7 +165,7 @@ private val mockFriends = listOf(
         id = "4",
         name = "Екатерина Смирнова",
         nickname = "katya_smirnova",
-        status = StatusPresentation.ACTIVE,
+        status = StatusPresentation.ONLINE,
         avatarUrl = "",
         isChosen = false
     ),
@@ -173,7 +173,7 @@ private val mockFriends = listOf(
         id = "5",
         name = "Дмитрий Козлов",
         nickname = "dmitry_k",
-        status = StatusPresentation.ACTIVE,
+        status = StatusPresentation.ONLINE,
         avatarUrl = "",
         isChosen = false
     ),
@@ -181,7 +181,7 @@ private val mockFriends = listOf(
         id = "6",
         name = "Анна Морозова",
         nickname = "anna_moroz",
-        status = StatusPresentation.ACTIVE,
+        status = StatusPresentation.ONLINE,
         avatarUrl = "",
         isChosen = true
     ),
@@ -189,7 +189,7 @@ private val mockFriends = listOf(
         id = "7",
         name = "Иван Сидоров",
         nickname = "ivan_sidorov",
-        status = StatusPresentation.ACTIVE,
+        status = StatusPresentation.ONLINE,
         avatarUrl = "",
         isChosen = false
     )

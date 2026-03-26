@@ -108,7 +108,7 @@ fun NewGroupScreenContentPreviewLight() {
             id = "1",
             name = "Марина Ландышева",
             nickname = "marina_flower",
-            status = StatusPresentation.ACTIVE,
+            status = StatusPresentation.ONLINE,
             avatarUrl = "",
             isChosen = true
         ),
@@ -116,7 +116,7 @@ fun NewGroupScreenContentPreviewLight() {
             id = "2",
             name = "Александр Иванов",
             nickname = "alex_ivanov",
-            status = StatusPresentation.ACTIVE,
+            status = StatusPresentation.ONLINE,
             avatarUrl = "",
             isChosen = false
         ),
@@ -124,7 +124,7 @@ fun NewGroupScreenContentPreviewLight() {
             id = "3",
             name = "Сергей Петров",
             nickname = "sergey_p",
-            status = StatusPresentation.ACTIVE,
+            status = StatusPresentation.ONLINE,
             avatarUrl = "",
             isChosen = true
         ),
@@ -132,7 +132,7 @@ fun NewGroupScreenContentPreviewLight() {
             id = "4",
             name = "Екатерина Смирнова",
             nickname = "katya_smirnova",
-            status = StatusPresentation.ACTIVE,
+            status = StatusPresentation.ONLINE,
             avatarUrl = "",
             isChosen = false
         ),
@@ -140,7 +140,7 @@ fun NewGroupScreenContentPreviewLight() {
             id = "5",
             name = "Дмитрий Козлов",
             nickname = "dmitry_k",
-            status = StatusPresentation.ACTIVE,
+            status = StatusPresentation.ONLINE,
             avatarUrl = "",
             isChosen = false
         ),
@@ -148,7 +148,7 @@ fun NewGroupScreenContentPreviewLight() {
             id = "6",
             name = "Анна Морозова",
             nickname = "anna_moroz",
-            status = StatusPresentation.ACTIVE,
+            status = StatusPresentation.ONLINE,
             avatarUrl = "",
             isChosen = true
         ),
@@ -156,7 +156,7 @@ fun NewGroupScreenContentPreviewLight() {
             id = "7",
             name = "Иван Сидоров",
             nickname = "ivan_sidorov",
-            status = StatusPresentation.ACTIVE,
+            status = StatusPresentation.ONLINE,
             avatarUrl = "",
             isChosen = false
         )
@@ -185,7 +185,7 @@ fun NewGroupScreenContentPreviewDark() {
             id = "1",
             name = "Марина Ландышева",
             nickname = "marina_flower",
-            status = StatusPresentation.ACTIVE,
+            status = StatusPresentation.ONLINE,
             avatarUrl = "",
             isChosen = true
         ),
@@ -193,7 +193,7 @@ fun NewGroupScreenContentPreviewDark() {
             id = "2",
             name = "Александр Иванов",
             nickname = "alex_ivanov",
-            status = StatusPresentation.ACTIVE,
+            status = StatusPresentation.ONLINE,
             avatarUrl = "",
             isChosen = false
         ),
@@ -201,7 +201,7 @@ fun NewGroupScreenContentPreviewDark() {
             id = "3",
             name = "Сергей Петров",
             nickname = "sergey_p",
-            status = StatusPresentation.ACTIVE,
+            status = StatusPresentation.ONLINE,
             avatarUrl = "",
             isChosen = true
         ),
@@ -209,7 +209,7 @@ fun NewGroupScreenContentPreviewDark() {
             id = "4",
             name = "Екатерина Смирнова",
             nickname = "katya_smirnova",
-            status = StatusPresentation.ACTIVE,
+            status = StatusPresentation.ONLINE,
             avatarUrl = "",
             isChosen = false
         )
@@ -256,7 +256,7 @@ fun NewGroupScreenContentPreviewWithSearchLight() {
             id = "1",
             name = "Марина Ландышева",
             nickname = "marina_flower",
-            status = StatusPresentation.ACTIVE,
+            status = StatusPresentation.ONLINE,
             avatarUrl = "",
             isChosen = true
         ),
@@ -264,7 +264,7 @@ fun NewGroupScreenContentPreviewWithSearchLight() {
             id = "2",
             name = "Мария Иванова",
             nickname = "masha_ivanova",
-            status = StatusPresentation.ACTIVE,
+            status = StatusPresentation.ONLINE,
             avatarUrl = "",
             isChosen = false
         )
@@ -293,7 +293,7 @@ fun NewGroupScreenContentPreviewMultiSelectionLight() {
             id = "1",
             name = "Марина Ландышева",
             nickname = "marina_flower",
-            status = StatusPresentation.ACTIVE,
+            status = StatusPresentation.ONLINE,
             avatarUrl = "",
             isChosen = true
         ),
@@ -301,7 +301,7 @@ fun NewGroupScreenContentPreviewMultiSelectionLight() {
             id = "2",
             name = "Александр Иванов",
             nickname = "alex_ivanov",
-            status = StatusPresentation.ACTIVE,
+            status = StatusPresentation.ONLINE,
             avatarUrl = "",
             isChosen = true
         ),
@@ -309,7 +309,7 @@ fun NewGroupScreenContentPreviewMultiSelectionLight() {
             id = "3",
             name = "Сергей Петров",
             nickname = "sergey_p",
-            status = StatusPresentation.ACTIVE,
+            status = StatusPresentation.ONLINE,
             avatarUrl = "",
             isChosen = true
         ),
@@ -317,7 +317,7 @@ fun NewGroupScreenContentPreviewMultiSelectionLight() {
             id = "4",
             name = "Екатерина Смирнова",
             nickname = "katya_smirnova",
-            status = StatusPresentation.ACTIVE,
+            status = StatusPresentation.ONLINE,
             avatarUrl = "",
             isChosen = false
         )

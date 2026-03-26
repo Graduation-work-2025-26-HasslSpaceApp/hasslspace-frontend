@@ -18,10 +18,10 @@ import ru.hse.app.androidApp.data.local.DataManager
 import ru.hse.app.androidApp.domain.model.entity.CreateRole
 import ru.hse.app.androidApp.domain.service.common.CropProfilePhotoService
 import ru.hse.app.androidApp.domain.service.common.PhotoConverterService
-import ru.hse.app.androidApp.domain.usecase.servers.CreateServerRoleUseCase
+import ru.hse.app.androidApp.domain.usecase.roles.CreateServerRoleUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.GetServerInfoUseCase
-import ru.hse.app.androidApp.domain.usecase.servers.GetServerInvitationsUseCase
-import ru.hse.app.androidApp.domain.usecase.servers.GetServerRolesUseCase
+import ru.hse.app.androidApp.domain.usecase.invitations.GetServerInvitationsUseCase
+import ru.hse.app.androidApp.domain.usecase.roles.GetServerRolesUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.SearchMembersUseCase
 import ru.hse.app.androidApp.ui.entity.model.FriendCheckboxUiModel
 import ru.hse.app.androidApp.ui.entity.model.RoleMiniCheckboxUiModel

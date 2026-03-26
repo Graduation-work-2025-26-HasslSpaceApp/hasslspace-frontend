@@ -29,10 +29,10 @@ fun StatusCircle(
 @Composable
 fun StatusCirclePreview() {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        StatusCircle(StatusPresentation.ACTIVE, 32.dp)
+        StatusCircle(StatusPresentation.ONLINE, 32.dp)
         StatusCircle(StatusPresentation.INVISIBLE, 32.dp)
         StatusCircle(StatusPresentation.DO_NOT_DISTURB, 32.dp)
-        StatusCircle(StatusPresentation.NOT_ACTIVE, 32.dp)
+        StatusCircle(StatusPresentation.OFFLINE, 32.dp)
     }
 }
 

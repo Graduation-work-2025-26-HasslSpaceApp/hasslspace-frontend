@@ -28,19 +28,19 @@ import ru.hse.app.androidApp.domain.usecase.channel.GetChannelInfoUseCase
 import ru.hse.app.androidApp.domain.usecase.channel.PatchChannelPropertiesUseCase
 import ru.hse.app.androidApp.domain.usecase.friends.GetChosenUserCommonServersUseCase
 import ru.hse.app.androidApp.domain.usecase.friends.GetUserInfoExtendedUseCase
-import ru.hse.app.androidApp.domain.usecase.servers.CreateServerRoleUseCase
+import ru.hse.app.androidApp.domain.usecase.roles.CreateServerRoleUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.CreateServerUseCase
-import ru.hse.app.androidApp.domain.usecase.servers.DeleteServerInvitationUseCase
+import ru.hse.app.androidApp.domain.usecase.invitations.DeleteServerInvitationUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.DeleteServerMemberUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.DeleteServerUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.GetFriendsNotInServerUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.GetServerInfoUseCase
-import ru.hse.app.androidApp.domain.usecase.servers.GetServerInvitationsUseCase
-import ru.hse.app.androidApp.domain.usecase.servers.GetServerRolesUseCase
-import ru.hse.app.androidApp.domain.usecase.servers.PatchServerOwnerUseCase
+import ru.hse.app.androidApp.domain.usecase.invitations.GetServerInvitationsUseCase
+import ru.hse.app.androidApp.domain.usecase.roles.GetServerRolesUseCase
+import ru.hse.app.androidApp.domain.usecase.servers.UpdateServerOwnerUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.PatchServerPropertiesUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.SearchMembersUseCase
-import ru.hse.app.androidApp.domain.usecase.servers.SendServerInvitationUseCase
+import ru.hse.app.androidApp.domain.usecase.invitations.SendServerInvitationUseCase
 import ru.hse.app.androidApp.ui.entity.model.FriendCheckboxUiModel
 import ru.hse.app.androidApp.ui.entity.model.RoleMiniCheckboxUiModel
 import ru.hse.app.androidApp.ui.entity.model.ServerMemberUiModel
@@ -94,9 +94,9 @@ class ServerCardViewModel @Inject constructor(
     private val getChannelInfoUseCase: GetChannelInfoUseCase,
 
     private val patchChannelPropertiesUseCase: PatchChannelPropertiesUseCase,
-    private val patchServerOwnerUseCase: PatchServerOwnerUseCase,
+    private val updateServerOwnerUseCase: UpdateServerOwnerUseCase,
     private val patchServerPropertiesUseCase: PatchServerPropertiesUseCase,
-    private val patchServerRoleUseCase: PatchServerOwnerUseCase,
+    private val patchServerRoleUseCase: UpdateServerOwnerUseCase,
 
     private val sendServerInvitationUseCase: SendServerInvitationUseCase,
     private val searchMembersUseCase: SearchMembersUseCase,
@@ -600,7 +600,7 @@ class ServerCardViewModel @Inject constructor(
         newOwnerId: String
     ) {
         viewModelScope.launch {
-            val result = patchServerOwnerUseCase(serverId, newOwnerId)
+            val result = updateServerOwnerUseCase(serverId, newOwnerId)
 
             _patchServerOwnerEvent.value = result.fold(
                 onSuccess = {

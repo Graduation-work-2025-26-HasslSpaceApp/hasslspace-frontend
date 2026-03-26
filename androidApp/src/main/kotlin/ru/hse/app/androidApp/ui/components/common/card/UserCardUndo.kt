@@ -135,7 +135,7 @@ fun UserCardUndoPreviewAllLight() {
             UserCardUndo(
                 username = "Александр Иванов",
                 nickname = "alex_ivanov",
-                status = StatusPresentation.ACTIVE,
+                status = StatusPresentation.ONLINE,
                 profilePictureUrl = "",
                 onCardClick = {},
                 onUndoClick = {},
@@ -187,7 +187,7 @@ fun UserCardUndoPreviewAllLight() {
             UserCardUndo(
                 username = "Иван Николаев",
                 nickname = "ivan_nikolaev",
-                status = StatusPresentation.NOT_ACTIVE,
+                status = StatusPresentation.OFFLINE,
                 profilePictureUrl = "",
                 onCardClick = {},
                 onUndoClick = {},
@@ -206,7 +206,7 @@ fun UserCardUndoPreviewAllDark() {
             UserCardUndo(
                 username = "Александр Иванов",
                 nickname = "alex_ivanov",
-                status = StatusPresentation.ACTIVE,
+                status = StatusPresentation.ONLINE,
                 profilePictureUrl = "",
                 onCardClick = {},
                 onUndoClick = {},
@@ -219,7 +219,7 @@ fun UserCardUndoPreviewAllDark() {
             UserCardUndo(
                 username = "Мария Петрова",
                 nickname = "maria_petrova",
-                status = StatusPresentation.NOT_ACTIVE,
+                status = StatusPresentation.OFFLINE,
                 profilePictureUrl = "",
                 onCardClick = {},
                 onUndoClick = {},

@@ -20,20 +20,20 @@ import ru.hse.app.androidApp.domain.service.common.PhotoConverterService
 import ru.hse.app.androidApp.domain.usecase.channel.CreateChannelUseCase
 import ru.hse.app.androidApp.domain.usecase.channel.DeleteChannelUseCase
 import ru.hse.app.androidApp.domain.usecase.channel.PatchChannelPropertiesUseCase
-import ru.hse.app.androidApp.domain.usecase.servers.CreateServerRoleUseCase
+import ru.hse.app.androidApp.domain.usecase.roles.CreateServerRoleUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.CreateServerUseCase
-import ru.hse.app.androidApp.domain.usecase.servers.DeleteServerInvitationUseCase
+import ru.hse.app.androidApp.domain.usecase.invitations.DeleteServerInvitationUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.DeleteServerMemberUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.DeleteServerUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.GetServerInfoUseCase
-import ru.hse.app.androidApp.domain.usecase.servers.GetServerInvitationsUseCase
-import ru.hse.app.androidApp.domain.usecase.servers.GetServerRolesUseCase
-import ru.hse.app.androidApp.domain.usecase.servers.GetUserServersUseCase
+import ru.hse.app.androidApp.domain.usecase.invitations.GetServerInvitationsUseCase
+import ru.hse.app.androidApp.domain.usecase.roles.GetServerRolesUseCase
+import ru.hse.app.androidApp.domain.usecase.servers.GetServersUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.JoinServerUseCase
-import ru.hse.app.androidApp.domain.usecase.servers.PatchServerOwnerUseCase
+import ru.hse.app.androidApp.domain.usecase.servers.UpdateServerOwnerUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.PatchServerPropertiesUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.SearchServersUseCase
-import ru.hse.app.androidApp.domain.usecase.servers.SendServerInvitationUseCase
+import ru.hse.app.androidApp.domain.usecase.invitations.SendServerInvitationUseCase
 import ru.hse.app.androidApp.ui.entity.model.ServerShortUiModel
 import ru.hse.app.androidApp.ui.entity.model.servers.ServersUiModel
 import ru.hse.app.androidApp.ui.entity.model.servers.ServersUiState
@@ -70,14 +70,14 @@ class ServersViewModel @Inject constructor(
     private val getServerInfoUseCase: GetServerInfoUseCase,
     private val getServerInvitationsUseCase: GetServerInvitationsUseCase,
     private val getServerRolesUseCase: GetServerRolesUseCase,
-    private val getUserServersUseCase: GetUserServersUseCase,
+    private val getServersUseCase: GetServersUseCase,
 
     private val joinServerUseCase: JoinServerUseCase,
 
     private val patchChannelPropertiesUseCase: PatchChannelPropertiesUseCase,
-    private val patchServerOwnerUseCase: PatchServerOwnerUseCase,
+    private val updateServerOwnerUseCase: UpdateServerOwnerUseCase,
     private val patchServerPropertiesUseCase: PatchServerPropertiesUseCase,
-    private val patchServerRoleUseCase: PatchServerOwnerUseCase,
+    private val patchServerRoleUseCase: UpdateServerOwnerUseCase,
 
     private val sendServerInvitationUseCase: SendServerInvitationUseCase,
     private val searchServersUseCase: SearchServersUseCase,
@@ -163,7 +163,7 @@ class ServersViewModel @Inject constructor(
 
     fun loadUserServers() {
         viewModelScope.launch {
-            val result = getUserServersUseCase()
+            val result = getServersUseCase()
 
             _getUserServersEvent.value = result.fold(
                 onSuccess = { servers ->
@@ -394,7 +394,7 @@ class ServersViewModel @Inject constructor(
 
     fun getUserServers() {
         viewModelScope.launch {
-            val result = getUserServersUseCase()
+            val result = getServersUseCase()
 
             _getUserServersEvent.value = result.fold(
                 onSuccess = { servers ->
@@ -424,7 +424,7 @@ class ServersViewModel @Inject constructor(
 
             else -> {
                 viewModelScope.launch {
-                    val result = joinServerUseCase() //TODO параметром идет ссылка
+                    val result = joinServerUseCase(link) //TODO параметром идет код, у нас пока что ссылка
 
                     _joinServerEvent.value = result.fold(
                         onSuccess = {
@@ -444,7 +444,7 @@ class ServersViewModel @Inject constructor(
         newOwnerId: String
     ) {
         viewModelScope.launch {
-            val result = patchServerOwnerUseCase(serverId, newOwnerId)
+            val result = updateServerOwnerUseCase(serverId, newOwnerId)
 
             _patchServerOwnerEvent.value = result.fold(
                 onSuccess = {

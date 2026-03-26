@@ -82,6 +82,7 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun changeUserStatus(status: String): Result<String> {
+        //ONLINE, INVISIBLE, DO_NOT_DISTURB, OFFLINE
         return apiCaller.safeApiCall { apiService.changeStatus(status) }
     }
 

@@ -162,7 +162,7 @@ fun UserCardRoleAndArrowPreviewAllLight() {
             UserCardRoleAndArrow(
                 username = "Александр Иванов",
                 nickname = "alex_ivanov",
-                status = StatusPresentation.ACTIVE,
+                status = StatusPresentation.ONLINE,
                 profilePictureUrl = "",
                 color = Color(0xFF2196F3), // Синий
                 role = "Администратор",
@@ -218,7 +218,7 @@ fun UserCardRoleAndArrowPreviewAllLight() {
             UserCardRoleAndArrow(
                 username = "Иван Николаев",
                 nickname = "ivan_nikolaev",
-                status = StatusPresentation.NOT_ACTIVE,
+                status = StatusPresentation.OFFLINE,
                 profilePictureUrl = "",
                 color = Color(0xFFF44336), // Красный
                 role = "Гость",
@@ -238,7 +238,7 @@ fun UserCardRoleAndArrowPreviewAllDark() {
             UserCardRoleAndArrow(
                 username = "Александр Иванов",
                 nickname = "alex_ivanov",
-                status = StatusPresentation.ACTIVE,
+                status = StatusPresentation.ONLINE,
                 profilePictureUrl = "",
                 color = Color(0xFF2196F3), // Синий
                 role = "Администратор",
@@ -252,7 +252,7 @@ fun UserCardRoleAndArrowPreviewAllDark() {
             UserCardRoleAndArrow(
                 username = "Мария Петрова",
                 nickname = "maria_petrova",
-                status = StatusPresentation.NOT_ACTIVE,
+                status = StatusPresentation.OFFLINE,
                 profilePictureUrl = "",
                 color = Color(0xFF4CAF50), // Зеленый
                 role = "Модератор",
@@ -328,7 +328,7 @@ fun UserCardRoleAndArrowPreviewMixedLight() {
             UserCardRoleAndArrow(
                 username = "Петр Кузнецов",
                 nickname = "petr_kuznetsov",
-                status = StatusPresentation.ACTIVE,
+                status = StatusPresentation.ONLINE,
                 onArrowClick = {},
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
@@ -387,7 +387,7 @@ fun UserCardRoleAndArrowPreviewMixedDark() {
             UserCardRoleAndArrow(
                 username = "Петр Кузнецов",
                 nickname = "petr_kuznetsov",
-                status = StatusPresentation.ACTIVE,
+                status = StatusPresentation.ONLINE,
                 onArrowClick = {},
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)

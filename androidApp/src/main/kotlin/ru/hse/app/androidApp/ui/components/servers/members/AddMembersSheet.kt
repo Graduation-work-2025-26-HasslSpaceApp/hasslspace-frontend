@@ -81,7 +81,7 @@ private fun previewFriend(id: String, name: String) = FriendUiModelInvitation(
     name = name,
     nickname = name.lowercase().replace(" ", "_"),
     avatarUrl = "",
-    status = StatusPresentation.ACTIVE,
+    status = StatusPresentation.ONLINE,
     sent = Random.nextInt(0, 1) == 1
 )
 

@@ -154,7 +154,7 @@ private fun previewFriend(id: String, name: String) = FriendUiModel(
     name = name,
     nickname = name.lowercase().replace(" ", "_"),
     avatarUrl = "",
-    status = StatusPresentation.ACTIVE,
+    status = StatusPresentation.ONLINE,
     type = TypeUiModel.FRIEND
 )
 

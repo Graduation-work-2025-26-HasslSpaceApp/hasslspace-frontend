@@ -1,12 +1,9 @@
 package ru.hse.app.androidApp.domain.usecase.servers
 
-import ru.hse.app.androidApp.domain.repository.FriendRepository
 import ru.hse.app.androidApp.ui.entity.model.ServerMemberUiModel
 import javax.inject.Inject
 
-class SearchMembersUseCase @Inject constructor(
-    private val friendRepository: FriendRepository
-) {
+class SearchMembersUseCase @Inject constructor() {
 
     operator fun invoke(
         list: List<ServerMemberUiModel>,

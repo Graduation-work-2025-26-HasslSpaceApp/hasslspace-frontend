@@ -126,7 +126,7 @@ private val member = ServerMemberUiModel(
     name = "Александр Иванов",
     nickname = "Александр Иванов".lowercase().replace(" ", "_"),
     avatarUrl = "",
-    status = StatusPresentation.ACTIVE,
+    status = StatusPresentation.ONLINE,
     mainRole = roles[1],
     allRoles = roles
 )
@@ -136,7 +136,7 @@ private val member1 = ServerMemberUiModel(
     name = "Александр Иванов",
     nickname = "Александр Иванов".lowercase().replace(" ", "_"),
     avatarUrl = "",
-    status = StatusPresentation.ACTIVE,
+    status = StatusPresentation.ONLINE,
     mainRole = roles[1],
 )
 

@@ -139,7 +139,7 @@ private fun previewFriend(id: String, name: String, isChosen: Boolean) = FriendC
     name = name,
     nickname = name.lowercase().replace(" ", "_"),
     avatarUrl = "",
-    status = StatusPresentation.ACTIVE,
+    status = StatusPresentation.ONLINE,
     isChosen = isChosen
 )
 

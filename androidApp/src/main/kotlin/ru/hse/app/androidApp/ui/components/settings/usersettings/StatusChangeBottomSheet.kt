@@ -132,13 +132,13 @@ fun StatusChangeBottomSheet(
 fun StatusChangeBottomSheetPreview() {
     AppTheme(isDark = false) {
         StatusChangeBottomSheet(
-            selectedOption = StatusPresentation.ACTIVE,
+            selectedOption = StatusPresentation.ONLINE,
             onSelectedOptionChanged = {},
             onApply = { selected -> println("Выбрана опция: $selected") },
             showSortSheet = mutableStateOf(true),
             options = listOf(
-                StatusPresentation.ACTIVE,
-                StatusPresentation.NOT_ACTIVE,
+                StatusPresentation.ONLINE,
+                StatusPresentation.OFFLINE,
                 StatusPresentation.DO_NOT_DISTURB,
                 StatusPresentation.INVISIBLE
             ),
@@ -152,13 +152,13 @@ fun StatusChangeBottomSheetPreview() {
 fun StatusChangeBottomSheetPreview1() {
     AppTheme(isDark = true) {
         StatusChangeBottomSheet(
-            selectedOption = StatusPresentation.ACTIVE,
+            selectedOption = StatusPresentation.ONLINE,
             onSelectedOptionChanged = {},
             onApply = { selected -> println("Выбрана опция: $selected") },
             showSortSheet = mutableStateOf(true),
             options = listOf(
-                StatusPresentation.ACTIVE,
-                StatusPresentation.NOT_ACTIVE,
+                StatusPresentation.ONLINE,
+                StatusPresentation.OFFLINE,
                 StatusPresentation.DO_NOT_DISTURB,
                 StatusPresentation.INVISIBLE
             ),

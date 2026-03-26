@@ -113,7 +113,7 @@ fun ProfileScreenContentPreviewLight() {
             imageLoader = ImageLoader(LocalContext.current),
             username = "Ваше имя",
             nickname = "nickname123",
-            status = StatusPresentation.ACTIVE,
+            status = StatusPresentation.ONLINE,
             profilePictureUrl = "",
             friendsCount = 55,
             onFriendsClick = {},
