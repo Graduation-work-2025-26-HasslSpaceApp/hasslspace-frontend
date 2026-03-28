@@ -19,9 +19,15 @@ import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
 import ru.hse.app.androidApp.ui.components.profile.friends.FriendsContent
 import ru.hse.app.androidApp.ui.components.userinfocard.CommonServersBottomSheet
 import ru.hse.app.androidApp.ui.components.userinfocard.UserInfoBottomSheet
+import ru.hse.app.androidApp.ui.entity.model.TypeUiModel
 import ru.hse.app.androidApp.ui.entity.model.profile.ProfileUiState
+import ru.hse.app.androidApp.ui.entity.model.profile.events.CreateFriendRequestEvent
+import ru.hse.app.androidApp.ui.entity.model.profile.events.DeleteFriendshipEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadChosenUserCommonServersEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadChosenUserEvent
+import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadUserDataEvent
+import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadUserFriendsEvent
+import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadUserServersEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.events.RespondToFriendRequestEvent
 import ru.hse.app.androidApp.ui.navigation.NavigationItem
 
@@ -32,21 +38,76 @@ fun FriendsScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    val createFriendRequestEvent by viewModel.createFriendRequestEvent.collectAsState()
+    val deleteFriendshipEvent by viewModel.deleteFriendshipEvent.collectAsState()
+    val loadUserDataEvent by viewModel.loadUserInfoEvent.collectAsState()
+    val loadUserFriendsEvent by viewModel.loadUserFriendsEvent.collectAsState()
+    val loadUserServersEvent by viewModel.loadUserServersEvent.collectAsState()
     val loadChosenUserEvent by viewModel.loadChosenUserEvent.collectAsState()
     val loadChosenUserCommonServersEvent by viewModel.loadChosenUserCommonServersEvent.collectAsState()
     val respondToFriendRequestEvent by viewModel.respondToFriendshipRequestEvent.collectAsState()
 
+    LaunchedEffect(Unit) {
+        viewModel.loadUserFriends()
+    }
+
+    LaunchedEffect(loadUserFriendsEvent) {
+        when (loadUserFriendsEvent) {
+            is LoadUserFriendsEvent.SuccessLoad -> {}
+
+            is LoadUserFriendsEvent.Error -> {
+                val message =
+                    (loadUserFriendsEvent as LoadUserFriendsEvent.Error).message
+                viewModel.showToast(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetLoadUserFriendsEvent()
+    }
+
+    LaunchedEffect(loadUserServersEvent) {
+        when (loadUserServersEvent) {
+            is LoadUserServersEvent.SuccessLoad -> {}
+
+            is LoadUserServersEvent.Error -> {
+                val message =
+                    (loadUserServersEvent as LoadUserServersEvent.Error).message
+                viewModel.showToast(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetLoadUserServersEvent()
+    }
+
+    LaunchedEffect(loadUserDataEvent) {
+        when (loadUserDataEvent) {
+            is LoadUserDataEvent.SuccessLoad -> {}
+
+            is LoadUserDataEvent.Error -> {
+                val message =
+                    (loadUserDataEvent as LoadUserDataEvent.Error).message
+                viewModel.showToast(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetLoadUserInfoEvent()
+    }
+
     LaunchedEffect(respondToFriendRequestEvent) {
         when (respondToFriendRequestEvent) {
             is RespondToFriendRequestEvent.SuccessRespond -> {
-                viewModel.loadUserFriends()
                 viewModel.showToast("Успешно")
+                viewModel.loadUserFriends()
             }
 
             is RespondToFriendRequestEvent.Error -> {
                 val message =
                     (respondToFriendRequestEvent as RespondToFriendRequestEvent.Error).message
                 viewModel.showToast(message)
+                viewModel.loadUserFriends()
             }
 
             null -> {}
@@ -83,6 +144,45 @@ fun FriendsScreen(
             null -> {}
         }
         viewModel.resetLoadChosenUserCommonServersEvent()
+    }
+
+    LaunchedEffect(createFriendRequestEvent) {
+        when (createFriendRequestEvent) {
+            is CreateFriendRequestEvent.SuccessRequest -> {
+                val nickname =
+                    (createFriendRequestEvent as CreateFriendRequestEvent.SuccessRequest).nickname
+                viewModel.errorAddFriends.value = false
+                viewModel.infoTextAddFriend.value =
+                    "Получилось! Отправили заявку в друзья пользователю $nickname"
+                viewModel.loadUserFriends()
+            }
+
+            is CreateFriendRequestEvent.Error -> {
+                viewModel.errorAddFriends.value = true
+                viewModel.infoTextAddFriend.value =
+                    "Хм... Не получилось. Проверьте, что вы ввели правильное имя пользователя"
+            }
+
+            null -> {}
+        }
+        viewModel.resetCreateFriendRequestEvent()
+    }
+
+    LaunchedEffect(deleteFriendshipEvent) {
+        when (deleteFriendshipEvent) {
+            is DeleteFriendshipEvent.SuccessDelete -> {
+                viewModel.loadUserFriends()
+            }
+
+            is DeleteFriendshipEvent.Error -> {
+                val message =
+                    (deleteFriendshipEvent as DeleteFriendshipEvent.Error).message
+                viewModel.showToast(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetDeleteFriendshipEvent()
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -131,8 +231,8 @@ fun FriendsScreenWithStateContent(
             viewModel.loadChosenUserCommonServers(userId = it.id)
             viewModel.loadChosenUser(userId = it.id)
         },
-        onAcceptClick = { viewModel.respondFriend(it, "ACCEPTED") },
-        onDismissClick = { viewModel.respondFriend(it, "DECLINED") },
+        onAcceptClick = { viewModel.respondFriend(it.id, "ACCEPTED") },
+        onDismissClick = { viewModel.respondFriend(it.id, "DECLINED") },
         searchText = viewModel.searchValueFriends.value,
         onValueChange = viewModel::onSearchValueChange,
         isDarkTheme = data.isDarkCheck
@@ -157,7 +257,7 @@ fun FriendsScreenWithStateContent(
             onVideoCallClick = { viewModel.onVideoCallClick(userId = data.chosenUser.id) },
             aboutUserInfo = data.chosenUser.description,
             onDismiss = { viewModel.showFriendCard.value = false },
-            onInvite = { /*todo*/ },
+            onInvite = {},
             onCopyNickname = {
                 val clipboard =
                     context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -166,7 +266,29 @@ fun FriendsScreenWithStateContent(
 
                 viewModel.showToast("Текст скопирован в буфер обмена")
             },
-            onThirdOptionClick = { /*todo*/ },
+            onThirdOptionClick = {
+                when (data.chosenUser.type) {
+                    TypeUiModel.FRIEND -> {
+                        // todo показать окно-подтверждение
+                        viewModel.deleteFriendship(data.chosenUser.id)
+                    }
+
+                    TypeUiModel.OUTGOING_REQUEST -> {
+                        viewModel.deleteFriendship(data.chosenUser.id)
+                    }
+
+                    TypeUiModel.INCOMING_REQUEST -> {
+                        viewModel.respondFriend(data.chosenUser.id, "ACCEPTED")
+                    }
+
+                    TypeUiModel.NONE -> {
+                        viewModel.createFriendshipRequest(data.chosenUser.nickname)
+                    }
+
+                    TypeUiModel.BLOCKED -> {}
+                }
+            },
+            onDismissFriendRequest = { viewModel.respondFriend(data.chosenUser.id, "DECLINED") },
             type = data.chosenUser.type
         )
     }

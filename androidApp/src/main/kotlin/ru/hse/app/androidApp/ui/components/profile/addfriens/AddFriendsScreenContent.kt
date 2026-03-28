@@ -90,6 +90,7 @@ fun AddFriendsScreenContent(
                     isDarkTheme = isDarkTheme,
                     onCardClick = { onRequestClick(request) },
                     onUndoClick = { onUndoClick(request) },
+                    enabled = false
                 )
             }
         }

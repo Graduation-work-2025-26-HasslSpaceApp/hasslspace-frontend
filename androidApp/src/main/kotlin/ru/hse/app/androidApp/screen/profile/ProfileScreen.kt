@@ -3,6 +3,7 @@ package ru.hse.app.androidApp.screen.profile
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -11,18 +12,41 @@ import androidx.navigation.NavController
 import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
 import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
 import ru.hse.app.androidApp.ui.components.profile.user.ProfileScreenContent
+import ru.hse.app.androidApp.ui.entity.model.TypeUiModel
 import ru.hse.app.androidApp.ui.entity.model.profile.ProfileUiState
+import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadUserDataEvent
 import ru.hse.app.androidApp.ui.navigation.BottomNavigationItem
 import ru.hse.app.androidApp.ui.navigation.NavigationItem
 
-
-// TODO подумать про обновление данных экрана при переходах и тп
 @Composable
 fun ProfileScreen(
     navController: NavController,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    val loadUserDataEvent by viewModel.loadUserInfoEvent.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.loadUserData()
+        viewModel.loadUserFriends()
+        viewModel.loadUserServers()
+    }
+
+    LaunchedEffect(loadUserDataEvent) {
+        when (loadUserDataEvent) {
+            is LoadUserDataEvent.SuccessLoad -> {}
+
+            is LoadUserDataEvent.Error -> {
+                val message =
+                    (loadUserDataEvent as LoadUserDataEvent.Error).message
+                viewModel.showToast(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetLoadUserInfoEvent()
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         when (uiState) {
@@ -59,7 +83,7 @@ fun ProfileScreenWithStateContent(
         nickname = data.nickname,
         status = data.status,
         profilePictureUrl = data.profilePictureUrl,
-        friendsCount = data.friends.size,
+        friendsCount = data.friends.filter { it.type == TypeUiModel.FRIEND }.size,
         onFriendsClick = { navController.navigate(NavigationItem.MyFriends.route) },
         serversCount = data.servers.size,
         onServersClick = { navController.navigate(BottomNavigationItem.Servers.route) },

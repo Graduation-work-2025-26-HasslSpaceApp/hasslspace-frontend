@@ -40,7 +40,7 @@ fun UserDescription(
                 .clip(RoundedCornerShape(20.dp))
                 .background(MaterialTheme.colorScheme.surfaceContainerLow)
                 .padding(vertical = 16.dp, horizontal = 16.dp),
-            contentAlignment = Alignment.TopCenter
+            contentAlignment = Alignment.TopStart
         ) {
             VariableLight(
                 text = text,
@@ -56,6 +56,16 @@ fun UserDescriptionPreview() {
     AppTheme(isDark = false) {
         UserDescription(
             text = "Сообщение щрур фыдгргуар фыщршгцра фыщшаргшар фщыращшра фшыарфс фыгрсфрцу ащцшуарщрс сщцрацрры сщыарщхыарщыс ы уашщцарцщыуврсщырс ыу щцоаыв сщыш ащущцасшы",
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun UserDescriptionPreview1() {
+    AppTheme(isDark = false) {
+        UserDescription(
+            text = "Сообщение щрур ",
         )
     }
 }

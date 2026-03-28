@@ -474,10 +474,10 @@ class ProfileViewModel @Inject constructor(
         addFriendFieldValue.value = value
     }
 
-    fun respondFriend(user: FriendUiModel, status: String) {
+    fun respondFriend(userId: String, status: String) {
         viewModelScope.launch {
             val result =
-                respondToFriendshipRequestUseCase(user.id/*todo не забыть про айди дружбы*/, status)
+                respondToFriendshipRequestUseCase(userId, status)
 
             _respondToFriendshipRequestEvent.value = result.fold(
                 onSuccess = {
@@ -491,7 +491,18 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun deleteFriendship(userId: String) {
-        //todo
+        viewModelScope.launch {
+            val result = deleteFriendshipUseCase(userId)
+
+            _deleteFriendshipEvent.value = result.fold(
+                onSuccess = {
+                    DeleteFriendshipEvent.SuccessDelete
+                },
+                onFailure = {
+                    DeleteFriendshipEvent.Error("Ошибка при удалении из друзей. " + it.message)
+                }
+            )
+        }
     }
 
     fun createFriendshipRequest(nickname: String) {
@@ -568,5 +579,21 @@ class ProfileViewModel @Inject constructor(
 
     fun resetCreateFriendRequestEvent() {
         _createFriendRequestEvent.value = null
+    }
+
+    fun resetDeleteFriendshipEvent() {
+        _deleteFriendshipEvent.value = null
+    }
+
+    fun resetLoadUserInfoEvent() {
+        _loadUserInfoEvent.value = null
+    }
+
+    fun resetLoadUserFriendsEvent() {
+        _loadUserFriendsEvent.value = null
+    }
+
+    fun resetLoadUserServersEvent() {
+        _loadUserServersEvent.value = null
     }
 }

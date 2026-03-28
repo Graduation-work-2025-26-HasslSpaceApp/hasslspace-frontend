@@ -11,19 +11,19 @@ enum class StatusPresentation(val painter: Int, val label: String) {
 
 fun String.toStatusPresentation(): StatusPresentation {
     return when (this) {
-        "В сети" -> StatusPresentation.ONLINE
-        "Невидимка" -> StatusPresentation.INVISIBLE
-        "Не беспокоить" -> StatusPresentation.DO_NOT_DISTURB
-        "Не активен" -> StatusPresentation.OFFLINE
+        "ONLINE" -> StatusPresentation.ONLINE
+        "INVISIBLE" -> StatusPresentation.INVISIBLE
+        "DO_NOT_DISTURB" -> StatusPresentation.DO_NOT_DISTURB
+        "OFFLINE" -> StatusPresentation.OFFLINE
         else -> StatusPresentation.INVISIBLE
     }
 }
 
 fun StatusPresentation.toDomain(): String {
     return when (this) {
-        StatusPresentation.ONLINE -> "В сети"
-        StatusPresentation.INVISIBLE -> "Невидимка"
-        StatusPresentation.DO_NOT_DISTURB -> "Не беспокоить"
-        StatusPresentation.OFFLINE -> "Не активен"
+        StatusPresentation.ONLINE -> "ONLINE"
+        StatusPresentation.INVISIBLE -> "INVISIBLE"
+        StatusPresentation.DO_NOT_DISTURB -> "DO_NOT_DISTURB"
+        StatusPresentation.OFFLINE -> "OFFLINE"
     }
 }

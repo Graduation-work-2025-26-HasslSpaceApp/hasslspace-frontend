@@ -2,6 +2,7 @@ package ru.hse.app.androidApp.data.network
 
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Response
 import ru.hse.app.androidApp.data.model.ChannelInfoDto
 import ru.hse.app.androidApp.data.model.CreateChannelDto
@@ -23,12 +24,12 @@ import java.time.LocalDateTime
 
 class FakeApiService : ApiService {
 
-    private val fakeUser =
+    private var fakeUser =
         UserDto(
             "Юлия Кухтина",
             "yuulkht",
             "testuser@example.com",
-            "В сети",
+            "ONLINE",
             "https://i.postimg.cc/J4DLnLCS/accountphoto.jpg",
             "Описание профиля описание профиля описание профиля описание профиля"
         )
@@ -38,18 +39,18 @@ class FakeApiService : ApiService {
             "1",
             "Юлия Кухтина",
             "yuulkht",
-            "В сети",
+            "ONLINE",
             "https://i.postimg.cc/J4DLnLCS/accountphoto.jpg",
             "Описание профиля описание профиля описание профиля описание профиля",
             UserInfoExtendedDto.StatusType.FRIEND
         )
 
-    private val fakeFriends = listOf(
+    private val fakeFriends = mutableListOf(
         UserInfoDto(
             "1",
             "Алексей Иванов",
             "alex_ivanov",
-            "В сети",
+            "ONLINE",
             "https://i.postimg.cc/1XfF8BZh/friend1.jpg",
             TypeDto.FRIEND
         ),
@@ -57,7 +58,7 @@ class FakeApiService : ApiService {
             "2",
             "Мария Петрова",
             "masha_petrov",
-            "Невидимка",
+            "INVISIBLE",
             "https://i.postimg.cc/K8Jxt5wQ/friend2.jpg",
             TypeDto.FRIEND
         ),
@@ -65,7 +66,7 @@ class FakeApiService : ApiService {
             "3",
             "Ирина Смирнова",
             "irina_smirnov",
-            "Не беспокоить",
+            "DO_NOT_DISTURB",
             "https://i.postimg.cc/3RmDC39Y/friend3.jpg",
             TypeDto.FRIEND
         ),
@@ -73,7 +74,7 @@ class FakeApiService : ApiService {
             "4",
             "Дмитрий Козлов",
             "dmitry_kozlov",
-            "Не активен",
+            "OFFLINE",
             "https://i.postimg.cc/tgG6rqDh/friend4.jpg",
             TypeDto.OUTGOING_REQUEST
         ),
@@ -81,7 +82,7 @@ class FakeApiService : ApiService {
             "5",
             "Елена Федорова",
             "elena_fedorova",
-            "В сети",
+            "ONLINE",
             "https://i.postimg.cc/MTf5d7Z8/friend5.jpg",
             TypeDto.FRIEND
         ),
@@ -89,7 +90,7 @@ class FakeApiService : ApiService {
             "6",
             "Иван Ребров",
             "ivan_rebrov",
-            "Не беспокоить",
+            "DO_NOT_DISTURB",
             "https://i.postimg.cc/fyzsbpdZ/friend6.jpg",
             TypeDto.INCOMING_REQUEST
         ),
@@ -97,7 +98,7 @@ class FakeApiService : ApiService {
             "7",
             "Татьяна Белова",
             "tatiana_belova",
-            "Невидимка",
+            "INVISIBLE",
             "https://i.postimg.cc/9F0CjTjR/friend7.jpg",
             TypeDto.FRIEND
         ),
@@ -105,7 +106,7 @@ class FakeApiService : ApiService {
             "8",
             "Максим Сидоров",
             "maxim_sidorov",
-            "В сети",
+            "ONLINE",
             "https://i.postimg.cc/7Z1vBGzF/friend8.jpg",
             TypeDto.OUTGOING_REQUEST
         ),
@@ -113,7 +114,7 @@ class FakeApiService : ApiService {
             "9",
             "Ольга Червонова",
             "olga_chervonova",
-            "Не активен",
+            "OFFLINE",
             "https://i.postimg.cc/Y2myr5x6/friend9.jpg",
             TypeDto.FRIEND
         ),
@@ -121,7 +122,7 @@ class FakeApiService : ApiService {
             "10",
             "Петр Лебедев",
             "peter_lebedev",
-            "Невидимка",
+            "INVISIBLE",
             "https://i.postimg.cc/mkGYD5Kp/friend10.jpg",
             TypeDto.INCOMING_REQUEST
         )
@@ -425,6 +426,10 @@ class FakeApiService : ApiService {
     }
 
     override suspend fun updateUserProfile(updateProfileDto: UpdateProfileDto): Response<String> {
+        fakeUser = fakeUser.copy(
+            name = updateProfileDto.name?: fakeUser.name,
+            photoURL = updateProfileDto.photoUrl?: fakeUser.photoURL,
+            description = updateProfileDto.description?: fakeUser.description,)
         return Response.success("true")
     }
 
@@ -437,10 +442,23 @@ class FakeApiService : ApiService {
     }
 
     override suspend fun changeStatus(status: String): Response<String> {
+        fakeUser = fakeUser.copy(
+            status = status
+        )
         return Response.success("true")
     }
 
     override suspend fun createFriendRequest(username: String): Response<String> {
+        fakeFriends.addLast(
+            UserInfoDto(
+                "11",
+                "Александр Миронов",
+                "mironov",
+                "ONLINE",
+                "https://i.postimg.cc/7Z1vBGzF/friend8.jpg",
+                TypeDto.OUTGOING_REQUEST
+            ),
+        )
         return Response.success("true")
     }
 
@@ -448,15 +466,69 @@ class FakeApiService : ApiService {
         userId: String,
         status: String
     ): Response<String> {
+        if (status == "ACCEPTED") {
+            val candidate = fakeFriends.find { it.id == userId }?.copy(type = TypeDto.FRIEND)
+
+            fakeFriends.remove(
+                fakeFriends.find { it.id == userId }
+            )
+            candidate?.let {
+                fakeFriends.addLast(candidate)
+            }
+
+        } else {
+            fakeFriends.remove(
+                fakeFriends.find { it.id == userId }
+            )
+        }
         return Response.success("true")
     }
 
     override suspend fun deleteFriendship(userId: String): Response<String> {
+        fakeFriends.remove(
+            fakeFriends.find { it.id == userId }
+        )
         return Response.success("true")
     }
 
     override suspend fun getUserInfoExtended(userId: String): Response<UserInfoExtendedDto> {
-        return Response.success(fakeUserExtended)
+        val friend = fakeFriends.find { it.id == userId }
+
+        return if (friend != null) {
+            Response.success(
+                UserInfoExtendedDto(
+                    id = friend.id,
+                    name = friend.name,
+                    nickname = friend.nickname,
+                    status = friend.status,
+                    photoURL = friend.photoURL,
+                    description = getDescriptionForUser(friend.id),
+                    friendshipStatus = when (friend.type) {
+                        TypeDto.FRIEND -> UserInfoExtendedDto.StatusType.FRIEND
+                        TypeDto.OUTGOING_REQUEST -> UserInfoExtendedDto.StatusType.OUTGOING_REQUEST
+                        TypeDto.INCOMING_REQUEST -> UserInfoExtendedDto.StatusType.INCOMING_REQUEST
+                    },
+                )
+            )
+        } else {
+            Response.error(404, ResponseBody.create(null, "User not found"))
+        }
+    }
+
+    private fun getDescriptionForUser(userId: String): String {
+        return when (userId) {
+            "1" -> "Люблю программировать и играть в шахматы"
+            "2" -> "Фотограф и путешественник"
+            "3" -> "Музыкант, играю на гитаре"
+            "4" -> "Студент, учусь на программиста"
+            "5" -> "Дизайнер интерфейсов"
+            "6" -> "Спортсмен, увлекаюсь бегом"
+            "7" -> "Книжный червь, читаю фантастику"
+            "8" -> "Люблю готовить и экспериментировать"
+            "9" -> "Путешествую по миру"
+            "10" -> "Изучаю иностранные языки"
+            else -> "Описание профиля"
+        }
     }
 
     override suspend fun getCommonServers(userId: String): Response<List<ServerInfoDto>> {

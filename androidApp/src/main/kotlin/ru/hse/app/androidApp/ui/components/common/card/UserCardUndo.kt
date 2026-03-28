@@ -47,7 +47,8 @@ fun UserCardUndo(
     status: StatusPresentation = StatusPresentation.INVISIBLE,
     profilePictureUrl: String = "",
     onUndoClick: () -> Unit,
-    onCardClick: () -> Unit
+    onCardClick: () -> Unit,
+    enabled: Boolean = true
 ) {
     Row(
         modifier
@@ -55,7 +56,7 @@ fun UserCardUndo(
             .height(77.dp)
             .clip(RoundedCornerShape(22.dp))
             .background(MaterialTheme.colorScheme.surfaceContainer)
-            .clickable { onCardClick() }
+            .clickable(enabled = enabled) { onCardClick() }
             .padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically
     ) {
 
