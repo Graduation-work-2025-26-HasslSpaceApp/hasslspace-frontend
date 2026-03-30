@@ -51,7 +51,7 @@ fun CreateChannelContent(
         Spacer(Modifier.height(15.dp))
 
         VariableMedium(
-            text = if (type == "text") "Создать текстовый канал" else "Создать голосовой канал",
+            text = if (type == "TEXT") "Создать текстовый канал" else "Создать голосовой канал",
             fontSize = 20.sp,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
@@ -84,7 +84,7 @@ fun CreateChannelContent(
                 text = "Настроить участников или роли"
             )
         }
-        if (type != "text") {
+        if (type != "TEXT") {
             Spacer(Modifier.height(30.dp))
             UserLimitSlider(
                 sliderValue = sliderValue,
@@ -114,7 +114,7 @@ fun CreateChannelContentPreviewLightEmpty() {
             onCreateChannelClick = {},
             isDarkTheme = false,
             onAddMembers = {},
-            type = "text",
+            type = "TEXT",
             sliderValue = 25f,
             onSliderValueChange = {}
         )
@@ -134,7 +134,7 @@ fun CreateChannelContentPreviewLight1() {
             onCreateChannelClick = {},
             isDarkTheme = false,
             onAddMembers = {},
-            type = "voice",
+            type = "VOICE",
             sliderValue = 25f,
             onSliderValueChange = {}
         )

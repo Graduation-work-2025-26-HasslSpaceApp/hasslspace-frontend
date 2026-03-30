@@ -1,7 +1,6 @@
 package ru.hse.app.androidApp.domain.repository
 
 import ru.hse.app.androidApp.domain.model.entity.CreateServer
-import ru.hse.app.androidApp.domain.model.entity.Invitation
 import ru.hse.app.androidApp.domain.model.entity.ServerInfo
 import ru.hse.app.androidApp.domain.model.entity.ServerInfoExpanded
 import ru.hse.app.androidApp.domain.model.entity.UserInfo

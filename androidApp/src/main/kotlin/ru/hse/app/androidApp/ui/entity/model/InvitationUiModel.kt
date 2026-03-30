@@ -12,7 +12,7 @@ data class InvitationUiModel(
     val expirationDate: LocalDateTime,
     val serverName: String? = null,
     val creatorName: String? = null,
-    val link : String? = null
+    val link: String? = null
 )
 
 fun Invitation.toUi(): InvitationUiModel {

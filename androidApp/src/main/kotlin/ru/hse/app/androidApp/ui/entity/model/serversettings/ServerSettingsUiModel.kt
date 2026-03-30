@@ -34,7 +34,6 @@ data class ServerSettingsUiModel(
     data class NewRoleUiModel(
         val name: String,
         val color: Color,
-        val members: List<FriendCheckboxUiModel>
     )
 
     data class EditRoleUiModel(
@@ -81,16 +80,6 @@ fun ServerInfoExpanded.toServerSettingsUiModel(): ServerSettingsUiModel {
         newRole = ServerSettingsUiModel.NewRoleUiModel(
             name = "",
             color = Color.Transparent,
-            members = this.members.map { member ->
-                FriendCheckboxUiModel(
-                    id = member.id,
-                    name = member.name,
-                    nickname = member.username,
-                    status = member.status.toStatusPresentation(),
-                    avatarUrl = member.photoURL ?: "",
-                    isChosen = false
-                )
-            }
         ),
         editedRole = ServerSettingsUiModel.EditRoleUiModel(
             id = "",

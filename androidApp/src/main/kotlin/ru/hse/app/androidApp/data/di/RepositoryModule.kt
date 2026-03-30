@@ -49,7 +49,10 @@ object RepositoryModule {
     }
 
     @Provides
-    fun provideInvitationRepository(apiService: ApiService, apiCaller: ApiCaller): InvitationRepository {
+    fun provideInvitationRepository(
+        apiService: ApiService,
+        apiCaller: ApiCaller
+    ): InvitationRepository {
         return InvitationRepositoryImpl(apiService, apiCaller)
     }
 }

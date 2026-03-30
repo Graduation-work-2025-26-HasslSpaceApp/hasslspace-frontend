@@ -2,7 +2,6 @@ package ru.hse.app.androidApp.domain.repository
 
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import ru.hse.app.androidApp.domain.model.entity.ServerInfo
 import ru.hse.app.androidApp.domain.model.entity.UserExpandedInfo
 
 interface UserRepository {

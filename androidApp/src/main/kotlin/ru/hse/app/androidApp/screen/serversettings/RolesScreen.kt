@@ -18,12 +18,15 @@ import ru.hse.app.androidApp.ui.components.servers.roles.ColorPickerBlock
 import ru.hse.app.androidApp.ui.components.servers.roles.EditRoleContent
 import ru.hse.app.androidApp.ui.components.servers.roles.NewRoleContent
 import ru.hse.app.androidApp.ui.components.servers.roles.ServerRolesContent
+import ru.hse.app.androidApp.ui.entity.model.servers.events.AssignRoleEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.CreateServerRoleEvent
+import ru.hse.app.androidApp.ui.entity.model.servers.events.DeleteRoleEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerInfoEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerRolesEvent
+import ru.hse.app.androidApp.ui.entity.model.servers.events.PatchServerRoleEvent
+import ru.hse.app.androidApp.ui.entity.model.servers.events.RevokeRoleEvent
 import ru.hse.app.androidApp.ui.entity.model.serversettings.ServerSettingsUiState
 import ru.hse.app.androidApp.ui.entity.model.toRoleMiniCount
-import ru.hse.app.androidApp.ui.navigation.NavigationItem
 
 @Composable
 fun RolesScreen(
@@ -36,17 +39,90 @@ fun RolesScreen(
     val getServerInfoEvent by viewModel.getServerInfoEvent.collectAsState()
     val getServerRolesEvent by viewModel.getServerRolesEvent.collectAsState()
     val createServerRoleEvent by viewModel.createServerRoleEvent.collectAsState()
+    val assignRoleEvent by viewModel.assignRoleEvent.collectAsState()
+    val revokeRoleEvent by viewModel.revokeRoleEvent.collectAsState()
+    val patchServerRoleEvent by viewModel.patchServerRoleEvent.collectAsState()
+    val deleteRoleEvent by viewModel.deleteRoleEvent.collectAsState()
 
     LaunchedEffect(serverId) {
         viewModel.getServerInfo(serverId)
         viewModel.getServerRoles(serverId)
     }
+
+    LaunchedEffect(deleteRoleEvent) {
+        viewModel.showDeleteRoleDialog.value = false
+        when (deleteRoleEvent) {
+            is DeleteRoleEvent.SuccessDelete -> {
+                viewModel.getServerInfo(serverId)
+                viewModel.getServerRoles(serverId)
+                viewModel.showEditRole.value = false
+                viewModel.showToast("Роль удалена")
+            }
+
+            is DeleteRoleEvent.Error -> {
+                val message = (deleteRoleEvent as DeleteRoleEvent.Error).message
+                viewModel.showToast(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetDeleteRoleEvent()
+    }
+
+    LaunchedEffect(patchServerRoleEvent) {
+        when (patchServerRoleEvent) {
+            is PatchServerRoleEvent.Success -> {
+                viewModel.getServerInfo(serverId)
+                viewModel.getServerRoles(serverId)
+                viewModel.showEditRole.value = false
+            }
+
+            is PatchServerRoleEvent.Error -> {
+                val message = (patchServerRoleEvent as PatchServerRoleEvent.Error).message
+                viewModel.showToast(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetPatchServerRoleEvent()
+    }
+
+    LaunchedEffect(assignRoleEvent) {
+        when (assignRoleEvent) {
+            is AssignRoleEvent.Success -> {
+            }
+
+            is AssignRoleEvent.Error -> {
+                val message = (assignRoleEvent as AssignRoleEvent.Error).message
+                viewModel.showToast(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetAssignRoleEvent()
+    }
+
+    LaunchedEffect(revokeRoleEvent) {
+        when (revokeRoleEvent) {
+            is RevokeRoleEvent.Success -> {
+            }
+
+            is RevokeRoleEvent.Error -> {
+                val message = (revokeRoleEvent as RevokeRoleEvent.Error).message
+                viewModel.showToast(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetRevokeRoleEvent()
+    }
+
     LaunchedEffect(createServerRoleEvent) {
         when (createServerRoleEvent) {
             is CreateServerRoleEvent.SuccessCreate -> {
                 viewModel.getServerInfo(serverId)
                 viewModel.getServerRoles(serverId)
-                navController.navigate((NavigationItem.RolesSettings.route + "/${serverId}"))
+                viewModel.showNewRoleScreen.value = false
                 viewModel.showToast("Успешно создали роль")
             }
 
@@ -134,18 +210,14 @@ fun RolesScreenWithStateContent(
 
     if (viewModel.showNewRoleScreen.value) {
         NewRoleContent(
-            imageLoader = context.imageLoader,
-            friends = data.newRole.members,
             onBackClick = {
                 viewModel.showNewRoleScreen.value = false
             },
             roleName = data.newRole.name,
             onRoleNameChanged = viewModel::onNewRoleNameChanged,
             onSaveClick = { viewModel.createServerRole(data.id, data.newRole) },
-            onToggle = viewModel::onToggleNewRoleMember,
             selectedColor = data.newRole.color,
             onColorPickClick = { viewModel.showColorPicker.value = true },
-            isDarkTheme = viewModel.isDarkTheme
         )
     }
 
@@ -161,6 +233,7 @@ fun RolesScreenWithStateContent(
 
     if (viewModel.showColorPickerEdit.value) {
         ColorPickerBlock(
+            initColor = data.editedRole.color,
             onSaveClick = {
                 viewModel.onEditRoleColorChanged(it)
                 viewModel.showColorPickerEdit.value = false
@@ -176,7 +249,7 @@ fun RolesScreenWithStateContent(
             onBackClick = { viewModel.showEditRole.value = false },
             roleName = data.editedRole.name,
             onSaveClick = { viewModel.saveEditedRole(serverId, data.editedRole.id) },
-            onToggle = viewModel::onToggleEditRoleMember,
+            onToggle = { viewModel.onToggleEditRoleMember(serverId, data.editedRole.id, it) },
             selectedColor = data.editedRole.color,
             onColorPickClick = { viewModel.showColorPickerEdit.value = true },
             isDarkTheme = viewModel.isDarkTheme,
@@ -196,6 +269,4 @@ fun RolesScreenWithStateContent(
             onDismissClick = { viewModel.showDeleteRoleDialog.value = false }
         )
     }
-
-
 }

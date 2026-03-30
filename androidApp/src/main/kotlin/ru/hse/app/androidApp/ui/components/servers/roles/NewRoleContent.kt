@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,36 +19,26 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil3.ImageLoader
-import coil3.imageLoader
 import ru.hse.app.androidApp.ui.components.common.button.AddTextButton
 import ru.hse.app.androidApp.ui.components.common.button.BackButton
-import ru.hse.app.androidApp.ui.components.common.card.UserCardCheckbox
 import ru.hse.app.androidApp.ui.components.common.field.AuthCustomField
-import ru.hse.app.androidApp.ui.components.common.grid.UniversalVerticalGrid
 import ru.hse.app.androidApp.ui.components.common.text.VariableBold
-import ru.hse.app.androidApp.ui.components.common.text.VariableLight
 import ru.hse.app.androidApp.ui.entity.model.FriendCheckboxUiModel
 import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
 import ru.hse.app.androidApp.ui.theme.AppTheme
 
 @Composable
 fun NewRoleContent(
-    imageLoader: ImageLoader,
-    friends: List<FriendCheckboxUiModel>,
     onBackClick: () -> Unit,
     roleName: String,
     onRoleNameChanged: (String) -> Unit,
     onSaveClick: () -> Unit,
-    onToggle: (FriendCheckboxUiModel) -> Unit,
     modifier: Modifier = Modifier,
     selectedColor: Color,
     onColorPickClick: () -> Unit,
-    isDarkTheme: Boolean
 ) {
     BackHandler() {
         onBackClick()
@@ -109,30 +98,30 @@ fun NewRoleContent(
         )
 
         Spacer(Modifier.height(15.dp))
-
-        VariableLight(
-            text = "Выберите участников",
-            fontSize = 16.sp,
-        )
-
-        Spacer(Modifier.height(15.dp))
-
-        UniversalVerticalGrid(
-            items = friends,
-            columns = 1,
-            contentPadding = PaddingValues(0.dp),
-        ) { friend ->
-            UserCardCheckbox(
-                imageLoader = imageLoader,
-                username = friend.name,
-                nickname = friend.nickname,
-                status = friend.status,
-                profilePictureUrl = friend.avatarUrl,
-                isDarkTheme = isDarkTheme,
-                onClick = { onToggle(friend) },
-                isChosen = friend.isChosen
-            )
-        }
+//
+//        VariableLight(
+//            text = "Выберите участников",
+//            fontSize = 16.sp,
+//        )
+//
+//        Spacer(Modifier.height(15.dp))
+//
+//        UniversalVerticalGrid(
+//            items = friends,
+//            columns = 1,
+//            contentPadding = PaddingValues(0.dp),
+//        ) { friend ->
+//            UserCardCheckbox(
+//                imageLoader = imageLoader,
+//                username = friend.name,
+//                nickname = friend.nickname,
+//                status = friend.status,
+//                profilePictureUrl = friend.avatarUrl,
+//                isDarkTheme = isDarkTheme,
+//                onClick = { onToggle(friend) },
+//                isChosen = friend.isChosen
+//            )
+//        }
     }
 }
 
@@ -200,14 +189,10 @@ private val mockFriends = listOf(
 fun NewRoleContentPreviewWithRequestsLight() {
     AppTheme(isDark = false) {
         NewRoleContent(
-            imageLoader = LocalContext.current.imageLoader,
-            friends = mockFriends,
             onBackClick = {},
             roleName = "",
             onRoleNameChanged = {},
             onSaveClick = {},
-            onToggle = {},
-            isDarkTheme = false,
             selectedColor = Color.Blue,
             onColorPickClick = {},
         )
@@ -219,14 +204,10 @@ fun NewRoleContentPreviewWithRequestsLight() {
 fun NewRoleContentPreviewWithRequestsDark() {
     AppTheme(isDark = true) {
         NewRoleContent(
-            imageLoader = LocalContext.current.imageLoader,
-            friends = mockFriends,
             onBackClick = {},
             roleName = "",
             onRoleNameChanged = {},
             onSaveClick = {},
-            onToggle = {},
-            isDarkTheme = true,
             selectedColor = Color.Blue,
             onColorPickClick = {},
         )

@@ -1,7 +1,6 @@
 package ru.hse.app.androidApp.domain.usecase.roles
 
 import ru.hse.app.androidApp.domain.model.entity.RoleInfo
-import ru.hse.app.androidApp.domain.repository.RoleRepository
 import javax.inject.Inject
 
 class GetServerRoleInfoUseCase @Inject constructor() {

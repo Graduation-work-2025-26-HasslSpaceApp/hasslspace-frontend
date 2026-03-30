@@ -1,7 +1,6 @@
 package ru.hse.app.androidApp.domain.usecase.channel
 
 import ru.hse.app.androidApp.domain.repository.ChannelRepository
-import ru.hse.app.androidApp.domain.repository.ServerRepository
 import javax.inject.Inject
 
 class DeleteChannelUseCase @Inject constructor(

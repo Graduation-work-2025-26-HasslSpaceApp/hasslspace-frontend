@@ -30,7 +30,6 @@ import androidx.compose.ui.unit.sp
 import coil3.ImageLoader
 import coil3.compose.rememberAsyncImagePainter
 import ru.hse.app.androidApp.R
-import ru.hse.app.androidApp.ui.components.common.text.VariableLight
 import ru.hse.app.androidApp.ui.components.common.text.VariableMedium
 import ru.hse.app.androidApp.ui.theme.AppTheme
 

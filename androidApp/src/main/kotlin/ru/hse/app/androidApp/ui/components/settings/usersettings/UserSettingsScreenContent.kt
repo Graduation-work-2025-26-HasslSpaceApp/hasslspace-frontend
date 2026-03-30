@@ -49,7 +49,8 @@ fun UserSettingsScreenContent(
     onExit: () -> Unit
 ) {
     Box(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
             .imePadding()
     ) {
         Image(

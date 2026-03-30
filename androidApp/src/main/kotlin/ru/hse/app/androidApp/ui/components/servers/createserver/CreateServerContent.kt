@@ -47,65 +47,70 @@ fun CreateServerContent(
             .fillMaxSize()
             .padding(top = 50.dp)
             .padding(16.dp)
-            .imePadding()
     ) {
-        Column(
-            modifier = modifier.fillMaxSize()
-                .verticalScroll(rememberScrollState())
+        Box(
+            modifier = Modifier
+                .imePadding()
         ) {
-            BackButton(onClick = onBackClick)
-            Spacer(Modifier.height(15.dp))
-
-            VariableMedium(
-                text = "Создайте свой сервер",
-                fontSize = 20.sp,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(bottom = 10.dp)
-            )
-
-            VariableLight(
-                text = "Ваш сервер - это место, где вы можете тусоваться со \n своими друзьями.\n" +
-                        "Создайте сервер и начните общаться",
-                fontSize = 12.sp,
-                fontColor = MaterialTheme.colorScheme.outline,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(bottom = 10.dp),
-                textAlign = TextAlign.Center
-            )
-
-            //TODO перенести в общие компоненты
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
             ) {
-                PhotoPicker(
-                    imageUri = selectedImageUri,
-                    onClick = onPickImageClick,
-                    sizeCircle = 126.dp,
-                    sizeIcon = 30.dp,
-                    border = 1.dp
+                BackButton(onClick = onBackClick)
+                Spacer(Modifier.height(15.dp))
+
+                VariableMedium(
+                    text = "Создайте свой сервер",
+                    fontSize = 20.sp,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(bottom = 10.dp)
+                )
+
+                VariableLight(
+                    text = "Ваш сервер - это место, где вы можете тусоваться со \n своими друзьями.\n" +
+                            "Создайте сервер и начните общаться",
+                    fontSize = 12.sp,
+                    fontColor = MaterialTheme.colorScheme.outline,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(bottom = 10.dp),
+                    textAlign = TextAlign.Center
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    PhotoPicker(
+                        imageUri = selectedImageUri,
+                        onClick = onPickImageClick,
+                        sizeCircle = 126.dp,
+                        sizeIcon = 30.dp,
+                        border = 1.dp
+                    )
+                }
+
+                Spacer(Modifier.height(25.dp))
+
+                AuthCustomField(
+                    text = serverName,
+                    onTextChanged = onServerNameChanged,
+                    placeholder = "Введите название сервера",
+                    description = "Название сервера",
+                    maxCharacters = 30,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(Modifier.height(15.dp))
+
+                BigButton(
+                    onClick = onCreateServerClick,
+                    text = "Создать сервер"
                 )
             }
 
-            Spacer(Modifier.height(25.dp))
-
-            AuthCustomField(
-                text = serverName,
-                onTextChanged = onServerNameChanged,
-                placeholder = "Введите название сервера",
-                description = "Название сервера",
-                maxCharacters = 30,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(Modifier.height(15.dp))
-
-            BigButton(
-                onClick = onCreateServerClick,
-                text = "Создать сервер"
-            )
         }
 
         Column(

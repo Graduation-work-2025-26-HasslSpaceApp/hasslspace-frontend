@@ -5,7 +5,6 @@ import okhttp3.RequestBody
 import ru.hse.app.androidApp.data.model.UpdateProfileDto
 import ru.hse.app.androidApp.data.network.ApiCaller
 import ru.hse.app.androidApp.data.network.ApiService
-import ru.hse.app.androidApp.domain.model.entity.ServerInfo
 import ru.hse.app.androidApp.domain.model.entity.UserExpandedInfo
 import ru.hse.app.androidApp.domain.model.entity.toDomain
 import ru.hse.app.androidApp.domain.repository.UserRepository
@@ -78,7 +77,8 @@ class UserRepositoryImpl @Inject constructor(
             val updateProfileDto = UpdateProfileDto(
                 name = newName
             )
-            apiService.updateUserProfile(updateProfileDto) }
+            apiService.updateUserProfile(updateProfileDto)
+        }
     }
 
     override suspend fun changeUserStatus(status: String): Result<String> {

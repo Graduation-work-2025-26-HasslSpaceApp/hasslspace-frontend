@@ -1,6 +1,5 @@
 package ru.hse.app.androidApp.domain.usecase.servers
 
-import ru.hse.app.androidApp.domain.model.entity.ServerInfoExpanded
 import ru.hse.app.androidApp.domain.repository.ServerRepository
 import javax.inject.Inject
 

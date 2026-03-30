@@ -17,9 +17,7 @@ import ru.hse.app.androidApp.ui.components.profile.addfriens.AddFriendsScreenCon
 import ru.hse.app.androidApp.ui.entity.model.profile.ProfileUiState
 import ru.hse.app.androidApp.ui.entity.model.profile.events.CreateFriendRequestEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.events.DeleteFriendshipEvent
-import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadChosenUserCommonServersEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadUserFriendsEvent
-import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadUserServersEvent
 
 @Composable
 fun AddFriendsScreen(
@@ -78,11 +76,13 @@ fun AddFriendsScreen(
             is DeleteFriendshipEvent.SuccessDelete -> {
                 viewModel.loadUserFriends()
             }
+
             is DeleteFriendshipEvent.Error -> {
                 val message =
                     (deleteFriendshipEvent as DeleteFriendshipEvent.Error).message
                 viewModel.showToast(message)
             }
+
             null -> {}
         }
         viewModel.resetDeleteFriendshipEvent()

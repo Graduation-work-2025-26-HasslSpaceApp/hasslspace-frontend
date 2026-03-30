@@ -3,6 +3,7 @@ package ru.hse.app.androidApp.data.network
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.Response
 import ru.hse.app.androidApp.data.model.ChannelInfoDto
 import ru.hse.app.androidApp.data.model.CreateChannelDto
@@ -21,6 +22,7 @@ import ru.hse.app.androidApp.data.model.UserDto
 import ru.hse.app.androidApp.data.model.UserInfoDto
 import ru.hse.app.androidApp.data.model.UserInfoExtendedDto
 import java.time.LocalDateTime
+import java.util.UUID
 
 class FakeApiService : ApiService {
 
@@ -128,7 +130,7 @@ class FakeApiService : ApiService {
         )
     )
 
-    private val fakeServers = listOf(
+    private val fakeServers = mutableListOf(
         ServerInfoDto("1", "Сервер 1", "https://i.postimg.cc/2yzCRhY8/server1.jpg"),
         ServerInfoDto("2", "Сервер 2", "https://i.postimg.cc/XJH1pcGs/server2.jpg"),
         ServerInfoDto("3", "Сервер 3", null),
@@ -141,7 +143,7 @@ class FakeApiService : ApiService {
         ServerInfoDto("10", "Сервер 10", "https://i.postimg.cc/QcY6h8tT/server10.jpg")
     )
 
-    private val fakeServer = ServerInfoExpandedDto(
+    private var fakeServer = ServerInfoExpandedDto(
         id = "serverId",
         name = "Kotlin Developers",
         photoURL = "https://example.com/servers/kotlin/avatar.png",
@@ -247,7 +249,7 @@ class FakeApiService : ApiService {
         )
     )
 
-    private val fakeInvitations = listOf(
+    private val fakeInvitations = mutableListOf(
         ServerInviteDto(
             code = "jweiqjweiq",
             serverId = "serverId",
@@ -286,7 +288,7 @@ class FakeApiService : ApiService {
         )
     )
 
-    private val serverRoles = listOf(
+    private val serverRoles = mutableListOf(
         RoleInfoDto(
             id = "role_admin",
             name = "Admin",
@@ -427,9 +429,10 @@ class FakeApiService : ApiService {
 
     override suspend fun updateUserProfile(updateProfileDto: UpdateProfileDto): Response<String> {
         fakeUser = fakeUser.copy(
-            name = updateProfileDto.name?: fakeUser.name,
-            photoURL = updateProfileDto.photoUrl?: fakeUser.photoURL,
-            description = updateProfileDto.description?: fakeUser.description,)
+            name = updateProfileDto.name ?: fakeUser.name,
+            photoURL = updateProfileDto.photoUrl ?: fakeUser.photoURL,
+            description = updateProfileDto.description ?: fakeUser.description,
+        )
         return Response.success("true")
     }
 
@@ -539,10 +542,26 @@ class FakeApiService : ApiService {
         serverId: String,
         createRoleDto: CreateRoleDto
     ): Response<String> {
+        serverRoles.addLast(
+            RoleInfoDto(
+                id = UUID.randomUUID().toString(),
+                name = createRoleDto.name,
+                color = createRoleDto.color,
+                position = createRoleDto.position,
+                members = listOf()
+            )
+        )
         return Response.success("true")
     }
 
     override suspend fun createServer(createServerDto: CreateServerDto): Response<String> {
+        fakeServers.addLast(
+            ServerInfoDto(
+                id = "11",
+                name = createServerDto.name,
+                photoURL = createServerDto.photoUrl
+            )
+        )
         return Response.success("true")
     }
 
@@ -550,6 +569,26 @@ class FakeApiService : ApiService {
         serverId: String,
         createChannelDto: CreateChannelDto
     ): Response<String> {
+        if (createChannelDto.type == "TEXT") {
+            fakeServer = fakeServer.copy(
+                textChannels = fakeServer.copy().textChannels.plus(
+                    ServerInfoExpandedDto.TextChannelDto(
+                        id = UUID.randomUUID().toString(),
+                        name = createChannelDto.name
+                    )
+                )
+            )
+        } else {
+            fakeServer = fakeServer.copy(
+                voiceChannels = fakeServer.copy().voiceChannels.plus(
+                    ServerInfoExpandedDto.VoiceChannelDto(
+                        id = UUID.randomUUID().toString(),
+                        name = createChannelDto.name
+                    )
+                )
+            )
+        }
+
         return Response.success("true")
     }
 
@@ -557,6 +596,14 @@ class FakeApiService : ApiService {
         serverId: String,
         channelId: String
     ): Response<String> {
+        fakeServer = fakeServer.copy(
+            voiceChannels = fakeServer.copy().voiceChannels.minus(
+                fakeServer.copy().voiceChannels.filter { it.id == channelId }.toSet()
+            ),
+            textChannels = fakeServer.copy().textChannels.minus(
+                fakeServer.copy().textChannels.filter { it.id == channelId }.toSet()
+            )
+        )
         return Response.success("true")
     }
 
@@ -564,6 +611,9 @@ class FakeApiService : ApiService {
         serverId: String,
         invitationId: String
     ): Response<String> {
+        fakeInvitations.remove(
+            fakeInvitations.find { it.code == invitationId }
+        )
         return Response.success("true")
     }
 
@@ -571,6 +621,10 @@ class FakeApiService : ApiService {
         serverId: String,
         targetUserId: String
     ): Response<String> {
+        val updatedMembers = fakeServer.members.filter { it.id != targetUserId }
+        fakeServer = fakeServer.copy(
+            members = updatedMembers
+        )
         return Response.success("true")
     }
 
@@ -586,6 +640,9 @@ class FakeApiService : ApiService {
         userId: String,
         serverId: String
     ): Response<String> {
+        fakeServer = fakeServer.copy(
+            isOwner = false,
+        )
         return Response.success("true")
     }
 
@@ -593,6 +650,10 @@ class FakeApiService : ApiService {
         serverId: String,
         updateServerDto: UpdateServerDto
     ): Response<String> {
+        fakeServer = fakeServer.copy(
+            name = updateServerDto.name ?: fakeServer.copy().name,
+            photoURL = updateServerDto.photoUrl ?: fakeServer.copy().photoURL,
+        )
         return Response.success("true")
     }
 
@@ -601,7 +662,41 @@ class FakeApiService : ApiService {
         roleId: String,
         updateRoleDto: UpdateRoleDto
     ): Response<String> {
-        return Response.success("true")
+        if (serverId != fakeServer.id) {
+            return Response.error(404, "Server not found".toResponseBody(null))
+        }
+        val roleIndex = serverRoles.indexOfFirst { it.id == roleId }
+        if (roleIndex == -1) {
+            return Response.error(404, "Role not found".toResponseBody(null))
+        }
+        val existingRole = serverRoles[roleIndex]
+
+        val updatedRole = existingRole.copy(
+            name = updateRoleDto.name ?: existingRole.name,
+            color = updateRoleDto.color ?: existingRole.color,
+            position = updateRoleDto.position ?: existingRole.position
+        )
+
+        serverRoles[roleIndex] = updatedRole
+
+        val updatedMembers = fakeServer.members.map { member ->
+            val updatedMemberRoles = member.roles?.map { role ->
+                if (role.id == roleId) {
+
+                    role.copy(
+                        name = updateRoleDto.name ?: role.name,
+                        color = updateRoleDto.color ?: role.color
+                    )
+                } else {
+                    role
+                }
+            }
+            member.copy(roles = updatedMemberRoles)
+        }
+
+        fakeServer = fakeServer.copy(members = updatedMembers)
+
+        return Response.success("Role $roleId successfully updated")
     }
 
     override suspend fun deleteServer(serverId: String): Response<String> {
@@ -612,6 +707,9 @@ class FakeApiService : ApiService {
         serverId: String,
         roleId: String
     ): Response<String> {
+        serverRoles.remove(
+            serverRoles.find { it.id == roleId }
+        )
         return Response.success("true")
     }
 
@@ -621,6 +719,7 @@ class FakeApiService : ApiService {
         roleId: String
     ): Response<String> {
         return Response.success("true")
+//        return Response.error(1, "true".toResponseBody(null))
     }
 
     override suspend fun revokeRole(
@@ -674,7 +773,7 @@ class FakeApiService : ApiService {
                 ChannelInfoDto(
                     name = "Unknown Channel",
                     isPrivate = false,
-                    type = "text",
+                    type = "TEXT",
                     limit = null,
                     members = emptyList(),
                     roles = emptyList(),
@@ -683,19 +782,28 @@ class FakeApiService : ApiService {
             )
         }
 
+        val channelName = if (channel is ServerInfoExpandedDto.TextChannelDto) {
+            channel.name
+        } else if (channel is ServerInfoExpandedDto.VoiceChannelDto) {
+            channel.name
+        } else {
+            "Unknown"
+        }
+
+
         val isPrivate = when (channelId) {
             "channel_2", "voice_2" -> true
             else -> false
         }
 
         val channelType = when (channel) {
-            is ServerInfoExpandedDto.TextChannelDto -> "text"
-            is ServerInfoExpandedDto.VoiceChannelDto -> "voice"
-            else -> "text"
+            is ServerInfoExpandedDto.TextChannelDto -> "TEXT"
+            is ServerInfoExpandedDto.VoiceChannelDto -> "VOICE"
+            else -> "TEXT"
         }
 
         val limit = when (channelType) {
-            "voice" -> 10
+            "VOICE" -> 10
             else -> null
         }
 
@@ -726,13 +834,13 @@ class FakeApiService : ApiService {
 
         return Response.success(
             ChannelInfoDto(
-                name = "основной",
+                name = channelName,
                 isPrivate = isPrivate,
                 type = channelType,
                 limit = limit,
                 members = finalMembers,
                 roles = finalRoles,
-                id = "1"
+                id = channelId
             )
         )
     }

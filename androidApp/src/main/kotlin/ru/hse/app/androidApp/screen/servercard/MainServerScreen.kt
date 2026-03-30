@@ -15,8 +15,8 @@ import ru.hse.app.androidApp.R
 import ru.hse.app.androidApp.ui.components.common.dialog.RowButtonDialog
 import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
 import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
+import ru.hse.app.androidApp.ui.components.servers.configurechannel.ConfigureChannelContent
 import ru.hse.app.androidApp.ui.components.servers.configurechannel.ConfigureMembersAndRoles
-import ru.hse.app.androidApp.ui.components.servers.configurechannel.ConfigureVoiceChannelContent
 import ru.hse.app.androidApp.ui.components.servers.createchannel.CreateChannelContent
 import ru.hse.app.androidApp.ui.components.servers.editserver.InfoServerBottomSheet
 import ru.hse.app.androidApp.ui.components.servers.members.AddMembersSheet
@@ -29,6 +29,8 @@ import ru.hse.app.androidApp.ui.entity.model.servers.events.DeleteChannelEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.DeleteServerEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetFriendsNotInServerEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerInfoEvent
+import ru.hse.app.androidApp.ui.entity.model.servers.events.LoadChosenChannelEvent
+import ru.hse.app.androidApp.ui.entity.model.servers.events.PatchChannelEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.SendServerInvitationEvent
 import ru.hse.app.androidApp.ui.navigation.NavigationItem
 
@@ -44,12 +46,46 @@ fun MainServerScreen(
     val getFriendsNotInServerEvent by viewModel.getFriendsNotInServerEvent.collectAsState()
     val sendServerInvitationEvent by viewModel.sendServerInvitationEvent.collectAsState()
     val createChannelEvent by viewModel.createChannelEvent.collectAsState()
-
     val deleteServerEvent by viewModel.deleteServerEvent.collectAsState()
     val deleteChannelEvent by viewModel.deleteChannelEvent.collectAsState()
+    val loadChosenChannelEvent by viewModel.loadChosenChannelEvent.collectAsState()
+    val patchChannelEvent by viewModel.patchChannelEvent.collectAsState()
 
     LaunchedEffect(serverId) {
         viewModel.getServerInfo(serverId)
+    }
+
+    LaunchedEffect(patchChannelEvent) {
+        when (patchChannelEvent) {
+            is PatchChannelEvent.Success -> {
+                viewModel.getServerInfo(serverId)
+                navController.popBackStack()
+            }
+
+            is PatchChannelEvent.Error -> {
+                val message = (patchChannelEvent as PatchChannelEvent.Error).message
+                viewModel.showToast(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetPatchChannelEvent()
+    }
+
+    LaunchedEffect(loadChosenChannelEvent) {
+        when (loadChosenChannelEvent) {
+            is LoadChosenChannelEvent.SuccessLoad -> {
+                viewModel.showEditChannel.value = true
+            }
+
+            is LoadChosenChannelEvent.Error -> {
+                val message = (loadChosenChannelEvent as LoadChosenChannelEvent.Error).message
+                viewModel.showToast(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetLoadChosenChannelEvent()
     }
 
     LaunchedEffect(deleteServerEvent) {
@@ -63,7 +99,7 @@ fun MainServerScreen(
             }
 
             is DeleteServerEvent.Error -> {
-                val message = (deleteServerEvent as CreateChannelEvent.Error).message
+                val message = (deleteServerEvent as DeleteServerEvent.Error).message
                 viewModel.showToast(message)
                 viewModel.showDeleteServerDialog.value = false
                 viewModel.showServerSettingsSheet.value = false
@@ -80,6 +116,11 @@ fun MainServerScreen(
                 viewModel.showDeleteChannel.value = false
                 viewModel.showEditChannel.value = false
                 viewModel.getServerInfo(serverId)
+                navController.navigate(NavigationItem.MainServerScreen.route + "/${serverId}") {
+                    popUpTo(NavigationItem.MainServerScreen.route + "/${serverId}") {
+                        inclusive = true
+                    }
+                }
             }
 
             is DeleteChannelEvent.Error -> {
@@ -98,6 +139,10 @@ fun MainServerScreen(
         when (createChannelEvent) {
             is CreateChannelEvent.SuccessCreate -> {
                 viewModel.getServerInfo(serverId)
+                viewModel.creatingChannel.value = false
+                viewModel.newChannelName.value = ""
+                viewModel.newChannelIsPrivate.value = false
+                viewModel.limitNewChannel.floatValue = 0f
                 viewModel.creatingChannel.value = false
             }
 
@@ -244,7 +289,7 @@ fun MainServerScreenWithStateContent(
             onCreateChannel = {
                 viewModel.showTextChannelsSettings.value = false
                 viewModel.creatingChannel.value = true
-                viewModel.typeOfCreatingChannel.value = "text"
+                viewModel.typeOfCreatingChannel.value = "TEXT"
             },
             onDismiss = { viewModel.showTextChannelsSettings.value = false },
             isModerator = data.chosenServer.isOwner
@@ -261,7 +306,7 @@ fun MainServerScreenWithStateContent(
             onCreateChannel = {
                 viewModel.showVoiceChannelsSettings.value = false
                 viewModel.creatingChannel.value = true
-                viewModel.typeOfCreatingChannel.value = "voice"
+                viewModel.typeOfCreatingChannel.value = "VOICE"
             },
             onDismiss = { viewModel.showVoiceChannelsSettings.value = false },
             isModerator = data.chosenServer.isOwner
@@ -280,7 +325,6 @@ fun MainServerScreenWithStateContent(
                     viewModel.chosenTextChannel.value!!.id
                 )
                 viewModel.showTextChannelOptions.value = false
-                viewModel.showEditChannel.value = true
             },
             onDismiss = {
                 viewModel.showTextChannelOptions.value = false
@@ -302,7 +346,6 @@ fun MainServerScreenWithStateContent(
                     viewModel.chosenVoiceChannel.value!!.id
                 )
                 viewModel.showVoiceChannelOptions.value = false
-                viewModel.showEditChannel.value = true
             },
             onDismiss = {
                 viewModel.showVoiceChannelOptions.value = false
@@ -350,7 +393,7 @@ fun MainServerScreenWithStateContent(
     }
 
     if (viewModel.showEditChannel.value) {
-        ConfigureVoiceChannelContent(
+        ConfigureChannelContent(
             onBackClick = {
                 viewModel.showEditChannel.value = false
             },
@@ -362,7 +405,18 @@ fun MainServerScreenWithStateContent(
             onAddMembers = {
                 viewModel.showChooseMembersAndRolesEditChannel.value = true
             },
-            onSaveClick = {/*todo*/ },
+            onSaveClick = {
+                viewModel.patchChannel(
+                    serverId = data.chosenServer.id,
+                    channelId = data.editChannel.id,
+                    channelName = data.editChannel.name,
+                    isPrivate = data.editChannel.isPrivate,
+                    type = data.editChannel.type,
+                    limit = data.editChannel.limit,
+                    members = data.editChannel.members,
+                    roles = data.editChannel.roles,
+                )
+            },
             onDeleteChannel = { viewModel.showDeleteChannel.value = true },
             sliderValue = data.editChannel.limit,
             onSliderValueChange = viewModel::onEditChannelLimitValueChange,

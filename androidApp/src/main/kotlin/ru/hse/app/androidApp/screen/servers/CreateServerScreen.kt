@@ -20,6 +20,7 @@ import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
 import ru.hse.app.androidApp.ui.components.servers.createserver.CreateServerContent
 import ru.hse.app.androidApp.ui.entity.model.servers.ServersUiState
 import ru.hse.app.androidApp.ui.entity.model.servers.events.CreateServerEvent
+import ru.hse.app.androidApp.ui.navigation.BottomNavigationItem
 import ru.hse.app.androidApp.ui.navigation.NavigationItem
 import ru.hse.app.androidApp.ui.notification.ToastManager
 
@@ -35,8 +36,8 @@ fun CreateServerScreen(
     LaunchedEffect(createServerEvent) {
         when (createServerEvent) {
             is CreateServerEvent.SuccessCreate -> {
-                //TODO
-                viewModel.showToast("успешно создали сервер")
+                viewModel.showToast("Успешно создали сервер")
+                navController.navigate(BottomNavigationItem.Servers.route)
             }
 
             is CreateServerEvent.Error -> {

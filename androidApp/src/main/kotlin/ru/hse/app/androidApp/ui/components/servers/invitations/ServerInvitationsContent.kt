@@ -67,7 +67,7 @@ fun ServerInvitationsContent(
 
             items(invitations, key = { it.code }) { invitation ->
                 InviteCard(
-                    link = invitation.link?: invitation.code,
+                    link = invitation.link ?: invitation.code,
                     expirationDate = invitation.expirationDate,
                     onInvitationClick = { onInvitationClick(invitation) },
                     onCancelClick = { onCancelClick(invitation) },

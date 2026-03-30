@@ -1,23 +1,13 @@
 package ru.hse.app.androidApp.data.repository
 
-import ru.hse.app.androidApp.data.model.UpdateChannelDto
 import ru.hse.app.androidApp.data.model.UpdateRoleDto
-import ru.hse.app.androidApp.data.model.UpdateServerDto
 import ru.hse.app.androidApp.data.network.ApiCaller
 import ru.hse.app.androidApp.data.network.ApiService
-import ru.hse.app.androidApp.domain.model.entity.ChannelInfo
-import ru.hse.app.androidApp.domain.model.entity.CreateChannel
 import ru.hse.app.androidApp.domain.model.entity.CreateRole
-import ru.hse.app.androidApp.domain.model.entity.CreateServer
-import ru.hse.app.androidApp.domain.model.entity.Invitation
 import ru.hse.app.androidApp.domain.model.entity.RoleInfo
-import ru.hse.app.androidApp.domain.model.entity.ServerInfo
-import ru.hse.app.androidApp.domain.model.entity.ServerInfoExpanded
-import ru.hse.app.androidApp.domain.model.entity.UserInfo
 import ru.hse.app.androidApp.domain.model.entity.toDomain
 import ru.hse.app.androidApp.domain.model.entity.toDto
 import ru.hse.app.androidApp.domain.repository.RoleRepository
-import ru.hse.app.androidApp.domain.repository.ServerRepository
 import javax.inject.Inject
 
 class RoleRepositoryImpl @Inject constructor(

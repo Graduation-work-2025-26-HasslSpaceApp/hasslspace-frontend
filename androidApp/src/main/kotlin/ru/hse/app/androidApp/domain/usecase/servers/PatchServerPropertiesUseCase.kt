@@ -6,7 +6,11 @@ import javax.inject.Inject
 class PatchServerPropertiesUseCase @Inject constructor(
     private val serverRepository: ServerRepository
 ) {
-    suspend operator fun invoke(serverId: String, name: String?, photoUrl: String?): Result<String> {
+    suspend operator fun invoke(
+        serverId: String,
+        name: String?,
+        photoUrl: String?
+    ): Result<String> {
         return serverRepository.patchServer(serverId, name, photoUrl)
     }
 }

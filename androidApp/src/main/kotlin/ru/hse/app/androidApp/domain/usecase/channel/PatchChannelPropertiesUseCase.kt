@@ -1,7 +1,6 @@
 package ru.hse.app.androidApp.domain.usecase.channel
 
 import ru.hse.app.androidApp.domain.repository.ChannelRepository
-import ru.hse.app.androidApp.domain.repository.ServerRepository
 import javax.inject.Inject
 
 class PatchChannelPropertiesUseCase @Inject constructor(
@@ -15,6 +14,13 @@ class PatchChannelPropertiesUseCase @Inject constructor(
         maxMembers: Int?,
         isPrivate: Boolean?
     ): Result<String> {
-        return channelRepository.patchChannel(serverId, channelId, name, position, maxMembers, isPrivate)
+        return channelRepository.patchChannel(
+            serverId,
+            channelId,
+            name,
+            position,
+            maxMembers,
+            isPrivate
+        )
     }
 }

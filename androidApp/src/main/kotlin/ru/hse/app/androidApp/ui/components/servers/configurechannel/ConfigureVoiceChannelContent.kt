@@ -31,7 +31,7 @@ import ru.hse.app.androidApp.ui.components.common.text.VariableMedium
 import ru.hse.app.androidApp.ui.theme.AppTheme
 
 @Composable
-fun ConfigureVoiceChannelContent(
+fun ConfigureChannelContent(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     channelName: String,
@@ -143,9 +143,9 @@ fun ConfigureVoiceChannelContent(
 
 @Preview(showBackground = true)
 @Composable
-fun ConfigureVoiceChannelContentPreviewLightEmpty() {
+fun ConfigureChannelContentPreviewLightEmpty() {
     AppTheme(isDark = false) {
-        ConfigureVoiceChannelContent(
+        ConfigureChannelContent(
             onBackClick = {},
             isPrivate = true,
             onPrivateChange = {},
@@ -164,9 +164,9 @@ fun ConfigureVoiceChannelContentPreviewLightEmpty() {
 
 @Preview(showBackground = true)
 @Composable
-fun ConfigureVoiceChannelContentPreviewLight1() {
+fun ConfigureChannelContentPreviewLight1() {
     AppTheme(isDark = false) {
-        ConfigureVoiceChannelContent(
+        ConfigureChannelContent(
             onBackClick = {},
             isPrivate = false,
             onPrivateChange = {},
@@ -185,9 +185,9 @@ fun ConfigureVoiceChannelContentPreviewLight1() {
 
 @Preview(showBackground = true)
 @Composable
-fun ConfigureVoiceChannelContentPreviewDarkEmpty() {
+fun ConfigureChannelContentPreviewDarkEmpty() {
     AppTheme(isDark = true) {
-        ConfigureVoiceChannelContent(
+        ConfigureChannelContent(
             onBackClick = {},
             isPrivate = true,
             onPrivateChange = {},
@@ -206,9 +206,9 @@ fun ConfigureVoiceChannelContentPreviewDarkEmpty() {
 
 @Preview(showBackground = true)
 @Composable
-fun ConfigureVoiceChannelContentPreviewDark1() {
+fun ConfigureChannelContentPreviewDark1() {
     AppTheme(isDark = true) {
-        ConfigureVoiceChannelContent(
+        ConfigureChannelContent(
             onBackClick = {},
             isPrivate = false,
             onPrivateChange = {},

@@ -3,7 +3,6 @@ package ru.hse.app.androidApp.ui.navigation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
@@ -207,7 +206,8 @@ fun MainScreen(
     val currentBackStackEntry by navController.currentBackStackEntryFlow.collectAsState(initial = null)
     val currentRoute = currentBackStackEntry?.destination?.route
 
-    val isChatScreen = currentRoute?.startsWith(NavigationItem.Chat.route.substringBefore("/{")) == true
+    val isChatScreen =
+        currentRoute?.startsWith(NavigationItem.Chat.route.substringBefore("/{")) == true
 
     Scaffold(
         bottomBar = {

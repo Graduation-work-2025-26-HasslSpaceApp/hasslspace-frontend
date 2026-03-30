@@ -20,6 +20,7 @@ class UpdateServerPhotoUseCase @Inject constructor(
                 if (photoUrl == null) {
                     return patchServerPropertiesUseCase.invoke(serverId, null, it)
                 }
+                return uploadResult
             },
             onFailure = {
                 return Result.failure(
@@ -27,11 +28,6 @@ class UpdateServerPhotoUseCase @Inject constructor(
                         ?: ApiException(null, ApiException.PHOTO_UPLOADING_ERROR, null)
                 )
             }
-        )
-
-        return Result.failure(
-            uploadResult.exceptionOrNull()
-                ?: ApiException(null, ApiException.PHOTO_UPLOADING_ERROR, null)
         )
     }
 }

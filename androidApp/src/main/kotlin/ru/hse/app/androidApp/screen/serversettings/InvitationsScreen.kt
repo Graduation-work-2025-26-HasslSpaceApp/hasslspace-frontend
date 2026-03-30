@@ -16,6 +16,7 @@ import androidx.navigation.NavController
 import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
 import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
 import ru.hse.app.androidApp.ui.components.servers.invitations.ServerInvitationsContent
+import ru.hse.app.androidApp.ui.entity.model.servers.events.DeleteInvitationEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerInfoEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerInvitationsEvent
 import ru.hse.app.androidApp.ui.entity.model.serversettings.ServerSettingsUiState
@@ -30,10 +31,27 @@ fun InvitationsScreen(
 
     val getServerInfoEvent by viewModel.getServerInfoEvent.collectAsState()
     val getServerInvitationsEvent by viewModel.getServerInvitationsEvent.collectAsState()
+    val deleteInvitationEvent by viewModel.deleteInvitationEvent.collectAsState()
 
     LaunchedEffect(serverId) {
         viewModel.getServerInfo(serverId)
         viewModel.getServerInvitations(serverId)
+    }
+
+    LaunchedEffect(deleteInvitationEvent) {
+        when (deleteInvitationEvent) {
+            is DeleteInvitationEvent.SuccessDelete -> {
+                viewModel.getServerInvitations(serverId)
+            }
+
+            is DeleteInvitationEvent.Error -> {
+                val message = (deleteInvitationEvent as DeleteInvitationEvent.Error).message
+                viewModel.showToast(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetDeleteInvitationEvent()
     }
     LaunchedEffect(getServerInvitationsEvent) {
         when (getServerInvitationsEvent) {
@@ -107,6 +125,6 @@ fun InvitationsScreenWithStateContent(
 
             viewModel.showToast("Ссылка скопирована в буфер обмена")
         },
-        onCancelClick = {/*todo*/ },
+        onCancelClick = { viewModel.deleteInvitation(serverId, it.code) },
     )
 }

@@ -1,7 +1,6 @@
 package ru.hse.app.androidApp.domain.usecase.roles
 
 import ru.hse.app.androidApp.domain.repository.RoleRepository
-import ru.hse.app.androidApp.domain.repository.ServerRepository
 import javax.inject.Inject
 
 class PatchServerRoleUseCase @Inject constructor(

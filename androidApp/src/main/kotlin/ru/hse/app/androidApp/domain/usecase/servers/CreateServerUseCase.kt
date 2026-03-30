@@ -1,14 +1,9 @@
 package ru.hse.app.androidApp.domain.usecase.servers
 
 import android.net.Uri
-import coil3.ImageLoader
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody.Companion.toRequestBody
 import ru.hse.app.androidApp.data.exception.ApiException
 import ru.hse.app.androidApp.domain.model.entity.CreateServer
 import ru.hse.app.androidApp.domain.repository.ServerRepository
-import ru.hse.app.androidApp.domain.repository.UserRepository
-import ru.hse.app.androidApp.domain.service.common.PhotoConverterService
 import ru.hse.app.androidApp.domain.usecase.photo.UploadPhotoUseCase
 import javax.inject.Inject
 

@@ -1,6 +1,5 @@
 package ru.hse.app.androidApp.screen.servercard
 
-import android.net.Uri
 import android.widget.Toast
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableFloatStateOf
@@ -19,28 +18,19 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.hse.app.androidApp.data.local.DataManager
 import ru.hse.app.androidApp.domain.model.entity.CreateChannel
-import ru.hse.app.androidApp.domain.model.entity.CreateRole
 import ru.hse.app.androidApp.domain.service.common.CropProfilePhotoService
-import ru.hse.app.androidApp.domain.service.common.PhotoConverterService
 import ru.hse.app.androidApp.domain.usecase.channel.CreateChannelUseCase
 import ru.hse.app.androidApp.domain.usecase.channel.DeleteChannelUseCase
 import ru.hse.app.androidApp.domain.usecase.channel.GetChannelInfoUseCase
 import ru.hse.app.androidApp.domain.usecase.channel.PatchChannelPropertiesUseCase
 import ru.hse.app.androidApp.domain.usecase.friends.GetChosenUserCommonServersUseCase
 import ru.hse.app.androidApp.domain.usecase.friends.GetUserInfoExtendedUseCase
-import ru.hse.app.androidApp.domain.usecase.roles.CreateServerRoleUseCase
-import ru.hse.app.androidApp.domain.usecase.servers.CreateServerUseCase
-import ru.hse.app.androidApp.domain.usecase.invitations.DeleteServerInvitationUseCase
-import ru.hse.app.androidApp.domain.usecase.servers.DeleteServerMemberUseCase
+import ru.hse.app.androidApp.domain.usecase.invitations.SendServerInvitationUseCase
+import ru.hse.app.androidApp.domain.usecase.roles.GetServerRolesUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.DeleteServerUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.GetFriendsNotInServerUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.GetServerInfoUseCase
-import ru.hse.app.androidApp.domain.usecase.invitations.GetServerInvitationsUseCase
-import ru.hse.app.androidApp.domain.usecase.roles.GetServerRolesUseCase
-import ru.hse.app.androidApp.domain.usecase.servers.UpdateServerOwnerUseCase
-import ru.hse.app.androidApp.domain.usecase.servers.PatchServerPropertiesUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.SearchMembersUseCase
-import ru.hse.app.androidApp.domain.usecase.invitations.SendServerInvitationUseCase
 import ru.hse.app.androidApp.ui.entity.model.FriendCheckboxUiModel
 import ru.hse.app.androidApp.ui.entity.model.RoleMiniCheckboxUiModel
 import ru.hse.app.androidApp.ui.entity.model.ServerMemberUiModel
@@ -52,20 +42,12 @@ import ru.hse.app.androidApp.ui.entity.model.servers.ServerCardUiModel
 import ru.hse.app.androidApp.ui.entity.model.servers.ServerCardUiState
 import ru.hse.app.androidApp.ui.entity.model.servers.ServerExpandedUiModel
 import ru.hse.app.androidApp.ui.entity.model.servers.events.CreateChannelEvent
-import ru.hse.app.androidApp.ui.entity.model.servers.events.CreateServerEvent
-import ru.hse.app.androidApp.ui.entity.model.servers.events.CreateServerRoleEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.DeleteChannelEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.DeleteServerEvent
-import ru.hse.app.androidApp.ui.entity.model.servers.events.DeleteServerInvitationEvent
-import ru.hse.app.androidApp.ui.entity.model.servers.events.DeleteServerMemberEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetFriendsNotInServerEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerInfoEvent
-import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerInvitationsEvent
-import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerRolesEvent
-import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerUserRolesEvent
-import ru.hse.app.androidApp.ui.entity.model.servers.events.GetUserServersEvent
-import ru.hse.app.androidApp.ui.entity.model.servers.events.JoinServerEvent
-import ru.hse.app.androidApp.ui.entity.model.servers.events.PatchServerOwnerEvent
+import ru.hse.app.androidApp.ui.entity.model.servers.events.LoadChosenChannelEvent
+import ru.hse.app.androidApp.ui.entity.model.servers.events.PatchChannelEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.SendServerInvitationEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.toUi
 import ru.hse.app.androidApp.ui.entity.model.toInvitationUi
@@ -77,16 +59,11 @@ import kotlin.math.roundToInt
 @HiltViewModel
 class ServerCardViewModel @Inject constructor(
     private val createChannelUseCase: CreateChannelUseCase,
-    private val createServerRoleUseCase: CreateServerRoleUseCase,
-    private val createServerUseCase: CreateServerUseCase,
 
     private val deleteChannelUseCase: DeleteChannelUseCase,
-    private val deleteServerInvitationUseCase: DeleteServerInvitationUseCase,
-    private val deleteServerMemberUseCase: DeleteServerMemberUseCase,
     private val deleteServerUseCase: DeleteServerUseCase,
 
     private val getServerInfoUseCase: GetServerInfoUseCase,
-    private val getServerInvitationsUseCase: GetServerInvitationsUseCase,
     private val getServerRolesUseCase: GetServerRolesUseCase,
     private val getFriendsNotInServerUseCase: GetFriendsNotInServerUseCase,
     private val getUserInfoExtendedUseCase: GetUserInfoExtendedUseCase,
@@ -94,15 +71,11 @@ class ServerCardViewModel @Inject constructor(
     private val getChannelInfoUseCase: GetChannelInfoUseCase,
 
     private val patchChannelPropertiesUseCase: PatchChannelPropertiesUseCase,
-    private val updateServerOwnerUseCase: UpdateServerOwnerUseCase,
-    private val patchServerPropertiesUseCase: PatchServerPropertiesUseCase,
-    private val patchServerRoleUseCase: UpdateServerOwnerUseCase,
 
     private val sendServerInvitationUseCase: SendServerInvitationUseCase,
     private val searchMembersUseCase: SearchMembersUseCase,
 
     private val dataManager: DataManager,
-    private val photoConverterService: PhotoConverterService,
     private val toastManager: ToastManager,
     val cropProfilePhotoService: CropProfilePhotoService,
     val imageLoader: ImageLoader
@@ -118,12 +91,6 @@ class ServerCardViewModel @Inject constructor(
     private val _createChannelEvent = MutableStateFlow<CreateChannelEvent?>(null)
     val createChannelEvent: StateFlow<CreateChannelEvent?> = _createChannelEvent
 
-    private val _createServerEvent = MutableStateFlow<CreateServerEvent?>(null)
-    val createServerEvent: StateFlow<CreateServerEvent?> = _createServerEvent
-
-    private val _createServerRoleEvent = MutableStateFlow<CreateServerRoleEvent?>(null)
-    val createServerRoleEvent: StateFlow<CreateServerRoleEvent?> = _createServerRoleEvent
-
     // Delete events
     private val _deleteChannelEvent = MutableStateFlow<DeleteChannelEvent?>(null)
     val deleteChannelEvent: StateFlow<DeleteChannelEvent?> = _deleteChannelEvent
@@ -131,29 +98,9 @@ class ServerCardViewModel @Inject constructor(
     private val _deleteServerEvent = MutableStateFlow<DeleteServerEvent?>(null)
     val deleteServerEvent: StateFlow<DeleteServerEvent?> = _deleteServerEvent
 
-    private val _deleteServerInvitationEvent = MutableStateFlow<DeleteServerInvitationEvent?>(null)
-    val deleteServerInvitationEvent: StateFlow<DeleteServerInvitationEvent?> =
-        _deleteServerInvitationEvent
-
-    private val _deleteServerMemberEvent = MutableStateFlow<DeleteServerMemberEvent?>(null)
-    val deleteServerMemberEvent: StateFlow<DeleteServerMemberEvent?> = _deleteServerMemberEvent
-
     // Get events
     private val _getServerInfoEvent = MutableStateFlow<GetServerInfoEvent?>(null)
     val getServerInfoEvent: StateFlow<GetServerInfoEvent?> = _getServerInfoEvent
-
-    private val _getServerInvitationsEvent = MutableStateFlow<GetServerInvitationsEvent?>(null)
-    val getServerInvitationsEvent: StateFlow<GetServerInvitationsEvent?> =
-        _getServerInvitationsEvent
-
-    private val _getServerRolesEvent = MutableStateFlow<GetServerRolesEvent?>(null)
-    val getServerRolesEvent: StateFlow<GetServerRolesEvent?> = _getServerRolesEvent
-
-    private val _getServerUserRolesEvent = MutableStateFlow<GetServerUserRolesEvent?>(null)
-    val getServerUserRolesEvent: StateFlow<GetServerUserRolesEvent?> = _getServerUserRolesEvent
-
-    private val _getUserServersEvent = MutableStateFlow<GetUserServersEvent?>(null)
-    val getUserServersEvent: StateFlow<GetUserServersEvent?> = _getUserServersEvent
 
     private val _getFriendsNotInServerEvent = MutableStateFlow<GetFriendsNotInServerEvent?>(null)
     val getFriendsNotInServerEvent: StateFlow<GetFriendsNotInServerEvent?> =
@@ -167,15 +114,15 @@ class ServerCardViewModel @Inject constructor(
     val loadChosenUserCommonServersEvent: StateFlow<LoadChosenUserCommonServersEvent?> =
         _loadChosenUserCommonServersEvent
 
-    private val _joinServerEvent = MutableStateFlow<JoinServerEvent?>(null)
-    val joinServerEvent: StateFlow<JoinServerEvent?> = _joinServerEvent
-
-    private val _patchServerOwnerEvent = MutableStateFlow<PatchServerOwnerEvent?>(null)
-    val patchServerOwnerEvent: StateFlow<PatchServerOwnerEvent?> = _patchServerOwnerEvent
+    private val _loadChosenChannelEvent = MutableStateFlow<LoadChosenChannelEvent?>(null)
+    val loadChosenChannelEvent: StateFlow<LoadChosenChannelEvent?> = _loadChosenChannelEvent
 
     private val _sendServerInvitationEvent = MutableStateFlow<SendServerInvitationEvent?>(null)
     val sendServerInvitationEvent: StateFlow<SendServerInvitationEvent?> =
         _sendServerInvitationEvent
+
+    private val _patchChannelEvent = MutableStateFlow<PatchChannelEvent?>(null)
+    val patchChannelEvent: StateFlow<PatchChannelEvent?> = _patchChannelEvent
 
     // Members
     val searchMembersText = mutableStateOf("")
@@ -199,7 +146,7 @@ class ServerCardViewModel @Inject constructor(
     // Create Channel
     val creatingChannel = mutableStateOf(false)
     val showChooseMembersAndRoles = mutableStateOf(false)
-    val typeOfCreatingChannel = mutableStateOf("text")
+    val typeOfCreatingChannel = mutableStateOf("TEXT")
     val newChannelName = mutableStateOf("")
     val newChannelIsPrivate = mutableStateOf(false)
     val limitNewChannel = mutableFloatStateOf(0f)
@@ -317,48 +264,39 @@ class ServerCardViewModel @Inject constructor(
         }
     }
 
-    fun createServer(
-        serverName: String,
-        serverPhoto: Uri? = null,
+    fun patchChannel(
+        serverId: String,
+        channelId: String,
+        channelName: String,
+        isPrivate: Boolean,
+        type: String,
+        limit: Float,
+        members: List<FriendCheckboxUiModel> = listOf(),
+        roles: List<RoleMiniCheckboxUiModel> = listOf()
     ) {
-        if (serverName.isEmpty()) {
-            showToast("Название сервера не может быть пустым")
+        if (channelName.isEmpty()) {
+            showToast("Название канала не может быть пустым")
             return
         }
+        val roundLimit = limit.roundToInt()
+        val membersId = members.filter { it.isChosen }.map { it.id }
+        val rolesId = roles.filter { it.isChosen }.map { it.id }
         viewModelScope.launch {
-            val result = createServerUseCase(serverName, serverPhoto)
-
-            _createServerEvent.value = result.fold(
-                onSuccess = { server ->
-                    CreateServerEvent.SuccessCreate
-                },
-                onFailure = { error ->
-                    CreateServerEvent.Error("Ошибка при создании сервера. ${error.message}")
-                }
+            val result = patchChannelPropertiesUseCase(
+                serverId = serverId,
+                channelId = channelId,
+                name = channelName,
+                isPrivate = isPrivate,
+                position = null,
+                maxMembers = roundLimit
             )
-        }
-    }
 
-    fun createServerRole(
-        serverId: String,
-        roleName: String,
-        roleColor: String,
-        members: List<String> = listOf()
-    ) {
-        viewModelScope.launch {
-            val data = CreateRole(
-                name = roleName,
-                color = roleColor,
-                members = members
-            )
-            val result = createServerRoleUseCase(serverId, data)
-
-            _createServerRoleEvent.value = result.fold(
-                onSuccess = { role ->
-                    CreateServerRoleEvent.SuccessCreate
+            _patchChannelEvent.value = result.fold(
+                onSuccess = {
+                    PatchChannelEvent.Success
                 },
-                onFailure = { error ->
-                    CreateServerRoleEvent.Error("Ошибка при создании роли. ${error.message}")
+                onFailure = {
+                    PatchChannelEvent.Error("Ошибка при изменении канала. " + it.message)
                 }
             )
         }
@@ -392,42 +330,6 @@ class ServerCardViewModel @Inject constructor(
                 },
                 onFailure = { error ->
                     DeleteServerEvent.Error("Ошибка при удалении сервера. ${error.message}")
-                }
-            )
-        }
-    }
-
-    fun deleteServerInvitation(
-        serverId: String,
-        invitationId: String
-    ) {
-        viewModelScope.launch {
-            val result = deleteServerInvitationUseCase(serverId, invitationId)
-
-            _deleteServerInvitationEvent.value = result.fold(
-                onSuccess = {
-                    DeleteServerInvitationEvent.SuccessDelete
-                },
-                onFailure = { error ->
-                    DeleteServerInvitationEvent.Error("Ошибка при удалении приглашения. ${error.message}")
-                }
-            )
-        }
-    }
-
-    fun deleteServerMember(
-        serverId: String,
-        memberId: String
-    ) {
-        viewModelScope.launch {
-            val result = deleteServerMemberUseCase(serverId, memberId)
-
-            _deleteServerMemberEvent.value = result.fold(
-                onSuccess = {
-                    DeleteServerMemberEvent.SuccessDelete
-                },
-                onFailure = { error ->
-                    DeleteServerMemberEvent.Error("Ошибка при удалении участника. ${error.message}")
                 }
             )
         }
@@ -490,45 +392,12 @@ class ServerCardViewModel @Inject constructor(
         }
     }
 
-    fun getServerInvitations(serverId: String) {
-        viewModelScope.launch {
-            val result = getServerInvitationsUseCase(serverId)
-
-            _getServerInvitationsEvent.value = result.fold(
-                onSuccess = { invitations ->
-                    //TODO
-                    GetServerInvitationsEvent.SuccessLoad
-                },
-                onFailure = { error ->
-                    GetServerInvitationsEvent.Error("Ошибка при получении приглашений. ${error.message}")
-                }
-            )
-        }
-    }
-
-    fun getServerRoles(serverId: String) {
-        viewModelScope.launch {
-            val result = getServerRolesUseCase(serverId)
-
-            _getServerRolesEvent.value = result.fold(
-                onSuccess = { roles ->
-                    //TODO
-                    GetServerRolesEvent.SuccessLoad
-                },
-                onFailure = { error ->
-                    GetServerRolesEvent.Error("Ошибка при получении ролей сервера. ${error.message}")
-                }
-            )
-        }
-    }
-
     fun loadChosenChannel(server: ServerExpandedUiModel, channelId: String) {
         viewModelScope.launch {
             val result = getChannelInfoUseCase(server.id, channelId)
-            // todo обновить значение ивента и при неуспешной загрузке не загружать страницу
             val currentState = _uiState.value
 
-            result.fold(
+            _loadChosenChannelEvent.value = result.fold(
                 onSuccess = { channel ->
                     val checkboxRoles = idsToRolesCheckboxInChannel(server, channel.roles)
                     if (currentState is ServerCardUiState.Success) {
@@ -545,13 +414,15 @@ class ServerCardViewModel @Inject constructor(
                         )
                         _uiState.value = ServerCardUiState.Success(updatedData)
                     }
+                    LoadChosenChannelEvent.SuccessLoad(channel.type)
                 },
-                onFailure = {
-
+                onFailure = { error ->
+                    LoadChosenChannelEvent.Error("Ошибка при получении информации о канале. ${error.message}")
                 }
             )
         }
     }
+
 
     fun idsToFriendCheckboxInChannel(
         server: ServerExpandedUiModel,
@@ -594,26 +465,6 @@ class ServerCardViewModel @Inject constructor(
         }
     }
 
-
-    fun patchServerOwner(
-        serverId: String,
-        newOwnerId: String
-    ) {
-        viewModelScope.launch {
-            val result = updateServerOwnerUseCase(serverId, newOwnerId)
-
-            _patchServerOwnerEvent.value = result.fold(
-                onSuccess = {
-                    //TODO
-                    PatchServerOwnerEvent.SuccessPatch
-                },
-                onFailure = { error ->
-                    PatchServerOwnerEvent.Error("Ошибка при передаче прав владельца. ${error.message}")
-                }
-            )
-        }
-    }
-
     fun sendServerInvitation(
         userId: String,
         serverId: String,
@@ -623,7 +474,6 @@ class ServerCardViewModel @Inject constructor(
 
             _sendServerInvitationEvent.value = result.fold(
                 onSuccess = {
-                    //TODO
                     SendServerInvitationEvent.Success(userId)
                 },
                 onFailure = { error ->
@@ -841,14 +691,6 @@ class ServerCardViewModel @Inject constructor(
         _createChannelEvent.value = null
     }
 
-    fun resetCreateServerEvent() {
-        _createServerEvent.value = null
-    }
-
-    fun resetCreateServerRoleEvent() {
-        _createServerRoleEvent.value = null
-    }
-
     fun resetDeleteChannelEvent() {
         _deleteChannelEvent.value = null
     }
@@ -857,44 +699,8 @@ class ServerCardViewModel @Inject constructor(
         _deleteServerEvent.value = null
     }
 
-    fun resetDeleteServerInvitationEvent() {
-        _deleteServerInvitationEvent.value = null
-    }
-
-    fun resetDeleteServerMemberEvent() {
-        _deleteServerMemberEvent.value = null
-    }
-
     fun resetGetServerInfoEvent() {
         _getServerInfoEvent.value = null
-    }
-
-    fun resetGetServerInvitationsEvent() {
-        _getServerInvitationsEvent.value = null
-    }
-
-    fun resetGetServerRolesEvent() {
-        _getServerRolesEvent.value = null
-    }
-
-    fun resetGetServerUserRolesEvent() {
-        _getServerUserRolesEvent.value = null
-    }
-
-    fun resetGetUserServersEvent() {
-        _getUserServersEvent.value = null
-    }
-
-    fun resetJoinServerEvent() {
-        _joinServerEvent.value = null
-    }
-
-    fun resetPatchServerOwnerEvent() {
-        _patchServerOwnerEvent.value = null
-    }
-
-    fun resetSendServerInvitationEvent() {
-        _sendServerInvitationEvent.value = null
     }
 
     fun resetGetFriendsNotInServerEvent() {
@@ -907,5 +713,13 @@ class ServerCardViewModel @Inject constructor(
 
     fun resetLoadChosenUserCommonServersEvent() {
         _loadChosenUserCommonServersEvent.value = null
+    }
+
+    fun resetLoadChosenChannelEvent() {
+        _loadChosenChannelEvent.value = null
+    }
+
+    fun resetPatchChannelEvent() {
+        _patchChannelEvent.value = null
     }
 }

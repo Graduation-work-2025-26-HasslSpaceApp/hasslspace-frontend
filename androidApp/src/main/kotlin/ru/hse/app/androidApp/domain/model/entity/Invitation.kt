@@ -1,6 +1,5 @@
 package ru.hse.app.androidApp.domain.model.entity
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import ru.hse.app.androidApp.data.model.ServerInviteDto
 import java.time.LocalDateTime
 
@@ -11,7 +10,7 @@ data class Invitation(
     val expiresAt: LocalDateTime,
     val serverName: String? = null,
     val creatorName: String? = null,
-    val inviteUrl : String? = null
+    val inviteUrl: String? = null
 )
 
 fun ServerInviteDto.toDomain(): Invitation {

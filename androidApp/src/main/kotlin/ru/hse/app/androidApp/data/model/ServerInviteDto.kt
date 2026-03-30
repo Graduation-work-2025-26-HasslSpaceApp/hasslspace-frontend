@@ -23,5 +23,5 @@ data class ServerInviteDto(
     val creatorName: String? = null,
 
     @JsonProperty("inviteUrl")
-    val inviteUrl : String? = null
+    val inviteUrl: String? = null
 )

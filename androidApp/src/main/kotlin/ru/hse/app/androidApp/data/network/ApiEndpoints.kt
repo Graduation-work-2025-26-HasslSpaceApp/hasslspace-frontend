@@ -40,7 +40,8 @@ const val JOIN_SERVER_URL = "/invites/join" // Присоединиться к �
 const val LEAVE_SERVER_URL = "/servers/members/me" // Покинуть сервер
 const val GET_SERVER_MEMBERS_URL = "/servers/members" // Список участников сервера
 const val KICK_MEMBER_URL = "/servers/members" // Выгнать участника
-const val GET_FRIENDS_NOT_IN_SERVER_URL = "/servers/members/not-in-server" // Список друзей, которых нет на сервере
+const val GET_FRIENDS_NOT_IN_SERVER_URL =
+    "/servers/members/not-in-server" // Список друзей, которых нет на сервере
 
 const val UPDATE_SERVER_OWNER_URL = "/servers/owner" // Обновить владельца
 
@@ -62,5 +63,6 @@ const val DELETE_CHANNEL_URL = "/servers/channels" // Удалить канал
 const val GET_CHANNEL_INFO_URL = "/servers/channels" // Получить инфо о канале
 const val UPDATE_CHANNEL_URL = "/servers/channels" // Обновить инфо о канале
 const val DELETE_CHANNEL_PERMISSION_URL = "/servers/channels/permissions" // Удалить права на канал
-const val ASSIGN_CHANNEL_PERMISSION_URL = "/servers/channels/permissions" // Назначить права роли на канал
+const val ASSIGN_CHANNEL_PERMISSION_URL =
+    "/servers/channels/permissions" // Назначить права роли на канал
 const val GET_CHANNEL_PERMISSIONS_URL = "/servers/channels/permissions" // Получить права канала
