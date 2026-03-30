@@ -12,6 +12,9 @@ data class RoleInfoDto(
     @JsonProperty("color")
     val color: String,
 
+    @JsonProperty("position")
+    val position: Int?,
+
     @JsonProperty("members")
     val members: List<RoleMemberDto>,
 ) {

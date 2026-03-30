@@ -6,8 +6,7 @@ import javax.inject.Inject
 class JoinServerUseCase @Inject constructor(
     private val serverRepository: ServerRepository
 ) {
-    //todo
-    suspend operator fun invoke(): Result<String> {
-        return serverRepository.joinServer()
+    suspend operator fun invoke(code: String): Result<String> {
+        return serverRepository.joinServer(code)
     }
 }

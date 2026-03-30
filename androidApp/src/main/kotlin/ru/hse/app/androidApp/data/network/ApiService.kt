@@ -16,10 +16,14 @@ import ru.hse.app.androidApp.data.model.ChannelInfoDto
 import ru.hse.app.androidApp.data.model.CreateChannelDto
 import ru.hse.app.androidApp.data.model.CreateRoleDto
 import ru.hse.app.androidApp.data.model.CreateServerDto
-import ru.hse.app.androidApp.data.model.InvitationDto
 import ru.hse.app.androidApp.data.model.RoleInfoDto
 import ru.hse.app.androidApp.data.model.ServerInfoDto
 import ru.hse.app.androidApp.data.model.ServerInfoExpandedDto
+import ru.hse.app.androidApp.data.model.ServerInviteDto
+import ru.hse.app.androidApp.data.model.UpdateChannelDto
+import ru.hse.app.androidApp.data.model.UpdateProfileDto
+import ru.hse.app.androidApp.data.model.UpdateRoleDto
+import ru.hse.app.androidApp.data.model.UpdateServerDto
 import ru.hse.app.androidApp.data.model.UserDto
 import ru.hse.app.androidApp.data.model.UserInfoDto
 import ru.hse.app.androidApp.data.model.UserInfoExtendedDto
@@ -27,7 +31,7 @@ import ru.hse.app.androidApp.data.model.UserInfoExtendedDto
 interface ApiService {
 
     // Зарегистрироваться
-    @POST(USER_BASE_PATH_URL + REGISTER_URL)
+    @POST(USER_SERVICE_URL + REGISTER_URL)
     suspend fun registerUser(
         @Query("email") email: String,
         @Query("password") password: String,
@@ -36,206 +40,235 @@ interface ApiService {
     ): Response<String>
 
     // Войти
-    @GET(USER_BASE_PATH_URL + LOGIN_URL)
+    @GET(USER_SERVICE_URL + LOGIN_URL)
     suspend fun loginUser(
         @Query("email") email: String,
         @Query("password") password: String
     ): Response<String>
 
     // Проверить верификацию email
-    @GET(USER_BASE_PATH_URL + CHECK_VERIFIED_URL)
+    @GET(USER_SERVICE_URL + CHECK_VERIFICATION)
     suspend fun checkVerification(): Response<Boolean>
 
     // Прислать код подтверждения на почту
-    @PUT(USER_BASE_PATH_URL + SEND_VERIFICATION_CODE_URL)
+    @PUT(USER_SERVICE_URL + SEND_CODE)
     suspend fun sendVerificationCode(
         @Query("email") email: String
     ): Response<String>
 
     // Проверить код верификации email
-    @GET(USER_BASE_PATH_URL + CHECK_VERIFICATION_CODE_URL)
+    @GET(USER_SERVICE_URL + CHECK_VERIFICATION_CODE)
     suspend fun checkVerificationCode(
         @Query("verificationCode") verificationCode: String
     ): Response<String>
 
     // Получить информацию о текущем пользователе
-    @GET(USER_BASE_PATH_URL + GET_USER_INFO_URL)
+    @GET(USER_SERVICE_URL + GET_USER_PROFILE)
     suspend fun getUserInfo(): Response<UserDto>
-
-    // Сохранение фото пользователя
-    @PUT(USER_BASE_PATH_URL + UPDATE_USER_PHOTO_URL)
-    suspend fun saveUserPhoto(
-        @Query("photoUrl") photoUrl: String,
-    ): Response<String>
 
     //Сохранение фото
     @Multipart
-    @PUT(PHOTO_BASE_PATH_URL + UPLOAD_PHOTO_URL)
+    @PUT(USER_SERVICE_URL + UPLOAD_USER_PHOTO)
     suspend fun uploadPhoto(
         @Part photo: MultipartBody.Part,
         @Part("type") type: RequestBody,
         @Part("photoUrl") photoUrl: RequestBody?
     ): Response<String>
 
-    // Получить список друзей и заявок в друзья пользователя
-    @GET("") //TODO
-    suspend fun getFriends(): Response<List<UserInfoDto>>
-
-    // Получить список серверов пользователя
-    @GET("") //TODO
-    suspend fun getServers(): Response<List<ServerInfoDto>>
-
-    // Изменить имя пользователя
-    @PATCH("") // todo
-    suspend fun changeName(newName: String): Response<String>
+    // Обновить профиль пользователя
+    @PATCH(USER_SERVICE_URL + UPDATE_PROFILE)
+    suspend fun updateUserProfile(
+        @Body updateProfileDto: UpdateProfileDto
+    ): Response<String>
 
     // Изменить статус пользователя
-    @PATCH("") // todo
-    suspend fun changeStatus(status: String): Response<String>
+    @PATCH(USER_SERVICE_URL + SET_USER_STATUS)
+    suspend fun changeStatus(
+        @Query("status") status: String
+    ): Response<String>
 
-    // Изменить описание пользователя
-    @PATCH("") // todo
-    suspend fun changeDesc(desc: String): Response<String>
+    // Получить список друзей и заявок в друзья пользователя
+    @GET(USER_SERVICE_URL + FRIENDS_LIST) //TODO у Саши нет статуса в дтошке
+    suspend fun getFriends(): Response<List<UserInfoDto>>
 
     // Создать заявку в друзья
-    @POST("") //TODO
+    @POST(USER_SERVICE_URL + SEND_FRIEND_REQUEST)
     suspend fun createFriendRequest(
         @Query("username") username: String,
     ): Response<String>
 
     // Ответить на заявку в друзья
-    @PATCH("")//TODO
+    @PATCH(USER_SERVICE_URL + RESPOND_TO_FRIEND_REQUEST)
     suspend fun respondToFriendshipRequest(
-        @Query("friendshipId") friendshipId: String,
+        @Query("userId") userId: String,
         @Query("status") status: String,
     ): Response<String>
 
     // Удалить из друзей / отозвать приглащение в друзья
-    @DELETE("")//TODO
+    @DELETE(USER_SERVICE_URL + REMOVE_FROM_FRIENDS)
     suspend fun deleteFriendship(
         @Query("userId") userId: String,
     ): Response<String>
 
     // Получить полную информацию о пользователе
-    @GET("") //todo
+    @GET(USER_SERVICE_URL + GET_USER_PROFILE_BY_ID) //todo опять нет статуса пользователя в дто
     suspend fun getUserInfoExtended(
         @Query("userId") userId: String,
     ): Response<UserInfoExtendedDto>
 
+    // Получить список серверов пользователя
+    @GET(SERVER_SERVICE_URL + GET_SERVERS_LIST_URL)
+    suspend fun getServers(): Response<List<ServerInfoDto>>
+
     // Получить список общих серверов пользователя с другим пользователем
-    @GET("") //TODO
+    @GET("") //TODO У Саши нет в апишке
     suspend fun getCommonServers(
         @Query("userId") userId: String,
     ): Response<List<ServerInfoDto>>
 
     // Создать роль на сервере
-    @POST("") //TODO
+    @POST(SERVER_SERVICE_URL + CREATE_ROLE_URL)
     suspend fun createServerRole(
         @Query("serverId") serverId: String,
         @Body createRoleDto: CreateRoleDto
     ): Response<String>
 
     // Создать сервер
-    @POST("") //TODO
+    @POST(SERVER_SERVICE_URL + CREATE_SERVER_URL) //TODO у Саши сейчас другое описание апи метода
     suspend fun createServer(
         @Body createServerDto: CreateServerDto
     ): Response<String>
 
     // Создать канал на сервере
-    @POST("") //TODO
+    @POST(SERVER_SERVICE_URL + CREATE_CHANNEL_URL) //TODO у Саши сейчас нет в дто ролей и юзеров, обсудим
     suspend fun createChannel(
         @Query("serverId") serverId: String,
         @Body createChannelDto: CreateChannelDto
     ): Response<String>
 
     // Удалить канал на сервере
-    @DELETE("") //TODO
+    @DELETE(SERVER_SERVICE_URL + DELETE_CHANNEL_URL)
     suspend fun deleteChannel(
         @Query("serverId") serverId: String,
         @Query("channelId") channelId: String
     ): Response<String>
 
     // Удалить приглашение на сервер
-    @DELETE("") //TODO
+    @DELETE(SERVER_SERVICE_URL) //TODO
     suspend fun deleteServerInvitation(
         @Query("serverId") serverId: String,
         @Query("invitationId") invitationId: String
     ): Response<String>
 
-    // Удалить участника на сервере
-    @DELETE("") //TODO
-    suspend fun deleteServerMember(
-        @Query("serverId") serverId: String,
-        @Query("userId") userId: String
-    ): Response<String>
-
     // Удалить сервер
-    @DELETE("") //TODO
+    @DELETE(SERVER_SERVICE_URL + DELETE_SERVER_URL)
     suspend fun deleteServer(
         @Query("serverId") serverId: String,
     ): Response<String>
 
+
+    // Удалить роль
+    @DELETE(SERVER_SERVICE_URL + DELETE_ROLE_URL)
+    suspend fun deleteRole(
+        @Query("serverId") serverId: String,
+        @Query("roleId") roleId: String,
+    ): Response<String>
+
+    // Назначить роль
+    @POST(SERVER_SERVICE_URL + ASSIGN_ROLE_URL)
+    suspend fun assignRole(
+        @Query("serverId") serverId: String,
+        @Query("targetUserId") targetUserId: String,
+        @Query("roleId") roleId: String,
+    ): Response<String>
+
+    // Забрать роль
+    @DELETE(SERVER_SERVICE_URL + REVOKE_ROLE_URL)
+    suspend fun revokeRole(
+        @Query("serverId") serverId: String,
+        @Query("targetUserId") targetUserId: String,
+        @Query("roleId") roleId: String,
+    ): Response<String>
+
     // Получить информацию о сервере
-    @GET("") //TODO
+    @GET(SERVER_SERVICE_URL + GET_SERVER_URL)
     suspend fun getServerInfo(
         @Query("serverId") serverId: String,
     ): Response<ServerInfoExpandedDto>
 
+
+    // Создать приглашение на сервер
+    @POST(SERVER_SERVICE_URL + CREATE_INVITE_URL)
+    suspend fun createInvitation(
+        @Query("serverId") serverId: String,
+    ): Response<ServerInviteDto>
+
     // Получить приглашения на сервер
-    @GET("") //TODO
+    @GET(SERVER_SERVICE_URL + GET_ACTIVE_INVITES_URL)
     suspend fun getServerInvitations(
         @Query("serverId") serverId: String,
-    ): Response<List<InvitationDto>>
+    ): Response<List<ServerInviteDto>>
 
-    @GET("") //TODO
+    @GET(SERVER_SERVICE_URL + GET_FRIENDS_NOT_IN_SERVER_URL) //TODO аналогичная проблема, пока не передают статусы
     suspend fun getFriendsNotInServer(
         @Query("serverId") serverId: String,
     ): Response<List<UserInfoDto>>
 
     // Получить роли на сервере
-    @GET("") //TODO
+    @GET(SERVER_SERVICE_URL + GET_ROLES_URL)
     suspend fun getServerRoles(
         @Query("serverId") serverId: String,
     ): Response<List<RoleInfoDto>>
 
-    // Получить роли пользователя на сервере
-    @GET("") //TODO
-    suspend fun getServerUserRoles(
-        @Query("userId") userId: String,
-        @Query("serverId") serverId: String,
-    ): Response<List<RoleInfoDto>>
-
     // Присоединиться к серверу
-    @POST("") //TODO
-    suspend fun joinServer(): Response<String>
+    @POST(SERVER_SERVICE_URL + JOIN_SERVER_URL)
+    suspend fun joinServer(
+        @Query("code") code: String
+    ): Response<String>
+
+    // Покинуть сервер
+    @DELETE(SERVER_SERVICE_URL + LEAVE_SERVER_URL)
+    suspend fun leaveServer(
+        @Query("serverId") serverId: String,
+    ): Response<String>
+
+    @DELETE(SERVER_SERVICE_URL + KICK_MEMBER_URL)
+    suspend fun deleteServerMember(
+        @Query("serverId") serverId: String,
+        @Query("targetUserId") targetUserId: String,
+    ): Response<String>
 
     // Изменить канал
-    @PATCH("") //TODO
-    suspend fun patchChannel(): Response<String>
+    @PATCH(SERVER_SERVICE_URL + UPDATE_CHANNEL_URL)
+    suspend fun patchChannel(
+        @Query("serverId") serverId: String,
+        @Query("channelId") channelId: String,
+        @Body updateChannelDto: UpdateChannelDto
+    ): Response<String>
 
     // Передать права на канал
-    @PATCH("") //TODO
-    suspend fun patchServerOwner(
+    @PATCH(SERVER_SERVICE_URL + UPDATE_SERVER_OWNER_URL)
+    suspend fun updateServerOwner(
         @Query("newOwnerId") userId: String,
         @Query("serverId") serverId: String,
     ): Response<String>
 
     // Изменить настройки сервера
-    @PATCH("") //TODO
-    suspend fun patchServer(): Response<String>
-
-    // Изменить роль
-    @PATCH("") //TODO
-    suspend fun patchRole(): Response<String>
-
-    // Отправить приглашение на сервер
-    @POST("") //TODO
-    suspend fun sendServerInvitation(
-        @Query("userId") userId: String,
+    @PATCH(SERVER_SERVICE_URL + UPDATE_SERVER_URL)
+    suspend fun patchServer(
         @Query("serverId") serverId: String,
+        @Body updateServerDto: UpdateServerDto
     ): Response<String>
 
-    @GET("") //TODO
+    // Изменить роль
+    @PATCH(SERVER_SERVICE_URL + UPDATE_ROLE_URL)
+    suspend fun patchRole(
+        @Query("serverId") serverId: String,
+        @Query("roleId") roleId: String,
+        @Body updateRoleDto: UpdateRoleDto
+    ): Response<String>
+
+    @GET(SERVER_SERVICE_URL + GET_CHANNEL_INFO_URL) //TODO
     suspend fun getChannelInfo(
         @Query("serverId") serverId: String,
         @Query("channelId") channelId: String,

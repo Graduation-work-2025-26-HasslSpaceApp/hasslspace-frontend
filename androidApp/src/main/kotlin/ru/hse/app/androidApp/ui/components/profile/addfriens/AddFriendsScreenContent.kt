@@ -90,6 +90,7 @@ fun AddFriendsScreenContent(
                     isDarkTheme = isDarkTheme,
                     onCardClick = { onRequestClick(request) },
                     onUndoClick = { onUndoClick(request) },
+                    enabled = false
                 )
             }
         }
@@ -102,7 +103,6 @@ private fun previewServer(id: String, name: String, count: Int) = ServerShortUiM
     id = id,
     name = name,
     avatarUrl = "",
-    participantCount = count,
 )
 
 private fun previewFriend(id: String, name: String) = FriendUiModel(
@@ -110,7 +110,7 @@ private fun previewFriend(id: String, name: String) = FriendUiModel(
     name = name,
     nickname = name.lowercase().replace(" ", "_"),
     avatarUrl = "",
-    status = StatusPresentation.ACTIVE,
+    status = StatusPresentation.ONLINE,
     type = TypeUiModel.FRIEND
 )
 

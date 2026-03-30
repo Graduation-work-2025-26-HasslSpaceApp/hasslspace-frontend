@@ -17,9 +17,14 @@ import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
 import ru.hse.app.androidApp.ui.components.servers.members.EditMemberContent
 import ru.hse.app.androidApp.ui.components.servers.members.RolesChoosingDialog
 import ru.hse.app.androidApp.ui.components.servers.members.ServerMembersContent
+import ru.hse.app.androidApp.ui.entity.model.servers.events.AssignRoleEvent
+import ru.hse.app.androidApp.ui.entity.model.servers.events.DeleteServerMemberEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerInfoEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerRolesEvent
+import ru.hse.app.androidApp.ui.entity.model.servers.events.PatchServerOwnerEvent
+import ru.hse.app.androidApp.ui.entity.model.servers.events.RevokeRoleEvent
 import ru.hse.app.androidApp.ui.entity.model.serversettings.ServerSettingsUiState
+import ru.hse.app.androidApp.ui.navigation.NavigationItem
 
 @Composable
 fun MembersScreen(
@@ -31,9 +36,88 @@ fun MembersScreen(
 
     val getServerInfoEvent by viewModel.getServerInfoEvent.collectAsState()
     val getServerRolesEvent by viewModel.getServerRolesEvent.collectAsState()
+    val deleteServerMemberEvent by viewModel.deleteServerMemberEvent.collectAsState()
+    val patchServerOwnerEvent by viewModel.patchServerOwnerEvent.collectAsState()
+    val assignRoleEvent by viewModel.assignRoleEvent.collectAsState()
+    val revokeRoleEvent by viewModel.revokeRoleEvent.collectAsState()
+
 
     LaunchedEffect(serverId) {
         viewModel.getServerInfo(serverId)
+    }
+
+    LaunchedEffect(assignRoleEvent) {
+        when (assignRoleEvent) {
+            is AssignRoleEvent.Success -> {
+            }
+
+            is AssignRoleEvent.Error -> {
+                val message = (assignRoleEvent as AssignRoleEvent.Error).message
+                viewModel.showToast(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetAssignRoleEvent()
+    }
+
+    LaunchedEffect(revokeRoleEvent) {
+        when (revokeRoleEvent) {
+            is RevokeRoleEvent.Success -> {
+            }
+
+            is RevokeRoleEvent.Error -> {
+                val message = (revokeRoleEvent as RevokeRoleEvent.Error).message
+                viewModel.showToast(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetRevokeRoleEvent()
+    }
+
+    LaunchedEffect(patchServerOwnerEvent) {
+        when (patchServerOwnerEvent) {
+            is PatchServerOwnerEvent.SuccessPatch -> {
+                viewModel.getServerInfo(serverId)
+                navController.navigate(NavigationItem.MainServerScreen.route + "/${serverId}") {
+                    popUpTo(NavigationItem.MainServerScreen.route + "/${serverId}") {
+                        inclusive = true
+                    }
+                }
+                viewModel.showToast("Успешно передали права участнику")
+            }
+
+            is PatchServerOwnerEvent.Error -> {
+                val message = (patchServerOwnerEvent as PatchServerOwnerEvent.Error).message
+                viewModel.showToast(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetPatchServerOwnerEvent()
+    }
+
+    LaunchedEffect(deleteServerMemberEvent) {
+        when (deleteServerMemberEvent) {
+            is DeleteServerMemberEvent.SuccessDelete -> {
+                viewModel.getServerInfo(serverId)
+                navController.navigate(NavigationItem.MainServerScreen.route + "/${serverId}") {
+                    popUpTo(NavigationItem.MainServerScreen.route + "/${serverId}") {
+                        inclusive = true
+                    }
+                }
+                viewModel.showToast("Успешно удалили участника")
+            }
+
+            is DeleteServerMemberEvent.Error -> {
+                val message = (deleteServerMemberEvent as DeleteServerMemberEvent.Error).message
+                viewModel.showToast(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetDeleteServerMemberEvent()
     }
 
     LaunchedEffect(getServerRolesEvent) {
@@ -132,15 +216,16 @@ fun MembersScreenWithStateContent(
         RolesChoosingDialog(
             showDialog = viewModel.showChooseRoles,
             roles = data.chosenRoles,
-            onToggleRole = viewModel::onToggleRole,
+            onToggleRole = { viewModel.onToggleRole(serverId, it) },
             onApplyClick = {
                 viewModel.showChooseRoles.value = false
                 viewModel.clearChosenRoles()
-
+                viewModel.getServerInfo(serverId)
             },
             onDismissClick = {
                 viewModel.showChooseRoles.value = false
                 viewModel.clearChosenRoles()
+                viewModel.getServerInfo(serverId)
             }
         )
     }
@@ -151,7 +236,12 @@ fun MembersScreenWithStateContent(
             questionText = "Вы действительно хотите удалить участника?",
             apply = "Удалить",
             dismiss = "Оставить",
-            onApplyClick = { viewModel.deleteMember(viewModel.chosenMember.value) },
+            onApplyClick = {
+                if (viewModel.chosenMember.value != null) {
+                    viewModel.deleteMember(serverId, viewModel.chosenMember.value!!)
+                }
+                viewModel.showDeleteMemberDialog.value = false
+            },
             onDismissClick = { viewModel.showDeleteMemberDialog.value = false }
         )
     }
@@ -162,7 +252,12 @@ fun MembersScreenWithStateContent(
             questionText = "Вы действительно хотите передать права на сервер?",
             apply = "Передать",
             dismiss = "Оставить",
-            onApplyClick = { viewModel.transferRightsToMember(viewModel.chosenMember.value) },
+            onApplyClick = {
+                if (viewModel.chosenMember.value != null) {
+                    viewModel.transferRightsToMember(serverId, viewModel.chosenMember.value!!)
+                }
+                viewModel.showTransferRights.value = false
+            },
             onDismissClick = { viewModel.showTransferRights.value = false }
         )
     }

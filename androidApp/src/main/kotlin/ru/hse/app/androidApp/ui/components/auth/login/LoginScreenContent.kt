@@ -49,8 +49,11 @@ fun LoginScreenContent(
     onGoToRegisterClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Box(modifier = modifier.fillMaxSize()
-        .imePadding()) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .imePadding()
+    ) {
         Image(
             painter = painterResource(id = if (isDarkTheme) R.drawable.background_up_dark else R.drawable.background_up_light),
             contentDescription = null,

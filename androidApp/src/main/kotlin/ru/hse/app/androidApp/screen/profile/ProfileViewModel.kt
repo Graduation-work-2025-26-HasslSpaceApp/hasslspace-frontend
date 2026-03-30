@@ -26,7 +26,7 @@ import ru.hse.app.androidApp.domain.usecase.profile.ChangeUserNameUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.ChangeUserStatusUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.LoadUserInfoUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.SaveUserPhotoUseCase
-import ru.hse.app.androidApp.domain.usecase.servers.GetUserServersUseCase
+import ru.hse.app.androidApp.domain.usecase.servers.GetServersUseCase
 import ru.hse.app.androidApp.ui.entity.model.FriendUiModel
 import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
 import ru.hse.app.androidApp.ui.entity.model.TypeUiModel
@@ -55,7 +55,7 @@ class ProfileViewModel @Inject constructor(
     // Profile and settings
     private val dataManager: DataManager,
     private val loadUserInfoUseCase: LoadUserInfoUseCase,
-    private val getUserServersUseCase: GetUserServersUseCase,
+    private val getServersUseCase: GetServersUseCase,
     private val saveUserPhotoUseCase: SaveUserPhotoUseCase,
     private val changeUserNameUseCase: ChangeUserNameUseCase,
     private val changeUserStatusUseCase: ChangeUserStatusUseCase,
@@ -213,7 +213,7 @@ class ProfileViewModel @Inject constructor(
 
     fun loadUserServers() {
         viewModelScope.launch {
-            val result = getUserServersUseCase()
+            val result = getServersUseCase()
 
             _loadUserServersEvent.value = result.fold(
                 onSuccess = { servers ->
@@ -297,8 +297,8 @@ class ProfileViewModel @Inject constructor(
 
     fun getStatusOptions(): List<StatusPresentation> {
         return listOf(
-            StatusPresentation.ACTIVE,
-            StatusPresentation.NOT_ACTIVE,
+            StatusPresentation.ONLINE,
+            StatusPresentation.OFFLINE,
             StatusPresentation.INVISIBLE,
             StatusPresentation.DO_NOT_DISTURB
         )
@@ -474,10 +474,10 @@ class ProfileViewModel @Inject constructor(
         addFriendFieldValue.value = value
     }
 
-    fun respondFriend(user: FriendUiModel, status: String) {
+    fun respondFriend(userId: String, status: String) {
         viewModelScope.launch {
             val result =
-                respondToFriendshipRequestUseCase(user.id/*todo не забыть про айди дружбы*/, status)
+                respondToFriendshipRequestUseCase(userId, status)
 
             _respondToFriendshipRequestEvent.value = result.fold(
                 onSuccess = {
@@ -491,7 +491,18 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun deleteFriendship(userId: String) {
-        //todo
+        viewModelScope.launch {
+            val result = deleteFriendshipUseCase(userId)
+
+            _deleteFriendshipEvent.value = result.fold(
+                onSuccess = {
+                    DeleteFriendshipEvent.SuccessDelete
+                },
+                onFailure = {
+                    DeleteFriendshipEvent.Error("Ошибка при удалении из друзей. " + it.message)
+                }
+            )
+        }
     }
 
     fun createFriendshipRequest(nickname: String) {
@@ -568,5 +579,21 @@ class ProfileViewModel @Inject constructor(
 
     fun resetCreateFriendRequestEvent() {
         _createFriendRequestEvent.value = null
+    }
+
+    fun resetDeleteFriendshipEvent() {
+        _deleteFriendshipEvent.value = null
+    }
+
+    fun resetLoadUserInfoEvent() {
+        _loadUserInfoEvent.value = null
+    }
+
+    fun resetLoadUserFriendsEvent() {
+        _loadUserFriendsEvent.value = null
+    }
+
+    fun resetLoadUserServersEvent() {
+        _loadUserServersEvent.value = null
     }
 }

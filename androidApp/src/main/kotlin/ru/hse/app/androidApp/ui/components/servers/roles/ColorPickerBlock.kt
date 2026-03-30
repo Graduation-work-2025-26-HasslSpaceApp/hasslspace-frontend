@@ -36,10 +36,10 @@ import ru.hse.app.androidApp.ui.theme.AppTheme
 
 @Composable
 fun ColorPickerBlock(
+    initColor: Color? = null,
     onSaveClick: (Color) -> Unit,
     showDialog: MutableState<Boolean>,
 ) {
-    //TODO допилить логику
     val controller = rememberColorPickerController()
 
     if (showDialog.value) {
@@ -70,6 +70,7 @@ fun ColorPickerBlock(
                             .fillMaxWidth()
                             .height(300.dp),
                         controller = controller,
+                        initialColor = initColor
                     )
 
                     BrightnessSlider(
@@ -78,6 +79,7 @@ fun ColorPickerBlock(
                             .padding(10.dp)
                             .height(35.dp),
                         controller = controller,
+                        initialColor = initColor
                     )
 
                     Spacer(Modifier.height(20.dp))
@@ -96,7 +98,7 @@ fun ColorPickerBlock(
                                 MaterialTheme.colorScheme.surface,
                                 RoundedCornerShape(10.dp)
                             ),
-                        controller = controller
+                        controller = controller,
                     )
 
                 }
@@ -122,7 +124,8 @@ fun ColorPickerBlockPreview1() {
     AppTheme(isDark = false) {
         ColorPickerBlock(
             showDialog = remember { mutableStateOf(true) },
-            onSaveClick = {}
+            onSaveClick = {},
+            initColor = Color.Cyan
         )
     }
 }

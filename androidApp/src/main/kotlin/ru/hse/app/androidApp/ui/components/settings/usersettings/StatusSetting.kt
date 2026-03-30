@@ -89,7 +89,7 @@ fun StatusSetting(
 )
 @Composable
 fun ThemeChangeSettingLightOffPreview() {
-    val selectedOption = remember { mutableStateOf(StatusPresentation.ACTIVE) }
+    val selectedOption = remember { mutableStateOf(StatusPresentation.ONLINE) }
     AppTheme(isDark = false) {
 
         StatusSetting(
@@ -106,7 +106,7 @@ fun ThemeChangeSettingLightOffPreview() {
 )
 @Composable
 fun ThemeChangeSettingLightOffPreview1() {
-    val selectedOption = remember { mutableStateOf(StatusPresentation.NOT_ACTIVE) }
+    val selectedOption = remember { mutableStateOf(StatusPresentation.OFFLINE) }
     AppTheme(isDark = false) {
 
         StatusSetting(
@@ -157,7 +157,7 @@ fun ThemeChangeSettingLightOffPreview3() {
 )
 @Composable
 fun ThemeChangeSettingDarkOffPreview() {
-    val selectedOption = remember { mutableStateOf(StatusPresentation.ACTIVE) }
+    val selectedOption = remember { mutableStateOf(StatusPresentation.ONLINE) }
     AppTheme(isDark = true) {
 
         StatusSetting(
@@ -174,7 +174,7 @@ fun ThemeChangeSettingDarkOffPreview() {
 )
 @Composable
 fun ThemeChangeSettingDarkOffPreview1() {
-    val selectedOption = remember { mutableStateOf(StatusPresentation.NOT_ACTIVE) }
+    val selectedOption = remember { mutableStateOf(StatusPresentation.OFFLINE) }
     AppTheme(isDark = true) {
 
         StatusSetting(

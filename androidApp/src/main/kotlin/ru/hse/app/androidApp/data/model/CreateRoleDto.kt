@@ -9,6 +9,6 @@ data class CreateRoleDto(
     @JsonProperty("color")
     val color: String,
 
-    @JsonProperty("members")
-    val members: List<String>,
+    @JsonProperty("position")
+    val position: Int = 1,
 )

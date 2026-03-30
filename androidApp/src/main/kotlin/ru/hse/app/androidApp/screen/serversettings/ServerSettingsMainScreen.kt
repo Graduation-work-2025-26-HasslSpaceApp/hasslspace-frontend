@@ -20,6 +20,8 @@ import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
 import ru.hse.app.androidApp.ui.components.servers.editserver.SettingsServer
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerInfoEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerRolesEvent
+import ru.hse.app.androidApp.ui.entity.model.servers.events.PatchServerPropertiesEvent
+import ru.hse.app.androidApp.ui.entity.model.servers.events.UpdateServerPhotoEvent
 import ru.hse.app.androidApp.ui.entity.model.serversettings.ServerSettingsUiState
 import ru.hse.app.androidApp.ui.navigation.NavigationItem
 import ru.hse.app.androidApp.ui.notification.ToastManager
@@ -34,10 +36,46 @@ fun ServerSettingsMainScreen(
 
     val getServerInfoEvent by viewModel.getServerInfoEvent.collectAsState()
     val getServerRolesEvent by viewModel.getServerRolesEvent.collectAsState()
+    val patchServerPropertiesEvent by viewModel.patchServerPropertiesEvent.collectAsState()
+    val updateServerPhotoEvent by viewModel.updateServerPhotoEvent.collectAsState()
 
     LaunchedEffect(serverId) {
         viewModel.getServerInfo(serverId)
-        // todo viewModel.getServerRoles(serverId)
+        viewModel.getServerRoles(serverId)
+    }
+
+    LaunchedEffect(patchServerPropertiesEvent) {
+        when (patchServerPropertiesEvent) {
+            is PatchServerPropertiesEvent.Success -> {
+                viewModel.showToast("Данные успешно изменены")
+                navController.popBackStack()
+            }
+
+            is PatchServerPropertiesEvent.Error -> {
+                val message =
+                    (patchServerPropertiesEvent as PatchServerPropertiesEvent.Error).message
+                viewModel.showToast(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetPatchServerPropertiesEvent()
+    }
+
+    LaunchedEffect(updateServerPhotoEvent) {
+        when (updateServerPhotoEvent) {
+            is UpdateServerPhotoEvent.Success -> {
+                viewModel.showToast("Фото успешно изменено")
+            }
+
+            is UpdateServerPhotoEvent.Error -> {
+                val message = (updateServerPhotoEvent as UpdateServerPhotoEvent.Error).message
+                viewModel.showToast(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetUpdateServerPhotoEvent()
     }
 
     LaunchedEffect(getServerInfoEvent) {
@@ -129,12 +167,15 @@ fun ServerSettingsMainScreenWithStateContent(
         editedServerName = viewModel.serverName.value,
         onEditedServernameChanged = viewModel::onEditedServernameChanged,
         enabledChangeServerName = viewModel.isEnabledChange(viewModel.serverName.value),
-        onApplyNewServerName = { viewModel.onSaveEditedServername(data.name) },
+        onApplyNewServerName = {
+            viewModel.onSaveEditedServername(
+                data.id,
+                viewModel.serverName.value
+            )
+        },
         onMembersClick = { navController.navigate(NavigationItem.MembersSettings.route + "/${data.id}") },
         onRolesClick = { navController.navigate(NavigationItem.RolesSettings.route + "/${data.id}") },
         onInvitationsClick = { navController.navigate(NavigationItem.InvitationsSettings.route + "/${data.id}") },
         isDark = viewModel.isDarkTheme
     )
-
-
 }

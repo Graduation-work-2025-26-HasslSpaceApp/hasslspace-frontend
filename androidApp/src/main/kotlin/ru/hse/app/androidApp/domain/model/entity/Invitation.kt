@@ -1,18 +1,26 @@
 package ru.hse.app.androidApp.domain.model.entity
 
-import ru.hse.app.androidApp.data.model.InvitationDto
+import ru.hse.app.androidApp.data.model.ServerInviteDto
 import java.time.LocalDateTime
 
 data class Invitation(
-    val id: String,
-    val link: String,
-    val expTime: LocalDateTime
+    val code: String,
+    val serverId: String,
+    val creatorId: String,
+    val expiresAt: LocalDateTime,
+    val serverName: String? = null,
+    val creatorName: String? = null,
+    val inviteUrl: String? = null
 )
 
-fun InvitationDto.toDomain(): Invitation {
+fun ServerInviteDto.toDomain(): Invitation {
     return Invitation(
-        id = this.id,
-        link = this.link,
-        expTime = this.expTime
+        code = this.code,
+        serverId = this.serverId,
+        creatorId = this.creatorId,
+        expiresAt = this.expiresAt,
+        serverName = this.serverName,
+        creatorName = this.creatorName,
+        inviteUrl = this.inviteUrl
     )
 }

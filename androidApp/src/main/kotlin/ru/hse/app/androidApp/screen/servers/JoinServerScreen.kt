@@ -7,7 +7,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
@@ -15,6 +14,7 @@ import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
 import ru.hse.app.androidApp.ui.components.servers.joinserver.JoinServerContent
 import ru.hse.app.androidApp.ui.entity.model.servers.ServersUiState
 import ru.hse.app.androidApp.ui.entity.model.servers.events.JoinServerEvent
+import ru.hse.app.androidApp.ui.navigation.BottomNavigationItem
 
 @Composable
 fun JoinServerScreen(
@@ -28,8 +28,8 @@ fun JoinServerScreen(
     LaunchedEffect(joinServerEvent) {
         when (joinServerEvent) {
             is JoinServerEvent.Success -> {
-                //TODO
-                viewModel.showToast("успешно присоединились к серверу")
+                viewModel.showToast("Успешно присоединились к серверу")
+                navController.navigate(BottomNavigationItem.Servers.route)
             }
 
             is JoinServerEvent.Error -> {
@@ -69,9 +69,6 @@ fun JoinServerScreenWithStateContent(
     navController: NavController,
     viewModel: ServersViewModel,
 ) {
-    val data = uiState.data
-    val context = LocalContext.current
-
     JoinServerContent(
         onBackClick = { navController.popBackStack() },
         linkText = viewModel.linkTextServer.value,

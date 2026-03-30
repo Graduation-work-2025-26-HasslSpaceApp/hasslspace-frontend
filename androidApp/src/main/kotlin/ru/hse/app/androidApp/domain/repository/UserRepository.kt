@@ -2,7 +2,6 @@ package ru.hse.app.androidApp.domain.repository
 
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import ru.hse.app.androidApp.domain.model.entity.ServerInfo
 import ru.hse.app.androidApp.domain.model.entity.UserExpandedInfo
 
 interface UserRepository {
@@ -27,8 +26,6 @@ interface UserRepository {
         type: RequestBody,
         photoUrl: RequestBody?
     ): Result<String>
-
-    suspend fun getServers(): Result<List<ServerInfo>>
 
     suspend fun changeUserName(newName: String): Result<String>
     suspend fun changeUserStatus(status: String): Result<String>

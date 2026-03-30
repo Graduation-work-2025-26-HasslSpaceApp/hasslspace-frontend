@@ -70,6 +70,7 @@ fun UserInfoBottomSheet(
     onInvite: () -> Unit,
     onCopyNickname: () -> Unit,
     onThirdOptionClick: () -> Unit,
+    onDismissFriendRequest: () -> Unit = {},
     type: TypeUiModel
 ) {
 
@@ -79,14 +80,21 @@ fun UserInfoBottomSheet(
     val textThirdOption = when (type) {
         TypeUiModel.FRIEND -> "Удалить из друзей"
         TypeUiModel.OUTGOING_REQUEST -> "Отозвать приглашение в друзья"
+        TypeUiModel.BLOCKED -> "Взаимодействие заблокировано"
         TypeUiModel.NONE -> "Добавить в друзья"
-        TypeUiModel.INCOMING_REQUEST -> "Принять приглашение в друзья" // todo опция для отклонения заявки
+        TypeUiModel.INCOMING_REQUEST -> "Принять приглашение в друзья"
     }
     val colorThirdOption = when (type) {
         TypeUiModel.FRIEND -> MaterialTheme.colorScheme.error
         TypeUiModel.OUTGOING_REQUEST -> MaterialTheme.colorScheme.error
+        TypeUiModel.BLOCKED -> MaterialTheme.colorScheme.error
         TypeUiModel.NONE -> MaterialTheme.colorScheme.primary
         TypeUiModel.INCOMING_REQUEST -> MaterialTheme.colorScheme.primary
+    }
+
+    val allowInteract = when (type) {
+        TypeUiModel.FRIEND -> true
+        else -> false
     }
 
     ModalBottomSheet(
@@ -208,7 +216,7 @@ fun UserInfoBottomSheet(
 
                 Spacer(Modifier.height(10.dp))
 
-                if (type != TypeUiModel.NONE && type != TypeUiModel.OUTGOING_REQUEST) {
+                if (allowInteract) {
                     Row(
                         modifier = Modifier.align(Alignment.CenterHorizontally),
                         horizontalArrangement = Arrangement.spacedBy(50.dp)
@@ -244,20 +252,20 @@ fun UserInfoBottomSheet(
         DropdownMenu(
             expanded = expanded.value,
             shape = RoundedCornerShape(12.dp),
-            offset = DpOffset(100.dp, 190.dp),
+            offset = DpOffset(100.dp, 160.dp),
             onDismissRequest = { expanded.value = false },
             containerColor = MaterialTheme.colorScheme.background,
             modifier = Modifier
                 .width(300.dp)
         ) {
-            DropdownMenuItem(
-                modifier = Modifier.height(30.dp),
-                text = { VariableLight("Пригласить на сервер", 14.sp) },
-                onClick = {
-                    expanded.value = false
-                    onInvite()
-                },
-            )
+//            DropdownMenuItem(
+//                modifier = Modifier.height(30.dp),
+//                text = { VariableLight("Пригласить на сервер", 14.sp) },
+//                onClick = {
+//                    expanded.value = false
+//                    onInvite()
+//                },
+//            )
             DropdownMenuItem(
                 modifier = Modifier.height(30.dp),
                 text = { VariableLight("Скопировать никнейм пользователя", 14.sp) },
@@ -278,8 +286,26 @@ fun UserInfoBottomSheet(
                 onClick = {
                     expanded.value = false
                     onThirdOptionClick()
+                    onDismiss()
                 },
             )
+            if (type == TypeUiModel.INCOMING_REQUEST) {
+                DropdownMenuItem(
+                    modifier = Modifier.height(30.dp),
+                    text = {
+                        VariableLight(
+                            text = "Отклонить заявку в друзья",
+                            fontSize = 14.sp,
+                            fontColor = MaterialTheme.colorScheme.error
+                        )
+                    },
+                    onClick = {
+                        expanded.value = false
+                        onDismissFriendRequest()
+                        onDismiss()
+                    },
+                )
+            }
         }
     }
 }
@@ -308,7 +334,7 @@ fun UserInfoBottomSheetLightPreview() {
             isDarkTheme = false,
             profilePictureUrl = "",
             imageLoader = ImageLoader.Builder(LocalContext.current).build(),
-            status = StatusPresentation.ACTIVE,
+            status = StatusPresentation.ONLINE,
             username = "Юлия Кухтина",
             nickname = "julia_dev",
             commonServersCount = 3,
@@ -338,7 +364,7 @@ fun UserInfoBottomSheetLightPreviewWithPhoto() {
             isDarkTheme = false,
             profilePictureUrl = "https://opis-cdn.tinkoffjournal.ru/mercury/kak-koshka-manipuliruet-ludmi-1.gtqjybqvotxy..png",
             imageLoader = ImageLoader.Builder(LocalContext.current).build(),
-            status = StatusPresentation.ACTIVE,
+            status = StatusPresentation.ONLINE,
             username = "Юлия Кухтина",
             nickname = "julia_dev",
             commonServersCount = 3,
@@ -368,7 +394,7 @@ fun UserInfoBottomSheetLightPreviewWithPhoto2() {
             isDarkTheme = false,
             profilePictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfw-8fO_Jd9wLwRy-y9PZ5TOC03tD8DMm9KQ&s",
             imageLoader = ImageLoader.Builder(LocalContext.current).build(),
-            status = StatusPresentation.ACTIVE,
+            status = StatusPresentation.ONLINE,
             username = "Юлия Кухтина",
             nickname = "julia_dev",
             commonServersCount = 3,
@@ -398,7 +424,7 @@ fun UserInfoBottomSheetDarkPreview() {
             isDarkTheme = true,
             profilePictureUrl = "",
             imageLoader = ImageLoader.Builder(LocalContext.current).build(),
-            status = StatusPresentation.ACTIVE,
+            status = StatusPresentation.ONLINE,
             username = "Юлия Кухтина",
             nickname = "julia_dev",
             commonServersCount = 3,
@@ -428,7 +454,7 @@ fun UserInfoBottomSheetDarkPreviewWithPhoto() {
             isDarkTheme = true,
             profilePictureUrl = "https://opis-cdn.tinkoffjournal.ru/mercury/kak-koshka-manipuliruet-ludmi-1.gtqjybqvotxy..png",
             imageLoader = ImageLoader.Builder(LocalContext.current).build(),
-            status = StatusPresentation.ACTIVE,
+            status = StatusPresentation.ONLINE,
             username = "Юлия Кухтина",
             nickname = "julia_dev",
             commonServersCount = 3,
@@ -458,7 +484,7 @@ fun UserInfoBottomSheetDarkPreviewWithPhoto2() {
             isDarkTheme = true,
             profilePictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfw-8fO_Jd9wLwRy-y9PZ5TOC03tD8DMm9KQ&s",
             imageLoader = ImageLoader.Builder(LocalContext.current).build(),
-            status = StatusPresentation.ACTIVE,
+            status = StatusPresentation.ONLINE,
             username = "Юлия Кухтина",
             nickname = "julia_dev",
             commonServersCount = 3,

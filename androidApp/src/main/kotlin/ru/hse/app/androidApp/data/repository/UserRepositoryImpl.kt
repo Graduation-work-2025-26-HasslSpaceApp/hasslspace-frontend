@@ -2,9 +2,9 @@ package ru.hse.app.androidApp.data.repository
 
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import ru.hse.app.androidApp.data.model.UpdateProfileDto
 import ru.hse.app.androidApp.data.network.ApiCaller
 import ru.hse.app.androidApp.data.network.ApiService
-import ru.hse.app.androidApp.domain.model.entity.ServerInfo
 import ru.hse.app.androidApp.domain.model.entity.UserExpandedInfo
 import ru.hse.app.androidApp.domain.model.entity.toDomain
 import ru.hse.app.androidApp.domain.repository.UserRepository
@@ -56,7 +56,12 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun saveUserPhoto(photoUrl: String): Result<String> {
-        return apiCaller.safeApiCall { apiService.saveUserPhoto(photoUrl) }
+        return apiCaller.safeApiCall {
+            val updateProfileDto = UpdateProfileDto(
+                photoUrl = photoUrl
+            )
+            apiService.updateUserProfile(updateProfileDto)
+        }
     }
 
     override suspend fun uploadPhoto(
@@ -67,21 +72,26 @@ class UserRepositoryImpl @Inject constructor(
         return apiCaller.safeApiCall { apiService.uploadPhoto(photo, type, photoUrl) }
     }
 
-    override suspend fun getServers(): Result<List<ServerInfo>> {
-        return apiCaller.safeApiCall { apiService.getServers() }.mapCatching { serverDtoList ->
-            serverDtoList.map { it.toDomain() }
+    override suspend fun changeUserName(newName: String): Result<String> {
+        return apiCaller.safeApiCall {
+            val updateProfileDto = UpdateProfileDto(
+                name = newName
+            )
+            apiService.updateUserProfile(updateProfileDto)
         }
     }
 
-    override suspend fun changeUserName(newName: String): Result<String> {
-        return apiCaller.safeApiCall { apiService.changeName(newName) }
-    }
-
     override suspend fun changeUserStatus(status: String): Result<String> {
+        //ONLINE, INVISIBLE, DO_NOT_DISTURB, OFFLINE
         return apiCaller.safeApiCall { apiService.changeStatus(status) }
     }
 
     override suspend fun changeUserDesc(desc: String): Result<String> {
-        return apiCaller.safeApiCall { apiService.changeDesc(desc) }
+        return apiCaller.safeApiCall {
+            val updateProfileDto = UpdateProfileDto(
+                description = desc
+            )
+            apiService.updateUserProfile(updateProfileDto)
+        }
     }
 }

@@ -49,7 +49,8 @@ fun UserSettingsScreenContent(
     onExit: () -> Unit
 ) {
     Box(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
             .imePadding()
     ) {
         Image(
@@ -120,7 +121,7 @@ fun UserSettingsScreenContent(
 @Composable
 fun UserSettingsContentPreview() {
     val isDarkTheme = remember { mutableStateOf(false) }
-    val selectedOption = remember { mutableStateOf(StatusPresentation.ACTIVE) }
+    val selectedOption = remember { mutableStateOf(StatusPresentation.ONLINE) }
 
     val selectedImageUri = remember {
         mutableStateOf<Uri?>(
@@ -159,7 +160,7 @@ fun UserSettingsContentPreview() {
 @Composable
 fun UserSettingsContentPreview1() {
     val isDarkTheme = remember { mutableStateOf(true) }
-    val selectedOption = remember { mutableStateOf(StatusPresentation.ACTIVE) }
+    val selectedOption = remember { mutableStateOf(StatusPresentation.ONLINE) }
 
     val selectedImageUri = remember {
         mutableStateOf<Uri?>(

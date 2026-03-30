@@ -144,7 +144,7 @@ fun UserCardAcceptDismissPreviewAllLight() {
             UserCardAcceptDismiss(
                 username = "Александр Иванов",
                 nickname = "alex_ivanov",
-                status = StatusPresentation.ACTIVE,
+                status = StatusPresentation.ONLINE,
                 profilePictureUrl = "",
                 onCardClick = {},
                 onAcceptClick = {},
@@ -200,7 +200,7 @@ fun UserCardAcceptDismissPreviewAllLight() {
             UserCardAcceptDismiss(
                 username = "Иван Николаев",
                 nickname = "ivan_nikolaev",
-                status = StatusPresentation.NOT_ACTIVE,
+                status = StatusPresentation.OFFLINE,
                 profilePictureUrl = "",
                 onCardClick = {},
                 onAcceptClick = {},
@@ -220,7 +220,7 @@ fun UserCardAcceptDismissPreviewAllDark() {
             UserCardAcceptDismiss(
                 username = "Александр Иванов",
                 nickname = "alex_ivanov",
-                status = StatusPresentation.ACTIVE,
+                status = StatusPresentation.ONLINE,
                 profilePictureUrl = "",
                 onCardClick = {},
                 onAcceptClick = {},
@@ -234,7 +234,7 @@ fun UserCardAcceptDismissPreviewAllDark() {
             UserCardAcceptDismiss(
                 username = "Мария Петрова",
                 nickname = "maria_petrova",
-                status = StatusPresentation.NOT_ACTIVE,
+                status = StatusPresentation.OFFLINE,
                 profilePictureUrl = "",
                 onCardClick = {},
                 onAcceptClick = {},

@@ -135,7 +135,7 @@ fun UserCardArrowPreviewAllLight() {
             UserCardArrow(
                 username = "Александр Иванов",
                 nickname = "alex_ivanov",
-                status = StatusPresentation.ACTIVE,
+                status = StatusPresentation.ONLINE,
                 profilePictureUrl = "",
                 onCardClick = {},
                 isDarkTheme = false,
@@ -183,7 +183,7 @@ fun UserCardArrowPreviewAllLight() {
             UserCardArrow(
                 username = "Иван Николаев",
                 nickname = "ivan_nikolaev",
-                status = StatusPresentation.NOT_ACTIVE,
+                status = StatusPresentation.OFFLINE,
                 profilePictureUrl = "",
                 onCardClick = {},
                 isDarkTheme = false,
@@ -201,7 +201,7 @@ fun UserCardArrowPreviewAllDark() {
             UserCardArrow(
                 username = "Александр Иванов",
                 nickname = "alex_ivanov",
-                status = StatusPresentation.ACTIVE,
+                status = StatusPresentation.ONLINE,
                 profilePictureUrl = "",
                 onCardClick = {},
                 isDarkTheme = true,
@@ -213,7 +213,7 @@ fun UserCardArrowPreviewAllDark() {
             UserCardArrow(
                 username = "Мария Петрова",
                 nickname = "maria_petrova",
-                status = StatusPresentation.NOT_ACTIVE,
+                status = StatusPresentation.OFFLINE,
                 profilePictureUrl = "",
                 onCardClick = {},
                 isDarkTheme = true,
@@ -279,7 +279,7 @@ fun UserCardArrowPreviewMixedLight() {
             UserCardArrow(
                 username = "Петр Кузнецов",
                 nickname = "petr_kuznetsov",
-                status = StatusPresentation.ACTIVE,
+                status = StatusPresentation.ONLINE,
                 onCardClick = {},
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
@@ -332,7 +332,7 @@ fun UserCardArrowPreviewMixedDark() {
             UserCardArrow(
                 username = "Петр Кузнецов",
                 nickname = "petr_kuznetsov",
-                status = StatusPresentation.ACTIVE,
+                status = StatusPresentation.ONLINE,
                 onCardClick = {},
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)

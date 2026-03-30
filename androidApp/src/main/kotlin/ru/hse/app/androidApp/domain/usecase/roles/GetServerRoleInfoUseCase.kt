@@ -1,4 +1,4 @@
-package ru.hse.app.androidApp.domain.usecase.servers
+package ru.hse.app.androidApp.domain.usecase.roles
 
 import ru.hse.app.androidApp.domain.model.entity.RoleInfo
 import javax.inject.Inject

@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,7 +38,7 @@ fun UserProfile(
     userName: String,
     nickname: String,
     isDarkTheme: Boolean,
-    status: StatusPresentation = StatusPresentation.ACTIVE,
+    status: StatusPresentation = StatusPresentation.ONLINE,
     profilePictureUrl: String = ""
 ) {
     Column(
@@ -78,14 +79,13 @@ fun UserProfile(
 
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(59.dp),
+                .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                VariableMedium(text = userName, fontSize = 29.sp)
+                VariableMedium(text = userName, fontSize = 29.sp, textAlign = TextAlign.Center)
                 Spacer(modifier = Modifier.height(4.dp))
-                VariableLight(text = "@$nickname", fontSize = 14.sp)
+                VariableLight(text = "@$nickname", fontSize = 14.sp, textAlign = TextAlign.Center)
             }
         }
     }
@@ -113,7 +113,7 @@ fun UserProfilePreviewDark() {
         isDark = true
     ) {
         UserProfile(
-            userName = "Иван",
+            userName = "Иван lsdjhfgksughsukfh awueghfuczhic euhgfuiahfkazhsc",
             nickname = "ivan123_34",
             isDarkTheme = true,
             imageLoader = ImageLoader(LocalContext.current)

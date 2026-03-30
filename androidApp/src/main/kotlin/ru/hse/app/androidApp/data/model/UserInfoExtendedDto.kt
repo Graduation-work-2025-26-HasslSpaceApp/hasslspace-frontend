@@ -12,9 +12,6 @@ data class UserInfoExtendedDto(
     @JsonProperty("username")
     val nickname: String,
 
-    @JsonProperty("email")
-    val email: String,
-
     @JsonProperty("status")
     val status: String,
 
@@ -24,6 +21,14 @@ data class UserInfoExtendedDto(
     @JsonProperty("description")
     val description: String,
 
-    @JsonProperty("friendshipStatus")
-    val friendshipStatus: TypeDto
-)
+    @JsonProperty("friendStatus")
+    val friendshipStatus: StatusType
+) {
+    enum class StatusType {
+        FRIEND,
+        INCOMING_REQUEST,
+        OUTGOING_REQUEST,
+        BLOCKED,
+        NONE
+    }
+}

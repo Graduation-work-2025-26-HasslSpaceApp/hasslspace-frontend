@@ -115,7 +115,7 @@ fun UserCardThinPreviewAllLight() {
             UserCardThin(
                 username = "Александр Иванов",
                 nickname = "alex_ivanov",
-                status = StatusPresentation.ACTIVE,
+                status = StatusPresentation.ONLINE,
                 profilePictureUrl = "",
 
                 isDarkTheme = false,
@@ -163,7 +163,7 @@ fun UserCardThinPreviewAllLight() {
             UserCardThin(
                 username = "Иван Николаев",
                 nickname = "ivan_nikolaev",
-                status = StatusPresentation.NOT_ACTIVE,
+                status = StatusPresentation.OFFLINE,
                 profilePictureUrl = "",
 
                 isDarkTheme = false,
@@ -181,7 +181,7 @@ fun UserCardThinPreviewAllDark() {
             UserCardThin(
                 username = "Александр Иванов",
                 nickname = "alex_ivanov",
-                status = StatusPresentation.ACTIVE,
+                status = StatusPresentation.ONLINE,
                 profilePictureUrl = "",
 
                 isDarkTheme = true,
@@ -193,7 +193,7 @@ fun UserCardThinPreviewAllDark() {
             UserCardThin(
                 username = "Мария Петрова",
                 nickname = "maria_petrova",
-                status = StatusPresentation.NOT_ACTIVE,
+                status = StatusPresentation.OFFLINE,
                 profilePictureUrl = "",
 
                 isDarkTheme = true,
@@ -259,7 +259,7 @@ fun UserCardThinPreviewMixedLight() {
             UserCardThin(
                 username = "Петр Кузнецов",
                 nickname = "petr_kuznetsov",
-                status = StatusPresentation.ACTIVE,
+                status = StatusPresentation.ONLINE,
 
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
@@ -312,7 +312,7 @@ fun UserCardThinPreviewMixedDark() {
             UserCardThin(
                 username = "Петр Кузнецов",
                 nickname = "petr_kuznetsov",
-                status = StatusPresentation.ACTIVE,
+                status = StatusPresentation.ONLINE,
 
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)

@@ -21,6 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import ru.hse.app.androidApp.ui.components.common.box.NoItemsBox
 import ru.hse.app.androidApp.ui.components.common.button.AddTextButton
 import ru.hse.app.androidApp.ui.components.common.button.BackButton
 import ru.hse.app.androidApp.ui.components.common.card.RoleCardArrow
@@ -69,6 +70,10 @@ fun ServerRolesContent(
             )
         }
         Spacer(Modifier.height(15.dp))
+
+        if (roles.isEmpty()) {
+            NoItemsBox("Ролей пока нет")
+        }
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(1),

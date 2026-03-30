@@ -22,13 +22,12 @@ import ru.hse.app.androidApp.ui.components.settings.usersettings.StatusChangeBot
 import ru.hse.app.androidApp.ui.components.settings.usersettings.UserSettingsScreenContent
 import ru.hse.app.androidApp.ui.entity.model.auth.events.SavePhotoEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.ProfileUiState
+import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadUserDataEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.events.SaveUserDescEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.events.SaveUserNameEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.events.SaveUserStatusEvent
 import ru.hse.app.androidApp.ui.notification.ToastManager
 
-
-//TODO Обработка ивентов
 @Composable
 fun UserSettingsScreen(
     navController: NavController,
@@ -40,6 +39,28 @@ fun UserSettingsScreen(
     val saveUserNameEvent by viewModel.saveUserNameEvent.collectAsState()
     val saveUserStatusEvent by viewModel.saveUserStatusEvent.collectAsState()
     val saveUserDescEvent by viewModel.saveUserDescEvent.collectAsState()
+    val loadUserDataEvent by viewModel.loadUserInfoEvent.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.loadUserData()
+        viewModel.loadUserFriends()
+        viewModel.loadUserServers()
+    }
+
+    LaunchedEffect(loadUserDataEvent) {
+        when (loadUserDataEvent) {
+            is LoadUserDataEvent.SuccessLoad -> {}
+
+            is LoadUserDataEvent.Error -> {
+                val message =
+                    (loadUserDataEvent as LoadUserDataEvent.Error).message
+                viewModel.showToast(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetLoadUserInfoEvent()
+    }
 
     LaunchedEffect(savePhotoEvent) {
         when (savePhotoEvent) {

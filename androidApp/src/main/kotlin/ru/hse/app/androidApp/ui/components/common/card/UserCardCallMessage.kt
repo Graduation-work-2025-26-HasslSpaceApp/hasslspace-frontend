@@ -147,7 +147,7 @@ fun UserCardCallMessagePreviewAllLight() {
             UserCardCallMessage(
                 username = "Александр Иванов",
                 nickname = "alex_ivanov",
-                status = StatusPresentation.ACTIVE,
+                status = StatusPresentation.ONLINE,
                 profilePictureUrl = "",
                 onCardClick = {},
                 onCallClick = {},
@@ -203,7 +203,7 @@ fun UserCardCallMessagePreviewAllLight() {
             UserCardCallMessage(
                 username = "Иван Николаев",
                 nickname = "ivan_nikolaev",
-                status = StatusPresentation.NOT_ACTIVE,
+                status = StatusPresentation.OFFLINE,
                 profilePictureUrl = "",
                 onCardClick = {},
                 onCallClick = {},
@@ -223,7 +223,7 @@ fun UserCardCallMessagePreviewAllDark() {
             UserCardCallMessage(
                 username = "Александр Иванов",
                 nickname = "alex_ivanov",
-                status = StatusPresentation.ACTIVE,
+                status = StatusPresentation.ONLINE,
                 profilePictureUrl = "",
                 onCardClick = {},
                 onCallClick = {},
@@ -237,7 +237,7 @@ fun UserCardCallMessagePreviewAllDark() {
             UserCardCallMessage(
                 username = "Мария Петрова",
                 nickname = "maria_petrova",
-                status = StatusPresentation.NOT_ACTIVE,
+                status = StatusPresentation.OFFLINE,
                 profilePictureUrl = "",
                 onCardClick = {},
                 onCallClick = {},

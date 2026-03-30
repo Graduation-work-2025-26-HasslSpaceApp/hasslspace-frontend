@@ -8,6 +8,6 @@ class CheckEmailVerificationUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(): Result<Boolean> {
-        return userRepository.checkEmailVerification().mapCatching { result -> result }
+        return userRepository.checkEmailVerification()
     }
 }

@@ -47,7 +47,8 @@ fun UserCardUndo(
     status: StatusPresentation = StatusPresentation.INVISIBLE,
     profilePictureUrl: String = "",
     onUndoClick: () -> Unit,
-    onCardClick: () -> Unit
+    onCardClick: () -> Unit,
+    enabled: Boolean = true
 ) {
     Row(
         modifier
@@ -55,7 +56,7 @@ fun UserCardUndo(
             .height(77.dp)
             .clip(RoundedCornerShape(22.dp))
             .background(MaterialTheme.colorScheme.surfaceContainer)
-            .clickable { onCardClick() }
+            .clickable(enabled = enabled) { onCardClick() }
             .padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically
     ) {
 
@@ -135,7 +136,7 @@ fun UserCardUndoPreviewAllLight() {
             UserCardUndo(
                 username = "Александр Иванов",
                 nickname = "alex_ivanov",
-                status = StatusPresentation.ACTIVE,
+                status = StatusPresentation.ONLINE,
                 profilePictureUrl = "",
                 onCardClick = {},
                 onUndoClick = {},
@@ -187,7 +188,7 @@ fun UserCardUndoPreviewAllLight() {
             UserCardUndo(
                 username = "Иван Николаев",
                 nickname = "ivan_nikolaev",
-                status = StatusPresentation.NOT_ACTIVE,
+                status = StatusPresentation.OFFLINE,
                 profilePictureUrl = "",
                 onCardClick = {},
                 onUndoClick = {},
@@ -206,7 +207,7 @@ fun UserCardUndoPreviewAllDark() {
             UserCardUndo(
                 username = "Александр Иванов",
                 nickname = "alex_ivanov",
-                status = StatusPresentation.ACTIVE,
+                status = StatusPresentation.ONLINE,
                 profilePictureUrl = "",
                 onCardClick = {},
                 onUndoClick = {},
@@ -219,7 +220,7 @@ fun UserCardUndoPreviewAllDark() {
             UserCardUndo(
                 username = "Мария Петрова",
                 nickname = "maria_petrova",
-                status = StatusPresentation.NOT_ACTIVE,
+                status = StatusPresentation.OFFLINE,
                 profilePictureUrl = "",
                 onCardClick = {},
                 onUndoClick = {},

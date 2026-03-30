@@ -1,13 +1,26 @@
 package ru.hse.app.androidApp.domain.usecase.channel
 
-import ru.hse.app.androidApp.domain.repository.ServerRepository
+import ru.hse.app.androidApp.domain.repository.ChannelRepository
 import javax.inject.Inject
 
 class PatchChannelPropertiesUseCase @Inject constructor(
-    private val serverRepository: ServerRepository
+    private val channelRepository: ChannelRepository
 ) {
-    //TODO тут несколько эндпоинтов
-    suspend operator fun invoke(): Result<String> {
-        return Result.success("")
+    suspend operator fun invoke(
+        serverId: String,
+        channelId: String,
+        name: String?,
+        position: Int?,
+        maxMembers: Int?,
+        isPrivate: Boolean?
+    ): Result<String> {
+        return channelRepository.patchChannel(
+            serverId,
+            channelId,
+            name,
+            position,
+            maxMembers,
+            isPrivate
+        )
     }
 }

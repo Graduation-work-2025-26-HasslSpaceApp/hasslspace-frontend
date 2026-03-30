@@ -17,21 +17,37 @@ import kotlinx.coroutines.launch
 import ru.hse.app.androidApp.data.local.DataManager
 import ru.hse.app.androidApp.domain.model.entity.CreateRole
 import ru.hse.app.androidApp.domain.service.common.CropProfilePhotoService
-import ru.hse.app.androidApp.domain.service.common.PhotoConverterService
-import ru.hse.app.androidApp.domain.usecase.servers.CreateServerRoleUseCase
+import ru.hse.app.androidApp.domain.usecase.invitations.DeleteServerInvitationUseCase
+import ru.hse.app.androidApp.domain.usecase.invitations.GetServerInvitationsUseCase
+import ru.hse.app.androidApp.domain.usecase.roles.AssignRoleUseCase
+import ru.hse.app.androidApp.domain.usecase.roles.CreateServerRoleUseCase
+import ru.hse.app.androidApp.domain.usecase.roles.DeleteServerRoleUseCase
+import ru.hse.app.androidApp.domain.usecase.roles.GetServerRolesUseCase
+import ru.hse.app.androidApp.domain.usecase.roles.PatchServerRoleUseCase
+import ru.hse.app.androidApp.domain.usecase.roles.RevokeRoleUseCase
+import ru.hse.app.androidApp.domain.usecase.servers.DeleteServerMemberUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.GetServerInfoUseCase
-import ru.hse.app.androidApp.domain.usecase.servers.GetServerInvitationsUseCase
-import ru.hse.app.androidApp.domain.usecase.servers.GetServerRolesUseCase
+import ru.hse.app.androidApp.domain.usecase.servers.PatchServerPropertiesUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.SearchMembersUseCase
+import ru.hse.app.androidApp.domain.usecase.servers.UpdateServerOwnerUseCase
+import ru.hse.app.androidApp.domain.usecase.servers.UpdateServerPhotoUseCase
 import ru.hse.app.androidApp.ui.entity.model.FriendCheckboxUiModel
 import ru.hse.app.androidApp.ui.entity.model.RoleMiniCheckboxUiModel
 import ru.hse.app.androidApp.ui.entity.model.RoleMiniCountUiModel
 import ru.hse.app.androidApp.ui.entity.model.ServerMemberUiModel
+import ru.hse.app.androidApp.ui.entity.model.servers.events.AssignRoleEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.CreateServerRoleEvent
+import ru.hse.app.androidApp.ui.entity.model.servers.events.DeleteInvitationEvent
+import ru.hse.app.androidApp.ui.entity.model.servers.events.DeleteRoleEvent
+import ru.hse.app.androidApp.ui.entity.model.servers.events.DeleteServerMemberEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerInfoEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerInvitationsEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerRolesEvent
-import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerUserRolesEvent
+import ru.hse.app.androidApp.ui.entity.model.servers.events.PatchServerOwnerEvent
+import ru.hse.app.androidApp.ui.entity.model.servers.events.PatchServerPropertiesEvent
+import ru.hse.app.androidApp.ui.entity.model.servers.events.PatchServerRoleEvent
+import ru.hse.app.androidApp.ui.entity.model.servers.events.RevokeRoleEvent
+import ru.hse.app.androidApp.ui.entity.model.servers.events.UpdateServerPhotoEvent
 import ru.hse.app.androidApp.ui.entity.model.serversettings.ServerSettingsUiModel
 import ru.hse.app.androidApp.ui.entity.model.serversettings.ServerSettingsUiState
 import ru.hse.app.androidApp.ui.entity.model.serversettings.toRoleInfoUiModel
@@ -52,8 +68,21 @@ class ServerSettingsViewModel @Inject constructor(
 
     private val searchMembersUseCase: SearchMembersUseCase,
 
+    private val deleteInvitationUseCase: DeleteServerInvitationUseCase,
+    private val deleteServerMemberUseCase: DeleteServerMemberUseCase,
+    private val deleteRoleUseCase: DeleteServerRoleUseCase,
+
+    private val updateServerOwnerUseCase: UpdateServerOwnerUseCase,
+    private val updateServerPhotoUseCase: UpdateServerPhotoUseCase,
+    private val patchServerPropertiesUseCase: PatchServerPropertiesUseCase,
+
+    private val assignRoleUseCase: AssignRoleUseCase,
+    private val revokeRoleUseCase: RevokeRoleUseCase,
+
+    private val patchServerRoleUseCase: PatchServerRoleUseCase,
+
+
     private val dataManager: DataManager,
-    private val photoConverterService: PhotoConverterService,
     private val toastManager: ToastManager,
     val cropProfilePhotoService: CropProfilePhotoService,
     val imageLoader: ImageLoader
@@ -75,11 +104,36 @@ class ServerSettingsViewModel @Inject constructor(
     private val _getServerRolesEvent = MutableStateFlow<GetServerRolesEvent?>(null)
     val getServerRolesEvent: StateFlow<GetServerRolesEvent?> = _getServerRolesEvent
 
-    private val _getServerUserRolesEvent = MutableStateFlow<GetServerUserRolesEvent?>(null)
-    val getServerUserRolesEvent: StateFlow<GetServerUserRolesEvent?> = _getServerUserRolesEvent
+    private val _deleteInvitationEvent = MutableStateFlow<DeleteInvitationEvent?>(null)
+    val deleteInvitationEvent: StateFlow<DeleteInvitationEvent?> = _deleteInvitationEvent
+
+    private val _deleteServerMemberEvent = MutableStateFlow<DeleteServerMemberEvent?>(null)
+    val deleteServerMemberEvent: StateFlow<DeleteServerMemberEvent?> = _deleteServerMemberEvent
+
+    private val _assignRoleEvent = MutableStateFlow<AssignRoleEvent?>(null)
+    val assignRoleEvent: StateFlow<AssignRoleEvent?> = _assignRoleEvent
+
+    private val _revokeRoleEvent = MutableStateFlow<RevokeRoleEvent?>(null)
+    val revokeRoleEvent: StateFlow<RevokeRoleEvent?> = _revokeRoleEvent
 
     private val _createServerRoleEvent = MutableStateFlow<CreateServerRoleEvent?>(null)
     val createServerRoleEvent: StateFlow<CreateServerRoleEvent?> = _createServerRoleEvent
+
+    private val _patchServerOwnerEvent = MutableStateFlow<PatchServerOwnerEvent?>(null)
+    val patchServerOwnerEvent: StateFlow<PatchServerOwnerEvent?> = _patchServerOwnerEvent
+
+    private val _patchServerRoleEvent = MutableStateFlow<PatchServerRoleEvent?>(null)
+    val patchServerRoleEvent: StateFlow<PatchServerRoleEvent?> = _patchServerRoleEvent
+
+    private val _deleteRoleEvent = MutableStateFlow<DeleteRoleEvent?>(null)
+    val deleteRoleEvent: StateFlow<DeleteRoleEvent?> = _deleteRoleEvent
+
+    private val _updateServerPhotoEvent = MutableStateFlow<UpdateServerPhotoEvent?>(null)
+    val updateServerPhotoEvent: StateFlow<UpdateServerPhotoEvent?> = _updateServerPhotoEvent
+
+    private val _patchServerPropertiesEvent = MutableStateFlow<PatchServerPropertiesEvent?>(null)
+    val patchServerPropertiesEvent: StateFlow<PatchServerPropertiesEvent?> =
+        _patchServerPropertiesEvent
 
     val selectedImageUri: MutableState<Uri?> = mutableStateOf(null)
     val serverName = mutableStateOf("")
@@ -140,7 +194,7 @@ class ServerSettingsViewModel @Inject constructor(
         }
     }
 
-    fun onToggleEditRoleMember(tapped: FriendCheckboxUiModel) {
+    fun onToggleEditRoleMember(serverId: String, roleId: String, tapped: FriendCheckboxUiModel) {
         viewModelScope.launch {
             val currentState = _uiState.value
 
@@ -148,11 +202,36 @@ class ServerSettingsViewModel @Inject constructor(
 
                 try {
                     if (!tapped.isChosen) {
-                        // todo выдать роль
-                        // val result = someRepository.assignRole(member.id, tapped.id)
+                        val result = assignRoleUseCase(
+                            serverId = serverId,
+                            targetUserId = tapped.id,
+                            roleId = roleId
+                        )
+                        _assignRoleEvent.value = result.fold(
+                            onSuccess = {
+                                AssignRoleEvent.Success
+                            },
+
+                            onFailure = { error ->
+                                AssignRoleEvent.Error("Ошибка при выдаче роли. ${error.message}")
+                            }
+                        )
                     } else {
-                        // todo забрать роль
-                        // val result = someRepository.removeRole(member.id, tapped.id)
+                        val result = revokeRoleUseCase(
+                            serverId = serverId,
+                            targetUserId = tapped.id,
+                            roleId = roleId
+                        )
+
+                        _revokeRoleEvent.value = result.fold(
+                            onSuccess = {
+                                RevokeRoleEvent.Success
+                            },
+
+                            onFailure = { error ->
+                                RevokeRoleEvent.Error("Ошибка при снятии роли. ${error.message}")
+                            }
+                        )
                     }
 
                     val updatedNewRoleMembers = currentState.data.editedRole.members.map { member ->
@@ -203,45 +282,6 @@ class ServerSettingsViewModel @Inject constructor(
         }
     }
 
-    fun onToggleNewRoleMember(tapped: FriendCheckboxUiModel) {
-        viewModelScope.launch {
-            val currentState = _uiState.value
-
-            if (currentState is ServerSettingsUiState.Success) {
-
-                try {
-                    if (!tapped.isChosen) {
-                        // todo выдать роль
-                        // val result = someRepository.assignRole(member.id, tapped.id)
-                    } else {
-                        // todo забрать роль
-                        // val result = someRepository.removeRole(member.id, tapped.id)
-                    }
-
-                    val updatedNewRoleMembers = currentState.data.newRole.members.map { member ->
-                        if (member.id == tapped.id) {
-                            member.copy(isChosen = !member.isChosen)
-                        } else {
-                            member
-                        }
-                    }
-
-                    val updatedData = currentState.data.copy(
-                        newRole = currentState.data.newRole.copy(
-                            members = updatedNewRoleMembers
-                        )
-                    )
-
-                    _uiState.value = ServerSettingsUiState.Success(updatedData)
-
-                } catch (e: Exception) {
-                    // todo ловить и показывать ошибку
-                    // _uiState.value = ServerSettingsUiState.Error(e.message)
-                }
-            }
-        }
-    }
-
     fun loadEditRole(role: RoleMiniCountUiModel) {
         val currentState = _uiState.value
 
@@ -273,11 +313,61 @@ class ServerSettingsViewModel @Inject constructor(
     fun saveEditedRole(serverId: String, roleId: String) {
         originalEditRoleTitle.value = ""
 
-        // todo сохранить изменения, очистить выбранную роль, перейти просто к ролям
+        viewModelScope.launch {
+            val currentState = _uiState.value
+
+            if (currentState is ServerSettingsUiState.Success) {
+                val data = currentState.data
+                val result = patchServerRoleUseCase(
+                    serverId = serverId,
+                    roleId = roleId,
+                    name = data.editedRole.name,
+                    position = null,
+                    color = "#${Integer.toHexString(data.editedRole.color.toArgb())}"
+                )
+
+                _patchServerRoleEvent.value = result.fold(
+                    onSuccess = {
+                        PatchServerRoleEvent.Success
+                    },
+
+                    onFailure = { error ->
+                        PatchServerRoleEvent.Error("Ошибка при изменении роли. ${error.message}")
+                    }
+                )
+            }
+
+        }
     }
 
     fun deleteRole(serverId: String, roleId: String) {
-        // todo
+        viewModelScope.launch {
+            val result = deleteRoleUseCase(serverId, roleId)
+
+            _deleteRoleEvent.value = result.fold(
+                onSuccess = {
+                    DeleteRoleEvent.SuccessDelete
+                },
+
+                onFailure = { error ->
+                    DeleteRoleEvent.Error("Ошибка при удалении роли. ${error.message}")
+                }
+            )
+        }
+    }
+
+    fun deleteInvitation(serverId: String, invitationId: String) {
+        viewModelScope.launch {
+            val result = deleteInvitationUseCase(serverId, invitationId)
+            _deleteInvitationEvent.value = result.fold(
+                onSuccess = {
+                    DeleteInvitationEvent.SuccessDelete
+                },
+                onFailure = { error ->
+                    DeleteInvitationEvent.Error("Ошибка при удалении. ${error.message}")
+                }
+            )
+        }
     }
 
     fun createServerRole(
@@ -293,7 +383,6 @@ class ServerSettingsViewModel @Inject constructor(
             val data = CreateRole(
                 name = newRole.name,
                 color = "#${Integer.toHexString(colorInt.toArgb())}",
-                members = newRole.members.filter { it.isChosen }.map { it.id }
             )
             val result = createServerRoleUseCase(serverId, data)
 
@@ -306,16 +395,6 @@ class ServerSettingsViewModel @Inject constructor(
                             newRole = currentState.data.newRole.copy(
                                 name = "",
                                 color = Color.Transparent,
-                                members = currentState.data.members.map { member ->
-                                    FriendCheckboxUiModel(
-                                        id = member.id,
-                                        name = member.name,
-                                        nickname = member.nickname,
-                                        status = member.status,
-                                        avatarUrl = member.avatarUrl,
-                                        isChosen = false
-                                    )
-                                }
                             )
                         )
 
@@ -428,7 +507,7 @@ class ServerSettingsViewModel @Inject constructor(
         }
     }
 
-    fun onToggleRole(tapped: RoleMiniCheckboxUiModel) {
+    fun onToggleRole(serverId: String, tapped: RoleMiniCheckboxUiModel) {
         viewModelScope.launch {
             val currentState = _uiState.value
 
@@ -437,11 +516,33 @@ class ServerSettingsViewModel @Inject constructor(
 
                 try {
                     if (!tapped.isChosen) {
-                        // todo выдать роль
-                        // val result = someRepository.assignRole(member.id, tapped.id)
+                        val result = assignRoleUseCase(
+                            serverId = serverId,
+                            targetUserId = member.id,
+                            roleId = tapped.id
+                        )
+
+                        _assignRoleEvent.value = result.fold(
+                            onSuccess = {
+                                AssignRoleEvent.Success
+                            },
+                            onFailure = {
+                                AssignRoleEvent.Error("Ошибка при выдачи роли. ${it.message}")
+                            })
                     } else {
-                        // todo забрать роль
-                        // val result = someRepository.removeRole(member.id, tapped.id)
+                        val result = revokeRoleUseCase(
+                            serverId = serverId,
+                            targetUserId = member.id,
+                            roleId = tapped.id
+                        )
+
+                        _revokeRoleEvent.value = result.fold(
+                            onSuccess = {
+                                RevokeRoleEvent.Success
+                            },
+                            onFailure = {
+                                RevokeRoleEvent.Error("Ошибка при снятии роли. ${it.message}")
+                            })
                     }
 
                     val updatedChosenRoles = currentState.data.chosenRoles.map { role ->
@@ -490,12 +591,36 @@ class ServerSettingsViewModel @Inject constructor(
         }
     }
 
-    fun transferRightsToMember(member: ServerMemberUiModel?) {
-        //todo
+    fun transferRightsToMember(serverId: String, member: ServerMemberUiModel) {
+        viewModelScope.launch {
+            val result = updateServerOwnerUseCase(serverId, member.id)
+
+            _patchServerOwnerEvent.value = result.fold(
+                onSuccess = {
+                    PatchServerOwnerEvent.SuccessPatch
+                },
+
+                onFailure = { error ->
+                    PatchServerOwnerEvent.Error("Ошибка при передаче прав. ${error.message}")
+                },
+            )
+        }
     }
 
-    fun deleteMember(member: ServerMemberUiModel?) {
-        //todo
+    fun deleteMember(serverId: String, member: ServerMemberUiModel) {
+        viewModelScope.launch {
+            val result = deleteServerMemberUseCase(serverId, member.id)
+
+            _deleteServerMemberEvent.value = result.fold(
+                onSuccess = {
+                    DeleteServerMemberEvent.SuccessDelete
+                },
+
+                onFailure = { error ->
+                    DeleteServerMemberEvent.Error("Ошибка при удалении участника. ${error.message}")
+                },
+            )
+        }
     }
 
     fun isEnabledChange(value: String): Boolean {
@@ -510,12 +635,48 @@ class ServerSettingsViewModel @Inject constructor(
         serverName.value = value
     }
 
-    fun onSaveEditedServername(value: String) {
-        //todo
+    fun onSaveEditedServername(serverId: String, value: String) {
+        viewModelScope.launch {
+            val result = patchServerPropertiesUseCase(serverId, value, null)
+
+            _patchServerPropertiesEvent.value = result.fold(
+                onSuccess = {
+                    PatchServerPropertiesEvent.Success
+                },
+
+                onFailure = { error ->
+                    PatchServerPropertiesEvent.Error("Ошибка при изменении данных сервера. " + error.message)
+                }
+            )
+        }
     }
 
-    fun saveServerPhoto(uri: Uri?) {
-        //todo
+    fun saveServerPhoto(uriValue: Uri?) {
+        val currentState = _uiState.value
+        if (currentState is ServerSettingsUiState.Success) {
+            val data = currentState.data
+            viewModelScope.launch {
+                uriValue?.let { uri ->
+                    val photoResultResponse =
+                        updateServerPhotoUseCase(
+                            data.id,
+                            uri,
+                            data.photoUrl.takeIf { it.isNotEmpty() })
+                    _updateServerPhotoEvent.value = photoResultResponse.fold(
+                        onSuccess = { url ->
+                            val updatedData = currentState.data.copy(
+                                photoUrl = url
+                            )
+                            _uiState.value = ServerSettingsUiState.Success(updatedData)
+                            UpdateServerPhotoEvent.Success
+                        },
+                        onFailure = {
+                            UpdateServerPhotoEvent.Error("Ошибка при сохранении фото. " + it.message)
+                        }
+                    )
+                }
+            }
+        }
     }
 
     fun onSelectedImageUri(uri: Uri?) {
@@ -542,12 +703,43 @@ class ServerSettingsViewModel @Inject constructor(
         _getServerRolesEvent.value = null
     }
 
-    fun resetGetServerUserRolesEvent() {
-        _getServerUserRolesEvent.value = null
-    }
-
     fun resetCreateServerRoleEvent() {
         _createServerRoleEvent.value = null
     }
 
+    fun resetDeleteInvitationEvent() {
+        _deleteInvitationEvent.value = null
+    }
+
+    fun resetDeleteServerMemberEvent() {
+        _deleteServerMemberEvent.value = null
+    }
+
+    fun resetPatchServerOwnerEvent() {
+        _patchServerOwnerEvent.value = null
+    }
+
+    fun resetAssignRoleEvent() {
+        _assignRoleEvent.value = null
+    }
+
+    fun resetRevokeRoleEvent() {
+        _revokeRoleEvent.value = null
+    }
+
+    fun resetPatchServerRoleEvent() {
+        _patchServerRoleEvent.value = null
+    }
+
+    fun resetDeleteRoleEvent() {
+        _deleteRoleEvent.value = null
+    }
+
+    fun resetUpdateServerPhotoEvent() {
+        _updateServerPhotoEvent.value = null
+    }
+
+    fun resetPatchServerPropertiesEvent() {
+        _patchServerPropertiesEvent.value = null
+    }
 }
