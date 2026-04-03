@@ -103,10 +103,23 @@ dependencies {
     //Easy Permissions
     implementation("pub.devrel:easypermissions:3.0.0")
 
+
+    // emoji
     val emoji2Version = "1.6.0"
 
     implementation("androidx.emoji2:emoji2-emojipicker:1.6.0")
     implementation("androidx.emoji2:emoji2:$emoji2Version")
     implementation("androidx.emoji2:emoji2-views:$emoji2Version")
     implementation("androidx.emoji2:emoji2-views-helper:$emoji2Version")
+
+    // LiveKit
+    implementation(libs.livekit.lib)
+    implementation(libs.livekit.components)
+    // Runtime permissions for Compose
+    implementation(libs.accompanist.permissions)
+
+    // ConstraintLayout for call layout
+    implementation(libs.constraintlayout.compose)
+
+
 }
