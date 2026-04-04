@@ -2,7 +2,6 @@ package ru.hse.app.androidApp.data.network
 
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import okhttp3.ResponseBody
 import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.Response
 import ru.hse.app.androidApp.data.model.ChannelInfoDto
@@ -39,6 +38,7 @@ class FakeApiService : ApiService {
     private val fakeUserExtended =
         UserInfoExtendedDto(
             "1",
+            UUID.randomUUID().toString(),
             "Юлия Кухтина",
             "yuulkht",
             "ONLINE",
@@ -506,15 +506,30 @@ class FakeApiService : ApiService {
                     status = friend.status,
                     photoURL = friend.photoURL,
                     description = getDescriptionForUser(friend.id),
+                    friendshipId = UUID.randomUUID().toString(),
                     friendshipStatus = when (friend.type) {
                         TypeDto.FRIEND -> UserInfoExtendedDto.StatusType.FRIEND
                         TypeDto.OUTGOING_REQUEST -> UserInfoExtendedDto.StatusType.OUTGOING_REQUEST
                         TypeDto.INCOMING_REQUEST -> UserInfoExtendedDto.StatusType.INCOMING_REQUEST
+                        else -> {
+                            UserInfoExtendedDto.StatusType.NONE
+                        }
                     },
                 )
             )
         } else {
-            Response.error(404, ResponseBody.create(null, "User not found"))
+            Response.success(
+                UserInfoExtendedDto(
+                    id = UUID.randomUUID().toString(),
+                    name = "Вася Мандаринов",
+                    nickname = "@vasyaaa123",
+                    status = "OFFLINE",
+                    photoURL = null,
+                    description = "Описание профиля Васи",
+                    friendshipId = UUID.randomUUID().toString(),
+                    friendshipStatus = UserInfoExtendedDto.StatusType.FRIEND,
+                )
+            )
         }
     }
 
@@ -843,5 +858,13 @@ class FakeApiService : ApiService {
                 id = channelId
             )
         )
+    }
+
+    override suspend fun getTokenForVoiceRoom(
+        identity: String,
+        name: String,
+        roomName: String
+    ): Response<String> {
+        return Response.success("token 123124123")
     }
 }

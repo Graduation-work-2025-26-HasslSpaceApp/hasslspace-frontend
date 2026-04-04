@@ -14,6 +14,19 @@ val serverUrl: String by extra {
     value
 }
 
+val serverLiveKitUrl: String by extra {
+    val properties = Properties()
+    val localPropertiesFile = project.rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        localPropertiesFile.inputStream().use { properties.load(it) }
+    }
+    val value = properties.getProperty("LIVEKIT_URL", "")
+    if (value.isEmpty()) {
+        throw InvalidUserDataException("LiveKit URL is not provided")
+    }
+    value
+}
+
 plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.android)
@@ -36,6 +49,7 @@ android {
         versionName = "1.0.0"
 
         buildConfigField("String", "SERVER_URL", "\"$serverUrl\"")
+        buildConfigField("String", "LIVEKIT_URL", "\"$serverLiveKitUrl\"")
     }
     buildFeatures {
         compose = true

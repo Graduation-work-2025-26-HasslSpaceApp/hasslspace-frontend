@@ -16,7 +16,9 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
     <!-- Bluetooth headset support -->
-    <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
+    <uses-permission
+        android:name="android.permission.BLUETOOTH"
+        android:maxSdkVersion="30" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
 
     <!-- Screen share (foreground service) -->
@@ -57,9 +59,9 @@
         <activity
             android:name=".CallActivity"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
-            android:windowSoftInputMode="adjustPan"
+            android:exported="false"
             android:screenOrientation="unspecified"
-            android:exported="false" />
+            android:windowSoftInputMode="adjustPan" />
     </application>
 
 </manifest>

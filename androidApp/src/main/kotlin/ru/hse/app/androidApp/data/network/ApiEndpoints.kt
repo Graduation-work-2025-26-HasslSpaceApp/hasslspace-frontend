@@ -66,3 +66,7 @@ const val DELETE_CHANNEL_PERMISSION_URL = "/servers/channels/permissions" // У�
 const val ASSIGN_CHANNEL_PERMISSION_URL =
     "/servers/channels/permissions" // Назначить права роли на канал
 const val GET_CHANNEL_PERMISSIONS_URL = "/servers/channels/permissions" // Получить права канала
+
+// Звонки
+const val VOICE_SERVICE_URL = "/api/voice-service"
+const val GET_TOKEN_FOR_VOICE_ROOM = "/voice/token"

@@ -1,5 +1,6 @@
-package ru.hse.app.androidApp.call.ui
+package ru.hse.app.androidApp.screen.call.ui
 
+import android.content.res.Configuration
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -302,7 +303,7 @@ private fun PreviewScreenShare1() {
 
 @Preview(
     name = "Dark theme — мут", showBackground = true, widthDp = 360, heightDp = 240,
-    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+    uiMode = Configuration.UI_MODE_NIGHT_YES
 )
 @Composable
 private fun PreviewDarkMuted() {

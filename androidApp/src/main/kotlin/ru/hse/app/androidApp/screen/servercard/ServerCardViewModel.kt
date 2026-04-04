@@ -23,21 +23,31 @@ import ru.hse.app.androidApp.domain.usecase.channel.CreateChannelUseCase
 import ru.hse.app.androidApp.domain.usecase.channel.DeleteChannelUseCase
 import ru.hse.app.androidApp.domain.usecase.channel.GetChannelInfoUseCase
 import ru.hse.app.androidApp.domain.usecase.channel.PatchChannelPropertiesUseCase
+import ru.hse.app.androidApp.domain.usecase.friends.CreateFriendRequestUseCase
+import ru.hse.app.androidApp.domain.usecase.friends.DeleteFriendshipUseCase
 import ru.hse.app.androidApp.domain.usecase.friends.GetChosenUserCommonServersUseCase
 import ru.hse.app.androidApp.domain.usecase.friends.GetUserInfoExtendedUseCase
+import ru.hse.app.androidApp.domain.usecase.friends.RespondToFriendshipRequestUseCase
 import ru.hse.app.androidApp.domain.usecase.invitations.SendServerInvitationUseCase
+import ru.hse.app.androidApp.domain.usecase.profile.LoadUserInfoUseCase
 import ru.hse.app.androidApp.domain.usecase.roles.GetServerRolesUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.DeleteServerUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.GetFriendsNotInServerUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.GetServerInfoUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.SearchMembersUseCase
+import ru.hse.app.androidApp.domain.usecase.voice.GetVoiceRoomTokenUseCase
 import ru.hse.app.androidApp.ui.entity.model.FriendCheckboxUiModel
 import ru.hse.app.androidApp.ui.entity.model.RoleMiniCheckboxUiModel
 import ru.hse.app.androidApp.ui.entity.model.ServerMemberUiModel
 import ru.hse.app.androidApp.ui.entity.model.TextChannelUiModel
 import ru.hse.app.androidApp.ui.entity.model.VoiceChannelUiModel
+import ru.hse.app.androidApp.ui.entity.model.call.events.GetTokenEvent
+import ru.hse.app.androidApp.ui.entity.model.profile.events.CreateFriendRequestEvent
+import ru.hse.app.androidApp.ui.entity.model.profile.events.DeleteFriendshipEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadChosenUserCommonServersEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadChosenUserEvent
+import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadUserDataEvent
+import ru.hse.app.androidApp.ui.entity.model.profile.events.RespondToFriendRequestEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.ServerCardUiModel
 import ru.hse.app.androidApp.ui.entity.model.servers.ServerCardUiState
 import ru.hse.app.androidApp.ui.entity.model.servers.ServerExpandedUiModel
@@ -51,6 +61,7 @@ import ru.hse.app.androidApp.ui.entity.model.servers.events.PatchChannelEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.SendServerInvitationEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.toUi
 import ru.hse.app.androidApp.ui.entity.model.toInvitationUi
+import ru.hse.app.androidApp.ui.entity.model.toStatusPresentation
 import ru.hse.app.androidApp.ui.entity.model.toUi
 import ru.hse.coursework.godaily.ui.notification.ToastManager
 import javax.inject.Inject
@@ -58,6 +69,8 @@ import kotlin.math.roundToInt
 
 @HiltViewModel
 class ServerCardViewModel @Inject constructor(
+    private val loadUserInfoUseCase: LoadUserInfoUseCase,
+
     private val createChannelUseCase: CreateChannelUseCase,
 
     private val deleteChannelUseCase: DeleteChannelUseCase,
@@ -70,10 +83,16 @@ class ServerCardViewModel @Inject constructor(
     private val getChosenUserCommonServersUseCase: GetChosenUserCommonServersUseCase,
     private val getChannelInfoUseCase: GetChannelInfoUseCase,
 
+    private val createFriendRequestUseCase: CreateFriendRequestUseCase,
+    private val deleteFriendshipUseCase: DeleteFriendshipUseCase,
+    private val respondToFriendshipRequestUseCase: RespondToFriendshipRequestUseCase,
+
     private val patchChannelPropertiesUseCase: PatchChannelPropertiesUseCase,
 
     private val sendServerInvitationUseCase: SendServerInvitationUseCase,
     private val searchMembersUseCase: SearchMembersUseCase,
+
+    private val getVoiceRoomTokenUseCase: GetVoiceRoomTokenUseCase,
 
     private val dataManager: DataManager,
     private val toastManager: ToastManager,
@@ -123,6 +142,26 @@ class ServerCardViewModel @Inject constructor(
 
     private val _patchChannelEvent = MutableStateFlow<PatchChannelEvent?>(null)
     val patchChannelEvent: StateFlow<PatchChannelEvent?> = _patchChannelEvent
+
+    private val _getTokenEvent = MutableStateFlow<GetTokenEvent?>(null)
+    val getTokenEvent: StateFlow<GetTokenEvent?> = _getTokenEvent
+
+    private val _getVoiceChannelTokenEvent = MutableStateFlow<GetTokenEvent?>(null)
+    val getVoiceChannelTokenEvent: StateFlow<GetTokenEvent?> = _getVoiceChannelTokenEvent
+
+    private val _createFriendRequestEvent = MutableStateFlow<CreateFriendRequestEvent?>(null)
+    val createFriendRequestEvent: StateFlow<CreateFriendRequestEvent?> = _createFriendRequestEvent
+
+    private val _deleteFriendshipEvent = MutableStateFlow<DeleteFriendshipEvent?>(null)
+    val deleteFriendshipEvent: StateFlow<DeleteFriendshipEvent?> = _deleteFriendshipEvent
+
+    private val _loadUserInfoEvent = MutableStateFlow<LoadUserDataEvent?>(null)
+    val loadUserInfoEvent: StateFlow<LoadUserDataEvent?> = _loadUserInfoEvent
+
+    private val _respondToFriendshipRequestEvent =
+        MutableStateFlow<RespondToFriendRequestEvent?>(null)
+    val respondToFriendshipRequestEvent: StateFlow<RespondToFriendRequestEvent?> =
+        _respondToFriendshipRequestEvent
 
     // Members
     val searchMembersText = mutableStateOf("")
@@ -320,6 +359,106 @@ class ServerCardViewModel @Inject constructor(
         }
     }
 
+    fun onJoinVoiceChannelClick(
+        username: String,
+        name: String,
+        channelId: String,
+        channelName: String
+    ) {
+        viewModelScope.launch {
+            val result = getVoiceRoomTokenUseCase(username, name, channelId)
+
+            _getVoiceChannelTokenEvent.value = result.fold(
+                onSuccess = { token ->
+                    GetTokenEvent.Success(token, channelName, videoEnabled = false)
+                },
+                onFailure = {
+                    GetTokenEvent.Error("Ошибка при подключении к голосовому каналу. " + it.message)
+                }
+            )
+        }
+    }
+
+    fun onCallClick(username: String, name: String, friendshipId: String?) {
+        viewModelScope.launch {
+            val result = getVoiceRoomTokenUseCase(username, name, friendshipId)
+
+            _getTokenEvent.value = result.fold(
+                onSuccess = { token ->
+                    GetTokenEvent.Success(token, name, videoEnabled = false)
+                },
+                onFailure = {
+                    GetTokenEvent.Error("Ошибка при подключении к звонку. " + it.message)
+                }
+            )
+        }
+    }
+
+    fun onMessageClick(userId: String) {
+        //TODO
+    }
+
+    fun onVideoCallClick(username: String, name: String, friendshipId: String?) {
+        viewModelScope.launch {
+            val result = getVoiceRoomTokenUseCase(username, name, friendshipId)
+
+            _getTokenEvent.value = result.fold(
+                onSuccess = { token ->
+                    GetTokenEvent.Success(token, name, videoEnabled = true)
+                },
+                onFailure = {
+                    GetTokenEvent.Error("Ошибка при подключении к видеозвонку. " + it.message)
+                }
+            )
+        }
+    }
+
+    fun respondFriend(userId: String, status: String) {
+        viewModelScope.launch {
+            val result =
+                respondToFriendshipRequestUseCase(userId, status)
+
+            _respondToFriendshipRequestEvent.value = result.fold(
+                onSuccess = {
+                    RespondToFriendRequestEvent.SuccessRespond
+                },
+                onFailure = {
+                    RespondToFriendRequestEvent.Error("Ошибка при изменении данных. " + it.message)
+                }
+            )
+        }
+    }
+
+    fun deleteFriendship(userId: String) {
+        viewModelScope.launch {
+            val result = deleteFriendshipUseCase(userId)
+
+            _deleteFriendshipEvent.value = result.fold(
+                onSuccess = {
+                    DeleteFriendshipEvent.SuccessDelete
+                },
+                onFailure = {
+                    DeleteFriendshipEvent.Error("Ошибка при удалении из друзей. " + it.message)
+                }
+            )
+        }
+    }
+
+    fun createFriendshipRequest(nickname: String) {
+        viewModelScope.launch {
+            val result = createFriendRequestUseCase(nickname)
+
+            _createFriendRequestEvent.value = result.fold(
+                onSuccess = {
+                    CreateFriendRequestEvent.SuccessRequest(nickname)
+                },
+                onFailure = {
+                    CreateFriendRequestEvent.Error("Ошибка при создании заявки" + it.message)
+                }
+            )
+        }
+    }
+
     fun deleteServer(serverId: String) {
         viewModelScope.launch {
             val result = deleteServerUseCase(serverId)
@@ -349,6 +488,7 @@ class ServerCardViewModel @Inject constructor(
                             newChannelMembers = listOf(),
                             newChannelRoles = listOf(),
                             chosenUser = null,
+                            currentUser = null,
                             chosenUserCommonServers = listOf(),
                             editChannel = ServerCardUiModel.EditChannelUiModel(
                                 id = "",
@@ -678,6 +818,39 @@ class ServerCardViewModel @Inject constructor(
         }
     }
 
+    fun loadUserData() {
+        viewModelScope.launch {
+            val result = loadUserInfoUseCase()
+
+            _loadUserInfoEvent.value = result.fold(
+                onSuccess = { info ->
+                    val currentState = _uiState.value
+                    if (currentState is ServerCardUiState.Success) {
+                        val updatedData = currentState.data.copy(
+                            currentUser = ServerCardUiModel.CurrentUserUiModel(
+                                username = info.nickname,
+                                name = info.username,
+                                avatarUrl = info.avatarUrl,
+                                status = info.status.toStatusPresentation(),
+                                email = info.email,
+                                description = info.description
+                            )
+                        )
+
+                        _uiState.value = ServerCardUiState.Success(updatedData)
+                    }
+                    LoadUserDataEvent.SuccessLoad
+
+                },
+                onFailure = {
+                    LoadUserDataEvent.Error(
+                        ("Ошибка при загрузке профиля. " + it.message)
+                    )
+                }
+            )
+        }
+    }
+
 
     fun showToast(message: String, duration: Int = Toast.LENGTH_SHORT) {
         toastManager.showToast(
@@ -721,5 +894,29 @@ class ServerCardViewModel @Inject constructor(
 
     fun resetPatchChannelEvent() {
         _patchChannelEvent.value = null
+    }
+
+    fun resetGetTokenEvent() {
+        _getTokenEvent.value = null
+    }
+
+    fun resetGetVoiceChannelTokenEvent() {
+        _getVoiceChannelTokenEvent.value = null
+    }
+
+    fun resetRespondToFriendRequestEvent() {
+        _respondToFriendshipRequestEvent.value = null
+    }
+
+    fun resetCreateFriendRequestEvent() {
+        _createFriendRequestEvent.value = null
+    }
+
+    fun resetDeleteFriendshipEvent() {
+        _deleteFriendshipEvent.value = null
+    }
+
+    fun resetLoadUserInfoEvent() {
+        _loadUserInfoEvent.value = null
     }
 }

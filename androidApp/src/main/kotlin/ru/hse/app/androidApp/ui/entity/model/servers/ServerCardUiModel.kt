@@ -6,6 +6,7 @@ import ru.hse.app.androidApp.ui.entity.model.FriendExtendedInfoUiModel
 import ru.hse.app.androidApp.ui.entity.model.FriendUiModelInvitation
 import ru.hse.app.androidApp.ui.entity.model.RoleMiniCheckboxUiModel
 import ru.hse.app.androidApp.ui.entity.model.ServerShortUiModel
+import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
 
 sealed interface ServerCardUiState {
     data object Loading : ServerCardUiState
@@ -23,6 +24,7 @@ data class ServerCardUiModel(
     val newChannelRoles: List<RoleMiniCheckboxUiModel>,
 
     val chosenUser: FriendExtendedInfoUiModel?,
+    val currentUser: CurrentUserUiModel?,
     val chosenUserCommonServers: List<ServerShortUiModel>,
 
     val editChannel: EditChannelUiModel
@@ -35,5 +37,14 @@ data class ServerCardUiModel(
         val limit: Float = 0f,
         val members: List<FriendCheckboxUiModel>,
         val roles: List<RoleMiniCheckboxUiModel>
+    )
+
+    data class CurrentUserUiModel(
+        val username: String,
+        val name: String,
+        val avatarUrl: String?,
+        val status: StatusPresentation,
+        val email: String,
+        val description: String,
     )
 }

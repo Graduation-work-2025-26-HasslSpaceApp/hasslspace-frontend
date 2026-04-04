@@ -25,7 +25,7 @@ constraintlayout-compose = "1.0.1"
 
 [libraries]
 
-livekit-lib = { module = "io.livekit:livekit-android", version = "2.24.0" }
+livekit-lib = { module = "io.livekit:livekit-android", version = "2.23.5" }
 livekit-components = { module = "io.livekit:livekit-android-compose-components", version = "2.2.1" }
 androidx-material-icons-extended-android = { module = "androidx.compose.material:material-icons-extended-android", version.ref = "materialIconsExtendedAndroid" }
 androidx-palette-ktx = { module = "androidx.palette:palette-ktx", version.ref = "paletteKtx" }

@@ -21,9 +21,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.navArgument
+import ru.hse.app.androidApp.BuildConfig
+import ru.hse.app.androidApp.screen.call.CallScreen
 import ru.hse.app.androidApp.screen.chats.ChatScreen
 import ru.hse.app.androidApp.screen.chats.ChatsScreen
 import ru.hse.app.androidApp.screen.profile.AddFriendsScreen
@@ -195,6 +199,37 @@ fun BottomNavigation(bottomNavController: NavHostController) {
                 ServerMembersInfoScreen(bottomNavController, serverId)
             }
         }
+
+        // Voice Rooms
+        composable(
+            route = NavigationItem.VoiceRoom.route + "/{token}/{roomName}/{videoEnabled}",
+            arguments = listOf(
+                navArgument(name = "token") {
+                    type = NavType.StringType
+                },
+                navArgument(name = "roomName") {
+                    type = NavType.StringType
+                },
+                navArgument(name = "videoEnabled") {
+                    type = NavType.BoolType
+                },
+            )
+        ) { backStackEntry ->
+            val token = backStackEntry.arguments?.getString("token")
+            val roomName = backStackEntry.arguments?.getString("roomName")
+            val videoEnabled = backStackEntry.arguments?.getBoolean("videoEnabled") ?: false
+
+
+            if (token != null && roomName != null) {
+                CallScreen(
+                    url = BuildConfig.LIVEKIT_URL,
+                    token = token,
+                    roomName = roomName,
+                    videoEnabled = videoEnabled,
+                    navController = bottomNavController,
+                )
+            }
+        }
     }
 }
 
@@ -206,12 +241,14 @@ fun MainScreen(
     val currentBackStackEntry by navController.currentBackStackEntryFlow.collectAsState(initial = null)
     val currentRoute = currentBackStackEntry?.destination?.route
 
-    val isChatScreen =
-        currentRoute?.startsWith(NavigationItem.Chat.route.substringBefore("/{")) == true
+    val isChatOrVoiceScreen =
+        currentRoute?.startsWith(NavigationItem.Chat.route.substringBefore("/{")) == true ||
+                currentRoute?.startsWith(NavigationItem.VoiceRoom.route.substringBefore("/{")) == true
+
 
     Scaffold(
         bottomBar = {
-            if (!isChatScreen) {
+            if (!isChatOrVoiceScreen) {
                 BottomNavigationBar(navController)
             }
         }
@@ -219,7 +256,7 @@ fun MainScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = if (!isChatScreen) innerPadding.calculateBottomPadding() else 0.dp)
+                .padding(bottom = if (!isChatOrVoiceScreen) innerPadding.calculateBottomPadding() else 0.dp)
         ) {
             BottomNavigation(navController)
         }

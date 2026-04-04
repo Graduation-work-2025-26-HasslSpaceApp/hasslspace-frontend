@@ -1,7 +1,9 @@
-package ru.hse.app.androidApp.call
+package ru.hse.app.androidApp.screen.call
 
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.livekit.android.compose.types.TrackReference
 import io.livekit.android.room.Room
 import io.livekit.android.room.track.LocalVideoTrack
@@ -13,19 +15,18 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-
-// ─── UI State ─────────────────────────────────────────────────────────────────
-
-data class CallUiState(
-    val isConnecting: Boolean = true,
-    val isMicEnabled: Boolean = true,
-    val isCameraEnabled: Boolean = true,
-    val participantCount: Int = 0,
-)
+import ru.hse.app.androidApp.data.local.DataManager
+import ru.hse.coursework.godaily.ui.notification.ToastManager
+import javax.inject.Inject
 
 // ─── ViewModel ────────────────────────────────────────────────────────────────
+@HiltViewModel
+class CallViewModel @Inject constructor(
+    private val dataManager: DataManager,
+    private val toastManager: ToastManager,
+) : ViewModel() {
 
-class CallViewModel : ViewModel() {
+    val isDark = dataManager.isDark.value
 
     // UI state — подключение, mic/camera, кол-во участников
     private val _uiState = MutableStateFlow(CallUiState())
@@ -40,6 +41,13 @@ class CallViewModel : ViewModel() {
     val errors: SharedFlow<String> = _errors.asSharedFlow()
 
     // ─── Room events ──────────────────────────────────────────────────────────
+
+    fun showToast(message: String, duration: Int = Toast.LENGTH_SHORT) {
+        toastManager.showToast(
+            message = message,
+            duration = duration
+        )
+    }
 
     fun onRoomConnected() {
         _uiState.value = _uiState.value.copy(isConnecting = false)
@@ -56,6 +64,10 @@ class CallViewModel : ViewModel() {
     }
 
     // ─── Controls ─────────────────────────────────────────────────────────────
+
+    fun updateCameraEnabled(value: Boolean) {
+        _uiState.value = _uiState.value.copy(isCameraEnabled = value)
+    }
 
     fun toggleMic(room: Room) {
         viewModelScope.launch {
@@ -93,3 +105,13 @@ class CallViewModel : ViewModel() {
         _pinnedTrack.value = null
     }
 }
+
+// ─── UI State ─────────────────────────────────────────────────────────────────
+
+data class CallUiState(
+    //todo перенести
+    val isConnecting: Boolean = true,
+    val isMicEnabled: Boolean = true,
+    val isCameraEnabled: Boolean = true,
+    val participantCount: Int = 0,
+)

@@ -41,8 +41,8 @@ fun FriendsContent(
     onBackClick: () -> Unit,
     onAddClick: () -> Unit,
     onFriendClick: (FriendUiModel) -> Unit,
-    onCallClick: (FriendUiModel) -> Unit,
-    onMessageClick: (FriendUiModel) -> Unit,
+//    onCallClick: (FriendUiModel) -> Unit,
+//    onMessageClick: (FriendUiModel) -> Unit,
     onApplicationClick: (FriendUiModel) -> Unit,
     onAcceptClick: (FriendUiModel) -> Unit,
     onDismissClick: (FriendUiModel) -> Unit,
@@ -129,8 +129,8 @@ fun FriendsContent(
                         profilePictureUrl = friend.avatarUrl,
                         isDarkTheme = isDarkTheme,
                         onCardClick = { onFriendClick(friend) },
-                        onCallClick = { onCallClick(friend) },
-                        onMessageClick = { onMessageClick(friend) }
+//                        onCallClick = { onCallClick(friend) },
+//                        onMessageClick = { onMessageClick(friend) }
                     )
                 }
             }
@@ -141,8 +141,8 @@ fun FriendsContent(
                 isDarkTheme = isDarkTheme,
                 friends = friends,
                 onFriendClick = onFriendClick,
-                onCallClick = onCallClick,
-                onMessageClick = onMessageClick
+//                onCallClick = onCallClick,
+//                onMessageClick = onMessageClick
             )
 
         }
@@ -189,8 +189,8 @@ fun FriendsContentPreviewWithRequestsLight() {
             onBackClick = {},
             onAddClick = {},
             onFriendClick = {},
-            onCallClick = {},
-            onMessageClick = {},
+//            onCallClick = {},
+//            onMessageClick = {},
             onApplicationClick = {},
             onAcceptClick = {},
             onDismissClick = {},
@@ -219,8 +219,8 @@ fun FriendsContentPreviewOnlyFriendsLight() {
             onBackClick = {},
             onAddClick = {},
             onFriendClick = {},
-            onCallClick = {},
-            onMessageClick = {},
+//            onCallClick = {},
+//            onMessageClick = {},
             onApplicationClick = {},
             onAcceptClick = {},
             onDismissClick = {},
@@ -253,8 +253,8 @@ fun FriendsContentPreviewWithRequestsDark() {
             onBackClick = {},
             onAddClick = {},
             onFriendClick = {},
-            onCallClick = {},
-            onMessageClick = {},
+//            onCallClick = {},
+//            onMessageClick = {},
             onApplicationClick = {},
             onAcceptClick = {},
             onDismissClick = {},

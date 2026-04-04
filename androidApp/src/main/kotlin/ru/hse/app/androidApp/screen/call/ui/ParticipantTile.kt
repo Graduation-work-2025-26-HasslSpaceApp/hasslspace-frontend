@@ -1,4 +1,4 @@
-package ru.hse.app.androidApp.call.ui
+package ru.hse.app.androidApp.screen.call.ui
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -41,7 +41,7 @@ fun ParticipantTile(
 ) {
     val isVideoMuted = rememberTrackMuted(trackRef = trackReference)
     val isSpeaking by trackReference.participant::isSpeaking.flow.collectAsState()
-    val displayName = trackReference.participant.identity?.value ?: "Unknown"
+    val displayName = trackReference.participant.identity?.value ?: "Unknown Unknown Unknown"
     val isMicrophoneEnabled by trackReference.participant::isMicrophoneEnabled.flow.collectAsState()
 
     // Если это тайл камеры — проверяем есть ли у участника активный screen share
@@ -305,7 +305,12 @@ private fun PreviewMutedBoth() {
     }
 }
 
-@Preview(name = "Видео выкл + мик выкл (dark)", showBackground = true, widthDp = 160, heightDp = 120)
+@Preview(
+    name = "Видео выкл + мик выкл (dark)",
+    showBackground = true,
+    widthDp = 160,
+    heightDp = 120
+)
 @Composable
 private fun PreviewMutedBothDark() {
     AppTheme(isDark = true) {

@@ -1,4 +1,4 @@
-package ru.hse.app.androidApp.call.ui
+package ru.hse.app.androidApp.screen.call
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,10 +16,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.navigation.NavController
 import io.livekit.android.compose.local.RoomScope
-import ru.hse.app.androidApp.call.CallViewModel
-import ru.hse.app.androidApp.call.state.rememberCallPermissions
+import ru.hse.app.androidApp.screen.call.state.rememberCallPermissions
+import ru.hse.app.androidApp.screen.call.ui.CallLayout
 import ru.hse.app.androidApp.ui.theme.AppTheme
 
 @Composable
@@ -27,8 +28,52 @@ fun CallScreen(
     url: String,
     token: String,
     roomName: String,
+    videoEnabled: Boolean,
+    navController: NavController,
+    viewModel: CallViewModel = hiltViewModel(),
+) {
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        CallScreenWithStateContent(
+            url = url,
+            token = token,
+            roomName = roomName,
+            videoEnabled = videoEnabled,
+            navController = navController,
+            viewModel = viewModel,
+        )
+    }
+}
+
+@Composable
+fun CallScreenWithStateContent(
+    url: String,
+    token: String,
+    roomName: String,
+    videoEnabled: Boolean,
+    navController: NavController,
+    viewModel: CallViewModel
+) {
+    CallScreenContent(
+        url = url,
+        token = token,
+        roomName = roomName,
+        videoEnabled = videoEnabled,
+        onDisconnect = {
+            navController.popBackStack()
+        },
+        viewModel = viewModel
+    )
+}
+
+@Composable
+fun CallScreenContent(
+    url: String,
+    token: String,
+    roomName: String,
+    videoEnabled: Boolean,
     onDisconnect: () -> Unit,
-    viewModel: CallViewModel = viewModel(),
+    viewModel: CallViewModel,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val pinnedTrack by viewModel.pinnedTrack.collectAsState()
@@ -42,8 +87,14 @@ fun CallScreen(
     }
 
     LaunchedEffect(Unit) {
+        viewModel.updateCameraEnabled(videoEnabled)
+    }
+    0
+    LaunchedEffect(Unit) {
         viewModel.errors.collect { message ->
-            snackbarHostState.showSnackbar(message)
+            viewModel.showToast(message)
+            //onDisconnect() //todo потом включить
+            //snackbarHostState.showSnackbar(message)
         }
     }
 
@@ -64,6 +115,8 @@ fun CallScreen(
             viewModel.onParticipantCountChanged(remoteParticipantCount)
         }
 
+        //todo добавить возможность скриншеринга
+
         Box(modifier = Modifier.fillMaxSize()) {
             if (uiState.isConnecting) {
                 CircularProgressIndicator(
@@ -74,6 +127,7 @@ fun CallScreen(
                 CallLayout(
                     roomName = roomName,
                     pinnedTrack = pinnedTrack,
+                    currentUserIdentity = room.localParticipant.identity,
                     isMicEnabled = uiState.isMicEnabled,
                     isCameraEnabled = uiState.isCameraEnabled,
                     participantCount = uiState.participantCount,

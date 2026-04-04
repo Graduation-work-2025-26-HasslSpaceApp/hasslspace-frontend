@@ -1,4 +1,4 @@
-package ru.hse.app.androidApp.call.ui
+package ru.hse.app.androidApp.screen.call.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement

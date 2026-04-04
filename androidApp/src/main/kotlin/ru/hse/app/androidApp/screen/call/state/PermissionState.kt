@@ -1,4 +1,4 @@
-package ru.hse.app.androidApp.call.state
+package ru.hse.app.androidApp.screen.call.state
 
 import android.Manifest
 import android.os.Build

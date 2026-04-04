@@ -28,5 +28,7 @@ fun TypeDto.toDomain(): Type {
         TypeDto.FRIEND -> Type.FRIEND
         TypeDto.OUTGOING_REQUEST -> Type.OUTGOING_REQUEST
         TypeDto.INCOMING_REQUEST -> Type.INCOMING_REQUEST
+        TypeDto.BLOCKED -> Type.BLOCKED
+        TypeDto.NONE -> Type.NONE
     }
 }

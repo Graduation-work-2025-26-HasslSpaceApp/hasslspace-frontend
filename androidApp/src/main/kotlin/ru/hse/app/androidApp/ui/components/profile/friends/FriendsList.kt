@@ -15,8 +15,8 @@ fun FriendsList(
     isDarkTheme: Boolean,
     friends: List<FriendUiModel>,
     onFriendClick: (FriendUiModel) -> Unit,
-    onCallClick: (FriendUiModel) -> Unit,
-    onMessageClick: (FriendUiModel) -> Unit
+//    onCallClick: (FriendUiModel) -> Unit,
+//    onMessageClick: (FriendUiModel) -> Unit
 ) {
     UniversalVerticalGrid(
         items = friends,
@@ -31,8 +31,8 @@ fun FriendsList(
             profilePictureUrl = friend.avatarUrl,
             isDarkTheme = isDarkTheme,
             onCardClick = { onFriendClick(friend) },
-            onCallClick = { onCallClick(friend) },
-            onMessageClick = { onMessageClick(friend) }
+//            onCallClick = { onCallClick(friend) },
+//            onMessageClick = { onMessageClick(friend) }
         )
     }
 }

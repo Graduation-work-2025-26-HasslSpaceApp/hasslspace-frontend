@@ -68,8 +68,8 @@ fun UsersGridPreviewLight() {
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current),
                 onCardClick = {},
-                onCallClick = {},
-                onMessageClick = {}
+//                onCallClick = {},
+//                onMessageClick = {}
             )
         }
     }

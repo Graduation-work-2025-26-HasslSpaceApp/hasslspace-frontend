@@ -27,10 +27,12 @@ import ru.hse.app.androidApp.domain.usecase.profile.ChangeUserStatusUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.LoadUserInfoUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.SaveUserPhotoUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.GetServersUseCase
+import ru.hse.app.androidApp.domain.usecase.voice.GetVoiceRoomTokenUseCase
 import ru.hse.app.androidApp.ui.entity.model.FriendUiModel
 import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
 import ru.hse.app.androidApp.ui.entity.model.TypeUiModel
 import ru.hse.app.androidApp.ui.entity.model.auth.events.SavePhotoEvent
+import ru.hse.app.androidApp.ui.entity.model.call.events.GetTokenEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.ProfileUiState
 import ru.hse.app.androidApp.ui.entity.model.profile.events.CreateFriendRequestEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.events.DeleteFriendshipEvent
@@ -69,6 +71,9 @@ class ProfileViewModel @Inject constructor(
     private val searchFriendsUseCase: SearchFriendsUseCase,
     private val getUserInfoExtendedUseCase: GetUserInfoExtendedUseCase,
     private val getChosenUserCommonServersUseCase: GetChosenUserCommonServersUseCase,
+
+    // Voice
+    private val getVoiceRoomTokenUseCase: GetVoiceRoomTokenUseCase,
 
     private val photoConverterService: PhotoConverterService,
     private val toastManager: ToastManager,
@@ -119,6 +124,10 @@ class ProfileViewModel @Inject constructor(
         MutableStateFlow<RespondToFriendRequestEvent?>(null)
     val respondToFriendshipRequestEvent: StateFlow<RespondToFriendRequestEvent?> =
         _respondToFriendshipRequestEvent
+
+    private val _getTokenEvent = MutableStateFlow<GetTokenEvent?>(null)
+    val getTokenEvent: StateFlow<GetTokenEvent?> = _getTokenEvent
+
 
     val originalUsername = mutableStateOf("")
     val originalStatusPresentation = mutableStateOf(StatusPresentation.INVISIBLE)
@@ -520,16 +529,38 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun onCallClick(userId: String) {
-        //TODO
+    fun onCallClick(username: String, name: String, friendshipId: String?) {
+        viewModelScope.launch {
+            val result = getVoiceRoomTokenUseCase(username, name, friendshipId)
+
+            _getTokenEvent.value = result.fold(
+                onSuccess = { token ->
+                    GetTokenEvent.Success(token, name, videoEnabled = false)
+                },
+                onFailure = {
+                    GetTokenEvent.Error("Ошибка при подключении к звонку. " + it.message)
+                }
+            )
+        }
     }
 
     fun onMessageClick(userId: String) {
         //TODO
     }
 
-    fun onVideoCallClick(userId: String) {
-        //TODO
+    fun onVideoCallClick(username: String, name: String, friendshipId: String?) {
+        viewModelScope.launch {
+            val result = getVoiceRoomTokenUseCase(username, name, friendshipId)
+
+            _getTokenEvent.value = result.fold(
+                onSuccess = { token ->
+                    GetTokenEvent.Success(token, name, videoEnabled = true)
+                },
+                onFailure = {
+                    GetTokenEvent.Error("Ошибка при подключении к видеозвонку. " + it.message)
+                }
+            )
+        }
     }
 
     fun onDismiss() {
@@ -595,5 +626,9 @@ class ProfileViewModel @Inject constructor(
 
     fun resetLoadUserServersEvent() {
         _loadUserServersEvent.value = null
+    }
+
+    fun resetGetTokenEvent() {
+        _getTokenEvent.value = null
     }
 }

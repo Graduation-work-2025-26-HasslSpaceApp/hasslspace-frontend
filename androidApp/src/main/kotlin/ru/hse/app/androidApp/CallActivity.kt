@@ -7,6 +7,7 @@ import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import ru.hse.app.androidApp.CallActivity.Companion.start
 import ru.hse.app.androidApp.ui.theme.AppTheme
 
 /**
@@ -53,8 +54,10 @@ class CallActivity : ComponentActivity() {
     companion object {
         /** LiveKit WebSocket URL, e.g. `wss://my-server.livekit.cloud`. */
         const val EXTRA_URL = "extra_url"
+
         /** JWT access token obtained from the backend. */
         const val EXTRA_TOKEN = "extra_token"
+
         /** Human-readable room name (used for the toolbar title). */
         const val EXTRA_ROOM_NAME = "extra_room_name"
 
