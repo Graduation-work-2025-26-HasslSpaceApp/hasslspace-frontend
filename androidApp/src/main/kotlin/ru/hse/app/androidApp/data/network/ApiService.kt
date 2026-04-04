@@ -273,4 +273,11 @@ interface ApiService {
         @Query("serverId") serverId: String,
         @Query("channelId") channelId: String,
     ): Response<ChannelInfoDto>
+
+    @GET(VOICE_SERVICE_URL + GET_TOKEN_FOR_VOICE_ROOM) // todo
+    suspend fun getTokenForVoiceRoom(
+        @Query("identity") identity: String,
+        @Query("name") name: String,
+        @Query("roomName") roomName: String
+    ): Response<String>
 }

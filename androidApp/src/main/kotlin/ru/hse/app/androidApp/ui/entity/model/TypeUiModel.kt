@@ -5,6 +5,5 @@ enum class TypeUiModel {
     INCOMING_REQUEST,
     OUTGOING_REQUEST,
     BLOCKED,
-
     NONE
 }

@@ -23,6 +23,8 @@ import ru.hse.app.androidApp.ui.components.servers.members.AddMembersSheet
 import ru.hse.app.androidApp.ui.components.servers.servercard.ChannelCardBottomSheet
 import ru.hse.app.androidApp.ui.components.servers.servercard.ChannelsBottomSheet
 import ru.hse.app.androidApp.ui.components.servers.servercard.ServerCardContent
+import ru.hse.app.androidApp.ui.entity.model.call.events.GetTokenEvent
+import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadUserDataEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.ServerCardUiState
 import ru.hse.app.androidApp.ui.entity.model.servers.events.CreateChannelEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.DeleteChannelEvent
@@ -50,9 +52,48 @@ fun MainServerScreen(
     val deleteChannelEvent by viewModel.deleteChannelEvent.collectAsState()
     val loadChosenChannelEvent by viewModel.loadChosenChannelEvent.collectAsState()
     val patchChannelEvent by viewModel.patchChannelEvent.collectAsState()
+    val getVoiceChannelTokenEvent by viewModel.getVoiceChannelTokenEvent.collectAsState()
+    val loadUserDataEvent by viewModel.loadUserInfoEvent.collectAsState()
+
 
     LaunchedEffect(serverId) {
         viewModel.getServerInfo(serverId)
+        viewModel.loadUserData()
+    }
+
+    LaunchedEffect(loadUserDataEvent) {
+        when (loadUserDataEvent) {
+            is LoadUserDataEvent.SuccessLoad -> {}
+
+            is LoadUserDataEvent.Error -> {
+                val message =
+                    (loadUserDataEvent as LoadUserDataEvent.Error).message
+                viewModel.showToast(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetLoadUserInfoEvent()
+    }
+
+    LaunchedEffect(getVoiceChannelTokenEvent) {
+        when (getVoiceChannelTokenEvent) {
+            is GetTokenEvent.Success -> {
+                val token = (getVoiceChannelTokenEvent as GetTokenEvent.Success).token
+                val roomName = (getVoiceChannelTokenEvent as GetTokenEvent.Success).roomName
+                val videoEnabled = (getVoiceChannelTokenEvent as GetTokenEvent.Success).videoEnabled
+
+                navController.navigate(NavigationItem.VoiceRoom.route + "/$token/$roomName/$videoEnabled")
+            }
+
+            is GetTokenEvent.Error -> {
+                val message = (getVoiceChannelTokenEvent as GetTokenEvent.Error).message
+                viewModel.showToast(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetGetVoiceChannelTokenEvent()
     }
 
     LaunchedEffect(patchChannelEvent) {
@@ -252,7 +293,18 @@ fun MainServerScreenWithStateContent(
                 viewModel.chosenTextChannel.value = it
                 viewModel.showTextChannelOptions.value = true
             },
-            onVoiceChannelShortClick = {/*todo*/ },
+            onVoiceChannelShortClick = {
+                if (data.currentUser != null) {
+                    viewModel.onJoinVoiceChannelClick(
+                        username = data.currentUser.username,
+                        name = data.currentUser.name,
+                        channelId = it.id,
+                        channelName = it.title
+                    )
+                } else {
+                    viewModel.showToast("Не загружены данные текущего пользователя")
+                }
+            },
             onVoiceChannelLongClick = {
                 viewModel.chosenVoiceChannel.value = it
                 viewModel.showVoiceChannelOptions.value = true
@@ -302,7 +354,7 @@ fun MainServerScreenWithStateContent(
             text = "Голосовые каналы",
             isDarkTheme = viewModel.isDarkTheme,
             serverPictureUrl = data.chosenServer.photoUrl,
-            onReadClick = {/*todo*/ },
+            onReadClick = {/*todo убрать*/ },
             onCreateChannel = {
                 viewModel.showVoiceChannelsSettings.value = false
                 viewModel.creatingChannel.value = true
@@ -339,7 +391,7 @@ fun MainServerScreenWithStateContent(
             text = viewModel.chosenVoiceChannel.value!!.title,
             icon = R.drawable.voice,
             isDarkTheme = viewModel.isDarkTheme,
-            onReadClick = {/*todo*/ },
+            onReadClick = {/*todo убрать*/ },
             onSetUpChannel = {
                 viewModel.loadChosenChannel(
                     data.chosenServer,

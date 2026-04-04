@@ -6,12 +6,14 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import ru.hse.app.androidApp.data.network.ApiCaller
 import ru.hse.app.androidApp.data.network.ApiService
+import ru.hse.app.androidApp.data.repository.CallRepositoryImpl
 import ru.hse.app.androidApp.data.repository.ChannelRepositoryImpl
 import ru.hse.app.androidApp.data.repository.FriendRepositoryImpl
 import ru.hse.app.androidApp.data.repository.InvitationRepositoryImpl
 import ru.hse.app.androidApp.data.repository.RoleRepositoryImpl
 import ru.hse.app.androidApp.data.repository.ServerRepositoryImpl
 import ru.hse.app.androidApp.data.repository.UserRepositoryImpl
+import ru.hse.app.androidApp.domain.repository.CallRepository
 import ru.hse.app.androidApp.domain.repository.ChannelRepository
 import ru.hse.app.androidApp.domain.repository.FriendRepository
 import ru.hse.app.androidApp.domain.repository.InvitationRepository
@@ -54,5 +56,10 @@ object RepositoryModule {
         apiCaller: ApiCaller
     ): InvitationRepository {
         return InvitationRepositoryImpl(apiService, apiCaller)
+    }
+
+    @Provides
+    fun provideCallRepository(apiService: ApiService, apiCaller: ApiCaller): CallRepository {
+        return CallRepositoryImpl(apiService, apiCaller)
     }
 }

@@ -4,6 +4,7 @@ import ru.hse.app.androidApp.data.model.UserInfoExtendedDto
 
 data class UserExpandedInfoWithStatus(
     val id: String,
+    val friendshipId: String?,
     val username: String,
     val nickname: String,
     val status: String,
@@ -15,6 +16,7 @@ data class UserExpandedInfoWithStatus(
 fun UserInfoExtendedDto.toDomain(): UserExpandedInfoWithStatus {
     return UserExpandedInfoWithStatus(
         id = this.id,
+        friendshipId = this.friendshipId,
         username = this.name,
         nickname = this.nickname,
         status = this.status,

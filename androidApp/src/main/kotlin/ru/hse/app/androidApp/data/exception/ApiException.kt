@@ -14,5 +14,7 @@ class ApiException(
         const val SERVER_ERROR = "Ошибка сервера или сети"
 
         const val PHOTO_UPLOADING_ERROR = "Ошибка загрузки фото"
+
+        const val FRIENDSHIP_NOT_FOUND = "Комната не найдена"
     }
 }

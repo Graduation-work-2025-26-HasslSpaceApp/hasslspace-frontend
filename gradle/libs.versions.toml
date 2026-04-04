@@ -20,9 +20,13 @@ buildConfig = "5.6.5"
 materialKolor = "4.0.5"
 paletteKtx = "1.0.0"
 ucrop = "2.2.11"
+accompanist = "0.34.0"
+constraintlayout-compose = "1.0.1"
 
 [libraries]
 
+livekit-lib = { module = "io.livekit:livekit-android", version = "2.23.5" }
+livekit-components = { module = "io.livekit:livekit-android-compose-components", version = "2.2.1" }
 androidx-material-icons-extended-android = { module = "androidx.compose.material:material-icons-extended-android", version.ref = "materialIconsExtendedAndroid" }
 androidx-palette-ktx = { module = "androidx.palette:palette-ktx", version.ref = "paletteKtx" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
@@ -63,6 +67,8 @@ kstore-file = { module = "io.github.xxfast:kstore-file", version.ref = "kstore" 
 kstore-storage = { module = "io.github.xxfast:kstore-storage", version.ref = "kstore" }
 materialKolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
 ucrop = { module = "com.github.yalantis:ucrop", version.ref = "ucrop" }
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
+constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayout-compose" }
 
 [plugins]
 

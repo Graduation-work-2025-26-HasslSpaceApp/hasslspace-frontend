@@ -20,6 +20,7 @@ import ru.hse.app.androidApp.ui.components.profile.friends.FriendsContent
 import ru.hse.app.androidApp.ui.components.userinfocard.CommonServersBottomSheet
 import ru.hse.app.androidApp.ui.components.userinfocard.UserInfoBottomSheet
 import ru.hse.app.androidApp.ui.entity.model.TypeUiModel
+import ru.hse.app.androidApp.ui.entity.model.call.events.GetTokenEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.ProfileUiState
 import ru.hse.app.androidApp.ui.entity.model.profile.events.CreateFriendRequestEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.events.DeleteFriendshipEvent
@@ -46,9 +47,30 @@ fun FriendsScreen(
     val loadChosenUserEvent by viewModel.loadChosenUserEvent.collectAsState()
     val loadChosenUserCommonServersEvent by viewModel.loadChosenUserCommonServersEvent.collectAsState()
     val respondToFriendRequestEvent by viewModel.respondToFriendshipRequestEvent.collectAsState()
+    val getTokenEvent by viewModel.getTokenEvent.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.loadUserFriends()
+    }
+
+    LaunchedEffect(getTokenEvent) {
+        when (getTokenEvent) {
+            is GetTokenEvent.Success -> {
+                val token = (getTokenEvent as GetTokenEvent.Success).token
+                val roomName = (getTokenEvent as GetTokenEvent.Success).roomName
+                val videoEnabled = (getTokenEvent as GetTokenEvent.Success).videoEnabled
+
+                navController.navigate(NavigationItem.VoiceRoom.route + "/$token/$roomName/$videoEnabled")
+            }
+
+            is GetTokenEvent.Error -> {
+                val message = (getTokenEvent as GetTokenEvent.Error).message
+                viewModel.showToast(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetGetTokenEvent()
     }
 
     LaunchedEffect(loadUserFriendsEvent) {
@@ -225,8 +247,8 @@ fun FriendsScreenWithStateContent(
             viewModel.loadChosenUserCommonServers(userId = it.id)
             viewModel.loadChosenUser(userId = it.id)
         },
-        onCallClick = { viewModel.onCallClick(userId = it.id) },
-        onMessageClick = { viewModel.onMessageClick(userId = it.id) },
+//        onCallClick = { viewModel.onCallClick(userId = it.id) },
+//        onMessageClick = { viewModel.onMessageClick(userId = it.id) },
         onApplicationClick = {
             viewModel.loadChosenUserCommonServers(userId = it.id)
             viewModel.loadChosenUser(userId = it.id)
@@ -253,8 +275,20 @@ fun FriendsScreenWithStateContent(
                 }
             },
             onMessageClick = { viewModel.onMessageClick(userId = data.chosenUser.id) },
-            onCallClick = { viewModel.onCallClick(userId = data.chosenUser.id) },
-            onVideoCallClick = { viewModel.onVideoCallClick(userId = data.chosenUser.id) },
+            onCallClick = {
+                viewModel.onCallClick(
+                    username = data.chosenUser.nickname,
+                    name = data.chosenUser.name,
+                    friendshipId = data.chosenUser.friendshipId
+                )
+            },
+            onVideoCallClick = {
+                viewModel.onVideoCallClick(
+                    username = data.chosenUser.nickname,
+                    name = data.chosenUser.name,
+                    friendshipId = data.chosenUser.friendshipId
+                )
+            },
             aboutUserInfo = data.chosenUser.description,
             onDismiss = { viewModel.showFriendCard.value = false },
             onInvite = {},
