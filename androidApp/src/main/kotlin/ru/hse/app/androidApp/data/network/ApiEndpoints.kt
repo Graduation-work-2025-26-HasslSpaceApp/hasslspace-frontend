@@ -67,6 +67,13 @@ const val ASSIGN_CHANNEL_PERMISSION_URL =
     "/servers/channels/permissions" // Назначить права роли на канал
 const val GET_CHANNEL_PERMISSIONS_URL = "/servers/channels/permissions" // Получить права канала
 
-// Звонки
+// Звонки //todo
 const val VOICE_SERVICE_URL = "/api/voice-service"
 const val GET_TOKEN_FOR_VOICE_ROOM = "/voice/token"
+
+// Чаты
+const val CHAT_SERVICE_URL = "/api/chat-service" //todo
+const val GET_CHAT_URL = "/private-chats"//todo
+const val GET_MESSAGES_HISTORY_URL = "/chat/history"//todo
+const val SEND_MESSAGE_URL = "/chat/messages"//todo
+const val START_CHAT_URL = "/chat/start"//todo
