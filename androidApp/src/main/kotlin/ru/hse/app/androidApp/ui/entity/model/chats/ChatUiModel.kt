@@ -1,7 +1,8 @@
 package ru.hse.app.androidApp.ui.entity.model.chats
 
 import androidx.compose.runtime.Immutable
-import ru.hse.app.androidApp.ui.entity.model.ServerMemberUiModel
+import ru.hse.app.androidApp.domain.model.entity.ChatInfo
+import ru.hse.app.androidApp.domain.model.entity.Message
 import java.time.LocalDateTime
 
 sealed interface ChatUiState {
@@ -13,15 +14,67 @@ sealed interface ChatUiState {
 @Immutable
 data class ChatUiModel(
     val id: String,
-    val channelName: String,
-    val channelMembers: List<ServerMemberUiModel>,
-    val currentUser: ServerMemberUiModel,
+    val name: String,
+    val channelMembers: List<ChatMemberUiModel>,
     val messages: List<MessageUiModel>
 )
 
 @Immutable
 data class MessageUiModel(
-    val author: ServerMemberUiModel?,
+    val id: String,
+    val author: ChatMemberUiModel,
     val content: String,
     val timestamp: LocalDateTime,
+    val isRead: Boolean
 )
+
+@Immutable
+data class ChatMemberUiModel(
+    val id: String,
+    val name: String,
+    val username: String,
+    val status: String,
+    val photoURL: String,
+    val isCurrentUser: Boolean,
+)
+
+fun ChatInfo.toUi(): ChatUiModel {
+    return ChatUiModel(
+        id = this.id,
+        name = this.chatMembers
+            .firstOrNull { !it.isCurrentUser }
+            ?.name
+            ?: "Личный чат",
+        channelMembers = this.chatMembers.map { it.toUi() },
+        messages = emptyList()
+    )
+}
+
+fun ChatInfo.ChatMember.toUi(): ChatMemberUiModel {
+    return ChatMemberUiModel(
+        id = this.id,
+        name = this.name,
+        username = this.username,
+        status = this.status,
+        photoURL = this.photoURL ?: "",
+        isCurrentUser = this.isCurrentUser,
+    )
+}
+
+fun Message.toUi(members: List<ChatMemberUiModel>): MessageUiModel {
+    return MessageUiModel(
+        id = this.id,
+        author = members.find { it.id == this.userId }
+            ?: ChatMemberUiModel(
+                id = this.userId,
+                name = "Unknown",
+                username = "unknown",
+                status = "OFFLINE",
+                photoURL = "",
+                isCurrentUser = false
+            ),
+        content = this.content,
+        timestamp = this.createdAt,
+        isRead = this.isRead
+    )
+}

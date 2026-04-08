@@ -1,9 +1,11 @@
 package ru.hse.app.androidApp.data.repository
 
+import ru.hse.app.androidApp.data.model.NewMessageDto
 import ru.hse.app.androidApp.data.network.ApiCaller
 import ru.hse.app.androidApp.data.network.ApiService
 import ru.hse.app.androidApp.data.roomstorage.ChatDao
 import ru.hse.app.androidApp.data.roomstorage.MessageEntity
+import ru.hse.app.androidApp.domain.model.entity.ChatInfo
 import ru.hse.app.androidApp.domain.model.entity.Message
 import ru.hse.app.androidApp.domain.model.entity.toDomain
 import ru.hse.app.androidApp.domain.repository.ChatRepository
@@ -33,9 +35,15 @@ class ChatRepositoryImpl @Inject constructor(
         chatId: String,
         content: String
     ): Result<String> {
-        //return apiCaller.execute { apiService.sendMessage(chatId, content) }
-        return Result.success("truetyi")
-        TODO("Not yet implemented")
+        return apiCaller.safeApiCall {
+            apiService.sendNewMessage(
+                chatId,
+                NewMessageDto(
+                    content = content,
+                    createdAt = LocalDateTime.now()
+                )
+            )
+        }
     }
 
     override suspend fun getChatMessagesFromRoom(chatId: String): Result<List<Message>> {
@@ -48,8 +56,19 @@ class ChatRepositoryImpl @Inject constructor(
         chatId: String,
         lastMessageId: String?
     ): Result<List<Message>> {
-        return Result.success(listOf())
-        TODO("Not yet implemented")
+        return apiCaller.safeApiCall { apiService.getMessageHistory(chatId, lastMessageId) }.mapCatching { messages ->
+            messages.map { it.toDomain() }
+        }
+    }
+
+    override suspend fun startChat(userId: String): Result<String> {
+        return apiCaller.safeApiCall { apiService.startChat(userId) }
+    }
+
+    override suspend fun getPrivateChats(): Result<List<ChatInfo>> {
+        return apiCaller.safeApiCall { apiService.getPrivateChats() }.mapCatching { chats ->
+            chats.map { it.toDomain() }
+        }
     }
 
 }

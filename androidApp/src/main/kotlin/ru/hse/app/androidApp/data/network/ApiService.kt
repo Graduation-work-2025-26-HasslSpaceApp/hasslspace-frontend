@@ -13,9 +13,12 @@ import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Query
 import ru.hse.app.androidApp.data.model.ChannelInfoDto
+import ru.hse.app.androidApp.data.model.ChatInfoDto
 import ru.hse.app.androidApp.data.model.CreateChannelDto
 import ru.hse.app.androidApp.data.model.CreateRoleDto
 import ru.hse.app.androidApp.data.model.CreateServerDto
+import ru.hse.app.androidApp.data.model.MessageDto
+import ru.hse.app.androidApp.data.model.NewMessageDto
 import ru.hse.app.androidApp.data.model.RegisterUserDto
 import ru.hse.app.androidApp.data.model.RoleInfoDto
 import ru.hse.app.androidApp.data.model.ServerInfoDto
@@ -279,5 +282,25 @@ interface ApiService {
         @Query("roomName") roomName: String
     ): Response<String>
 
+    // чаты
+    @GET(CHAT_SERVICE_URL + GET_CHAT_URL)// todo
+    suspend fun getPrivateChats(): Response<List<ChatInfoDto>>
+
+    @GET(CHAT_SERVICE_URL + GET_MESSAGES_HISTORY_URL) // todo
+    suspend fun getMessageHistory(
+        @Query("chatId") chatId: String,
+        @Query("lastMessageId") lastMessageId: String?
+    ): Response<List<MessageDto>>
+
+    @POST(CHAT_SERVICE_URL + SEND_MESSAGE_URL) // todo
+    suspend fun sendNewMessage(
+        @Query("chatId") chatId: String,
+        @Body newMessageDto: NewMessageDto
+    ): Response<String>
+
+    @POST(CHAT_SERVICE_URL + START_CHAT_URL) // todo
+    suspend fun startChat(
+        @Query("userId") userId: String
+    ): Response<String>
 
 }

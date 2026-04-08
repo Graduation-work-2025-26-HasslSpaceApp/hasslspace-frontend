@@ -1,5 +1,6 @@
 package ru.hse.app.androidApp.domain.repository
 
+import ru.hse.app.androidApp.domain.model.entity.ChatInfo
 import ru.hse.app.androidApp.domain.model.entity.Message
 import java.time.LocalDateTime
 
@@ -27,4 +28,10 @@ interface ChatRepository {
         chatId: String,
         lastMessageId: String? = null,
     ): Result<List<Message>>
+
+    suspend fun startChat(
+        userId: String
+    ): Result<String>
+
+    suspend fun getPrivateChats(): Result<List<ChatInfo>>
 }

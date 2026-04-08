@@ -58,7 +58,7 @@ fun ChatWithStateContent(
 ) {
     val members = uiState.data.channelMembers
     ChatContent(
-        channelName = uiState.data.channelName,
+        channelName = uiState.data.chatId,
         channelSubtitle = if (members.size > 2) participantsLabel(members.size) else "Личный чат",
         onBackClick = { navController.popBackStack() },
         onAuthorClick = {/*todo*/ },

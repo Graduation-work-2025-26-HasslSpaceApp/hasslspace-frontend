@@ -37,7 +37,7 @@ class ChatViewModel @Inject constructor(
         _uiState.value = ChatUiState.Success(
             data = ChatUiModel(
                 id = chatId,
-                channelName = "composers",
+                chatId = "composers",
                 channelMembers = listOf(getMe(), getNotMe(), getAlexey(), getEkaterina()),
                 currentUser = getMe(),
                 messages = messages,
