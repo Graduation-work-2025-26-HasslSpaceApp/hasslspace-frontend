@@ -8,6 +8,7 @@ import ru.hse.app.androidApp.data.model.ChannelInfoDto
 import ru.hse.app.androidApp.data.model.CreateChannelDto
 import ru.hse.app.androidApp.data.model.CreateRoleDto
 import ru.hse.app.androidApp.data.model.CreateServerDto
+import ru.hse.app.androidApp.data.model.RegisterUserDto
 import ru.hse.app.androidApp.data.model.RoleInfoDto
 import ru.hse.app.androidApp.data.model.ServerInfoDto
 import ru.hse.app.androidApp.data.model.ServerInfoExpandedDto
@@ -27,6 +28,7 @@ class FakeApiService : ApiService {
 
     private var fakeUser =
         UserDto(
+            id = "123",
             "Юлия Кухтина",
             "yuulkht",
             "testuser@example.com",
@@ -391,10 +393,7 @@ class FakeApiService : ApiService {
     )
 
     override suspend fun registerUser(
-        email: String,
-        password: String,
-        username: String,
-        nickname: String
+        registerUserDto: RegisterUserDto
     ): Response<String> {
         return Response.success("mock_jwt_token")
     }

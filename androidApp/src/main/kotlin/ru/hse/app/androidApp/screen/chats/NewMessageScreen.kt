@@ -11,19 +11,40 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil3.imageLoader
+import ru.hse.app.androidApp.ui.components.chats.chat.ChatContent
 import ru.hse.app.androidApp.ui.components.chats.mychats.MyChatsScreenContent
+import ru.hse.app.androidApp.ui.components.chats.newmessage.NewMessageScreenContent
+import ru.hse.app.androidApp.ui.components.common.card.participantsLabel
 import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
 import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
+import ru.hse.app.androidApp.ui.entity.model.chats.ChatUiState
 import ru.hse.app.androidApp.ui.entity.model.chats.ChatsUiState
 import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadUserFriendsEvent
 import ru.hse.app.androidApp.ui.navigation.NavigationItem
 
 @Composable
-fun ChatsScreen(
+fun NewMessageScreen(
     navController: NavController,
     viewModel: ChatsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    val loadUserFriendsEvent by viewModel.loadUserFriendsEvent.collectAsState()
+
+    LaunchedEffect(loadUserFriendsEvent) {
+        when (loadUserFriendsEvent) {
+            is LoadUserFriendsEvent.SuccessLoad -> {}
+
+            is LoadUserFriendsEvent.Error -> {
+                val message =
+                    (loadUserFriendsEvent as LoadUserFriendsEvent.Error).message
+                viewModel.errorHandler.handleError(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetLoadUserFriendsEvent()
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         when (uiState) {
@@ -36,7 +57,7 @@ fun ChatsScreen(
             }
 
             is ChatsUiState.Success -> {
-                ChatsWithStateContent(
+                NewMessageWithStateContent(
                     uiState = uiState as ChatsUiState.Success,
                     navController = navController,
                     viewModel = viewModel,
@@ -47,23 +68,21 @@ fun ChatsScreen(
 }
 
 @Composable
-fun ChatsWithStateContent(
+fun NewMessageWithStateContent(
     uiState: ChatsUiState.Success,
     navController: NavController,
     viewModel: ChatsViewModel
 ) {
     val context = LocalContext.current
-    MyChatsScreenContent(
+    NewMessageScreenContent(
         imageLoader = context.imageLoader,
-        chats = uiState.data.chats,
-        onAddClick = {
-            navController.navigate(NavigationItem.NewMessageScreen.route)
-        },
-        onChatClick = { chat ->
-            navController.navigate(NavigationItem.Chat.route + "/${chat.id}")
-        },
-        searchText = viewModel.searchText.value,
-        onValueChange = viewModel::onSearchValueChange,
-        isDarkTheme = viewModel.isDark
+        friends = uiState.data.friends,
+        onBackClick = { navController.popBackStack() },
+        onFriendClick = {/*todo*/},
+        onAddFriendClick = {},
+        onNewGroupClick = {},
+        searchText = viewModel.searchTextFriends.value,
+        onValueChange = viewModel::onSearchFriendsValueChange,
+        isDarkTheme = viewModel.isDark,
     )
 }

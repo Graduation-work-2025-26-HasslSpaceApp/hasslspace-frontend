@@ -30,6 +30,7 @@ import ru.hse.app.androidApp.BuildConfig
 import ru.hse.app.androidApp.screen.call.CallScreen
 import ru.hse.app.androidApp.screen.chats.ChatScreen
 import ru.hse.app.androidApp.screen.chats.ChatsScreen
+import ru.hse.app.androidApp.screen.chats.NewMessageScreen
 import ru.hse.app.androidApp.screen.profile.AddFriendsScreen
 import ru.hse.app.androidApp.screen.profile.FriendsScreen
 import ru.hse.app.androidApp.screen.profile.ProfileScreen
@@ -163,6 +164,10 @@ fun BottomNavigation(bottomNavController: NavHostController) {
             if (chatId != null) {
                 ChatScreen(chatId, bottomNavController)
             }
+        }
+
+        composable(NavigationItem.NewMessageScreen.route) {
+            NewMessageScreen(bottomNavController)
         }
 
         // Profile

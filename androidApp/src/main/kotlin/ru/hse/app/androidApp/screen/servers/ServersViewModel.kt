@@ -91,6 +91,7 @@ class ServersViewModel @Inject constructor(
                     GetUserServersEvent.SuccessLoad
                 },
                 onFailure = {
+                    _uiState.value = ServersUiState.Error("") // todo
                     GetUserServersEvent.Error(
                         ("Ошибка при загрузке серверов. " + it.message)
                     )

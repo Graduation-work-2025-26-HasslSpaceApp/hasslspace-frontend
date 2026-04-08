@@ -44,6 +44,7 @@ fun AddPhotoScreen(
 
             null -> {}
         }
+        viewModel.saveVerificationStatusToStorage(true)
 
         viewModel.resetSavePhotoEvent()
 

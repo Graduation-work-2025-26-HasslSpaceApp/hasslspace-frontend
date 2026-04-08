@@ -236,6 +236,7 @@ fun FriendsScreenWithStateContent(
 ) {
     val data = uiState.data
     val context = LocalContext.current
+    val isDark by viewModel.isDark.collectAsState()
 
     FriendsContent(
         imageLoader = context.imageLoader,
@@ -257,12 +258,12 @@ fun FriendsScreenWithStateContent(
         onDismissClick = { viewModel.respondFriend(it.id, "DECLINED") },
         searchText = viewModel.searchValueFriends.value,
         onValueChange = viewModel::onSearchValueChange,
-        isDarkTheme = data.isDarkCheck
+        isDarkTheme = isDark
     )
 
     if (viewModel.showFriendCard.value && data.chosenUser != null) {
         UserInfoBottomSheet(
-            isDarkTheme = data.isDarkCheck,
+            isDarkTheme = isDark,
             profilePictureUrl = data.chosenUser.avatarUrl,
             imageLoader = context.imageLoader,
             status = data.chosenUser.status,
@@ -332,7 +333,7 @@ fun FriendsScreenWithStateContent(
             imageLoader = context.imageLoader,
             servers = data.chosenUserCommonServers,
             onServerClick = { server -> navController.navigate(NavigationItem.MainServerScreen.route + "/${server.id}") },
-            isDarkTheme = data.isDarkCheck,
+            isDarkTheme = isDark,
             onDismiss = { viewModel.showCommonServers.value = false }
         )
     }

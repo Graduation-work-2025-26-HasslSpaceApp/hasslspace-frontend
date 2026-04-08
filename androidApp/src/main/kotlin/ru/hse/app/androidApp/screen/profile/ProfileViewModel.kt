@@ -80,6 +80,7 @@ class ProfileViewModel @Inject constructor(
     val cropProfilePhotoService: CropProfilePhotoService,
     val imageLoader: ImageLoader
 ) : ViewModel() {
+    val isDark = dataManager.isDark
 
     private val _uiState =
         MutableStateFlow<ProfileUiState>(ProfileUiState.Loading)
@@ -156,10 +157,8 @@ class ProfileViewModel @Inject constructor(
             dataManager.isDark.collect { isDarkTheme ->
                 val currentState = _uiState.value
                 if (currentState is ProfileUiState.Success) {
-                    val updatedData = currentState.data.copy(
-                        isDarkCheck = isDarkTheme
-                    )
-                    originalUsername.value = updatedData.username
+                    val updatedData = currentState.data.copy()
+                    originalUsername.value = updatedData.name
                     isUsernameMatched.value = true
                     originalStatusPresentation.value = updatedData.status
                     originalDescription.value = updatedData.description
@@ -332,8 +331,6 @@ class ProfileViewModel @Inject constructor(
         val currentState = _uiState.value
         if (currentState is ProfileUiState.Success) {
             saveThemeToStorage(isDark)
-            val updatedData = currentState.data.copy(isDarkCheck = isDark)
-            _uiState.value = ProfileUiState.Success(updatedData)
         }
     }
 
@@ -349,7 +346,7 @@ class ProfileViewModel @Inject constructor(
     fun onUsernameChanged(username: String) {
         val currentState = _uiState.value
         if (currentState is ProfileUiState.Success) {
-            val updatedData = currentState.data.copy(username = username)
+            val updatedData = currentState.data.copy(name = username)
             isUsernameMatched.value = (originalUsername.value == username)
             _uiState.value = ProfileUiState.Success(updatedData)
         }
@@ -369,16 +366,16 @@ class ProfileViewModel @Inject constructor(
         if (currentState is ProfileUiState.Success) {
             val data = currentState.data
             viewModelScope.launch {
-                val result = changeUserNameUseCase(data.username)
+                val result = changeUserNameUseCase(data.name)
 
                 _saveUserNameEvent.value = result.fold(
                     onSuccess = {
-                        originalUsername.value = data.username
+                        originalUsername.value = data.name
                         SaveUserNameEvent.SuccessSave
                     },
                     onFailure = {
                         val updatedData = currentState.data.copy(
-                            username = originalUsername.value
+                            name = originalUsername.value
                         )
                         _uiState.value = ProfileUiState.Success(updatedData)
                         SaveUserNameEvent.Error("Ошибка при сохранении нового имени. " + it.message)

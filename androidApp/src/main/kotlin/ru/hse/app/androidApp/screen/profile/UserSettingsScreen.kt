@@ -155,6 +155,7 @@ fun UserSettingsWithStateContent(
 ) {
     val data = uiState.data
     val context = LocalContext.current
+    val isDark by viewModel.isDark.collectAsState()
 
     val cropLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
@@ -182,14 +183,14 @@ fun UserSettingsWithStateContent(
 
     UserSettingsScreenContent(
         onBackClick = { navController.popBackStack() },
-        isDarkTheme = data.isDarkCheck,
+        isDarkTheme = isDark,
         selectedStatus = data.status,
         onStatusArrowClick = { viewModel.showStatusSheet.value = true },
         onPhotoPickClick = { pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
         selectedImageUri = data.selectedImageUri,
-        editedUsername = data.username,
+        editedUsername = data.name,
         onEditedUsernameChanged = viewModel::onUsernameChanged,
-        enabledChangeUsername = (!viewModel.isUsernameMatched.value && data.username.isNotEmpty()),
+        enabledChangeUsername = (!viewModel.isUsernameMatched.value && data.name.isNotEmpty()),
         onApplyNewUsername = viewModel::onApplyNewUsername,
         description = data.description,
         onDescChanged = viewModel::onDescChanged,

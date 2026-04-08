@@ -49,12 +49,13 @@ fun SettingsWithStateContent(
     viewModel: ProfileViewModel,
 ) {
     val data = uiState.data
+    val isDark by viewModel.isDark.collectAsState()
 
     SettingsMainScreenContent(
         onBackClick = { navController.popBackStack() },
         onUserSettingsClick = { navController.navigate(NavigationItem.UserSettings.route) },
         onSystemSettingsClick = { navController.navigate(NavigationItem.SystemSettings.route) },
-        isDarkTheme = data.isDarkCheck
+        isDarkTheme = isDark
     )
 
 }

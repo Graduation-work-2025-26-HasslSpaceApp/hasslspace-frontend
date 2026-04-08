@@ -73,7 +73,7 @@ const val GET_TOKEN_FOR_VOICE_ROOM = "/voice/token"
 
 // Чаты
 const val CHAT_SERVICE_URL = "/api/chat-service" //todo
-const val GET_CHAT_URL = "/private-chats"//todo
-const val GET_MESSAGES_HISTORY_URL = "/chat/history"//todo
-const val SEND_MESSAGE_URL = "/chat/messages"//todo
-const val START_CHAT_URL = "/chat/start"//todo
+const val GET_CHAT_URL = "/chats/private"//todo
+const val GET_MESSAGES_HISTORY_URL = "/chat/messages"//todo
+const val SEND_MESSAGE_URL = "/chat/messages/new"//todo
+const val START_CHAT_URL = "/chats/start"//todo

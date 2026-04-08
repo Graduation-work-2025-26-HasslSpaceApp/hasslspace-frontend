@@ -76,11 +76,12 @@ fun ProfileScreenWithStateContent(
     viewModel: ProfileViewModel,
 ) {
     val data = uiState.data
+    val isDark by viewModel.isDark.collectAsState()
 
     ProfileScreenContent(
         imageLoader = viewModel.imageLoader,
-        username = data.username,
-        nickname = data.nickname,
+        username = data.name,
+        nickname = data.username,
         status = data.status,
         profilePictureUrl = data.profilePictureUrl,
         friendsCount = data.friends.filter { it.type == TypeUiModel.FRIEND }.size,
@@ -88,6 +89,6 @@ fun ProfileScreenWithStateContent(
         serversCount = data.servers.size,
         onServersClick = { navController.navigate(BottomNavigationItem.Servers.route) },
         onSettingsClick = { navController.navigate(NavigationItem.Settings.route) },
-        isDarkTheme = data.isDarkCheck,
+        isDarkTheme = isDark,
     )
 }

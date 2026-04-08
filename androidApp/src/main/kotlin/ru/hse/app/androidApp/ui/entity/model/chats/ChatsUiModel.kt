@@ -2,6 +2,7 @@ package ru.hse.app.androidApp.ui.entity.model.chats
 
 import androidx.compose.runtime.Immutable
 import ru.hse.app.androidApp.ui.entity.model.ChatShortUiModel
+import ru.hse.app.androidApp.ui.entity.model.FriendUiModel
 
 sealed interface ChatsUiState {
     data object Loading : ChatsUiState
@@ -11,7 +12,8 @@ sealed interface ChatsUiState {
 
 @Immutable
 data class ChatsUiModel(
-    val chats: List<ChatShortUiModel>
+    val chats: List<ChatShortUiModel>,
+    val friends: List<FriendUiModel>
 )
 
 //todo убрать

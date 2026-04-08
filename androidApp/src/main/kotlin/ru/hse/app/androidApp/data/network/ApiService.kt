@@ -16,6 +16,7 @@ import ru.hse.app.androidApp.data.model.ChannelInfoDto
 import ru.hse.app.androidApp.data.model.CreateChannelDto
 import ru.hse.app.androidApp.data.model.CreateRoleDto
 import ru.hse.app.androidApp.data.model.CreateServerDto
+import ru.hse.app.androidApp.data.model.RegisterUserDto
 import ru.hse.app.androidApp.data.model.RoleInfoDto
 import ru.hse.app.androidApp.data.model.ServerInfoDto
 import ru.hse.app.androidApp.data.model.ServerInfoExpandedDto
@@ -33,10 +34,7 @@ interface ApiService {
     // Зарегистрироваться
     @POST(USER_SERVICE_URL + REGISTER_URL)
     suspend fun registerUser(
-        @Query("email") email: String,
-        @Query("password") password: String,
-        @Query("username") username: String,
-        @Query("nickname") nickname: String,
+        @Body registerUserDto: RegisterUserDto
     ): Response<String>
 
     // Войти
@@ -51,15 +49,15 @@ interface ApiService {
     suspend fun checkVerification(): Response<Boolean>
 
     // Прислать код подтверждения на почту
-    @PUT(USER_SERVICE_URL + SEND_CODE)
+    @POST(USER_SERVICE_URL + SEND_CODE)
     suspend fun sendVerificationCode(
         @Query("email") email: String
     ): Response<String>
 
     // Проверить код верификации email
-    @GET(USER_SERVICE_URL + CHECK_VERIFICATION_CODE)
+    @POST(USER_SERVICE_URL + CHECK_VERIFICATION_CODE)
     suspend fun checkVerificationCode(
-        @Query("verificationCode") verificationCode: String
+        @Query("code") verificationCode: String
     ): Response<String>
 
     // Получить информацию о текущем пользователе

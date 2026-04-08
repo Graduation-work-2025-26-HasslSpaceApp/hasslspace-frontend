@@ -117,6 +117,7 @@ fun AddFriendsScreenWithStateContent(
 ) {
     val data = uiState.data
     val context = LocalContext.current
+    val isDark by viewModel.isDark.collectAsState()
 
     AddFriendsScreenContent(
         imageLoader = context.imageLoader,
@@ -132,6 +133,6 @@ fun AddFriendsScreenWithStateContent(
         onUndoClick = { viewModel.deleteFriendship(it.id) },
         infoText = viewModel.infoTextAddFriend.value,
         error = viewModel.errorAddFriends.value,
-        isDarkTheme = data.isDarkCheck
+        isDarkTheme = isDark
     )
 }

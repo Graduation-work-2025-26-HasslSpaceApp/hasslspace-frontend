@@ -46,6 +46,8 @@ fun NewMessageScreenContent(
 ) {
     Column(
         modifier = modifier.fillMaxSize()
+            .padding(top = 50.dp)
+            .padding(16.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -73,22 +75,22 @@ fun NewMessageScreenContent(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            item {
-                AddButton(
-                    onClick = onNewGroupClick,
-                    text = "Новая группа",
-                    iconResource = if (isDarkTheme) R.drawable.new_group_dark else R.drawable.new_group_light
-                )
-            }
-
-            item {
-                AddButton(
-                    modifier = Modifier.padding(bottom = 15.dp),
-                    onClick = onAddFriendClick,
-                    text = "Добавить друга",
-                    iconResource = if (isDarkTheme) R.drawable.new_friend_dark else R.drawable.new_friend_light
-                )
-            }
+//            item {
+//                AddButton(
+//                    onClick = onNewGroupClick,
+//                    text = "Новая группа",
+//                    iconResource = if (isDarkTheme) R.drawable.new_group_dark else R.drawable.new_group_light
+//                )
+//            }
+//
+//            item {
+//                AddButton(
+//                    modifier = Modifier.padding(bottom = 15.dp),
+//                    onClick = onAddFriendClick,
+//                    text = "Добавить друга",
+//                    iconResource = if (isDarkTheme) R.drawable.new_friend_dark else R.drawable.new_friend_light
+//                )
+//            }
 
             items(friends, key = { it.id }) { friend ->
                 UserCardArrow(
