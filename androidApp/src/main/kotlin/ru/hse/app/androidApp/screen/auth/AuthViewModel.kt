@@ -308,10 +308,9 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun showToast(message: String, duration: Int = Toast.LENGTH_SHORT) {
-        toastManager.showToast(
-            message = message,
-            duration = duration
+    fun handleError(message: String) {
+        errorHandler.handleError(
+            message = message
         )
     }
 

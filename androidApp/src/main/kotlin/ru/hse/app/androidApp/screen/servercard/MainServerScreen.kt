@@ -58,7 +58,6 @@ fun MainServerScreen(
 
     LaunchedEffect(serverId) {
         viewModel.getServerInfo(serverId)
-        viewModel.loadUserData()
     }
 
     LaunchedEffect(loadUserDataEvent) {
@@ -68,7 +67,7 @@ fun MainServerScreen(
             is LoadUserDataEvent.Error -> {
                 val message =
                     (loadUserDataEvent as LoadUserDataEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}
@@ -88,7 +87,7 @@ fun MainServerScreen(
 
             is GetTokenEvent.Error -> {
                 val message = (getVoiceChannelTokenEvent as GetTokenEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}
@@ -105,7 +104,7 @@ fun MainServerScreen(
 
             is PatchChannelEvent.Error -> {
                 val message = (patchChannelEvent as PatchChannelEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}
@@ -121,7 +120,7 @@ fun MainServerScreen(
 
             is LoadChosenChannelEvent.Error -> {
                 val message = (loadChosenChannelEvent as LoadChosenChannelEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}
@@ -141,7 +140,7 @@ fun MainServerScreen(
 
             is DeleteServerEvent.Error -> {
                 val message = (deleteServerEvent as DeleteServerEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
                 viewModel.showDeleteServerDialog.value = false
                 viewModel.showServerSettingsSheet.value = false
             }
@@ -166,7 +165,7 @@ fun MainServerScreen(
 
             is DeleteChannelEvent.Error -> {
                 val message = (deleteChannelEvent as DeleteChannelEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
                 viewModel.showDeleteChannel.value = false
                 viewModel.showEditChannel.value = false
             }
@@ -189,7 +188,7 @@ fun MainServerScreen(
 
             is CreateChannelEvent.Error -> {
                 val message = (createChannelEvent as CreateChannelEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
                 viewModel.creatingChannel.value = false
             }
 
@@ -204,7 +203,7 @@ fun MainServerScreen(
 
             is GetServerInfoEvent.Error -> {
                 val message = (getServerInfoEvent as GetServerInfoEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}
@@ -219,7 +218,7 @@ fun MainServerScreen(
             is GetFriendsNotInServerEvent.Error -> {
                 val message =
                     (getFriendsNotInServerEvent as GetFriendsNotInServerEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}
@@ -237,7 +236,7 @@ fun MainServerScreen(
 
             is SendServerInvitationEvent.Error -> {
                 val message = (sendServerInvitationEvent as SendServerInvitationEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}
@@ -302,7 +301,7 @@ fun MainServerScreenWithStateContent(
                         channelName = it.title
                     )
                 } else {
-                    viewModel.showToast("Не загружены данные текущего пользователя")
+                    viewModel.handleError("Не загружены данные текущего пользователя")
                 }
             },
             onVoiceChannelLongClick = {
@@ -318,7 +317,7 @@ fun MainServerScreenWithStateContent(
 
     if (viewModel.showAddFriendsSheet.value) {
         AddMembersSheet(
-            imageLoader = context.imageLoader,
+            imageLoader = viewModel.imageLoader,
             friends = data.friendsNotInServer,
             onInviteClick = {
                 viewModel.sendServerInvitation(
@@ -333,7 +332,7 @@ fun MainServerScreenWithStateContent(
 
     if (viewModel.showTextChannelsSettings.value) {
         ChannelsBottomSheet(
-            imageLoader = context.imageLoader,
+            imageLoader = viewModel.imageLoader,
             text = "Текстовые каналы",
             isDarkTheme = viewModel.isDarkTheme,
             serverPictureUrl = data.chosenServer.photoUrl,
@@ -350,7 +349,7 @@ fun MainServerScreenWithStateContent(
 
     if (viewModel.showVoiceChannelsSettings.value) {
         ChannelsBottomSheet(
-            imageLoader = context.imageLoader,
+            imageLoader = viewModel.imageLoader,
             text = "Голосовые каналы",
             isDarkTheme = viewModel.isDarkTheme,
             serverPictureUrl = data.chosenServer.photoUrl,
@@ -478,7 +477,7 @@ fun MainServerScreenWithStateContent(
 
     if (viewModel.showChooseMembersAndRoles.value) {
         ConfigureMembersAndRoles(
-            imageLoader = context.imageLoader,
+            imageLoader = viewModel.imageLoader,
             friends = data.newChannelMembers,
             roles = data.newChannelRoles,
             onBackClick = { viewModel.showChooseMembersAndRoles.value = false },
@@ -491,7 +490,7 @@ fun MainServerScreenWithStateContent(
 
     if (viewModel.showChooseMembersAndRolesEditChannel.value) {
         ConfigureMembersAndRoles(
-            imageLoader = context.imageLoader,
+            imageLoader = viewModel.imageLoader,
             friends = data.editChannel.members,
             roles = data.editChannel.roles,
             onBackClick = { viewModel.showChooseMembersAndRolesEditChannel.value = false },
@@ -504,7 +503,7 @@ fun MainServerScreenWithStateContent(
 
     if (viewModel.showServerSettingsSheet.value) {
         InfoServerBottomSheet(
-            imageLoader = context.imageLoader,
+            imageLoader = viewModel.imageLoader,
             serverName = data.chosenServer.name,
             serverAvatarUrl = data.chosenServer.photoUrl,
             countOfMembers = data.chosenServer.members.count(),

@@ -43,8 +43,6 @@ fun UserSettingsScreen(
 
     LaunchedEffect(Unit) {
         viewModel.loadUserData()
-        viewModel.loadUserFriends()
-        viewModel.loadUserServers()
     }
 
     LaunchedEffect(loadUserDataEvent) {
@@ -54,7 +52,7 @@ fun UserSettingsScreen(
             is LoadUserDataEvent.Error -> {
                 val message =
                     (loadUserDataEvent as LoadUserDataEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}
@@ -65,12 +63,12 @@ fun UserSettingsScreen(
     LaunchedEffect(savePhotoEvent) {
         when (savePhotoEvent) {
             is SavePhotoEvent.SuccessSave -> {
-                viewModel.showToast("Успешно сохранили новое фото")
+                viewModel.handleError("Успешно сохранили новое фото")
             }
 
             is SavePhotoEvent.Error -> {
                 val message = (savePhotoEvent as SavePhotoEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}
@@ -81,12 +79,12 @@ fun UserSettingsScreen(
     LaunchedEffect(saveUserNameEvent) {
         when (saveUserNameEvent) {
             is SaveUserNameEvent.SuccessSave -> {
-                viewModel.showToast("Успешно сохранили новое имя")
+                viewModel.handleError("Успешно сохранили новое имя")
             }
 
             is SaveUserNameEvent.Error -> {
                 val message = (saveUserNameEvent as SaveUserNameEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}
@@ -97,12 +95,12 @@ fun UserSettingsScreen(
     LaunchedEffect(saveUserStatusEvent) {
         when (saveUserStatusEvent) {
             is SaveUserStatusEvent.SuccessSave -> {
-                viewModel.showToast("Успешно сохранили новый статус")
+                viewModel.handleError("Успешно сохранили новый статус")
             }
 
             is SaveUserStatusEvent.Error -> {
                 val message = (saveUserStatusEvent as SaveUserStatusEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}
@@ -113,12 +111,12 @@ fun UserSettingsScreen(
     LaunchedEffect(saveUserDescEvent) {
         when (saveUserDescEvent) {
             is SaveUserDescEvent.SuccessSave -> {
-                viewModel.showToast("Успешно сохранили новое описание")
+                viewModel.handleError("Успешно сохранили новое описание")
             }
 
             is SaveUserDescEvent.Error -> {
                 val message = (saveUserDescEvent as SaveUserDescEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}

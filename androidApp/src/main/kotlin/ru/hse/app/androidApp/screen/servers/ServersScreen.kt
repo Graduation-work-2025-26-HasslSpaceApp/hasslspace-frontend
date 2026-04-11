@@ -33,7 +33,7 @@ fun ServersScreen(
 
             is GetUserServersEvent.Error -> {
                 val message = (getUserServersEvent as GetUserServersEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}
@@ -72,7 +72,7 @@ fun ServersScreenWithStateContent(
     val context = LocalContext.current
 
     MyServersContent(
-        imageLoader = context.imageLoader,
+        imageLoader = viewModel.imageLoader,
         servers = data.userServers,
         onServerClick = { server ->
             navController.navigate(NavigationItem.MainServerScreen.route + "/${server.id}")

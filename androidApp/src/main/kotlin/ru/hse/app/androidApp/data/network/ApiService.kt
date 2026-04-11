@@ -76,6 +76,14 @@ interface ApiService {
         @Part("photoUrl") photoUrl: RequestBody?
     ): Response<String>
 
+    //Сохранение фото сервера
+    @Multipart
+    @PUT(SERVER_SERVICE_URL + UPLOAD_SERVER_PHOTO)
+    suspend fun uploadServerPhoto(
+        @Part photo: MultipartBody.Part,
+        @Part("photoUrl") photoUrl: RequestBody?
+    ): Response<String>
+
     // Обновить профиль пользователя
     @PATCH(USER_SERVICE_URL + UPDATE_PROFILE)
     suspend fun updateUserProfile(
@@ -89,7 +97,7 @@ interface ApiService {
     ): Response<String>
 
     // Получить список друзей и заявок в друзья пользователя
-    @GET(USER_SERVICE_URL + FRIENDS_LIST) //TODO у Саши нет статуса в дтошке
+    @GET(USER_SERVICE_URL + FRIENDS_LIST)
     suspend fun getFriends(): Response<List<UserInfoDto>>
 
     // Создать заявку в друзья
@@ -112,7 +120,7 @@ interface ApiService {
     ): Response<String>
 
     // Получить полную информацию о пользователе
-    @GET(USER_SERVICE_URL + GET_USER_PROFILE_BY_ID) //todo опять нет статуса пользователя в дто
+    @GET(USER_SERVICE_URL + GET_USER_PROFILE_BY_ID)
     suspend fun getUserInfoExtended(
         @Query("userId") userId: String,
     ): Response<UserInfoExtendedDto>
@@ -122,9 +130,9 @@ interface ApiService {
     suspend fun getServers(): Response<List<ServerInfoDto>>
 
     // Получить список общих серверов пользователя с другим пользователем
-    @GET("") //TODO У Саши нет в апишке
+    @GET(SERVER_SERVICE_URL + GET_SERVER_URL)
     suspend fun getCommonServers(
-        @Query("userId") userId: String,
+        @Query("friendId") userId: String,
     ): Response<List<ServerInfoDto>>
 
     // Создать роль на сервере

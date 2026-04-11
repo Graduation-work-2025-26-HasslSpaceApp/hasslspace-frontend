@@ -21,7 +21,7 @@ fun UserInfoExtendedDto.toDomain(): UserExpandedInfoWithStatus {
         nickname = this.nickname,
         status = this.status,
         avatarUrl = this.photoURL,
-        description = this.description,
+        description = this.description?:"",
         friendshipStatus = this.friendshipStatus.toDomain()
     )
 }

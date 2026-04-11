@@ -6,11 +6,12 @@ import jakarta.inject.Inject
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import ru.hse.app.androidApp.data.exception.ApiException
+import ru.hse.app.androidApp.domain.repository.ServerRepository
 import ru.hse.app.androidApp.domain.repository.UserRepository
 import ru.hse.app.androidApp.domain.service.common.PhotoConverterService
 
-class UploadPhotoUseCase @Inject constructor(
-    private val userRepository: UserRepository,
+class UploadServerPhotoUseCase @Inject constructor(
+    private val serverRepository: ServerRepository,
     private val imageLoader: ImageLoader,
     private val photoConverterService: PhotoConverterService,
 ) {
@@ -18,8 +19,6 @@ class UploadPhotoUseCase @Inject constructor(
         imageUri: Uri?,
         photoUrl: String?
     ): Result<String> {
-        imageLoader.memoryCache?.clear()
-        imageLoader.diskCache?.clear()
 
         val userPhotoMultipart = imageUri?.let { photoConverterService.uriToMultipart(it) }
 
@@ -29,7 +28,7 @@ class UploadPhotoUseCase @Inject constructor(
                 ?.takeIf { it.isNotBlank() }
                 ?.toRequestBody("text/plain".toMediaType())
 
-            val result = userRepository.uploadPhoto(multipart, typePart, photoUrlPart)
+            val result = serverRepository.uploadPhoto(multipart, photoUrlPart)
 
             imageLoader.memoryCache?.clear()
             imageLoader.diskCache?.clear()

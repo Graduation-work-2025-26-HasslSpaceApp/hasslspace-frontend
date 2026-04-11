@@ -32,7 +32,7 @@ fun RegisterScreen(
 
             is RegisterUserEvent.Error -> {
                 val message = (event as RegisterUserEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}

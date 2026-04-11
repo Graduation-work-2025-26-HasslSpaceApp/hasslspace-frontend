@@ -429,6 +429,13 @@ class FakeApiService : ApiService {
         return Response.success("Данные успешно сохранены")
     }
 
+    override suspend fun uploadServerPhoto(
+        photo: MultipartBody.Part,
+        photoUrl: RequestBody?
+    ): Response<String> {
+        return Response.success("Данные успешно сохранены")
+    }
+
     override suspend fun updateUserProfile(updateProfileDto: UpdateProfileDto): Response<String> {
         fakeUser = fakeUser.copy(
             name = updateProfileDto.name ?: fakeUser.name,
@@ -576,7 +583,7 @@ class FakeApiService : ApiService {
             ServerInfoDto(
                 id = "11",
                 name = createServerDto.name,
-                photoURL = createServerDto.photoUrl
+                photoURL = createServerDto.iconUrl
             )
         )
         return Response.success("true")
@@ -881,14 +888,16 @@ class FakeApiService : ApiService {
                         name = "Юлия Кухтина",
                         username = "yuulkht",
                         status = "ONLINE",
-                        photoURL = "https://i.postimg.cc/J4DLnLCS/accountphoto.jpg"
+                        photoURL = "https://i.postimg.cc/J4DLnLCS/accountphoto.jpg",
+                        isCurrentUser = true
                     ),
                     ChatInfoDto.ChatMemberDto(
                         id = "1",
                         name = "Алексей Иванов",
                         username = "alex_ivanov",
                         status = "ONLINE",
-                        photoURL = "https://i.postimg.cc/1XfF8BZh/friend1.jpg"
+                        photoURL = "https://i.postimg.cc/1XfF8BZh/friend1.jpg",
+                        isCurrentUser = false
                     )
                 )
             ),
@@ -901,14 +910,16 @@ class FakeApiService : ApiService {
                         name = "Юлия Кухтина",
                         username = "yuulkht",
                         status = "ONLINE",
-                        photoURL = "https://i.postimg.cc/J4DLnLCS/accountphoto.jpg"
+                        photoURL = "https://i.postimg.cc/J4DLnLCS/accountphoto.jpg",
+                        isCurrentUser = true
                     ),
                     ChatInfoDto.ChatMemberDto(
                         id = "2",
                         name = "Мария Петрова",
                         username = "masha_petrov",
                         status = "INVISIBLE",
-                        photoURL = "https://i.postimg.cc/K8Jxt5wQ/friend2.jpg"
+                        photoURL = "https://i.postimg.cc/K8Jxt5wQ/friend2.jpg",
+                        isCurrentUser = false
                     )
                 )
             ),
@@ -921,14 +932,16 @@ class FakeApiService : ApiService {
                         name = "Юлия Кухтина",
                         username = "yuulkht",
                         status = "ONLINE",
-                        photoURL = "https://i.postimg.cc/J4DLnLCS/accountphoto.jpg"
+                        photoURL = "https://i.postimg.cc/J4DLnLCS/accountphoto.jpg",
+                        isCurrentUser = true
                     ),
                     ChatInfoDto.ChatMemberDto(
                         id = "3",
                         name = "Ирина Смирнова",
                         username = "irina_smirnov",
                         status = "DO_NOT_DISTURB",
-                        photoURL = "https://i.postimg.cc/3RmDC39Y/friend3.jpg"
+                        photoURL = "https://i.postimg.cc/3RmDC39Y/friend3.jpg",
+                        isCurrentUser = false
                     )
                 )
             )

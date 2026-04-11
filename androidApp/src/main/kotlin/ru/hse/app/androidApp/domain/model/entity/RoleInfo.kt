@@ -21,7 +21,7 @@ fun RoleInfoDto.toDomain(): RoleInfo {
     return RoleInfo(
         id = this.id,
         name = this.name,
-        color = this.color,
+        color = this.color?: "#1A0000FF",
         members = this.members.map { memberDto ->
             RoleInfo.RoleMember(
                 id = memberDto.id,

@@ -50,7 +50,7 @@ fun FriendsScreen(
     val getTokenEvent by viewModel.getTokenEvent.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.loadUserFriends()
+        viewModel.loadUserData()
     }
 
     LaunchedEffect(getTokenEvent) {
@@ -65,7 +65,7 @@ fun FriendsScreen(
 
             is GetTokenEvent.Error -> {
                 val message = (getTokenEvent as GetTokenEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}
@@ -80,7 +80,7 @@ fun FriendsScreen(
             is LoadUserFriendsEvent.Error -> {
                 val message =
                     (loadUserFriendsEvent as LoadUserFriendsEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}
@@ -95,7 +95,7 @@ fun FriendsScreen(
             is LoadUserServersEvent.Error -> {
                 val message =
                     (loadUserServersEvent as LoadUserServersEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}
@@ -110,7 +110,7 @@ fun FriendsScreen(
             is LoadUserDataEvent.Error -> {
                 val message =
                     (loadUserDataEvent as LoadUserDataEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}
@@ -121,14 +121,14 @@ fun FriendsScreen(
     LaunchedEffect(respondToFriendRequestEvent) {
         when (respondToFriendRequestEvent) {
             is RespondToFriendRequestEvent.SuccessRespond -> {
-                viewModel.showToast("Успешно")
+                viewModel.handleError("Успешно")
                 viewModel.loadUserFriends()
             }
 
             is RespondToFriendRequestEvent.Error -> {
                 val message =
                     (respondToFriendRequestEvent as RespondToFriendRequestEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
                 viewModel.loadUserFriends()
             }
 
@@ -145,7 +145,7 @@ fun FriendsScreen(
 
             is LoadChosenUserEvent.Error -> {
                 val message = (loadChosenUserEvent as LoadChosenUserEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}
@@ -160,7 +160,7 @@ fun FriendsScreen(
             is LoadChosenUserCommonServersEvent.Error -> {
                 val message =
                     (loadChosenUserCommonServersEvent as LoadChosenUserCommonServersEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}
@@ -199,7 +199,7 @@ fun FriendsScreen(
             is DeleteFriendshipEvent.Error -> {
                 val message =
                     (deleteFriendshipEvent as DeleteFriendshipEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}
@@ -239,7 +239,7 @@ fun FriendsScreenWithStateContent(
     val isDark by viewModel.isDark.collectAsState()
 
     FriendsContent(
-        imageLoader = context.imageLoader,
+        imageLoader = viewModel.imageLoader,
         friends = viewModel.getFriends(data.friends),
         applications = viewModel.getIncomingRequests(data.friends),
         onBackClick = { navController.popBackStack() },
@@ -265,7 +265,7 @@ fun FriendsScreenWithStateContent(
         UserInfoBottomSheet(
             isDarkTheme = isDark,
             profilePictureUrl = data.chosenUser.avatarUrl,
-            imageLoader = context.imageLoader,
+            imageLoader = viewModel.imageLoader,
             status = data.chosenUser.status,
             username = data.chosenUser.name,
             nickname = data.chosenUser.nickname,
@@ -299,7 +299,7 @@ fun FriendsScreenWithStateContent(
                 val clip = ClipData.newPlainText("Copied Text", data.chosenUser.nickname)
                 clipboard.setPrimaryClip(clip)
 
-                viewModel.showToast("Текст скопирован в буфер обмена")
+                viewModel.handleError("Текст скопирован в буфер обмена")
             },
             onThirdOptionClick = {
                 when (data.chosenUser.type) {
@@ -330,7 +330,7 @@ fun FriendsScreenWithStateContent(
 
     if (viewModel.showCommonServers.value) {
         CommonServersBottomSheet(
-            imageLoader = context.imageLoader,
+            imageLoader = viewModel.imageLoader,
             servers = data.chosenUserCommonServers,
             onServerClick = { server -> navController.navigate(NavigationItem.MainServerScreen.route + "/${server.id}") },
             isDarkTheme = isDark,

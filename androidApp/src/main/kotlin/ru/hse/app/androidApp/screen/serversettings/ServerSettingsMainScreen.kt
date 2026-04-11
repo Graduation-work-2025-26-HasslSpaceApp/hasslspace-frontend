@@ -41,20 +41,20 @@ fun ServerSettingsMainScreen(
 
     LaunchedEffect(serverId) {
         viewModel.getServerInfo(serverId)
-        viewModel.getServerRoles(serverId)
     }
 
     LaunchedEffect(patchServerPropertiesEvent) {
         when (patchServerPropertiesEvent) {
             is PatchServerPropertiesEvent.Success -> {
-                viewModel.showToast("Данные успешно изменены")
+                viewModel.errorHandler("Данные успешно изменены")
+                viewModel.getServerInfo(serverId)
                 navController.popBackStack()
             }
 
             is PatchServerPropertiesEvent.Error -> {
                 val message =
                     (patchServerPropertiesEvent as PatchServerPropertiesEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.errorHandler(message)
             }
 
             null -> {}
@@ -65,12 +65,12 @@ fun ServerSettingsMainScreen(
     LaunchedEffect(updateServerPhotoEvent) {
         when (updateServerPhotoEvent) {
             is UpdateServerPhotoEvent.Success -> {
-                viewModel.showToast("Фото успешно изменено")
+                viewModel.errorHandler("Фото успешно изменено")
             }
 
             is UpdateServerPhotoEvent.Error -> {
                 val message = (updateServerPhotoEvent as UpdateServerPhotoEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.errorHandler(message)
             }
 
             null -> {}
@@ -84,7 +84,7 @@ fun ServerSettingsMainScreen(
 
             is GetServerInfoEvent.Error -> {
                 val message = (getServerInfoEvent as GetServerInfoEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.errorHandler(message)
             }
 
             null -> {}
@@ -98,7 +98,7 @@ fun ServerSettingsMainScreen(
 
             is GetServerRolesEvent.Error -> {
                 val message = (getServerRolesEvent as GetServerRolesEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.errorHandler(message)
             }
 
             null -> {}

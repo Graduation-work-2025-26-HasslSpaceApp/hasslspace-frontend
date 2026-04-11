@@ -31,7 +31,7 @@ fun AddFriendsScreen(
     val loadUserFriendsEvent by viewModel.loadUserFriendsEvent.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.loadUserFriends()
+        viewModel.loadUserData()
     }
 
     LaunchedEffect(loadUserFriendsEvent) {
@@ -41,7 +41,7 @@ fun AddFriendsScreen(
             is LoadUserFriendsEvent.Error -> {
                 val message =
                     (loadUserFriendsEvent as LoadUserFriendsEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}
@@ -80,7 +80,7 @@ fun AddFriendsScreen(
             is DeleteFriendshipEvent.Error -> {
                 val message =
                     (deleteFriendshipEvent as DeleteFriendshipEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}
@@ -120,7 +120,7 @@ fun AddFriendsScreenWithStateContent(
     val isDark by viewModel.isDark.collectAsState()
 
     AddFriendsScreenContent(
-        imageLoader = context.imageLoader,
+        imageLoader = viewModel.imageLoader,
         requests = viewModel.getOutgoingRequests(data.friends),
         onBackClick = { navController.popBackStack() },
         onRequestClick = {

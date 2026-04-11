@@ -54,7 +54,7 @@ fun ChatsWithStateContent(
 ) {
     val context = LocalContext.current
     MyChatsScreenContent(
-        imageLoader = context.imageLoader,
+        imageLoader = viewModel.imageLoader,
         chats = uiState.data.chats,
         onAddClick = {
             navController.navigate(NavigationItem.NewMessageScreen.route)

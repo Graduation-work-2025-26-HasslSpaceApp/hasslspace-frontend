@@ -20,7 +20,6 @@ interface UserRepository {
     suspend fun getUserInfo(): Result<UserExpandedInfo>
     suspend fun saveUserPhoto(photoUrl: String): Result<String>
 
-    //TODO подумать как поменять
     suspend fun uploadPhoto(
         photo: MultipartBody.Part,
         type: RequestBody,

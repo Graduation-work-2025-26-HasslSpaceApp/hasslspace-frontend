@@ -34,7 +34,7 @@ fun LoginScreen(
 
             is LoginUserEvent.Error -> {
                 val message = (loginUserEvent as LoginUserEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}
@@ -54,7 +54,7 @@ fun LoginScreen(
             is CheckEmailVerificationEvent.Error -> {
                 val message =
                     (checkEmailVerificationEvent as CheckEmailVerificationEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}

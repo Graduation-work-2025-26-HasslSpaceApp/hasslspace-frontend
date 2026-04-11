@@ -1,6 +1,7 @@
 package ru.hse.app.androidApp.ui.errorhandling
 
 import android.content.Context
+import android.util.Log
 import ru.hse.coursework.godaily.ui.notification.ToastManager
 import javax.inject.Inject
 
@@ -12,6 +13,7 @@ class ErrorHandler @Inject constructor(
     }
 
     fun handleError(message: String) {
+        Log.e(TAG, "Error occurred: $message")
         showErrorMessage(message)
 
 //        val errorMessage = when {

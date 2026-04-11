@@ -29,8 +29,6 @@ fun ProfileScreen(
 
     LaunchedEffect(Unit) {
         viewModel.loadUserData()
-        viewModel.loadUserFriends()
-        viewModel.loadUserServers()
     }
 
     LaunchedEffect(loadUserDataEvent) {
@@ -40,7 +38,7 @@ fun ProfileScreen(
             is LoadUserDataEvent.Error -> {
                 val message =
                     (loadUserDataEvent as LoadUserDataEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}

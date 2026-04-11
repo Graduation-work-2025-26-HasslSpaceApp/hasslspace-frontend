@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 import ru.hse.app.androidApp.data.local.DataManager
 import ru.hse.app.androidApp.domain.model.entity.CreateRole
 import ru.hse.app.androidApp.domain.service.common.CropProfilePhotoService
+import ru.hse.app.androidApp.domain.service.common.PhotoConverterService
 import ru.hse.app.androidApp.domain.usecase.invitations.DeleteServerInvitationUseCase
 import ru.hse.app.androidApp.domain.usecase.invitations.GetServerInvitationsUseCase
 import ru.hse.app.androidApp.domain.usecase.roles.AssignRoleUseCase
@@ -43,6 +44,7 @@ import ru.hse.app.androidApp.ui.entity.model.servers.events.DeleteServerMemberEv
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerInfoEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerInvitationsEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerRolesEvent
+import ru.hse.app.androidApp.ui.entity.model.servers.events.LoadChosenServerRolesEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.PatchServerOwnerEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.PatchServerPropertiesEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.PatchServerRoleEvent
@@ -55,6 +57,7 @@ import ru.hse.app.androidApp.ui.entity.model.serversettings.toServerSettingsUiMo
 import ru.hse.app.androidApp.ui.entity.model.toRoleMiniCheckboxUiModel
 import ru.hse.app.androidApp.ui.entity.model.toRoleMiniIfChosen
 import ru.hse.app.androidApp.ui.entity.model.toUi
+import ru.hse.app.androidApp.ui.errorhandling.ErrorHandler
 import ru.hse.coursework.godaily.ui.notification.ToastManager
 import javax.inject.Inject
 
@@ -79,7 +82,11 @@ class ServerSettingsViewModel @Inject constructor(
     private val assignRoleUseCase: AssignRoleUseCase,
     private val revokeRoleUseCase: RevokeRoleUseCase,
 
+    private val errorHandler: ErrorHandler,
+
     private val patchServerRoleUseCase: PatchServerRoleUseCase,
+
+    private val photoConverterService: PhotoConverterService,
 
 
     private val dataManager: DataManager,
@@ -103,6 +110,9 @@ class ServerSettingsViewModel @Inject constructor(
 
     private val _getServerRolesEvent = MutableStateFlow<GetServerRolesEvent?>(null)
     val getServerRolesEvent: StateFlow<GetServerRolesEvent?> = _getServerRolesEvent
+
+    private val _loadChosenServerRolesEvent = MutableStateFlow<LoadChosenServerRolesEvent?>(null)
+    val loadChosenServerRolesEvent: StateFlow<LoadChosenServerRolesEvent?> = _loadChosenServerRolesEvent
 
     private val _deleteInvitationEvent = MutableStateFlow<DeleteInvitationEvent?>(null)
     val deleteInvitationEvent: StateFlow<DeleteInvitationEvent?> = _deleteInvitationEvent
@@ -311,13 +321,18 @@ class ServerSettingsViewModel @Inject constructor(
     }
 
     fun saveEditedRole(serverId: String, roleId: String) {
-        originalEditRoleTitle.value = ""
 
         viewModelScope.launch {
             val currentState = _uiState.value
 
             if (currentState is ServerSettingsUiState.Success) {
                 val data = currentState.data
+
+                if (data.editedRole.name.isEmpty()) {
+                    errorHandler("Название роли не может быть пустым")
+                    return@launch
+                }
+
                 val result = patchServerRoleUseCase(
                     serverId = serverId,
                     roleId = roleId,
@@ -328,6 +343,7 @@ class ServerSettingsViewModel @Inject constructor(
 
                 _patchServerRoleEvent.value = result.fold(
                     onSuccess = {
+                        originalEditRoleTitle.value = ""
                         PatchServerRoleEvent.Success
                     },
 
@@ -375,7 +391,7 @@ class ServerSettingsViewModel @Inject constructor(
         newRole: ServerSettingsUiModel.NewRoleUiModel
     ) {
         if (newRole.name.isEmpty()) {
-            showToast("Название роли не может быть пустым")
+            errorHandler("Название роли не может быть пустым")
             return
         }
         val colorInt = if (newRole.color != Color.Transparent) newRole.color else Color.LightGray
@@ -410,6 +426,10 @@ class ServerSettingsViewModel @Inject constructor(
         }
     }
 
+    fun urlToUri(url: String?): Uri? {
+        return photoConverterService.urlToUri(url)
+    }
+
     fun getServerInfo(serverId: String) {
         viewModelScope.launch {
             val result = getServerInfoUseCase(serverId)
@@ -420,6 +440,12 @@ class ServerSettingsViewModel @Inject constructor(
                     _uiState.value = ServerSettingsUiState.Success(
                         data = serverUi
                     )
+
+                    selectedImageUri.value = urlToUri(serverUi.photoUrl)
+
+                    getServerRoles(serverId)
+                    getServerInvitations(serverId)
+
                     serverName.value = serverUi.name
 
                     searchedMembers.clear()
@@ -482,7 +508,7 @@ class ServerSettingsViewModel @Inject constructor(
             val result = getServerRolesUseCase(serverId)
             val currentState = _uiState.value
 
-            _getServerRolesEvent.value = result.fold(
+            _loadChosenServerRolesEvent.value = result.fold(
                 onSuccess = { roles ->
                     if (currentState is ServerSettingsUiState.Success) {
                         val userRolesIds =
@@ -498,10 +524,10 @@ class ServerSettingsViewModel @Inject constructor(
                         _uiState.value = ServerSettingsUiState.Success(updatedData)
                     }
 
-                    GetServerRolesEvent.SuccessLoad
+                    LoadChosenServerRolesEvent.SuccessLoad
                 },
                 onFailure = { error ->
-                    GetServerRolesEvent.Error("Ошибка при получении ролей сервера. ${error.message}")
+                    LoadChosenServerRolesEvent.Error("Ошибка при получении ролей сервера. ${error.message}")
                 }
             )
         }
@@ -524,6 +550,19 @@ class ServerSettingsViewModel @Inject constructor(
 
                         _assignRoleEvent.value = result.fold(
                             onSuccess = {
+                                val updatedChosenRoles = currentState.data.chosenRoles.map { role ->
+                                    if (role.id == tapped.id) {
+                                        role.copy(isChosen = !role.isChosen)
+                                    } else {
+                                        role
+                                    }
+                                }
+
+                                val updatedData = currentState.data.copy(
+                                    chosenRoles = updatedChosenRoles
+                                )
+
+                                _uiState.value = ServerSettingsUiState.Success(updatedData)
                                 AssignRoleEvent.Success
                             },
                             onFailure = {
@@ -538,26 +577,25 @@ class ServerSettingsViewModel @Inject constructor(
 
                         _revokeRoleEvent.value = result.fold(
                             onSuccess = {
+                                val updatedChosenRoles = currentState.data.chosenRoles.map { role ->
+                                    if (role.id == tapped.id) {
+                                        role.copy(isChosen = !role.isChosen)
+                                    } else {
+                                        role
+                                    }
+                                }
+
+                                val updatedData = currentState.data.copy(
+                                    chosenRoles = updatedChosenRoles
+                                )
+
+                                _uiState.value = ServerSettingsUiState.Success(updatedData)
                                 RevokeRoleEvent.Success
                             },
                             onFailure = {
                                 RevokeRoleEvent.Error("Ошибка при снятии роли. ${it.message}")
                             })
                     }
-
-                    val updatedChosenRoles = currentState.data.chosenRoles.map { role ->
-                        if (role.id == tapped.id) {
-                            role.copy(isChosen = !role.isChosen)
-                        } else {
-                            role
-                        }
-                    }
-
-                    val updatedData = currentState.data.copy(
-                        chosenRoles = updatedChosenRoles
-                    )
-
-                    _uiState.value = ServerSettingsUiState.Success(updatedData)
 
                 } catch (e: Exception) {
                     // todo ловить и показывать ошибку
@@ -593,7 +631,7 @@ class ServerSettingsViewModel @Inject constructor(
 
     fun transferRightsToMember(serverId: String, member: ServerMemberUiModel) {
         viewModelScope.launch {
-            val result = updateServerOwnerUseCase(serverId, member.id)
+            val result = updateServerOwnerUseCase(member.id, serverId)
 
             _patchServerOwnerEvent.value = result.fold(
                 onSuccess = {
@@ -636,6 +674,10 @@ class ServerSettingsViewModel @Inject constructor(
     }
 
     fun onSaveEditedServername(serverId: String, value: String) {
+        if (value.isEmpty()) {
+            errorHandler.handleError("Название не может быть пустым")
+            return
+        }
         viewModelScope.launch {
             val result = patchServerPropertiesUseCase(serverId, value, null)
 
@@ -684,10 +726,9 @@ class ServerSettingsViewModel @Inject constructor(
         saveServerPhoto(uri)
     }
 
-    fun showToast(message: String, duration: Int = Toast.LENGTH_SHORT) {
-        toastManager.showToast(
-            message = message,
-            duration = duration
+    fun errorHandler(message: String, duration: Int = Toast.LENGTH_SHORT) {
+        errorHandler.handleError(
+            message = message
         )
     }
 
@@ -741,5 +782,9 @@ class ServerSettingsViewModel @Inject constructor(
 
     fun resetPatchServerPropertiesEvent() {
         _patchServerPropertiesEvent.value = null
+    }
+
+    fun resetLoadChosenServerRolesEvent() {
+        _loadChosenServerRolesEvent.value = null
     }
 }

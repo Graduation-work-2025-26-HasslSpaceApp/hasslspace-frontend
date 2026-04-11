@@ -56,7 +56,7 @@ fun JumpToBottom(enabled: Boolean, onClicked: () -> Unit, modifier: Modifier = M
             },
             onClick = onClicked,
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
-            contentColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onBackground,
             modifier = modifier
                 .offset(x = 0.dp, y = -bottomOffset)
                 .height(36.dp),

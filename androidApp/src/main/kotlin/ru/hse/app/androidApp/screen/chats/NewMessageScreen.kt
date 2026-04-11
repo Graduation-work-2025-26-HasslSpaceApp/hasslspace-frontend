@@ -75,7 +75,7 @@ fun NewMessageWithStateContent(
 ) {
     val context = LocalContext.current
     NewMessageScreenContent(
-        imageLoader = context.imageLoader,
+        imageLoader = viewModel.imageLoader,
         friends = uiState.data.friends,
         onBackClick = { navController.popBackStack() },
         onFriendClick = {/*todo*/},

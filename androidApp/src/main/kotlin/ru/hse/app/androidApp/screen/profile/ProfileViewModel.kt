@@ -48,6 +48,7 @@ import ru.hse.app.androidApp.ui.entity.model.profile.events.SaveUserStatusEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.toUI
 import ru.hse.app.androidApp.ui.entity.model.toDomain
 import ru.hse.app.androidApp.ui.entity.model.toUi
+import ru.hse.app.androidApp.ui.errorhandling.ErrorHandler
 import ru.hse.coursework.godaily.ui.notification.ToastManager
 import javax.inject.Inject
 
@@ -71,6 +72,7 @@ class ProfileViewModel @Inject constructor(
     private val searchFriendsUseCase: SearchFriendsUseCase,
     private val getUserInfoExtendedUseCase: GetUserInfoExtendedUseCase,
     private val getChosenUserCommonServersUseCase: GetChosenUserCommonServersUseCase,
+    private val errorHandler: ErrorHandler,
 
     // Voice
     private val getVoiceRoomTokenUseCase: GetVoiceRoomTokenUseCase,
@@ -149,8 +151,6 @@ class ProfileViewModel @Inject constructor(
 
     init {
         loadUserData()
-        loadUserFriends()
-        loadUserServers()
         loadAppTheme()
 
         viewModelScope.launch {
@@ -183,6 +183,8 @@ class ProfileViewModel @Inject constructor(
                             selectedImageUri = urlToUri(info.avatarUrl)
                         )
                     )
+                    loadUserFriends()
+                    loadUserServers()
                     LoadUserDataEvent.SuccessLoad
 
                 },
@@ -206,6 +208,8 @@ class ProfileViewModel @Inject constructor(
                         val updatedData = currentState.data.copy(
                             friends = friends.map { it.toUi() }
                         )
+                        originalFriends.clear()
+                        originalFriends.addAll(updatedData.friends)
                         _uiState.value = ProfileUiState.Success(updatedData)
                     }
                     LoadUserFriendsEvent.SuccessLoad
@@ -564,10 +568,9 @@ class ProfileViewModel @Inject constructor(
         onSelectedStatusChanged(originalStatusPresentation.value)
     }
 
-    fun showToast(message: String, duration: Int = Toast.LENGTH_SHORT) {
-        toastManager.showToast(
-            message = message,
-            duration = duration
+    fun handleError(message: String) {
+        errorHandler.handleError(
+            message = message
         )
     }
 

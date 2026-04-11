@@ -15,6 +15,6 @@ class ApiException(
 
         const val PHOTO_UPLOADING_ERROR = "Ошибка загрузки фото"
 
-        const val FRIENDSHIP_NOT_FOUND = "Комната не найдена"
+        const val ROOM_NOT_FOUND = "Комната не найдена"
     }
 }

@@ -22,7 +22,7 @@ data class UserInfoExtendedDto(
     val photoURL: String?,
 
     @JsonProperty("description")
-    val description: String,
+    val description: String?,
 
     @JsonProperty("friendStatus")
     val friendshipStatus: StatusType

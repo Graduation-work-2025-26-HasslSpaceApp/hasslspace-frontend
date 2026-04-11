@@ -3,6 +3,8 @@ package ru.hse.app.androidApp.ui.entity.model.chats
 import androidx.compose.runtime.Immutable
 import ru.hse.app.androidApp.domain.model.entity.ChatInfo
 import ru.hse.app.androidApp.domain.model.entity.Message
+import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
+import ru.hse.app.androidApp.ui.entity.model.toStatusPresentation
 import java.time.LocalDateTime
 
 sealed interface ChatUiState {
@@ -33,12 +35,12 @@ data class ChatMemberUiModel(
     val id: String,
     val name: String,
     val username: String,
-    val status: String,
+    val status: StatusPresentation,
     val photoURL: String,
     val isCurrentUser: Boolean,
 )
 
-fun ChatInfo.toUi(): ChatUiModel {
+fun ChatInfo.toUiPrivate(): ChatUiModel {
     return ChatUiModel(
         id = this.id,
         name = this.chatMembers
@@ -55,7 +57,7 @@ fun ChatInfo.ChatMember.toUi(): ChatMemberUiModel {
         id = this.id,
         name = this.name,
         username = this.username,
-        status = this.status,
+        status = this.status.toStatusPresentation(),
         photoURL = this.photoURL ?: "",
         isCurrentUser = this.isCurrentUser,
     )
@@ -69,7 +71,7 @@ fun Message.toUi(members: List<ChatMemberUiModel>): MessageUiModel {
                 id = this.userId,
                 name = "Unknown",
                 username = "unknown",
-                status = "OFFLINE",
+                status = StatusPresentation.OFFLINE,
                 photoURL = "",
                 isCurrentUser = false
             ),

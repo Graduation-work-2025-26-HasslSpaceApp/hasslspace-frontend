@@ -58,14 +58,13 @@ fun ChatWithStateContent(
 ) {
     val members = uiState.data.channelMembers
     ChatContent(
-        channelName = uiState.data.chatId,
+        channelName = uiState.data.name,
         channelSubtitle = if (members.size > 2) participantsLabel(members.size) else "Личный чат",
         onBackClick = { navController.popBackStack() },
         onAuthorClick = {/*todo*/ },
         onSendMessage = viewModel::addCurrentUserMessage,
-        me = uiState.data.currentUser,
         isDarkTheme = viewModel.isDark,
-        imageLoader = LocalContext.current.imageLoader,
+        imageLoader = viewModel.imageLoader,
         messages = uiState.data.messages,
     )
 }

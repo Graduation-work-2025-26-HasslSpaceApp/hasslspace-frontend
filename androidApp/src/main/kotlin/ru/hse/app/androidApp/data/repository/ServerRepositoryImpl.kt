@@ -1,5 +1,7 @@
 package ru.hse.app.androidApp.data.repository
 
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import ru.hse.app.androidApp.data.model.UpdateServerDto
 import ru.hse.app.androidApp.data.network.ApiCaller
 import ru.hse.app.androidApp.data.network.ApiService
@@ -53,6 +55,13 @@ class ServerRepositoryImpl @Inject constructor(
 
     override suspend fun leaveServer(serverId: String): Result<String> {
         return apiCaller.safeApiCall { apiService.leaveServer(serverId) }
+    }
+
+    override suspend fun uploadPhoto(
+        photo: MultipartBody.Part,
+        photoUrl: RequestBody?
+    ): Result<String> {
+        return apiCaller.safeApiCall { apiService.uploadServerPhoto(photo, photoUrl) }
     }
 
     override suspend fun updateServerOwner(userId: String, serverId: String): Result<String> {
