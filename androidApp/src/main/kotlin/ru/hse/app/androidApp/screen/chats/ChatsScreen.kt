@@ -3,6 +3,7 @@ package ru.hse.app.androidApp.screen.chats
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -14,6 +15,7 @@ import ru.hse.app.androidApp.ui.components.chats.mychats.MyChatsScreenContent
 import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
 import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
 import ru.hse.app.androidApp.ui.entity.model.chats.ChatsUiState
+import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadUserFriendsEvent
 import ru.hse.app.androidApp.ui.navigation.NavigationItem
 
 @Composable
@@ -52,9 +54,11 @@ fun ChatsWithStateContent(
 ) {
     val context = LocalContext.current
     MyChatsScreenContent(
-        imageLoader = context.imageLoader,
+        imageLoader = viewModel.imageLoader,
         chats = uiState.data.chats,
-        onAddClick = {/*todo*/ },
+        onAddClick = {
+            navController.navigate(NavigationItem.NewMessageScreen.route)
+        },
         onChatClick = { chat ->
             navController.navigate(NavigationItem.Chat.route + "/${chat.id}")
         },

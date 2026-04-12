@@ -17,8 +17,8 @@ sealed interface ProfileUiState {
 
 @Immutable
 data class ProfileUiModel(
+    val name: String,
     val username: String,
-    val nickname: String,
     val email: String,
     val status: StatusPresentation,
     val profilePictureUrl: String,
@@ -26,7 +26,6 @@ data class ProfileUiModel(
     val friends: List<FriendUiModel>,
     val applications: List<FriendUiModel>,
     val servers: List<ServerShortUiModel>,
-    val isDarkCheck: Boolean,
     val selectedImageUri: Uri?,
     val chosenUser: FriendExtendedInfoUiModel?,
     val chosenUserCommonServers: List<ServerShortUiModel>
@@ -34,8 +33,8 @@ data class ProfileUiModel(
 
 fun getEmptyUiModel(): ProfileUiModel {
     return ProfileUiModel(
+        name = "",
         username = "",
-        nickname = "",
         email = "",
         description = "",
         status = StatusPresentation.INVISIBLE,
@@ -43,7 +42,6 @@ fun getEmptyUiModel(): ProfileUiModel {
         friends = listOf(),
         servers = listOf(),
         applications = listOf(),
-        isDarkCheck = false,
         selectedImageUri = null,
         chosenUser = null,
         chosenUserCommonServers = listOf()
@@ -52,8 +50,8 @@ fun getEmptyUiModel(): ProfileUiModel {
 
 fun UserExpandedInfo.toUI(): ProfileUiModel {
     return ProfileUiModel(
-        username = this.username,
-        nickname = this.nickname,
+        name = this.username,
+        username = this.nickname,
         status = this.status.toStatusPresentation(),
         email = this.email,
         profilePictureUrl = this.avatarUrl ?: "",
@@ -61,7 +59,6 @@ fun UserExpandedInfo.toUI(): ProfileUiModel {
         friends = listOf(),
         servers = listOf(),
         applications = listOf(),
-        isDarkCheck = false,
         selectedImageUri = null,
         chosenUser = null,
         chosenUserCommonServers = listOf()

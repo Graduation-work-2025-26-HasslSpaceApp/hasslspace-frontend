@@ -9,8 +9,8 @@ interface UserRepository {
     suspend fun registerUser(
         email: String,
         password: String,
-        username: String,
-        nickname: String
+        name: String,
+        username: String
     ): Result<String>
 
     suspend fun loginUser(email: String, password: String): Result<String>
@@ -20,7 +20,6 @@ interface UserRepository {
     suspend fun getUserInfo(): Result<UserExpandedInfo>
     suspend fun saveUserPhoto(photoUrl: String): Result<String>
 
-    //TODO подумать как поменять
     suspend fun uploadPhoto(
         photo: MultipartBody.Part,
         type: RequestBody,

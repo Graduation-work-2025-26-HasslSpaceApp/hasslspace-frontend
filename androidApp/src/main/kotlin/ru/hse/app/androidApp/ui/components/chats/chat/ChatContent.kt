@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -26,6 +27,7 @@ import coil3.imageLoader
 import kotlinx.coroutines.launch
 import ru.hse.app.androidApp.ui.components.common.card.participantsLabel
 import ru.hse.app.androidApp.ui.entity.model.ServerMemberUiModel
+import ru.hse.app.androidApp.ui.entity.model.chats.ChatMemberUiModel
 import ru.hse.app.androidApp.ui.entity.model.chats.MessageUiModel
 import ru.hse.app.androidApp.ui.theme.AppTheme
 
@@ -35,9 +37,8 @@ fun ChatContent(
     channelName: String,
     channelSubtitle: String,
     onBackClick: () -> Unit,
-    onAuthorClick: (ServerMemberUiModel?) -> Unit,
+    onAuthorClick: (ChatMemberUiModel?) -> Unit,
     onSendMessage: (String) -> Unit,
-    me: ServerMemberUiModel,
     isDarkTheme: Boolean,
     imageLoader: ImageLoader,
     messages: List<MessageUiModel>,
@@ -58,20 +59,20 @@ fun ChatContent(
         },
         contentWindowInsets = ScaffoldDefaults
             .contentWindowInsets
-            .exclude(WindowInsets.navigationBars)
+//            .exclude(WindowInsets.navigationBars)
             .exclude(WindowInsets.ime),
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     ) { paddingValues ->
         Column(
             Modifier
                 .fillMaxSize()
-                .background(color = MaterialTheme.colorScheme.background),
+                .background(color = MaterialTheme.colorScheme.background)
+                .padding(paddingValues),
         ) {
             Messages(
                 messages = messages,
                 scrollState = scrollState,
                 onAuthorClick = onAuthorClick,
-                me = me,
                 isDarkTheme = isDarkTheme,
                 imageLoader = imageLoader,
                 modifier = Modifier.weight(1f),
@@ -105,7 +106,6 @@ fun ChatContentLight() {
             onBackClick = {},
             onAuthorClick = {},
             onSendMessage = {},
-            me = getMe(),
             isDarkTheme = false,
             imageLoader = LocalContext.current.imageLoader,
             messages = messages,
@@ -123,7 +123,6 @@ fun ChatContentDark() {
             onBackClick = {},
             onAuthorClick = {},
             onSendMessage = {},
-            me = getMe(),
             isDarkTheme = true,
             imageLoader = LocalContext.current.imageLoader,
             messages = messages,

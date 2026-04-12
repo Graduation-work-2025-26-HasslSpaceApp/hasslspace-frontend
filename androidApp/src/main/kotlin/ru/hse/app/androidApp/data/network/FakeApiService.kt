@@ -5,9 +5,13 @@ import okhttp3.RequestBody
 import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.Response
 import ru.hse.app.androidApp.data.model.ChannelInfoDto
+import ru.hse.app.androidApp.data.model.ChatInfoDto
 import ru.hse.app.androidApp.data.model.CreateChannelDto
 import ru.hse.app.androidApp.data.model.CreateRoleDto
 import ru.hse.app.androidApp.data.model.CreateServerDto
+import ru.hse.app.androidApp.data.model.MessageDto
+import ru.hse.app.androidApp.data.model.NewMessageDto
+import ru.hse.app.androidApp.data.model.RegisterUserDto
 import ru.hse.app.androidApp.data.model.RoleInfoDto
 import ru.hse.app.androidApp.data.model.ServerInfoDto
 import ru.hse.app.androidApp.data.model.ServerInfoExpandedDto
@@ -27,6 +31,7 @@ class FakeApiService : ApiService {
 
     private var fakeUser =
         UserDto(
+            id = "123",
             "Юлия Кухтина",
             "yuulkht",
             "testuser@example.com",
@@ -391,10 +396,7 @@ class FakeApiService : ApiService {
     )
 
     override suspend fun registerUser(
-        email: String,
-        password: String,
-        username: String,
-        nickname: String
+        registerUserDto: RegisterUserDto
     ): Response<String> {
         return Response.success("mock_jwt_token")
     }
@@ -422,6 +424,13 @@ class FakeApiService : ApiService {
     override suspend fun uploadPhoto(
         photo: MultipartBody.Part,
         type: RequestBody,
+        photoUrl: RequestBody?
+    ): Response<String> {
+        return Response.success("Данные успешно сохранены")
+    }
+
+    override suspend fun uploadServerPhoto(
+        photo: MultipartBody.Part,
         photoUrl: RequestBody?
     ): Response<String> {
         return Response.success("Данные успешно сохранены")
@@ -574,7 +583,7 @@ class FakeApiService : ApiService {
             ServerInfoDto(
                 id = "11",
                 name = createServerDto.name,
-                photoURL = createServerDto.photoUrl
+                photoURL = createServerDto.iconUrl
             )
         )
         return Response.success("true")
@@ -667,7 +676,7 @@ class FakeApiService : ApiService {
     ): Response<String> {
         fakeServer = fakeServer.copy(
             name = updateServerDto.name ?: fakeServer.copy().name,
-            photoURL = updateServerDto.photoUrl ?: fakeServer.copy().photoURL,
+            photoURL = updateServerDto.iconUrl ?: fakeServer.copy().photoURL,
         )
         return Response.success("true")
     }
@@ -866,5 +875,184 @@ class FakeApiService : ApiService {
         roomName: String
     ): Response<String> {
         return Response.success("token 123124123")
+    }
+
+    override suspend fun getPrivateChats(): Response<List<ChatInfoDto>> {
+        val privateChats = listOf(
+            ChatInfoDto(
+                id = "chat_1",
+                name = "",
+                chatMembers = listOf(
+                    ChatInfoDto.ChatMemberDto(
+                        id = "123",
+                        name = "Юлия Кухтина",
+                        username = "yuulkht",
+                        status = "ONLINE",
+                        photoURL = "https://i.postimg.cc/J4DLnLCS/accountphoto.jpg",
+                        isCurrentUser = true
+                    ),
+                    ChatInfoDto.ChatMemberDto(
+                        id = "1",
+                        name = "Алексей Иванов",
+                        username = "alex_ivanov",
+                        status = "ONLINE",
+                        photoURL = "https://i.postimg.cc/1XfF8BZh/friend1.jpg",
+                        isCurrentUser = false
+                    )
+                )
+            ),
+            ChatInfoDto(
+                id = "chat_2",
+                name = "",
+                chatMembers = listOf(
+                    ChatInfoDto.ChatMemberDto(
+                        id = "123",
+                        name = "Юлия Кухтина",
+                        username = "yuulkht",
+                        status = "ONLINE",
+                        photoURL = "https://i.postimg.cc/J4DLnLCS/accountphoto.jpg",
+                        isCurrentUser = true
+                    ),
+                    ChatInfoDto.ChatMemberDto(
+                        id = "2",
+                        name = "Мария Петрова",
+                        username = "masha_petrov",
+                        status = "INVISIBLE",
+                        photoURL = "https://i.postimg.cc/K8Jxt5wQ/friend2.jpg",
+                        isCurrentUser = false
+                    )
+                )
+            ),
+            ChatInfoDto(
+                id = "chat_3",
+                name = "",
+                chatMembers = listOf(
+                    ChatInfoDto.ChatMemberDto(
+                        id = "123",
+                        name = "Юлия Кухтина",
+                        username = "yuulkht",
+                        status = "ONLINE",
+                        photoURL = "https://i.postimg.cc/J4DLnLCS/accountphoto.jpg",
+                        isCurrentUser = true
+                    ),
+                    ChatInfoDto.ChatMemberDto(
+                        id = "3",
+                        name = "Ирина Смирнова",
+                        username = "irina_smirnov",
+                        status = "DO_NOT_DISTURB",
+                        photoURL = "https://i.postimg.cc/3RmDC39Y/friend3.jpg",
+                        isCurrentUser = false
+                    )
+                )
+            )
+        )
+        return Response.success(privateChats)
+    }
+
+    override suspend fun getMessageHistory(
+        chatId: String,
+        lastMessageId: String?
+    ): Response<List<MessageDto>> {
+        val messages = when (chatId) {
+            "chat_1" -> listOf(
+                MessageDto(
+                    id = "msg_1",
+                    chatId = chatId,
+                    userId = "1",
+                    content = "Привет! Как дела?",
+                    createdAt = LocalDateTime.now().minusHours(2)
+                ),
+                MessageDto(
+                    id = "msg_2",
+                    chatId = chatId,
+                    userId = "123",
+                    content = "Привет! Всё отлично, спасибо! У тебя как?",
+                    createdAt = LocalDateTime.now().minusHours(1).minusMinutes(50)
+                ),
+                MessageDto(
+                    id = "msg_3",
+                    chatId = chatId,
+                    userId = "1",
+                    content = "Тоже неплохо. Как проект продвигается?",
+                    createdAt = LocalDateTime.now().minusHours(1).minusMinutes(40)
+                ),
+                MessageDto(
+                    id = "msg_4",
+                    chatId = chatId,
+                    userId = "123",
+                    content = "Потихоньку. Доделываю последние правки",
+                    createdAt = LocalDateTime.now().minusHours(1).minusMinutes(30)
+                )
+            )
+            "chat_2" -> listOf(
+                MessageDto(
+                    id = "msg_5",
+                    chatId = chatId,
+                    userId = "2",
+                    content = "Ты сегодня на встречу придёшь?",
+                    createdAt = LocalDateTime.now().minusDays(1)
+                ),
+                MessageDto(
+                    id = "msg_6",
+                    chatId = chatId,
+                    userId = "123",
+                    content = "Да, буду. Во сколько начало?",
+                    createdAt = LocalDateTime.now().minusDays(1).minusMinutes(5)
+                ),
+                MessageDto(
+                    id = "msg_7",
+                    chatId = chatId,
+                    userId = "2",
+                    content = "В 19:00, как обычно",
+                    createdAt = LocalDateTime.now().minusDays(1).minusMinutes(2)
+                )
+            )
+            else -> listOf(
+                MessageDto(
+                    id = "msg_default_1",
+                    chatId = chatId,
+                    userId = "123",
+                    content = "Добро пожаловать в чат!",
+                    createdAt = LocalDateTime.now().minusHours(1)
+                )
+            )
+        }
+
+        // Если передан lastMessageId, возвращаем сообщения только после него
+        val filteredMessages = if (lastMessageId != null) {
+            val lastIndex = messages.indexOfFirst { it.id == lastMessageId }
+            if (lastIndex != -1) {
+                messages.drop(lastIndex + 1)
+            } else {
+                messages
+            }
+        } else {
+            messages
+        }
+
+        return Response.success(filteredMessages)
+    }
+
+    override suspend fun sendNewMessage(
+        chatId: String,
+        newMessageDto: NewMessageDto
+    ): Response<String> {
+        // В реальном API здесь возвращался бы ID созданного сообщения
+        // Для заглушки просто возвращаем success с новым ID
+        val newMessageId = "msg_${System.currentTimeMillis()}"
+        return Response.success(newMessageId)
+    }
+
+    override suspend fun startChat(userId: String): Response<String> {
+        // Проверяем, существует ли уже чат с этим пользователем
+        val existingChat = when (userId) {
+            "1" -> "chat_1"
+            "2" -> "chat_2"
+            "3" -> "chat_3"
+            else -> null
+        }
+
+        val chatId = existingChat ?: "chat_new_${System.currentTimeMillis()}"
+        return Response.success(chatId)
     }
 }

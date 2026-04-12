@@ -63,6 +63,7 @@ import ru.hse.app.androidApp.ui.entity.model.servers.toUi
 import ru.hse.app.androidApp.ui.entity.model.toInvitationUi
 import ru.hse.app.androidApp.ui.entity.model.toStatusPresentation
 import ru.hse.app.androidApp.ui.entity.model.toUi
+import ru.hse.app.androidApp.ui.errorhandling.ErrorHandler
 import ru.hse.coursework.godaily.ui.notification.ToastManager
 import javax.inject.Inject
 import kotlin.math.roundToInt
@@ -91,6 +92,8 @@ class ServerCardViewModel @Inject constructor(
 
     private val sendServerInvitationUseCase: SendServerInvitationUseCase,
     private val searchMembersUseCase: SearchMembersUseCase,
+
+    private val errorHandler: ErrorHandler,
 
     private val getVoiceRoomTokenUseCase: GetVoiceRoomTokenUseCase,
 
@@ -275,7 +278,7 @@ class ServerCardViewModel @Inject constructor(
         roles: List<RoleMiniCheckboxUiModel> = listOf()
     ) {
         if (channelName.isEmpty()) {
-            showToast("Название канала не может быть пустым")
+            handleError("Название канала не может быть пустым")
             return
         }
         val roundLimit = limit.roundToInt()
@@ -314,7 +317,7 @@ class ServerCardViewModel @Inject constructor(
         roles: List<RoleMiniCheckboxUiModel> = listOf()
     ) {
         if (channelName.isEmpty()) {
-            showToast("Название канала не может быть пустым")
+            handleError("Название канала не может быть пустым")
             return
         }
         val roundLimit = limit.roundToInt()
@@ -501,6 +504,8 @@ class ServerCardViewModel @Inject constructor(
                     )
                     searchedMembers.clear()
                     searchedMembers.addAll(serverUi.members)
+
+                    loadUserData()
                     GetServerInfoEvent.SuccessLoad
                 },
                 onFailure = { error ->
@@ -852,10 +857,9 @@ class ServerCardViewModel @Inject constructor(
     }
 
 
-    fun showToast(message: String, duration: Int = Toast.LENGTH_SHORT) {
-        toastManager.showToast(
-            message = message,
-            duration = duration
+    fun handleError(message: String) {
+        errorHandler.handleError(
+            message = message
         )
     }
 

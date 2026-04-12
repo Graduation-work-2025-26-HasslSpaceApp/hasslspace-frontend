@@ -26,6 +26,7 @@ import ru.hse.app.androidApp.ui.entity.model.auth.events.SendVerificationCodeEve
 import ru.hse.app.androidApp.ui.entity.model.auth.events.VerifyCodeEvent
 import ru.hse.app.androidApp.ui.entity.model.auth.events.VerifyUserEvent
 import ru.hse.app.androidApp.ui.entity.model.auth.getEmptyUiModel
+import ru.hse.app.androidApp.ui.errorhandling.ErrorHandler
 import ru.hse.coursework.godaily.ui.notification.ToastManager
 import javax.inject.Inject
 
@@ -39,6 +40,8 @@ class AuthViewModel @Inject constructor(
     private val checkEmailVerificationUseCase: CheckEmailVerificationUseCase,
     private val checkVerificationCodeUseCase: CheckVerificationCodeUseCase,
     private val sendVerificationCodeUseCase: SendVerificationCodeUseCase,
+
+    private val errorHandler: ErrorHandler,
 //    private val errorHandler: ErrorHandler,
     val cropProfilePhotoService: CropProfilePhotoService,
 ) : ViewModel() {
@@ -104,15 +107,15 @@ class AuthViewModel @Inject constructor(
         if (currentState is AuthUiState.Success) {
             val data = currentState.data
 
-            viewModelScope.launch {
-                if (isValidEmail(data.email) &&
-                    isValidPassword(
-                        data.password,
-                        data.passwordAgain
-                    ) &&
-                    isValidUsername(data.username) &&
-                    isValidNickname(data.nickname)
-                ) {
+            if (isValidEmail(data.email) &&
+                isValidPassword(
+                    data.password,
+                    data.passwordAgain
+                ) &&
+                isValidUsername(data.username) &&
+                isValidNickname(data.nickname)
+            ) {
+                viewModelScope.launch {
                     val result = registerUserUseCase(
                         email = data.email,
                         username = data.username,
@@ -133,7 +136,11 @@ class AuthViewModel @Inject constructor(
                         }
                     )
                 }
+
+            } else {
+                errorHandler.handleError("Проверьте, что все поля заполнены и данные валидны")
             }
+
         }
     }
 
@@ -142,10 +149,10 @@ class AuthViewModel @Inject constructor(
         if (currentState is AuthUiState.Success) {
             val data = currentState.data
 
-            viewModelScope.launch {
-                if (isValidEmail(data.email) &&
-                    isPasswordLongEnough(data.password)
-                ) {
+            if (isValidEmail(data.email) &&
+                isPasswordLongEnough(data.password)
+            ) {
+                viewModelScope.launch {
                     val result = loginUserUseCase(
                         email = data.email,
                         password = data.password
@@ -164,7 +171,12 @@ class AuthViewModel @Inject constructor(
                         }
                     )
                 }
+
+            } else {
+                errorHandler.handleError("Пароль должен быть не менее 8 символов")
             }
+
+
         }
     }
 
@@ -296,10 +308,9 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun showToast(message: String, duration: Int = Toast.LENGTH_SHORT) {
-        toastManager.showToast(
-            message = message,
-            duration = duration
+    fun handleError(message: String) {
+        errorHandler.handleError(
+            message = message
         )
     }
 

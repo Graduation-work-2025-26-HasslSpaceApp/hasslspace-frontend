@@ -21,6 +21,7 @@ import ru.hse.app.androidApp.data.network.ApiCaller
 import ru.hse.app.androidApp.data.network.ApiService
 import ru.hse.app.androidApp.data.network.FakeApiService
 import ru.hse.app.androidApp.data.network.JWTInterceptor
+import ru.hse.app.androidApp.data.network.RetryInterceptor
 import javax.inject.Singleton
 
 @Module
@@ -49,6 +50,7 @@ class NetworkModule {
     fun provideOkHttp(dataManager: DataManager): Call.Factory {
         return OkHttpClient.Builder()
             .addInterceptor(JWTInterceptor(dataManager))
+            .addInterceptor(RetryInterceptor(maxRetries = 3))
             .addInterceptor(
                 HttpLoggingInterceptor().apply {
                     setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -74,8 +76,8 @@ class NetworkModule {
     @Provides
     @Singleton
     fun provideApiService(retrofit: Retrofit): ApiService {
-//        return retrofit.create(ApiService::class.java)
-        return FakeApiService()
+        return retrofit.create(ApiService::class.java)
+//        return FakeApiService()
     }
 
     @Provides

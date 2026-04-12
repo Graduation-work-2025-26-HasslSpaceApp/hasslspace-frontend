@@ -18,6 +18,6 @@ fun UserDto.toDomain(): UserExpandedInfo {
         status = this.status,
         email = this.email,
         avatarUrl = this.photoURL,
-        description = this.description
+        description = this.description?:""
     )
 }

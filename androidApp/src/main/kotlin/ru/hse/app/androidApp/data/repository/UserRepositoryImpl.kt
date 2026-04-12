@@ -2,6 +2,7 @@ package ru.hse.app.androidApp.data.repository
 
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import ru.hse.app.androidApp.data.model.RegisterUserDto
 import ru.hse.app.androidApp.data.model.UpdateProfileDto
 import ru.hse.app.androidApp.data.network.ApiCaller
 import ru.hse.app.androidApp.data.network.ApiService
@@ -18,15 +19,17 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun registerUser(
         email: String,
         password: String,
-        username: String,
-        nickname: String
+        name: String,
+        username: String
     ): Result<String> {
         return apiCaller.safeApiCall {
             apiService.registerUser(
-                email,
-                password,
-                username,
-                nickname
+                RegisterUserDto(
+                    name = name,
+                    username = username,
+                    email = email,
+                    password = password
+                )
             )
         }
     }

@@ -11,7 +11,7 @@ class GetVoiceRoomTokenUseCase @Inject constructor(
 
         if (roomName == null) {
             return Result.failure(
-                ApiException(null, ApiException.FRIENDSHIP_NOT_FOUND, null)
+                ApiException(null, ApiException.ROOM_NOT_FOUND, null)
             )
         }
 

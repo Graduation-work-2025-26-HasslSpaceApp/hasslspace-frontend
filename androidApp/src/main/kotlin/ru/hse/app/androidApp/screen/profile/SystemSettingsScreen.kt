@@ -48,12 +48,13 @@ fun SystemSettingsWithStateContent(
     viewModel: ProfileViewModel,
 ) {
     val data = uiState.data
+    val isDark by viewModel.isDark.collectAsState()
 
     SystemSettingsContent(
         onBackClick = { navController.popBackStack() },
         onCheckedChange = viewModel::onIsDarkChanged,
-        isDarkCheck = data.isDarkCheck,
-        isDarkTheme = data.isDarkCheck
+        isDarkCheck = isDark,
+        isDarkTheme = isDark
     )
 
 }

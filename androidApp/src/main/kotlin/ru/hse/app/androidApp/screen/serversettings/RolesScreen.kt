@@ -46,7 +46,6 @@ fun RolesScreen(
 
     LaunchedEffect(serverId) {
         viewModel.getServerInfo(serverId)
-        viewModel.getServerRoles(serverId)
     }
 
     LaunchedEffect(deleteRoleEvent) {
@@ -56,12 +55,12 @@ fun RolesScreen(
                 viewModel.getServerInfo(serverId)
                 viewModel.getServerRoles(serverId)
                 viewModel.showEditRole.value = false
-                viewModel.showToast("Роль удалена")
+                viewModel.errorHandler("Роль удалена")
             }
 
             is DeleteRoleEvent.Error -> {
                 val message = (deleteRoleEvent as DeleteRoleEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.errorHandler(message)
             }
 
             null -> {}
@@ -79,7 +78,7 @@ fun RolesScreen(
 
             is PatchServerRoleEvent.Error -> {
                 val message = (patchServerRoleEvent as PatchServerRoleEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.errorHandler(message)
             }
 
             null -> {}
@@ -94,7 +93,7 @@ fun RolesScreen(
 
             is AssignRoleEvent.Error -> {
                 val message = (assignRoleEvent as AssignRoleEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.errorHandler(message)
             }
 
             null -> {}
@@ -109,7 +108,7 @@ fun RolesScreen(
 
             is RevokeRoleEvent.Error -> {
                 val message = (revokeRoleEvent as RevokeRoleEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.errorHandler(message)
             }
 
             null -> {}
@@ -123,12 +122,12 @@ fun RolesScreen(
                 viewModel.getServerInfo(serverId)
                 viewModel.getServerRoles(serverId)
                 viewModel.showNewRoleScreen.value = false
-                viewModel.showToast("Успешно создали роль")
+                viewModel.errorHandler("Успешно создали роль")
             }
 
             is CreateServerRoleEvent.Error -> {
                 val message = (createServerRoleEvent as CreateServerRoleEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.errorHandler(message)
             }
 
             null -> {}
@@ -141,7 +140,7 @@ fun RolesScreen(
 
             is GetServerRolesEvent.Error -> {
                 val message = (getServerRolesEvent as GetServerRolesEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.errorHandler(message)
             }
 
             null -> {}
@@ -155,7 +154,7 @@ fun RolesScreen(
 
             is GetServerInfoEvent.Error -> {
                 val message = (getServerInfoEvent as GetServerInfoEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.errorHandler(message)
             }
 
             null -> {}
@@ -194,7 +193,6 @@ fun RolesScreenWithStateContent(
     viewModel: ServerSettingsViewModel
 ) {
     val data = uiState.data
-    val context = LocalContext.current
 
     ServerRolesContent(
         roles = data.roles.map { it.toRoleMiniCount() },
@@ -244,7 +242,7 @@ fun RolesScreenWithStateContent(
 
     if (viewModel.showEditRole.value) {
         EditRoleContent(
-            imageLoader = context.imageLoader,
+            imageLoader = viewModel.imageLoader,
             friends = data.editedRole.members,
             onBackClick = { viewModel.showEditRole.value = false },
             roleName = data.editedRole.name,

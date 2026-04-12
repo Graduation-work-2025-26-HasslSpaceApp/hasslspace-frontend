@@ -10,7 +10,7 @@ data class RoleInfoDto(
     val name: String,
 
     @JsonProperty("color")
-    val color: String,
+    val color: String?,
 
     @JsonProperty("position")
     val position: Int?,

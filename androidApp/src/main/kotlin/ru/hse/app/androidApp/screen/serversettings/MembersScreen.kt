@@ -21,6 +21,7 @@ import ru.hse.app.androidApp.ui.entity.model.servers.events.AssignRoleEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.DeleteServerMemberEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerInfoEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerRolesEvent
+import ru.hse.app.androidApp.ui.entity.model.servers.events.LoadChosenServerRolesEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.PatchServerOwnerEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.RevokeRoleEvent
 import ru.hse.app.androidApp.ui.entity.model.serversettings.ServerSettingsUiState
@@ -36,6 +37,7 @@ fun MembersScreen(
 
     val getServerInfoEvent by viewModel.getServerInfoEvent.collectAsState()
     val getServerRolesEvent by viewModel.getServerRolesEvent.collectAsState()
+    val loadChosenServerRolesEvent by viewModel.loadChosenServerRolesEvent.collectAsState()
     val deleteServerMemberEvent by viewModel.deleteServerMemberEvent.collectAsState()
     val patchServerOwnerEvent by viewModel.patchServerOwnerEvent.collectAsState()
     val assignRoleEvent by viewModel.assignRoleEvent.collectAsState()
@@ -53,7 +55,7 @@ fun MembersScreen(
 
             is AssignRoleEvent.Error -> {
                 val message = (assignRoleEvent as AssignRoleEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.errorHandler(message)
             }
 
             null -> {}
@@ -68,7 +70,7 @@ fun MembersScreen(
 
             is RevokeRoleEvent.Error -> {
                 val message = (revokeRoleEvent as RevokeRoleEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.errorHandler(message)
             }
 
             null -> {}
@@ -85,12 +87,12 @@ fun MembersScreen(
                         inclusive = true
                     }
                 }
-                viewModel.showToast("Успешно передали права участнику")
+                viewModel.errorHandler("Успешно передали права участнику")
             }
 
             is PatchServerOwnerEvent.Error -> {
                 val message = (patchServerOwnerEvent as PatchServerOwnerEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.errorHandler(message)
             }
 
             null -> {}
@@ -107,12 +109,12 @@ fun MembersScreen(
                         inclusive = true
                     }
                 }
-                viewModel.showToast("Успешно удалили участника")
+                viewModel.errorHandler("Успешно удалили участника")
             }
 
             is DeleteServerMemberEvent.Error -> {
                 val message = (deleteServerMemberEvent as DeleteServerMemberEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.errorHandler(message)
             }
 
             null -> {}
@@ -122,18 +124,32 @@ fun MembersScreen(
 
     LaunchedEffect(getServerRolesEvent) {
         when (getServerRolesEvent) {
-            is GetServerRolesEvent.SuccessLoad -> {
-                viewModel.showChooseRoles.value = true
-            }
+            is GetServerRolesEvent.SuccessLoad -> {}
 
             is GetServerRolesEvent.Error -> {
                 val message = (getServerRolesEvent as GetServerRolesEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.errorHandler(message)
             }
 
             null -> {}
         }
         viewModel.resetGetServerRolesEvent()
+    }
+
+    LaunchedEffect(loadChosenServerRolesEvent) {
+        when (loadChosenServerRolesEvent) {
+            is LoadChosenServerRolesEvent.SuccessLoad -> {
+                viewModel.showChooseRoles.value = true
+            }
+
+            is LoadChosenServerRolesEvent.Error -> {
+                val message = (loadChosenServerRolesEvent as LoadChosenServerRolesEvent.Error).message
+                viewModel.errorHandler(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetLoadChosenServerRolesEvent()
     }
 
     LaunchedEffect(getServerInfoEvent) {
@@ -142,7 +158,7 @@ fun MembersScreen(
 
             is GetServerInfoEvent.Error -> {
                 val message = (getServerInfoEvent as GetServerInfoEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.errorHandler(message)
             }
 
             null -> {}
@@ -183,7 +199,7 @@ fun MembersScreenWithStateContent(
     val context = LocalContext.current
 
     ServerMembersContent(
-        imageLoader = context.imageLoader,
+        imageLoader = viewModel.imageLoader,
         friends = viewModel.searchedMembers,
         onBackClick = { navController.popBackStack() },
         onFriendClick = {
@@ -197,7 +213,7 @@ fun MembersScreenWithStateContent(
 
     if (viewModel.showEditMember.value && viewModel.chosenMember.value != null) {
         EditMemberContent(
-            imageLoader = context.imageLoader,
+            imageLoader = viewModel.imageLoader,
             member = viewModel.chosenMember.value!!,
             onBackClick = {
                 viewModel.showEditMember.value = false

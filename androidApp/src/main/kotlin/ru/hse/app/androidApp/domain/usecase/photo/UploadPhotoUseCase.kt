@@ -29,7 +29,12 @@ class UploadPhotoUseCase @Inject constructor(
                 ?.takeIf { it.isNotBlank() }
                 ?.toRequestBody("text/plain".toMediaType())
 
-            return userRepository.uploadPhoto(multipart, typePart, photoUrlPart)
+            val result = userRepository.uploadPhoto(multipart, typePart, photoUrlPart)
+
+            imageLoader.memoryCache?.clear()
+            imageLoader.diskCache?.clear()
+
+            return result
         }
 
         return Result.failure(
@@ -40,5 +45,4 @@ class UploadPhotoUseCase @Inject constructor(
             )
         )
     }
-
 }

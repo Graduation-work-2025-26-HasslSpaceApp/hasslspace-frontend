@@ -10,13 +10,16 @@ import ru.hse.app.androidApp.domain.service.common.CropProfilePhotoService
 import ru.hse.app.androidApp.ui.components.chats.chat.getAlexey
 import ru.hse.app.androidApp.ui.components.chats.chat.getEkaterina
 import ru.hse.app.androidApp.ui.components.chats.chat.getMe
+import ru.hse.app.androidApp.ui.components.chats.chat.getMeChat
 import ru.hse.app.androidApp.ui.components.chats.chat.getNotMe
+import ru.hse.app.androidApp.ui.components.chats.chat.getNotMeChat
 import ru.hse.app.androidApp.ui.components.chats.chat.messages
 import ru.hse.app.androidApp.ui.entity.model.chats.ChatUiModel
 import ru.hse.app.androidApp.ui.entity.model.chats.ChatUiState
 import ru.hse.app.androidApp.ui.entity.model.chats.MessageUiModel
 import ru.hse.coursework.godaily.ui.notification.ToastManager
 import java.time.LocalDateTime
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,9 +40,8 @@ class ChatViewModel @Inject constructor(
         _uiState.value = ChatUiState.Success(
             data = ChatUiModel(
                 id = chatId,
-                channelName = "composers",
-                channelMembers = listOf(getMe(), getNotMe(), getAlexey(), getEkaterina()),
-                currentUser = getMe(),
+                name = "composers",
+                channelMembers = listOf(getMeChat(), getNotMeChat(), getAlexey(), getEkaterina()),
                 messages = messages,
             )
         )
@@ -51,9 +53,11 @@ class ChatViewModel @Inject constructor(
         val currentState = _uiState.value
         if (currentState is ChatUiState.Success) {
             val message = MessageUiModel(
-                author = currentState.data.currentUser,
+                author = getMeChat(),
                 content = content,
-                timestamp = time
+                timestamp = time,
+                id = UUID.randomUUID().toString(),
+                isRead = false
             )
 
             updateChatWithMessage(message)

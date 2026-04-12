@@ -35,7 +35,7 @@ fun VerificationScreen(
 
             is VerifyUserEvent.Error -> {
                 val message = (verifyUserEvent as VerifyUserEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}

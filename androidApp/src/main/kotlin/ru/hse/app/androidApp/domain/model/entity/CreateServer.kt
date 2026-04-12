@@ -10,6 +10,6 @@ data class CreateServer(
 fun CreateServer.toDto(): CreateServerDto {
     return CreateServerDto(
         name = this.name,
-        photoUrl = this.photoUrl
+        iconUrl = this.photoUrl
     )
 }

@@ -64,7 +64,7 @@ fun ServerMembersInfoScreen(
 
             is GetTokenEvent.Error -> {
                 val message = (getTokenEvent as GetTokenEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}
@@ -75,13 +75,13 @@ fun ServerMembersInfoScreen(
     LaunchedEffect(respondToFriendRequestEvent) {
         when (respondToFriendRequestEvent) {
             is RespondToFriendRequestEvent.SuccessRespond -> {
-                viewModel.showToast("Успешно")
+                viewModel.handleError("Успешно")
             }
 
             is RespondToFriendRequestEvent.Error -> {
                 val message =
                     (respondToFriendRequestEvent as RespondToFriendRequestEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}
@@ -97,7 +97,7 @@ fun ServerMembersInfoScreen(
 
             is LoadChosenUserEvent.Error -> {
                 val message = (loadChosenUserEvent as LoadChosenUserEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}
@@ -112,7 +112,7 @@ fun ServerMembersInfoScreen(
             is LoadChosenUserCommonServersEvent.Error -> {
                 val message =
                     (loadChosenUserCommonServersEvent as LoadChosenUserCommonServersEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}
@@ -127,7 +127,7 @@ fun ServerMembersInfoScreen(
             is CreateFriendRequestEvent.Error -> {
                 val message =
                     (deleteFriendshipEvent as DeleteFriendshipEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}
@@ -142,7 +142,7 @@ fun ServerMembersInfoScreen(
             is DeleteFriendshipEvent.Error -> {
                 val message =
                     (deleteFriendshipEvent as DeleteFriendshipEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}
@@ -156,7 +156,7 @@ fun ServerMembersInfoScreen(
 
             is GetServerInfoEvent.Error -> {
                 val message = (getServerInfoEvent as GetServerInfoEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}
@@ -172,7 +172,7 @@ fun ServerMembersInfoScreen(
 
             is LoadChosenUserEvent.Error -> {
                 val message = (loadChosenUserEvent as LoadChosenUserEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}
@@ -187,7 +187,7 @@ fun ServerMembersInfoScreen(
             is LoadChosenUserCommonServersEvent.Error -> {
                 val message =
                     (loadChosenUserCommonServersEvent as LoadChosenUserCommonServersEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}
@@ -228,7 +228,7 @@ fun ServerMembersInfoScreenWithStateContent(
     val context = LocalContext.current
 
     ServerMembersContent(
-        imageLoader = context.imageLoader,
+        imageLoader = viewModel.imageLoader,
         friends = viewModel.searchedMembers,
         onBackClick = { navController.popBackStack() },
         onFriendClick = {
@@ -244,7 +244,7 @@ fun ServerMembersInfoScreenWithStateContent(
         UserInfoBottomSheet(
             isDarkTheme = viewModel.isDarkTheme,
             profilePictureUrl = data.chosenUser.avatarUrl,
-            imageLoader = context.imageLoader,
+            imageLoader = viewModel.imageLoader,
             status = data.chosenUser.status,
             username = data.chosenUser.name,
             nickname = data.chosenUser.nickname,
@@ -278,7 +278,7 @@ fun ServerMembersInfoScreenWithStateContent(
                 val clip = ClipData.newPlainText("Copied Text", data.chosenUser.nickname)
                 clipboard.setPrimaryClip(clip)
 
-                viewModel.showToast("Текст скопирован в буфер обмена")
+                viewModel.handleError("Текст скопирован в буфер обмена")
             },
             onThirdOptionClick = {
                 when (data.chosenUser.type) {
@@ -308,7 +308,7 @@ fun ServerMembersInfoScreenWithStateContent(
 
     if (viewModel.showCommonServers.value) {
         CommonServersBottomSheet(
-            imageLoader = context.imageLoader,
+            imageLoader = viewModel.imageLoader,
             servers = data.chosenUserCommonServers,
             onServerClick = { server -> navController.navigate(NavigationItem.MainServerScreen.route + "/${server.id}") },
             isDarkTheme = viewModel.isDarkTheme,

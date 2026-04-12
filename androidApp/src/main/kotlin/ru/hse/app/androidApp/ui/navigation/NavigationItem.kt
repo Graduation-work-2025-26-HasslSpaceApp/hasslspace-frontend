@@ -32,6 +32,7 @@ sealed class NavigationItem(val route: String, val title: String) {
     // Chats
     data object ChatsMain : NavigationItem("chats_main", "Мои чаты")
     data object Chat : NavigationItem("chat_bubble_view", "Страница чата")
+    data object NewMessageScreen : NavigationItem("new_message_screen", "Новое сообщение")
 
     // Voice Rooms
 

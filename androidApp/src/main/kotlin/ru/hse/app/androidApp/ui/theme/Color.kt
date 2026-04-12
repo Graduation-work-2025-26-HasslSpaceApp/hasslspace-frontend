@@ -34,7 +34,7 @@ internal val SurfaceContainerLowLight = Color(0x0D000000)
 // Темная тема
 
 internal val BackgroundDark = Color(0xFF121212) // Почти черный фон
-internal val SurfaceContainerDark = Color(0x462CB8FF) // Для карточек с друзьями
+internal val SurfaceContainerDark = Color(0xFF186286) // Для карточек с друзьями
 internal val SurfaceBrightDark = Color(0xFFB6ECFF)
 internal val OnBackgroundDark = Color(0xFFFFFFFF) // Черный
 internal val PrimaryDark = Color(0xFF4FA3BF) // Осветлённый синий из PrimaryLight

@@ -36,13 +36,13 @@ fun CreateServerScreen(
     LaunchedEffect(createServerEvent) {
         when (createServerEvent) {
             is CreateServerEvent.SuccessCreate -> {
-                viewModel.showToast("Успешно создали сервер")
+                viewModel.handleError("Успешно создали сервер")
                 navController.navigate(BottomNavigationItem.Servers.route)
             }
 
             is CreateServerEvent.Error -> {
                 val message = (createServerEvent as CreateServerEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}

@@ -27,12 +27,12 @@ class SessionValidationViewModel @Inject constructor(
     @param:ApplicationContext private val context: Context
 ) : ViewModel() {
     //TODO потом заменить на null
-    //private val _isTokenValid = MutableStateFlow<Boolean?>(null)
-    private val _isTokenValid = MutableStateFlow<Boolean?>(true)
+    private val _isTokenValid = MutableStateFlow<Boolean?>(null)
+    //private val _isTokenValid = MutableStateFlow<Boolean?>(true)
     val isTokenValid: StateFlow<Boolean?> = _isTokenValid.asStateFlow()
 
-    //private val _isVerified = MutableStateFlow<Boolean?>(null)
-    private val _isVerified = MutableStateFlow<Boolean?>(true)
+    private val _isVerified = MutableStateFlow<Boolean?>(null)
+    //private val _isVerified = MutableStateFlow<Boolean?>(true)
     val isVerified: StateFlow<Boolean?> = _isVerified.asStateFlow()
 
     private val _isDark = MutableStateFlow<Boolean>(false)
@@ -52,7 +52,7 @@ class SessionValidationViewModel @Inject constructor(
             launch {
                 jwtFlow.collect { jwt ->
                     jwt?.let { checkTokenValidity() }
-                        ?: _isTokenValid.update { true } //TODO исправить на false потом
+                        ?: _isTokenValid.update { false } //TODO исправить на false потом
                 }
             }
             launch {

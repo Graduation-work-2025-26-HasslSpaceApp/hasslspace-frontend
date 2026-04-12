@@ -34,16 +34,17 @@ fun AddPhotoScreen(
     LaunchedEffect(event) {
         when (event) {
             is SavePhotoEvent.SuccessSave -> {
-                viewModel.showToast("Фотография успешно добавлена")
+                viewModel.handleError("Фотография успешно добавлена")
             }
 
             is SavePhotoEvent.Error -> {
                 val message = (event as SavePhotoEvent.Error).message
-                viewModel.showToast(message)
+                viewModel.handleError(message)
             }
 
             null -> {}
         }
+        viewModel.saveVerificationStatusToStorage(true)
 
         viewModel.resetSavePhotoEvent()
 

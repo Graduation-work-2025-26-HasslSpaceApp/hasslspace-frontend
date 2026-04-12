@@ -15,13 +15,13 @@ data class ServerInfoExpandedDto(
     @JsonProperty("members")
     val members: List<ServerMemberDto>,
 
-    @JsonProperty("is_owner")
+    @JsonProperty("isOwner")
     val isOwner: Boolean,
 
-    @JsonProperty("text_channels")
+    @JsonProperty("textChannels")
     val textChannels: List<TextChannelDto>,
 
-    @JsonProperty("voice_channels")
+    @JsonProperty("voiceChannels")
     val voiceChannels: List<VoiceChannelDto>,
 ) {
     data class TextChannelDto(

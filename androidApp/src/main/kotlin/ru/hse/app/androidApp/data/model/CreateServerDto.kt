@@ -6,6 +6,6 @@ data class CreateServerDto(
     @JsonProperty("name")
     val name: String,
 
-    @JsonProperty("photoUrl")
-    val photoUrl: String? = null,
+    @JsonProperty("iconUrl")
+    val iconUrl: String? = null,
 )

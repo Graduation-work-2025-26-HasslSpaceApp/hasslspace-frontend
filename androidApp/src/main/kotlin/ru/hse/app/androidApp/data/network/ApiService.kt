@@ -13,9 +13,13 @@ import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Query
 import ru.hse.app.androidApp.data.model.ChannelInfoDto
+import ru.hse.app.androidApp.data.model.ChatInfoDto
 import ru.hse.app.androidApp.data.model.CreateChannelDto
 import ru.hse.app.androidApp.data.model.CreateRoleDto
 import ru.hse.app.androidApp.data.model.CreateServerDto
+import ru.hse.app.androidApp.data.model.MessageDto
+import ru.hse.app.androidApp.data.model.NewMessageDto
+import ru.hse.app.androidApp.data.model.RegisterUserDto
 import ru.hse.app.androidApp.data.model.RoleInfoDto
 import ru.hse.app.androidApp.data.model.ServerInfoDto
 import ru.hse.app.androidApp.data.model.ServerInfoExpandedDto
@@ -33,10 +37,7 @@ interface ApiService {
     // Зарегистрироваться
     @POST(USER_SERVICE_URL + REGISTER_URL)
     suspend fun registerUser(
-        @Query("email") email: String,
-        @Query("password") password: String,
-        @Query("username") username: String,
-        @Query("nickname") nickname: String,
+        @Body registerUserDto: RegisterUserDto
     ): Response<String>
 
     // Войти
@@ -51,15 +52,15 @@ interface ApiService {
     suspend fun checkVerification(): Response<Boolean>
 
     // Прислать код подтверждения на почту
-    @PUT(USER_SERVICE_URL + SEND_CODE)
+    @POST(USER_SERVICE_URL + SEND_CODE)
     suspend fun sendVerificationCode(
         @Query("email") email: String
     ): Response<String>
 
     // Проверить код верификации email
-    @GET(USER_SERVICE_URL + CHECK_VERIFICATION_CODE)
+    @POST(USER_SERVICE_URL + CHECK_VERIFICATION_CODE)
     suspend fun checkVerificationCode(
-        @Query("verificationCode") verificationCode: String
+        @Query("code") verificationCode: String
     ): Response<String>
 
     // Получить информацию о текущем пользователе
@@ -72,6 +73,14 @@ interface ApiService {
     suspend fun uploadPhoto(
         @Part photo: MultipartBody.Part,
         @Part("type") type: RequestBody,
+        @Part("photoUrl") photoUrl: RequestBody?
+    ): Response<String>
+
+    //Сохранение фото сервера
+    @Multipart
+    @PUT(SERVER_SERVICE_URL + UPLOAD_SERVER_PHOTO)
+    suspend fun uploadServerPhoto(
+        @Part photo: MultipartBody.Part,
         @Part("photoUrl") photoUrl: RequestBody?
     ): Response<String>
 
@@ -88,7 +97,7 @@ interface ApiService {
     ): Response<String>
 
     // Получить список друзей и заявок в друзья пользователя
-    @GET(USER_SERVICE_URL + FRIENDS_LIST) //TODO у Саши нет статуса в дтошке
+    @GET(USER_SERVICE_URL + FRIENDS_LIST)
     suspend fun getFriends(): Response<List<UserInfoDto>>
 
     // Создать заявку в друзья
@@ -111,7 +120,7 @@ interface ApiService {
     ): Response<String>
 
     // Получить полную информацию о пользователе
-    @GET(USER_SERVICE_URL + GET_USER_PROFILE_BY_ID) //todo опять нет статуса пользователя в дто
+    @GET(USER_SERVICE_URL + GET_USER_PROFILE_BY_ID)
     suspend fun getUserInfoExtended(
         @Query("userId") userId: String,
     ): Response<UserInfoExtendedDto>
@@ -121,9 +130,9 @@ interface ApiService {
     suspend fun getServers(): Response<List<ServerInfoDto>>
 
     // Получить список общих серверов пользователя с другим пользователем
-    @GET("") //TODO У Саши нет в апишке
+    @GET(SERVER_SERVICE_URL + GET_SERVER_URL)
     suspend fun getCommonServers(
-        @Query("userId") userId: String,
+        @Query("friendId") userId: String,
     ): Response<List<ServerInfoDto>>
 
     // Создать роль на сервере
@@ -280,4 +289,26 @@ interface ApiService {
         @Query("name") name: String,
         @Query("roomName") roomName: String
     ): Response<String>
+
+    // чаты
+    @GET(CHAT_SERVICE_URL + GET_CHAT_URL)// todo
+    suspend fun getPrivateChats(): Response<List<ChatInfoDto>>
+
+    @GET(CHAT_SERVICE_URL + GET_MESSAGES_HISTORY_URL) // todo
+    suspend fun getMessageHistory(
+        @Query("chatId") chatId: String,
+        @Query("lastMessageId") lastMessageId: String?
+    ): Response<List<MessageDto>>
+
+    @POST(CHAT_SERVICE_URL + SEND_MESSAGE_URL) // todo
+    suspend fun sendNewMessage(
+        @Query("chatId") chatId: String,
+        @Body newMessageDto: NewMessageDto
+    ): Response<String>
+
+    @POST(CHAT_SERVICE_URL + START_CHAT_URL) // todo
+    suspend fun startChat(
+        @Query("userId") userId: String
+    ): Response<String>
+
 }

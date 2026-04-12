@@ -25,6 +25,7 @@ import ru.hse.app.androidApp.ui.entity.model.servers.events.CreateServerEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetUserServersEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.JoinServerEvent
 import ru.hse.app.androidApp.ui.entity.model.toUi
+import ru.hse.app.androidApp.ui.errorhandling.ErrorHandler
 import ru.hse.coursework.godaily.ui.notification.ToastManager
 import javax.inject.Inject
 
@@ -35,6 +36,8 @@ class ServersViewModel @Inject constructor(
 
     private val joinServerUseCase: JoinServerUseCase,
     private val searchServersUseCase: SearchServersUseCase,
+
+    private val errorHandler: ErrorHandler,
 
     private val dataManager: DataManager,
 
@@ -91,6 +94,7 @@ class ServersViewModel @Inject constructor(
                     GetUserServersEvent.SuccessLoad
                 },
                 onFailure = {
+                    _uiState.value = ServersUiState.Error("") // todo
                     GetUserServersEvent.Error(
                         ("Ошибка при загрузке серверов. " + it.message)
                     )
@@ -130,7 +134,7 @@ class ServersViewModel @Inject constructor(
         serverPhoto: Uri? = null,
     ) {
         if (serverName.isEmpty()) {
-            showToast("Название сервера не может быть пустым")
+            handleError("Название сервера не может быть пустым")
             return
         }
         viewModelScope.launch {
@@ -179,10 +183,9 @@ class ServersViewModel @Inject constructor(
         }
     }
 
-    fun showToast(message: String, duration: Int = Toast.LENGTH_SHORT) {
-        toastManager.showToast(
-            message = message,
-            duration = duration
+    fun handleError(message: String) {
+        errorHandler.handleError(
+            message = message
         )
     }
 

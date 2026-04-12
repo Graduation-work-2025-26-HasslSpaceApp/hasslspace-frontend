@@ -1,5 +1,7 @@
 package ru.hse.app.androidApp.domain.repository
 
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import ru.hse.app.androidApp.domain.model.entity.CreateServer
 import ru.hse.app.androidApp.domain.model.entity.ServerInfo
 import ru.hse.app.androidApp.domain.model.entity.ServerInfoExpanded
@@ -21,4 +23,10 @@ interface ServerRepository {
     suspend fun patchServer(serverId: String, name: String?, photoUrl: String?): Result<String>
 
     suspend fun leaveServer(serverId: String): Result<String>
+
+    suspend fun uploadPhoto(
+        photo: MultipartBody.Part,
+        photoUrl: RequestBody?
+    ): Result<String>
+
 }
