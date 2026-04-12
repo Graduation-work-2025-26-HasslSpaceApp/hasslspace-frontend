@@ -6,6 +6,6 @@ data class UpdateServerDto(
     @JsonProperty("name")
     val name: String? = null,
 
-    @JsonProperty("photoUrl")
-    val photoUrl: String? = null,
+    @JsonProperty("iconUrl")
+    val iconUrl: String? = null,
 )

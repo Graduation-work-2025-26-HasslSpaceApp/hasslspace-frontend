@@ -676,7 +676,7 @@ class FakeApiService : ApiService {
     ): Response<String> {
         fakeServer = fakeServer.copy(
             name = updateServerDto.name ?: fakeServer.copy().name,
-            photoURL = updateServerDto.photoUrl ?: fakeServer.copy().photoURL,
+            photoURL = updateServerDto.iconUrl ?: fakeServer.copy().photoURL,
         )
         return Response.success("true")
     }
