@@ -42,15 +42,11 @@ import ru.hse.app.androidApp.ui.theme.AppTheme
 
 @Composable
 fun ConfigureMembersAndRoles(
-    imageLoader: ImageLoader,
-    friends: List<FriendCheckboxUiModel>,
     roles: List<RoleMiniCheckboxUiModel>,
     onBackClick: () -> Unit,
     onSaveClick: () -> Unit,
     onToggleRole: (RoleMiniCheckboxUiModel) -> Unit,
-    onToggleFriend: (FriendCheckboxUiModel) -> Unit,
     modifier: Modifier = Modifier,
-    isDarkTheme: Boolean
 ) {
     BackHandler {
         onBackClick()
@@ -75,7 +71,7 @@ fun ConfigureMembersAndRoles(
                 verticalArrangement = Arrangement.spacedBy(5.dp)
             ) {
                 VariableBold(
-                    text = "Настроить участников \n в канале",
+                    text = "Настроить роли \n в канале",
                     fontSize = 20.sp,
                     textAlign = TextAlign.Center
                 )
@@ -110,26 +106,26 @@ fun ConfigureMembersAndRoles(
                     isChosen = role.isChosen
                 )
             }
-
-            item {
-                VariableMedium(
-                    text = "Участники",
-                    fontSize = 16.sp,
-                )
-            }
-
-            items(friends, key = { it.id }) { friend ->
-                UserCardCheckbox(
-                    imageLoader = imageLoader,
-                    username = friend.name,
-                    nickname = friend.nickname,
-                    status = friend.status,
-                    profilePictureUrl = friend.avatarUrl,
-                    isDarkTheme = isDarkTheme,
-                    onClick = { onToggleFriend(friend) },
-                    isChosen = friend.isChosen
-                )
-            }
+//
+//            item {
+//                VariableMedium(
+//                    text = "Участники",
+//                    fontSize = 16.sp,
+//                )
+//            }
+//
+//            items(friends, key = { it.id }) { friend ->
+//                UserCardCheckbox(
+//                    imageLoader = imageLoader,
+//                    username = friend.name,
+//                    nickname = friend.nickname,
+//                    status = friend.status,
+//                    profilePictureUrl = friend.avatarUrl,
+//                    isDarkTheme = isDarkTheme,
+//                    onClick = { onToggleFriend(friend) },
+//                    isChosen = friend.isChosen
+//                )
+//            }
         }
     }
 }
@@ -174,8 +170,8 @@ fun ConfigureMembersContentPreviewLightEmpty() {
     }
     AppTheme(isDark = false) {
         ConfigureMembersAndRoles(
-            imageLoader = LocalContext.current.imageLoader,
-            friends = friends,
+//            imageLoader = LocalContext.current.imageLoader,
+//            friends = friends,
             roles = roles,
             onBackClick = {},
             onSaveClick = {},
@@ -189,8 +185,8 @@ fun ConfigureMembersContentPreviewLightEmpty() {
                     roles[index] = updatedRole // ЭТО ВЫЗЫВАЕТ РЕКОМПОЗИЦИЮ!
                 }
             },
-            onToggleFriend = {},
-            isDarkTheme = false
+//            onToggleFriend = {},
+//            isDarkTheme = false
         )
     }
 }
@@ -221,14 +217,14 @@ fun ConfigureMembersContentPreviewDarkEmpty() {
     )
     AppTheme(isDark = true) {
         ConfigureMembersAndRoles(
-            imageLoader = LocalContext.current.imageLoader,
-            friends = friends,
+//            imageLoader = LocalContext.current.imageLoader,
+//            friends = friends,
             roles = roles,
             onBackClick = {},
             onSaveClick = {},
             onToggleRole = {},
-            onToggleFriend = {},
-            isDarkTheme = true
+//            onToggleFriend = {},
+//            isDarkTheme = true
         )
     }
 }

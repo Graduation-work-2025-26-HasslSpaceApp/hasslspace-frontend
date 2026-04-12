@@ -257,15 +257,15 @@ fun ServerMembersInfoScreenWithStateContent(
             onMessageClick = { /* todo viewModel.onMessageClick(userId = data.chosenUser.id) */ },
             onCallClick = {
                 viewModel.onCallClick(
-                    username = data.chosenUser.nickname,
-                    name = data.chosenUser.name,
+                    memberName = data.currentUser?.name ?: "Unknown",
+                    roomName = "Звонок с " + data.chosenUser.name,
                     friendshipId = data.chosenUser.friendshipId
                 )
             },
             onVideoCallClick = {
                 viewModel.onVideoCallClick(
-                    username = data.chosenUser.nickname,
-                    name = data.chosenUser.name,
+                    memberName = data.currentUser?.name ?: "Unknown",
+                    roomName = "Звонок с " + data.chosenUser.name,
                     friendshipId = data.chosenUser.friendshipId
                 )
             },

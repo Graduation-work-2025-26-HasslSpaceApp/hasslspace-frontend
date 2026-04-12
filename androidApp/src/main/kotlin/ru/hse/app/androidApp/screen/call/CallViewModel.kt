@@ -16,12 +16,14 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ru.hse.app.androidApp.data.local.DataManager
+import ru.hse.app.androidApp.ui.errorhandling.ErrorHandler
 import ru.hse.coursework.godaily.ui.notification.ToastManager
 import javax.inject.Inject
 
 // ─── ViewModel ────────────────────────────────────────────────────────────────
 @HiltViewModel
 class CallViewModel @Inject constructor(
+    private val errorHandler: ErrorHandler,
     private val dataManager: DataManager,
     private val toastManager: ToastManager,
 ) : ViewModel() {
@@ -42,10 +44,9 @@ class CallViewModel @Inject constructor(
 
     // ─── Room events ──────────────────────────────────────────────────────────
 
-    fun showToast(message: String, duration: Int = Toast.LENGTH_SHORT) {
-        toastManager.showToast(
+    fun handleError(message: String, duration: Int = Toast.LENGTH_SHORT) {
+        errorHandler.handleError(
             message = message,
-            duration = duration
         )
     }
 
@@ -54,10 +55,11 @@ class CallViewModel @Inject constructor(
     }
 
     fun onParticipantCountChanged(count: Int) {
-        _uiState.value = _uiState.value.copy(participantCount = count)
+        _uiState.value = _uiState.value.copy(participantCount = count + 1)
     }
 
     fun onError(error: Exception) {
+        println("Полная ошибка: $error") // todo убрать
         viewModelScope.launch {
             _errors.emit(error.message ?: "Неизвестная ошибка")
         }
@@ -98,7 +100,14 @@ class CallViewModel @Inject constructor(
     }
 
     fun pinTrack(trackReference: TrackReference) {
-        _pinnedTrack.value = trackReference
+        val current = _pinnedTrack.value
+        if (current?.participant?.identity == trackReference.participant.identity &&
+            current?.source == trackReference.source
+        ) {
+            _pinnedTrack.value = null
+        } else {
+            _pinnedTrack.value = trackReference
+        }
     }
 
     fun clearPin() {

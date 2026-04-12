@@ -39,9 +39,9 @@ fun PrimarySpeakerView(
 ) {
     val isVideoMuted = rememberTrackMuted(trackRef = trackReference)
     val isSpeaking by trackReference.participant::isSpeaking.flow.collectAsState()
-    val displayName = trackReference.participant.identity?.value ?: "Unknown"
+    val displayName = trackReference.participant.name ?: "Unknown"
     val isScreenShare = trackReference.source == Track.Source.SCREEN_SHARE
-    val isMicrophoneEnabled = trackReference.participant.isMicrophoneEnabled
+    val isMicrophoneEnabled by trackReference.participant::isMicrophoneEnabled.flow.collectAsState()
 
     PrimarySpeakerContent(
         displayName = displayName,
@@ -119,7 +119,7 @@ private fun PrimarySpeakerContent(
             }
         }
 
-        if (!isMicrophoneEnabled) {
+        if (isMicrophoneEnabled) {
             Surface(
                 color = MaterialTheme.colorScheme.surface.copy(alpha = 0.75f),
                 shape = RoundedCornerShape(8.dp),

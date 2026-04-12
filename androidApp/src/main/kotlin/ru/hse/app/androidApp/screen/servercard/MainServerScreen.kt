@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil3.imageLoader
 import ru.hse.app.androidApp.R
 import ru.hse.app.androidApp.ui.components.common.dialog.RowButtonDialog
 import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
@@ -295,8 +294,7 @@ fun MainServerScreenWithStateContent(
             onVoiceChannelShortClick = {
                 if (data.currentUser != null) {
                     viewModel.onJoinVoiceChannelClick(
-                        username = data.currentUser.username,
-                        name = data.currentUser.name,
+                        memberName = data.currentUser.name,
                         channelId = it.id,
                         channelName = it.title
                     )
@@ -477,27 +475,27 @@ fun MainServerScreenWithStateContent(
 
     if (viewModel.showChooseMembersAndRoles.value) {
         ConfigureMembersAndRoles(
-            imageLoader = viewModel.imageLoader,
-            friends = data.newChannelMembers,
+//            imageLoader = viewModel.imageLoader,
+//            friends = data.newChannelMembers,
             roles = data.newChannelRoles,
             onBackClick = { viewModel.showChooseMembersAndRoles.value = false },
             onSaveClick = { viewModel.showChooseMembersAndRoles.value = false },
             onToggleRole = { viewModel.onToggleRole(it) },
-            onToggleFriend = { viewModel.onToggleFriend(it) },
-            isDarkTheme = viewModel.isDarkTheme
+//            onToggleFriend = { viewModel.onToggleFriend(it) },
+//            isDarkTheme = viewModel.isDarkTheme
         )
     }
 
     if (viewModel.showChooseMembersAndRolesEditChannel.value) {
         ConfigureMembersAndRoles(
-            imageLoader = viewModel.imageLoader,
-            friends = data.editChannel.members,
+//            imageLoader = viewModel.imageLoader,
+//            friends = data.editChannel.members,
             roles = data.editChannel.roles,
             onBackClick = { viewModel.showChooseMembersAndRolesEditChannel.value = false },
             onSaveClick = { viewModel.showChooseMembersAndRolesEditChannel.value = false },
             onToggleRole = { viewModel.onToggleRoleEditChannel(it) },
-            onToggleFriend = { viewModel.onToggleFriendEditChannel(it) },
-            isDarkTheme = viewModel.isDarkTheme
+//            onToggleFriend = { viewModel.onToggleFriendEditChannel(it) },
+//            isDarkTheme = viewModel.isDarkTheme
         )
     }
 

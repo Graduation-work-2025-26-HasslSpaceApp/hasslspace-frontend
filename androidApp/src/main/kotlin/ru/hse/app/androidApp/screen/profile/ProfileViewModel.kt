@@ -530,13 +530,17 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun onCallClick(username: String, name: String, friendshipId: String?) {
+    fun onCallClick(memberName: String,roomName: String, friendshipId: String?) {
         viewModelScope.launch {
-            val result = getVoiceRoomTokenUseCase(username, name, friendshipId)
+            val result = getVoiceRoomTokenUseCase(
+                name = memberName,
+                roomName = friendshipId,
+                roomType = "PRIVATE_ROOM"
+            )
 
             _getTokenEvent.value = result.fold(
                 onSuccess = { token ->
-                    GetTokenEvent.Success(token, name, videoEnabled = false)
+                    GetTokenEvent.Success(token, roomName, videoEnabled = false)
                 },
                 onFailure = {
                     GetTokenEvent.Error("Ошибка при подключении к звонку. " + it.message)
@@ -549,13 +553,17 @@ class ProfileViewModel @Inject constructor(
         //TODO
     }
 
-    fun onVideoCallClick(username: String, name: String, friendshipId: String?) {
+    fun onVideoCallClick(memberName: String,roomName: String, friendshipId: String?) {
         viewModelScope.launch {
-            val result = getVoiceRoomTokenUseCase(username, name, friendshipId)
+            val result = getVoiceRoomTokenUseCase(
+                name = memberName,
+                roomName = friendshipId,
+                roomType = "PRIVATE_ROOM"
+            )
 
             _getTokenEvent.value = result.fold(
                 onSuccess = { token ->
-                    GetTokenEvent.Success(token, name, videoEnabled = true)
+                    GetTokenEvent.Success(token, roomName, videoEnabled = true)
                 },
                 onFailure = {
                     GetTokenEvent.Error("Ошибка при подключении к видеозвонку. " + it.message)

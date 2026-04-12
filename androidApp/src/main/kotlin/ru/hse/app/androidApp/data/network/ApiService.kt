@@ -24,6 +24,7 @@ import ru.hse.app.androidApp.data.model.RoleInfoDto
 import ru.hse.app.androidApp.data.model.ServerInfoDto
 import ru.hse.app.androidApp.data.model.ServerInfoExpandedDto
 import ru.hse.app.androidApp.data.model.ServerInviteDto
+import ru.hse.app.androidApp.data.model.TokenRequest
 import ru.hse.app.androidApp.data.model.UpdateChannelDto
 import ru.hse.app.androidApp.data.model.UpdateProfileDto
 import ru.hse.app.androidApp.data.model.UpdateRoleDto
@@ -283,11 +284,9 @@ interface ApiService {
         @Query("channelId") channelId: String,
     ): Response<ChannelInfoDto>
 
-    @GET(VOICE_SERVICE_URL + GET_TOKEN_FOR_VOICE_ROOM) // todo
+    @POST(VOICE_SERVICE_URL + GET_TOKEN_FOR_VOICE_ROOM) // todo
     suspend fun getTokenForVoiceRoom(
-        @Query("identity") identity: String,
-        @Query("name") name: String,
-        @Query("roomName") roomName: String
+        @Body tokenRequest: TokenRequest
     ): Response<String>
 
     // чаты

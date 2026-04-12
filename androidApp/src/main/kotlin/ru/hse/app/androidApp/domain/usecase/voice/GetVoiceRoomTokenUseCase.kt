@@ -7,14 +7,18 @@ import javax.inject.Inject
 class GetVoiceRoomTokenUseCase @Inject constructor(
     private val callRepository: CallRepository
 ) {
-    suspend operator fun invoke(identity: String, name: String, roomName: String?): Result<String> {
+    suspend operator fun invoke(
+        name: String,
+        roomName: String?,
+        roomType: String
+    ): Result<String> {
 
-        if (roomName == null) {
-            return Result.failure(
-                ApiException(null, ApiException.ROOM_NOT_FOUND, null)
-            )
-        }
+//        if (roomName == null) {
+//            return Result.failure(
+//                ApiException(null, ApiException.ROOM_NOT_FOUND, null)
+//            )
+//        } todo вернуть
 
-        return callRepository.getTokenForVoiceRoom(identity, name, roomName)
+        return callRepository.getTokenForVoiceRoom(name, roomName?: "", roomType)
     }
 }

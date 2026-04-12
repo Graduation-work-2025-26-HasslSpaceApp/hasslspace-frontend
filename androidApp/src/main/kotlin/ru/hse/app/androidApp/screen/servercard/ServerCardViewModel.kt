@@ -1,6 +1,5 @@
 package ru.hse.app.androidApp.screen.servercard
 
-import android.widget.Toast
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -363,13 +362,16 @@ class ServerCardViewModel @Inject constructor(
     }
 
     fun onJoinVoiceChannelClick(
-        username: String,
-        name: String,
+        memberName: String,
         channelId: String,
         channelName: String
     ) {
         viewModelScope.launch {
-            val result = getVoiceRoomTokenUseCase(username, name, channelId)
+            val result = getVoiceRoomTokenUseCase(
+                name = memberName,
+                roomName = channelId,
+                roomType = "SERVER"
+            )
 
             _getVoiceChannelTokenEvent.value = result.fold(
                 onSuccess = { token ->
@@ -382,13 +384,17 @@ class ServerCardViewModel @Inject constructor(
         }
     }
 
-    fun onCallClick(username: String, name: String, friendshipId: String?) {
+    fun onCallClick(memberName: String, roomName: String, friendshipId: String?) {
         viewModelScope.launch {
-            val result = getVoiceRoomTokenUseCase(username, name, friendshipId)
+            val result = getVoiceRoomTokenUseCase(
+                name = memberName,
+                roomName = friendshipId,
+                roomType = "PRIVATE_ROOM"
+            )
 
             _getTokenEvent.value = result.fold(
                 onSuccess = { token ->
-                    GetTokenEvent.Success(token, name, videoEnabled = false)
+                    GetTokenEvent.Success(token, roomName, videoEnabled = false)
                 },
                 onFailure = {
                     GetTokenEvent.Error("Ошибка при подключении к звонку. " + it.message)
@@ -401,13 +407,17 @@ class ServerCardViewModel @Inject constructor(
         //TODO
     }
 
-    fun onVideoCallClick(username: String, name: String, friendshipId: String?) {
+    fun onVideoCallClick(memberName: String, roomName: String, friendshipId: String?) {
         viewModelScope.launch {
-            val result = getVoiceRoomTokenUseCase(username, name, friendshipId)
+            val result = getVoiceRoomTokenUseCase(
+                name = memberName,
+                roomName = friendshipId,
+                roomType = "PRIVATE_ROOM"
+            )
 
             _getTokenEvent.value = result.fold(
                 onSuccess = { token ->
-                    GetTokenEvent.Success(token, name, videoEnabled = true)
+                    GetTokenEvent.Success(token, roomName, videoEnabled = true)
                 },
                 onFailure = {
                     GetTokenEvent.Error("Ошибка при подключении к видеозвонку. " + it.message)

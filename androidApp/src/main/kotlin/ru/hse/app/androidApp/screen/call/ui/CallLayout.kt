@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import io.livekit.android.compose.types.TrackReference
 import io.livekit.android.room.participant.Participant
 import ru.hse.app.androidApp.screen.call.state.rememberPrimaryTrack
+import ru.hse.app.androidApp.ui.components.common.card.participantsLabel
 
 @Composable
 fun CallLayout(
@@ -64,7 +65,7 @@ fun CallLayout(
                     color = MaterialTheme.colorScheme.onBackground,
                 )
                 Text(
-                    text = "$participantCount участников",
+                    text = participantsLabel(participantCount),
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onBackground,
                 )
@@ -79,7 +80,8 @@ fun CallLayout(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth()
-                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                        .padding(horizontal = 12.dp, vertical = 8.dp)
+                        .padding(bottom = 8.dp),
                 )
             }
         }

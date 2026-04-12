@@ -71,7 +71,7 @@ const val GET_CHANNEL_PERMISSIONS_URL = "/servers/channels/permissions" // По�
 
 // Звонки //todo
 const val VOICE_SERVICE_URL = "/api/voice-service"
-const val GET_TOKEN_FOR_VOICE_ROOM = "/voice/token"
+const val GET_TOKEN_FOR_VOICE_ROOM = "/token"
 
 // Чаты
 const val CHAT_SERVICE_URL = "/api/chat-service" //todo

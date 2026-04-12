@@ -16,6 +16,7 @@ import ru.hse.app.androidApp.data.model.RoleInfoDto
 import ru.hse.app.androidApp.data.model.ServerInfoDto
 import ru.hse.app.androidApp.data.model.ServerInfoExpandedDto
 import ru.hse.app.androidApp.data.model.ServerInviteDto
+import ru.hse.app.androidApp.data.model.TokenRequest
 import ru.hse.app.androidApp.data.model.TypeDto
 import ru.hse.app.androidApp.data.model.UpdateChannelDto
 import ru.hse.app.androidApp.data.model.UpdateProfileDto
@@ -870,9 +871,7 @@ class FakeApiService : ApiService {
     }
 
     override suspend fun getTokenForVoiceRoom(
-        identity: String,
-        name: String,
-        roomName: String
+        tokenRequest: TokenRequest
     ): Response<String> {
         return Response.success("token 123124123")
     }

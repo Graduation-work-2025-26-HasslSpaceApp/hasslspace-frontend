@@ -1,5 +1,7 @@
 package ru.hse.app.androidApp.screen.call
 
+import android.app.Activity
+import android.view.WindowManager
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
@@ -9,16 +11,19 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import io.livekit.android.compose.local.RoomScope
+import io.livekit.android.util.flow
 import ru.hse.app.androidApp.screen.call.state.rememberCallPermissions
 import ru.hse.app.androidApp.screen.call.ui.CallLayout
 import ru.hse.app.androidApp.ui.theme.AppTheme
@@ -79,11 +84,20 @@ fun CallScreenContent(
     val pinnedTrack by viewModel.pinnedTrack.collectAsState()
     val permissions = rememberCallPermissions()
     val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         if (!permissions.allGranted) {
             permissions.requestCallPermissions()
         }
+    }
+
+
+
+    LaunchedEffect(Unit) {
+        (context as? Activity)?.window?.addFlags(
+            WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+        )
     }
 
     LaunchedEffect(Unit) {
@@ -92,9 +106,17 @@ fun CallScreenContent(
     0
     LaunchedEffect(Unit) {
         viewModel.errors.collect { message ->
-            viewModel.showToast(message)
+            viewModel.handleError(message)
             //onDisconnect() //todo потом включить
             //snackbarHostState.showSnackbar(message)
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            (context as? Activity)?.window?.clearFlags(
+                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+            )
         }
     }
 
@@ -110,9 +132,10 @@ fun CallScreenContent(
             viewModel.onRoomConnected()
         }
 
-        val remoteParticipantCount = room.remoteParticipants.size
-        LaunchedEffect(remoteParticipantCount) {
-            viewModel.onParticipantCountChanged(remoteParticipantCount)
+        val remoteParticipants by room::remoteParticipants.flow.collectAsState()
+
+        LaunchedEffect(remoteParticipants) {
+            viewModel.onParticipantCountChanged(remoteParticipants.size)
         }
 
         //todo добавить возможность скриншеринга
