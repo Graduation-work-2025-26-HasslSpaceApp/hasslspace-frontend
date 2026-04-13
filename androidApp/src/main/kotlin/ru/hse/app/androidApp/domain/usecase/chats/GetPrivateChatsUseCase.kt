@@ -7,10 +7,7 @@ import javax.inject.Inject
 class GetPrivateChatsUseCase @Inject constructor(
     private val chatRepository: ChatRepository
 ) {
-    suspend operator fun invoke(
-        chatId: String,
-        content: String,
-    ): Result<List<ChatInfo>> {
+    suspend operator fun invoke(): Result<List<ChatInfo>> {
         return chatRepository.getPrivateChats()
     }
 }

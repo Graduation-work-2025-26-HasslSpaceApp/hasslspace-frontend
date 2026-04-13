@@ -45,6 +45,7 @@ fun AddPhotoScreen(
             null -> {}
         }
         viewModel.saveVerificationStatusToStorage(true)
+        viewModel.connectCentrifugoClient()
 
         viewModel.resetSavePhotoEvent()
 

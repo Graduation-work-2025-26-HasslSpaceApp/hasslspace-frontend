@@ -16,6 +16,10 @@ import ru.hse.app.androidApp.ui.components.common.card.participantsLabel
 import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
 import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
 import ru.hse.app.androidApp.ui.entity.model.chats.ChatUiState
+import ru.hse.app.androidApp.ui.entity.model.chats.events.GetPrivateChatMessagesEvent
+import ru.hse.app.androidApp.ui.entity.model.chats.events.GetPrivateChatsEvent
+import ru.hse.app.androidApp.ui.entity.model.chats.events.SendMessageEvent
+import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadUserFriendsEvent
 
 @Composable
 fun ChatScreen(
@@ -27,6 +31,55 @@ fun ChatScreen(
 
     LaunchedEffect(chatId) {
         viewModel.loadChatInitInfo(chatId)
+    }
+
+    val getPrivateChatMessagesEvent by viewModel.getPrivateChatMessagesEvent.collectAsState()
+    val getPrivateChatsEvent by viewModel.getPrivateChatsEvent.collectAsState()
+    val sendMessageEvent by viewModel.sendMessageEvent.collectAsState()
+
+    LaunchedEffect(sendMessageEvent) {
+        when (sendMessageEvent) {
+            is SendMessageEvent.Success -> {}
+
+            is SendMessageEvent.Error -> {
+                val message =
+                    (sendMessageEvent as SendMessageEvent.Error).message
+                viewModel.handleError(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetSendMessageEvent()
+    }
+
+    LaunchedEffect(getPrivateChatMessagesEvent) {
+        when (getPrivateChatMessagesEvent) {
+            is GetPrivateChatMessagesEvent.SuccessLoad -> {}
+
+            is GetPrivateChatMessagesEvent.Error -> {
+                val message =
+                    (getPrivateChatMessagesEvent as GetPrivateChatMessagesEvent.Error).message
+                viewModel.handleError(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetGetPrivateChatMessagesEvent()
+    }
+
+    LaunchedEffect(getPrivateChatsEvent) {
+        when (getPrivateChatsEvent) {
+            is GetPrivateChatsEvent.SuccessLoad -> {}
+
+            is GetPrivateChatsEvent.Error -> {
+                val message =
+                    (getPrivateChatsEvent as GetPrivateChatsEvent.Error).message
+                viewModel.handleError(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetGetPrivateChatsEvent()
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -57,12 +110,13 @@ fun ChatWithStateContent(
     viewModel: ChatViewModel
 ) {
     val members = uiState.data.channelMembers
+    // добавить прочтение сообщений
     ChatContent(
         channelName = uiState.data.name,
         channelSubtitle = if (members.size > 2) participantsLabel(members.size) else "Личный чат",
         onBackClick = { navController.popBackStack() },
         onAuthorClick = {/*todo*/ },
-        onSendMessage = viewModel::addCurrentUserMessage,
+        onSendMessage = { viewModel.addCurrentUserMessage(uiState.data.id, it) },
         isDarkTheme = viewModel.isDark,
         imageLoader = viewModel.imageLoader,
         messages = uiState.data.messages,

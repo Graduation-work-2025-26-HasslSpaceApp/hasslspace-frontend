@@ -13,6 +13,8 @@ import ru.hse.app.androidApp.ui.components.auth.verification.VerificationScreenC
 import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
 import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
 import ru.hse.app.androidApp.ui.entity.model.auth.AuthUiState
+import ru.hse.app.androidApp.ui.entity.model.auth.events.SendVerificationCodeEvent
+import ru.hse.app.androidApp.ui.entity.model.auth.events.VerifyCodeEvent
 import ru.hse.app.androidApp.ui.entity.model.auth.events.VerifyUserEvent
 import ru.hse.app.androidApp.ui.navigation.AuthNavigationItem
 
@@ -24,12 +26,49 @@ fun VerificationScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val verifyUserEvent by viewModel.verifyUserEvent.collectAsState()
+    val verifyCodeEvent by viewModel.verifyCodeEvent.collectAsState()
+    val sendCodeEvent by viewModel.sendCodeEvent.collectAsState()
+
+    LaunchedEffect(sendCodeEvent) {
+        when (sendCodeEvent) {
+            is SendVerificationCodeEvent.SuccessSend -> {}
+
+            is SendVerificationCodeEvent.Error -> {
+                val message = (sendCodeEvent as SendVerificationCodeEvent.Error).message
+                viewModel.handleError(message)
+            }
+
+            null -> {}
+        }
+
+        viewModel.resetSendCodeEvent()
+
+    }
+
+    LaunchedEffect(verifyCodeEvent) {
+        when (verifyCodeEvent) {
+            is VerifyCodeEvent.SuccessVerify -> {}
+
+            is VerifyCodeEvent.Error -> {
+                val message = (verifyCodeEvent as VerifyUserEvent.Error).message
+                viewModel.handleError(message)
+            }
+
+            null -> {}
+        }
+
+        viewModel.resetVerifyCodeEvent()
+
+    }
 
     LaunchedEffect(verifyUserEvent) {
         when (verifyUserEvent) {
             is VerifyUserEvent.SuccessVerify -> {
                 if (type != "login") {
                     navController.navigate(AuthNavigationItem.AddPhotoScreen.route)
+                } else {
+                    viewModel.saveVerificationStatusToStorage(true)
+                    viewModel.connectCentrifugoClient()
                 }
             }
 

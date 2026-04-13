@@ -28,6 +28,7 @@ import ru.hse.app.androidApp.domain.usecase.profile.LoadUserInfoUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.SaveUserPhotoUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.GetServersUseCase
 import ru.hse.app.androidApp.domain.usecase.voice.GetVoiceRoomTokenUseCase
+import ru.hse.app.androidApp.screen.chats.centrifugo.CentrifugeService
 import ru.hse.app.androidApp.ui.entity.model.FriendUiModel
 import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
 import ru.hse.app.androidApp.ui.entity.model.TypeUiModel
@@ -55,6 +56,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
+    // Centrifugo
+    private val centrifugeService: CentrifugeService,
+
     // Profile and settings
     private val dataManager: DataManager,
     private val loadUserInfoUseCase: LoadUserInfoUseCase,
@@ -583,6 +587,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun exit() {
+        centrifugeService.disconnect()
         showExitSheet.value = false
         dataManager.clearJwt()
         dataManager.clearVerificationStatus()

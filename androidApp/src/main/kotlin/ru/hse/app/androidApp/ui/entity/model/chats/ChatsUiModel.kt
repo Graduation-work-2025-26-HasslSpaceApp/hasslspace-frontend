@@ -19,7 +19,7 @@ data class ChatsUiModel(
 //todo убрать
 val mockChats = listOf(
     ChatShortUiModel(
-        id = "1",
+        id = "chat_1",
         title = "Марина Ландышева",
         lastMessage = "Вы: пришли мне, пожалуйста, последнюю картинку",
         timeOfLastMessage = "15:16",
@@ -27,7 +27,7 @@ val mockChats = listOf(
         unreadCount = 0
     ),
     ChatShortUiModel(
-        id = "2",
+        id = "chat_2",
         title = "Александр Иванов",
         lastMessage = "Завтра встреча в 10:00",
         timeOfLastMessage = "12:30",
@@ -35,7 +35,7 @@ val mockChats = listOf(
         unreadCount = 3
     ),
     ChatShortUiModel(
-        id = "3",
+        id = "chat_3",
         title = "Рабочая группа",
         lastMessage = "Марина: Я отправила финальный отчет",
         timeOfLastMessage = "10:15",

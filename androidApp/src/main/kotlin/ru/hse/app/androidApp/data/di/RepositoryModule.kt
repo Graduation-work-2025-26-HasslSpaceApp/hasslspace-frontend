@@ -1,20 +1,28 @@
 package ru.hse.app.androidApp.data.di
 
+import android.content.Context
+import androidx.room.Room
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import jakarta.inject.Singleton
 import ru.hse.app.androidApp.data.network.ApiCaller
 import ru.hse.app.androidApp.data.network.ApiService
 import ru.hse.app.androidApp.data.repository.CallRepositoryImpl
 import ru.hse.app.androidApp.data.repository.ChannelRepositoryImpl
+import ru.hse.app.androidApp.data.repository.ChatRepositoryImpl
 import ru.hse.app.androidApp.data.repository.FriendRepositoryImpl
 import ru.hse.app.androidApp.data.repository.InvitationRepositoryImpl
 import ru.hse.app.androidApp.data.repository.RoleRepositoryImpl
 import ru.hse.app.androidApp.data.repository.ServerRepositoryImpl
 import ru.hse.app.androidApp.data.repository.UserRepositoryImpl
+import ru.hse.app.androidApp.data.roomstorage.AppDatabase
+import ru.hse.app.androidApp.data.roomstorage.ChatDao
 import ru.hse.app.androidApp.domain.repository.CallRepository
 import ru.hse.app.androidApp.domain.repository.ChannelRepository
+import ru.hse.app.androidApp.domain.repository.ChatRepository
 import ru.hse.app.androidApp.domain.repository.FriendRepository
 import ru.hse.app.androidApp.domain.repository.InvitationRepository
 import ru.hse.app.androidApp.domain.repository.RoleRepository
@@ -62,4 +70,22 @@ object RepositoryModule {
     fun provideCallRepository(apiService: ApiService, apiCaller: ApiCaller): CallRepository {
         return CallRepositoryImpl(apiService, apiCaller)
     }
+
+    @Provides
+    fun provideChatRepository(apiService: ApiService, apiCaller: ApiCaller, chatDao: ChatDao): ChatRepository {
+        return ChatRepositoryImpl(apiService, apiCaller, chatDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
+        return Room.databaseBuilder(
+            context,
+            AppDatabase::class.java,
+            "app_database"
+        ).build()
+    }
+
+    @Provides
+    fun provideChatDao(database: AppDatabase): ChatDao = database.messageDao()
 }

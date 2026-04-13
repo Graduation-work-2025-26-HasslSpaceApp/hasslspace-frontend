@@ -27,6 +27,19 @@ val serverLiveKitUrl: String by extra {
     value
 }
 
+val centrifugoUrl: String by extra {
+    val properties = Properties()
+    val localPropertiesFile = project.rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        localPropertiesFile.inputStream().use { properties.load(it) }
+    }
+    val value = properties.getProperty("CENTRIFUGO_URL", "")
+    if (value.isEmpty()) {
+        throw InvalidUserDataException("Centrifugo URL is not provided")
+    }
+    value
+}
+
 plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.android)
@@ -50,6 +63,7 @@ android {
 
         buildConfigField("String", "SERVER_URL", "\"$serverUrl\"")
         buildConfigField("String", "LIVEKIT_URL", "\"$serverLiveKitUrl\"")
+        buildConfigField("String", "CENTRIFUGO_URL", "\"$centrifugoUrl\"")
     }
     buildFeatures {
         compose = true
@@ -143,23 +157,8 @@ dependencies {
 
     // If this project only uses Java source, use the Java annotationProcessor
     // No additional plugins are necessary
-    annotationProcessor("androidx.room:room-compiler:$roomVersion")
+    ksp("androidx.room:room-compiler:$roomVersion")
 
-//    // optional - Kotlin Extensions and Coroutines support for Room
-//    implementation("androidx.room:room-ktx:$room_version")
-//
-//    // optional - RxJava2 support for Room
-//    implementation("androidx.room:room-rxjava2:$room_version")
-//
-//    // optional - RxJava3 support for Room
-//    implementation("androidx.room:room-rxjava3:$room_version")
-//
-//    // optional - Guava support for Room, including Optional and ListenableFuture
-//    implementation("androidx.room:room-guava:$room_version")
-//
-//    // optional - Test helpers
-//    testImplementation("androidx.room:room-testing:$room_version")
-//
-//    // optional - Paging 3 Integration
-//    implementation("androidx.room:room-paging:$room_version")
+    // centrifugo
+    implementation("io.github.centrifugal:centrifuge-java:0.5.0")
 }
