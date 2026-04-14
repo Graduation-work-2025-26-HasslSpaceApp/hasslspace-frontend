@@ -8,6 +8,10 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import jakarta.inject.Singleton
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import ru.hse.app.androidApp.data.centrifugo.CentrifugeService
 import ru.hse.app.androidApp.data.network.ApiCaller
 import ru.hse.app.androidApp.data.network.ApiService
 import ru.hse.app.androidApp.data.repository.CallRepositoryImpl
@@ -32,6 +36,11 @@ import ru.hse.app.androidApp.domain.repository.UserRepository
 @Module
 @InstallIn(SingletonComponent::class)
 object RepositoryModule {
+
+    @Provides
+    fun provideCoroutineScope(): CoroutineScope {
+        return CoroutineScope(Dispatchers.IO + SupervisorJob())
+    }
 
     @Provides
     fun provideUserRepository(apiService: ApiService, apiCaller: ApiCaller): UserRepository {
@@ -72,8 +81,14 @@ object RepositoryModule {
     }
 
     @Provides
-    fun provideChatRepository(apiService: ApiService, apiCaller: ApiCaller, chatDao: ChatDao): ChatRepository {
-        return ChatRepositoryImpl(apiService, apiCaller, chatDao)
+    fun provideChatRepository(
+        apiService: ApiService,
+        apiCaller: ApiCaller,
+        centrifugoService: CentrifugeService,
+        chatDao: ChatDao,
+        coroutineScope: CoroutineScope
+    ): ChatRepository {
+        return ChatRepositoryImpl(apiService, apiCaller, centrifugoService, chatDao, coroutineScope)
     }
 
     @Provides

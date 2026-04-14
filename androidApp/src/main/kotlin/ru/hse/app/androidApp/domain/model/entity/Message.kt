@@ -33,3 +33,24 @@ fun MessageDto.toDomain(): Message {
         createdAt = this.createdAt
     )
 }
+
+fun Message.toEntity(): MessageEntity {
+    return MessageEntity(
+        id = this.id,
+        chatId = this.chatId,
+        userId = this.userId,
+        content = this.content,
+        createdAt = this.createdAt,
+        isRead = false
+    )
+}
+
+fun MessageDto.toEntity(): MessageEntity {
+    return MessageEntity(
+        id = this.id,
+        chatId = this.chatId,
+        userId = this.userId,
+        content = this.content ?: "",
+        createdAt = this.createdAt
+    )
+}

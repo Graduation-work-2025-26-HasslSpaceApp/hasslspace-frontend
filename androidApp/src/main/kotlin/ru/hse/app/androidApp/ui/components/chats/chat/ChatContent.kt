@@ -1,5 +1,6 @@
 package ru.hse.app.androidApp.ui.components.chats.chat
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -39,6 +40,7 @@ fun ChatContent(
     onBackClick: () -> Unit,
     onAuthorClick: (ChatMemberUiModel?) -> Unit,
     onSendMessage: (String) -> Unit,
+    onReadMsg: (String) -> Unit,
     isDarkTheme: Boolean,
     imageLoader: ImageLoader,
     messages: List<MessageUiModel>,
@@ -76,6 +78,7 @@ fun ChatContent(
                 isDarkTheme = isDarkTheme,
                 imageLoader = imageLoader,
                 modifier = Modifier.weight(1f),
+                onReadMsg = onReadMsg
             )
             UserInput(
                 onMessageSent = { content ->
@@ -108,7 +111,10 @@ fun ChatContentLight() {
             onSendMessage = {},
             isDarkTheme = false,
             imageLoader = LocalContext.current.imageLoader,
-            messages = messages,
+            messages = messages.sortedByDescending { it.timestamp },
+            onReadMsg = {
+                Log.d("ChatContentDark", "onReadMsg: $it")
+            }
         )
     }
 }
@@ -125,7 +131,10 @@ fun ChatContentDark() {
             onSendMessage = {},
             isDarkTheme = true,
             imageLoader = LocalContext.current.imageLoader,
-            messages = messages,
+            messages = messages.sortedByDescending { it.timestamp },
+            onReadMsg = {
+                Log.d("ChatContentDark", "onReadMsg: $it")
+            }
         )
     }
 }

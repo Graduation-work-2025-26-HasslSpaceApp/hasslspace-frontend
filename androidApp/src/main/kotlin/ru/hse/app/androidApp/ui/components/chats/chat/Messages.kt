@@ -27,16 +27,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LastBaseline
+import androidx.compose.ui.layout.onVisibilityChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
@@ -65,12 +69,44 @@ fun Messages(
     messages: List<MessageUiModel>,
     scrollState: LazyListState,
     onAuthorClick: (ChatMemberUiModel?) -> Unit,
+    onReadMsg: (String) -> Unit,
     isDarkTheme: Boolean,
     imageLoader: ImageLoader,
     modifier: Modifier = Modifier
 ) {
     val jumpToBottomThreshold = 56.dp
     val scope = rememberCoroutineScope()
+
+    val visibleMessages = remember { mutableStateMapOf<String, Boolean>() }
+
+    val firstUnreadIndex by remember(messages) {
+        derivedStateOf {
+            messages.indexOfLast { !it.isRead }.let { unreadIndex ->
+                if (unreadIndex == -1) 0 else unreadIndex
+            }
+        }
+    }
+
+    LaunchedEffect(firstUnreadIndex) {
+        if (firstUnreadIndex != 0) {
+            scrollState.scrollToItem(firstUnreadIndex)
+        }
+    }
+    LaunchedEffect(scrollState) {
+        snapshotFlow { scrollState.layoutInfo.visibleItemsInfo }
+            .collect { visibleItems ->
+                visibleItems.forEach { itemInfo ->
+                    val messageId = messages.getOrNull(itemInfo.index)?.id ?: return@forEach
+                    val isCurrentlyVisible = visibleMessages[messageId] != true
+
+                    if (isCurrentlyVisible && !messages.find { it.id == messageId }!!.isRead) {
+                        onReadMsg(messageId)
+                        visibleMessages[messageId] = true
+                    }
+                }
+            }
+    }
+
     Box(modifier = modifier) {
         Image(
             painter = painterResource(id = if (isDarkTheme) R.drawable.chat_background_dark else R.drawable.chat_background_light),
@@ -81,6 +117,7 @@ fun Messages(
                 .alpha(0.7f),
             contentScale = ContentScale.Crop
         )
+
         LazyColumn(
             reverseLayout = true,
             state = scrollState,
@@ -93,7 +130,7 @@ fun Messages(
                 val isFirstMessageByAuthor = prevAuthor != content.author
                 val isLastMessageByAuthor = nextAuthor != content.author
 
-                item {
+                item(key = content.id) {
                     Message(
                         onAuthorClick = onAuthorClick,
                         msg = content,
@@ -102,7 +139,18 @@ fun Messages(
                         isLastMessageByAuthor = isLastMessageByAuthor,
                         isDarkTheme = isDarkTheme,
                         imageLoader = imageLoader,
+                        modifier = Modifier.onVisibilityChanged { visibility ->
+                            if (visibility && !content.isRead) {
+                                onReadMsg(content.id)
+                            }
+                        }
                     )
+                }
+
+                if (index == firstUnreadIndex) {
+                    item(key = "unread_header_$index") {
+                        DayHeader("Непрочитано")
+                    }
                 }
             }
         }
@@ -138,7 +186,8 @@ fun Message(
     isFirstMessageByAuthor: Boolean,
     isLastMessageByAuthor: Boolean,
     isDarkTheme: Boolean,
-    imageLoader: ImageLoader
+    imageLoader: ImageLoader,
+    modifier: Modifier = Modifier
 ) {
     val borderColor = if (isUserMe) {
         MaterialTheme.colorScheme.secondary
@@ -148,7 +197,7 @@ fun Message(
 
     val spaceBetweenAuthors = if (isLastMessageByAuthor) Modifier.padding(top = 8.dp) else Modifier
 
-    Row(modifier = spaceBetweenAuthors) {
+    Row(modifier = modifier.then(spaceBetweenAuthors)) {
         if (isLastMessageByAuthor) {
             Image(
                 painter = rememberAsyncImagePainter(
@@ -654,7 +703,8 @@ fun MessagesPreview() {
             onAuthorClick = { },
             isDarkTheme = false,
             imageLoader = imageLoader,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            onReadMsg = {}
         )
     }
 }
@@ -672,21 +722,21 @@ val messages = listOf(
         content = "Сегодня я поехала на выставку, было очень интересно! Столько новых идей, которые можно применить в своей работе. Вообще, в последнее время чувствую, что много открываю для себя. А ты что нового узнал за последнее время?",
         timestamp = LocalDateTime.now().minusHours(2),
         id = "2",
-        isRead = true,
+        isRead = false,
     ),
     MessageUiModel(
         author = getNotMeChat(),
         content = "Привет, как дела? Всё отлично, просто была занята подготовкой к экзаменам, но сейчас у меня всё свободно. Вчера прошёл последний экзамен, и я чувствую себя свободной! Как ты? Что нового?",
         timestamp = LocalDateTime.now().minusHours(1),
         id = "3",
-        isRead = true,
+        isRead = false,
     ),
     MessageUiModel(
         author = getNotMeChat(),
         content = "На выходных я была на открытии нового кафе, и это было просто потрясающе! Там такая уютная атмосфера, и еда невероятная. Мы с друзьями даже заказали несколько блюд на пробу, и все они были восхитительны. Я бы порекомендовала тебе сходить, если будешь в этом районе.",
         timestamp = LocalDateTime.now(),
         id = "4",
-        isRead = true,
+        isRead = false,
     ),
     MessageUiModel(
         author = getAlexey(),
@@ -728,14 +778,14 @@ val messages = listOf(
         content = "Сегодня как раз на работе обсуждали, как важно отдыхать и перезаряжаться. Работа - это, конечно, важно, но без восстановления ресурсов невозможно быть эффективным. А как ты восстанавливаешь силы? Я, например, люблю проводить время на природе или делать йогу. Это так помогает мне быть в форме!",
         timestamp = LocalDateTime.now().minusHours(6),
         id = "9",
-        isRead = true,
+        isRead = false,
     ),
     MessageUiModel(
         author = getMeChat(),
         content = "Я вот недавно начала слушать подкасты по психологии и нейробиологии. Очень интересно, как работает наш мозг, как влияют разные факторы на поведение. В общем, стало много нового узнавать. Подумываю о том, чтобы изучить психологию на более глубоком уровне. Ты что-нибудь подобное слушаешь?",
         timestamp = LocalDateTime.now().minusHours(7),
         id = "10",
-        isRead = true,
+        isRead = false,
     ),
 )
 

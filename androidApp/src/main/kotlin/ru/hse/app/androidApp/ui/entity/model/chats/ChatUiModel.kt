@@ -1,6 +1,7 @@
 package ru.hse.app.androidApp.ui.entity.model.chats
 
 import androidx.compose.runtime.Immutable
+import ru.hse.app.androidApp.data.roomstorage.MessageEntity
 import ru.hse.app.androidApp.domain.model.entity.ChatInfo
 import ru.hse.app.androidApp.domain.model.entity.Message
 import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
@@ -76,6 +77,24 @@ fun Message.toUi(members: List<ChatMemberUiModel>): MessageUiModel {
                 isCurrentUser = false
             ),
         content = this.content,
+        timestamp = this.createdAt,
+        isRead = this.isRead
+    )
+}
+
+fun MessageEntity.toUi(members: List<ChatMemberUiModel>): MessageUiModel {
+    return MessageUiModel(
+        id = this.id,
+        author = members.find { it.id == this.userId }
+            ?: ChatMemberUiModel(
+                id = this.userId,
+                name = "Unknown",
+                username = "unknown",
+                status = StatusPresentation.OFFLINE,
+                photoURL = "",
+                isCurrentUser = false
+            ),
+        content = this.content?:"",
         timestamp = this.createdAt,
         isRead = this.isRead
     )

@@ -1,4 +1,4 @@
-package ru.hse.app.androidApp.screen.chats.centrifugo
+package ru.hse.app.androidApp.data.centrifugo
 
 import android.util.Log
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -40,6 +40,11 @@ class CentrifugeServiceImpl @Inject constructor(
     private val scope = CoroutineScope(Dispatchers.IO)
 
     override fun connect(url: String, token: String) {
+        if (client != null && _connectionState.value == ConnectionState.CONNECTED) {
+            Log.d("CentrifugeServiceImpl", "Already connected, skipping")
+            return
+        }
+
         val listener = object : EventListener() {
             override fun onConnected(client: Client, event: ConnectedEvent) {
                 Log.d("CentrifugeServiceImpl", "Connected")

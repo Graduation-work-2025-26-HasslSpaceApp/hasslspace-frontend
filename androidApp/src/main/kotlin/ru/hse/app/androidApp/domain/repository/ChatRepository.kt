@@ -1,5 +1,7 @@
 package ru.hse.app.androidApp.domain.repository
 
+import kotlinx.coroutines.flow.Flow
+import ru.hse.app.androidApp.data.roomstorage.MessageEntity
 import ru.hse.app.androidApp.domain.model.entity.ChatInfo
 import ru.hse.app.androidApp.domain.model.entity.Message
 import java.time.LocalDateTime
@@ -22,16 +24,20 @@ interface ChatRepository {
 
     suspend fun getChatMessagesFromRoom(
         chatId: String,
-    ): Result<List<Message>>
+    ): Flow<List<MessageEntity>>
 
     suspend fun getChatMessagesFromServer(
         chatId: String,
         lastMessageId: String? = null,
-    ): Result<List<Message>>
+    )//: Result<List<Message>>
 
     suspend fun startChat(
         userId: String
     ): Result<String>
 
     suspend fun getPrivateChats(): Result<List<ChatInfo>>
+
+    suspend fun markMessageAsRead(messageId: String)
+
+    suspend fun markMessagesAsRead(chatId: String)
 }

@@ -9,13 +9,16 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import ru.hse.app.androidApp.data.local.DataManager
 import ru.hse.app.androidApp.domain.service.common.CropProfilePhotoService
-import ru.hse.app.androidApp.domain.usecase.chats.*
-import ru.hse.app.androidApp.ui.components.chats.chat.getAlexey
-import ru.hse.app.androidApp.ui.components.chats.chat.getEkaterina
-import ru.hse.app.androidApp.ui.components.chats.chat.getMeChat
-import ru.hse.app.androidApp.ui.components.chats.chat.getNotMeChat
-import ru.hse.app.androidApp.ui.components.chats.chat.messages
-import ru.hse.app.androidApp.ui.entity.model.chats.ChatUiModel
+import ru.hse.app.androidApp.domain.usecase.chats.GetChatMessagesUseCase
+import ru.hse.app.androidApp.domain.usecase.chats.GetPrivateChatsUseCase
+import ru.hse.app.androidApp.domain.usecase.chats.MarkChatAsReadUseCase
+import ru.hse.app.androidApp.domain.usecase.chats.MarkMessageAsReadUseCase
+import ru.hse.app.androidApp.domain.usecase.chats.ObserveAllUnreadCountsUseCase
+import ru.hse.app.androidApp.domain.usecase.chats.ObserveUnreadCountUseCase
+import ru.hse.app.androidApp.domain.usecase.chats.SaveMessageToRoomUseCase
+import ru.hse.app.androidApp.domain.usecase.chats.SearchChatsUseCase
+import ru.hse.app.androidApp.domain.usecase.chats.SendMessageUseCase
+import ru.hse.app.androidApp.domain.usecase.chats.StartChatUseCase
 import ru.hse.app.androidApp.ui.entity.model.chats.ChatUiState
 import ru.hse.app.androidApp.ui.entity.model.chats.MessageUiModel
 import ru.hse.app.androidApp.ui.entity.model.chats.events.GetPrivateChatMessagesEvent
@@ -23,11 +26,8 @@ import ru.hse.app.androidApp.ui.entity.model.chats.events.GetPrivateChatsEvent
 import ru.hse.app.androidApp.ui.entity.model.chats.events.SendMessageEvent
 import ru.hse.app.androidApp.ui.entity.model.chats.toUi
 import ru.hse.app.androidApp.ui.entity.model.chats.toUiPrivate
-import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadUserServersEvent
 import ru.hse.app.androidApp.ui.errorhandling.ErrorHandler
 import ru.hse.coursework.godaily.ui.notification.ToastManager
-import java.time.LocalDateTime
-import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,6 +40,10 @@ class ChatViewModel @Inject constructor(
     private val searchChatsUseCase: SearchChatsUseCase,
     private val sendMessageUseCase: SendMessageUseCase,
     private val startChatUseCase: StartChatUseCase,
+
+    private val markMessageAsReadUseCase: MarkMessageAsReadUseCase,
+    private val markChatAsReadUseCase: MarkChatAsReadUseCase,
+
 
     private val dataManager: DataManager,
     private val toastManager: ToastManager,
@@ -54,8 +58,11 @@ class ChatViewModel @Inject constructor(
         MutableStateFlow<ChatUiState>(ChatUiState.Loading)
     val uiState: StateFlow<ChatUiState> = _uiState
 
+    private val messagesCache = mutableMapOf<String, MessageUiModel>()
+
     private val _getPrivateChatMessagesEvent = MutableStateFlow<GetPrivateChatMessagesEvent?>(null)
-    val getPrivateChatMessagesEvent: StateFlow<GetPrivateChatMessagesEvent?> = _getPrivateChatMessagesEvent
+    val getPrivateChatMessagesEvent: StateFlow<GetPrivateChatMessagesEvent?> =
+        _getPrivateChatMessagesEvent
 
     private val _getPrivateChatsEvent = MutableStateFlow<GetPrivateChatsEvent?>(null)
     val getPrivateChatsEvent: StateFlow<GetPrivateChatsEvent?> = _getPrivateChatsEvent
@@ -64,7 +71,6 @@ class ChatViewModel @Inject constructor(
     val sendMessageEvent: StateFlow<SendMessageEvent?> = _sendMessageEvent
 
     fun loadChatInitInfo(chatId: String) {
-        // todo загружаем изначальный стейт для чата и сообщений и подключение к центрифуге
         viewModelScope.launch {
             val result = getPrivateChatsUseCase()
 
@@ -78,22 +84,29 @@ class ChatViewModel @Inject constructor(
                             data = chatUi
                         )
 
-                        val resultMsg = getChatMessagesUseCase(chatId)
+                        viewModelScope.launch {
+                            getChatMessagesUseCase.observeMessages(chatId)
+                                .collect { messages ->
+                                    val curState = _uiState.value
+                                    if (curState is ChatUiState.Success) {
+                                        val uiMessages = messages.map { message ->
+                                            val cachedMessage = messagesCache[message.id]
+                                            if (cachedMessage != null && cachedMessage.isRead != message.isRead) {
+                                                messagesCache[message.id] =
+                                                    message.toUi(curState.data.channelMembers)
+                                            }
 
-                        _getPrivateChatMessagesEvent.value = resultMsg.fold(
-                            onSuccess = { messages ->
-                                val messagesListUi = messages.map { it.toUi(chatUi.channelMembers) }
+                                            messagesCache.getOrPut(message.id) {
+                                                message.toUi(curState.data.channelMembers)
+                                            }
+                                        }
 
-                                _uiState.value = ChatUiState.Success(
-                                    data = chatUi.copy(messages = messagesListUi)
-                                )
-
-                                GetPrivateChatMessagesEvent.SuccessLoad
-                            },
-                            onFailure = {
-                                GetPrivateChatMessagesEvent.Error("Ошибка при загрузке сообщений. " + it.message)
-                            }
-                        )
+                                        _uiState.value = ChatUiState.Success(
+                                            data = curState.data.copy(messages = uiMessages)
+                                        )
+                                    }
+                                }
+                        }
 
                     } else {
                         GetPrivateChatsEvent.Error("Ошибка при загрузке выбранного чата. ")
@@ -104,6 +117,12 @@ class ChatViewModel @Inject constructor(
                     GetPrivateChatsEvent.Error("Ошибка при загрузке чатов. " + it.message)
                 }
             )
+        }
+    }
+
+    fun markMessageAsRead(messageId: String) {
+        viewModelScope.launch {
+            markMessageAsReadUseCase.invoke(messageId)
         }
     }
 
@@ -123,17 +142,6 @@ class ChatViewModel @Inject constructor(
                 }
             )
 
-        }
-    }
-
-    fun updateChatWithMessage(msg: MessageUiModel) {
-        val currentState = _uiState.value
-        if (currentState is ChatUiState.Success) {
-            val updatedData = currentState.data.copy(
-                messages = listOf(msg) + currentState.data.messages
-            )
-
-            _uiState.value = ChatUiState.Success(data = updatedData)
         }
     }
 

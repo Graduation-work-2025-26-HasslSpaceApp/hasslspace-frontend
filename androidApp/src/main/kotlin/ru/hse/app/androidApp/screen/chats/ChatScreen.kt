@@ -110,7 +110,7 @@ fun ChatWithStateContent(
     viewModel: ChatViewModel
 ) {
     val members = uiState.data.channelMembers
-    // добавить прочтение сообщений
+    // todo добавить прочтение сообщений
     ChatContent(
         channelName = uiState.data.name,
         channelSubtitle = if (members.size > 2) participantsLabel(members.size) else "Личный чат",
@@ -120,5 +120,6 @@ fun ChatWithStateContent(
         isDarkTheme = viewModel.isDark,
         imageLoader = viewModel.imageLoader,
         messages = uiState.data.messages,
+        onReadMsg = { viewModel.markMessageAsRead(it) },
     )
 }

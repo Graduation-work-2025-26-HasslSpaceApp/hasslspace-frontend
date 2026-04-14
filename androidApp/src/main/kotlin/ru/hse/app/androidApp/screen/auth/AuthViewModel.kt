@@ -2,7 +2,6 @@ package ru.hse.app.androidApp.screen.auth
 
 import android.net.Uri
 import android.util.Patterns
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +17,7 @@ import ru.hse.app.androidApp.domain.usecase.auth.LoginUserUseCase
 import ru.hse.app.androidApp.domain.usecase.auth.RegisterUserUseCase
 import ru.hse.app.androidApp.domain.usecase.auth.SendVerificationCodeUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.SaveUserPhotoUseCase
-import ru.hse.app.androidApp.screen.chats.centrifugo.CentrifugeService
+import ru.hse.app.androidApp.data.centrifugo.CentrifugeService
 import ru.hse.app.androidApp.ui.entity.model.auth.AuthUiState
 import ru.hse.app.androidApp.ui.entity.model.auth.events.CheckEmailVerificationEvent
 import ru.hse.app.androidApp.ui.entity.model.auth.events.LoginUserEvent

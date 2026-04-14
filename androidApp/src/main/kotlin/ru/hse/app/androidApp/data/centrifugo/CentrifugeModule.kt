@@ -1,4 +1,4 @@
-package ru.hse.app.androidApp.screen.chats.centrifugo
+package ru.hse.app.androidApp.data.centrifugo
 
 import dagger.Binds
 import dagger.Module

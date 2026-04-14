@@ -17,6 +17,5 @@ class SaveMessageToRoomUseCase @Inject constructor(
         return runCatching {
             chatRepository.saveMessageToRoom(id, chatId, userId, content, createdAt)
         }
-
     }
 }

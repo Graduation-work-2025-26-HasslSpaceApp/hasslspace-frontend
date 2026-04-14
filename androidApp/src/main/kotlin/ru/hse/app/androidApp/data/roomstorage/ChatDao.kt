@@ -23,10 +23,10 @@ interface ChatDao {
     """)
     suspend fun getMessagesByChatId(chatId: String): List<MessageEntity>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertMessage(message: MessageEntity)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertMessages(messages: List<MessageEntity>)
 
     @Query("UPDATE message SET is_read = 1 WHERE chat_id = :chatId AND is_read = 0")

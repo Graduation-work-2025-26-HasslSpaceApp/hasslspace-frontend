@@ -1,4 +1,4 @@
-package ru.hse.app.androidApp.screen.chats.centrifugo
+package ru.hse.app.androidApp.data.centrifugo
 
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
