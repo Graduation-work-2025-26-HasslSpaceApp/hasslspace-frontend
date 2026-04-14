@@ -17,6 +17,6 @@ class SearchChatsUseCase @Inject constructor() {
         list: List<ChatShortUiModel>,
         value: String
     ): List<ChatShortUiModel> {
-        return list.filter { it.title.contains(value, ignoreCase = true) }
+        return list.filter { it.name.contains(value, ignoreCase = true) }
     }
 }

@@ -981,6 +981,62 @@ class FakeApiService : ApiService {
                     userId = "123",
                     content = "Потихоньку. Доделываю последние правки",
                     createdAt = LocalDateTime.now().minusHours(1).minusMinutes(30)
+                ),
+                MessageDto(
+                    id = "asdfwwcws",
+                    chatId = chatId,
+                    userId = "1",
+                    content = "Когда планируешь закончить?",
+                    createdAt = LocalDateTime.now().minusHours(1).minusMinutes(15)
+                ),
+                MessageDto(
+                    id = "sfkhskjefhlscw",
+                    chatId = chatId,
+                    userId = "123",
+                    content = "Надеюсь, завтра все будет готово.",
+                    createdAt = LocalDateTime.now().minusHours(1).minusMinutes(10)
+                ),
+                MessageDto(
+                    id = "msg_123423423424",
+                    chatId = chatId,
+                    userId = "123",
+                    content = "Сообщение сейчас",
+                    createdAt = LocalDateTime.now().minusMinutes(1)
+                ),
+                MessageDto(
+                    id = "gerger",
+                    chatId = chatId,
+                    userId = "123",
+                    content = "Сообщение сейчас 3",
+                    createdAt = LocalDateTime.now().minusMinutes(1)
+                ),
+                MessageDto(
+                    id = "23ккуаецыукпац45п",
+                    chatId = chatId,
+                    userId = "1",
+                    content = "You can also manually implement your own recovery logic on top of the basic PUB/SUB possibilities that Centrifugo provides. As we said above you can simply ask your backend for an actual state after every client resubscribe completely bypassing the recovery mechanism described here. Also, it's possible to manually iterate over the Centrifugo stream using the history iteration API described above. ",
+                    createdAt = LocalDateTime.now().minusMinutes(1)
+                ),
+                MessageDto(
+                    id = "34еаеукаука",
+                    chatId = chatId,
+                    userId = "123",
+                    content = "Надеюсь, завтра все будет готово.",
+                    createdAt = LocalDateTime.now().minusMinutes(1)
+                ),
+                MessageDto(
+                    id = "ццукцуква",
+                    chatId = chatId,
+                    userId = "123",
+                    content = "Сообщение сейчас",
+                    createdAt = LocalDateTime.now().minusMinutes(1)
+                ),
+                MessageDto(
+                    id = "34еауыксук",
+                    chatId = chatId,
+                    userId = "123",
+                    content = "Сообщение сейчас 3",
+                    createdAt = LocalDateTime.now().minusMinutes(1)
                 )
             )
             "chat_2" -> listOf(
@@ -1004,6 +1060,57 @@ class FakeApiService : ApiService {
                     userId = "2",
                     content = "В 19:00, как обычно",
                     createdAt = LocalDateTime.now().minusDays(1).minusMinutes(2)
+                ),
+                MessageDto(
+                    id = "sdfaverg",
+                    chatId = chatId,
+                    userId = "123",
+                    content = "Я на месте. Где ты?",
+                    createdAt = LocalDateTime.now().minusDays(1).minusMinutes(1)
+                ),
+                MessageDto(
+                    id = "cereterhes",
+                    chatId = chatId,
+                    userId = "2",
+                    content = "Тоже скоро буду, еду.",
+                    createdAt = LocalDateTime.now().minusDays(1).minusMinutes(0)
+                )
+            )
+            "chat_3" -> listOf(
+                MessageDto(
+                    id = "sdvjklnsvsuik;erht;",
+                    chatId = chatId,
+                    userId = "3",
+                    content = "Привет! Как ты?",
+                    createdAt = LocalDateTime.now().minusDays(2)
+                ),
+                MessageDto(
+                    id = "sefsfcsiopdc",
+                    chatId = chatId,
+                    userId = "123",
+                    content = "Привет! Всё в порядке, спасибо. Как у тебя?",
+                    createdAt = LocalDateTime.now().minusDays(2).minusMinutes(10)
+                ),
+                MessageDto(
+                    id = "wertrwetz",
+                    chatId = chatId,
+                    userId = "3",
+                    content = "У меня тоже все хорошо. Как новый проект?",
+                    createdAt = LocalDateTime.now().minusDays(2).minusMinutes(5)
+                ),
+                MessageDto(
+                    id = "dfgsgwerg",
+                    chatId = chatId,
+                    userId = "123",
+                    content = "Завтра встречаемся, будем обсуждать.",
+                    createdAt = LocalDateTime.now().minusDays(2).minusMinutes(2)
+                ),
+                MessageDto(
+                    id = "gtyhtht",
+                    chatId = chatId,
+                    userId = "3",
+                    content = "Окей, жду встречи.",
+                    createdAt = LocalDateTime.now().minusDays(2).minusMinutes(1)
                 )
             )
             else -> listOf(

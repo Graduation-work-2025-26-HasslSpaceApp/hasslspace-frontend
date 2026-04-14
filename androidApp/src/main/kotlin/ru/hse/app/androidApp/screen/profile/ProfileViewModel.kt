@@ -554,6 +554,7 @@ class ProfileViewModel @Inject constructor(
 
     fun onMessageClick(userId: String) {
         //TODO
+        // должны получить с бэка айди нового приватного чата. Если успешно, то ивент успешности, далее с screen переходим в личные сообщения через navController.navigate(NavigationItem.Chat.route + "/${chat.id}")
     }
 
     fun onVideoCallClick(memberName: String,roomName: String, friendshipId: String?) {

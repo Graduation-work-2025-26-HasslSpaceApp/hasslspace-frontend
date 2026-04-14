@@ -334,7 +334,10 @@ fun MainServerScreenWithStateContent(
             text = "Текстовые каналы",
             isDarkTheme = viewModel.isDarkTheme,
             serverPictureUrl = data.chosenServer.photoUrl,
-            onReadClick = {/*todo*/ },
+            onReadClick = {
+                viewModel.markAsReadAll()
+                viewModel.showTextChannelsSettings.value = false
+            },
             onCreateChannel = {
                 viewModel.showTextChannelsSettings.value = false
                 viewModel.creatingChannel.value = true
@@ -351,14 +354,15 @@ fun MainServerScreenWithStateContent(
             text = "Голосовые каналы",
             isDarkTheme = viewModel.isDarkTheme,
             serverPictureUrl = data.chosenServer.photoUrl,
-            onReadClick = {/*todo убрать*/ },
+            onReadClick = {},
             onCreateChannel = {
                 viewModel.showVoiceChannelsSettings.value = false
                 viewModel.creatingChannel.value = true
                 viewModel.typeOfCreatingChannel.value = "VOICE"
             },
             onDismiss = { viewModel.showVoiceChannelsSettings.value = false },
-            isModerator = data.chosenServer.isOwner
+            isModerator = data.chosenServer.isOwner,
+            showRead = false
         )
     }
 
@@ -367,7 +371,11 @@ fun MainServerScreenWithStateContent(
             text = viewModel.chosenTextChannel.value!!.title,
             icon = R.drawable.hashtag,
             isDarkTheme = viewModel.isDarkTheme,
-            onReadClick = {/*todo*/ },
+            onReadClick = {
+                viewModel.markAsRead(viewModel.chosenTextChannel.value!!.id)
+                viewModel.showTextChannelOptions.value = false
+                viewModel.chosenTextChannel.value = null
+            },
             onSetUpChannel = {
                 viewModel.loadChosenChannel(
                     data.chosenServer,
@@ -388,7 +396,7 @@ fun MainServerScreenWithStateContent(
             text = viewModel.chosenVoiceChannel.value!!.title,
             icon = R.drawable.voice,
             isDarkTheme = viewModel.isDarkTheme,
-            onReadClick = {/*todo убрать*/ },
+            onReadClick = {},
             onSetUpChannel = {
                 viewModel.loadChosenChannel(
                     data.chosenServer,
@@ -400,7 +408,8 @@ fun MainServerScreenWithStateContent(
                 viewModel.showVoiceChannelOptions.value = false
                 viewModel.chosenVoiceChannel.value = null
             },
-            isModerator = data.chosenServer.isOwner
+            isModerator = data.chosenServer.isOwner,
+            showRead = false
         )
     }
 

@@ -81,14 +81,12 @@ fun Messages(
 
     val firstUnreadIndex by remember(messages) {
         derivedStateOf {
-            messages.indexOfLast { !it.isRead }.let { unreadIndex ->
-                if (unreadIndex == -1) 0 else unreadIndex
-            }
+            messages.indexOfLast { !it.isRead }
         }
     }
 
     LaunchedEffect(firstUnreadIndex) {
-        if (firstUnreadIndex != 0) {
+        if (firstUnreadIndex != -1) {
             scrollState.scrollToItem(firstUnreadIndex)
         }
     }
@@ -147,11 +145,11 @@ fun Messages(
                     )
                 }
 
-                if (index == firstUnreadIndex) {
-                    item(key = "unread_header_$index") {
-                        DayHeader("Непрочитано")
-                    }
-                }
+//                if (index == firstUnreadIndex) { todo придумать как добавить
+//                    item(key = "unread_header_$index") {
+//                        DayHeader("Непрочитано")
+//                    }
+//                }
             }
         }
 

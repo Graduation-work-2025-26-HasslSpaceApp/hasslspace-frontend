@@ -15,6 +15,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.ImageLoader
+import ru.hse.app.androidApp.ui.components.chats.chat.formatMessageTime
+import ru.hse.app.androidApp.ui.components.chats.chat.getMessagePreview
 import ru.hse.app.androidApp.ui.components.common.bar.SearchBar
 import ru.hse.app.androidApp.ui.components.common.box.NoItemsBox
 import ru.hse.app.androidApp.ui.components.common.button.AddTextButton
@@ -68,16 +70,22 @@ fun MyChatsScreenContent(
             items = chats,
             columns = 1,
             contentPadding = PaddingValues(0.dp),
+            verticalSpacing = 20.dp,
         ) { chat ->
+            val sorted = chat.messages.sortedByDescending { it.timestamp }
             ChatCard(
                 imageLoader = imageLoader,
-                title = chat.title,
-                lastMessage = chat.lastMessage,
-                timeOfLastMessage = chat.timeOfLastMessage,
+                title = chat.name,
+                lastMessage = sorted.firstOrNull()?.content ?: "",
+                timeOfLastMessage = if (sorted.isNotEmpty() && sorted.firstOrNull()?.timestamp != null) {
+                    formatMessageTime(sorted.firstOrNull()!!.timestamp)
+                } else {
+                    ""
+                },
                 chatPictureUrl = chat.chatPhotoUrl,
                 isDarkTheme = isDarkTheme,
                 onChatClick = { onChatClick(chat) },
-                unreadCount = chat.unreadCount
+                unreadCount = chat.unreadCount,
             )
         }
     }
@@ -89,51 +97,51 @@ fun MyChatsScreenContentPreviewLight() {
     val mockChats = listOf(
         ChatShortUiModel(
             id = "1",
-            title = "Марина Ландышева",
-            lastMessage = "Вы: пришли мне, пожалуйста, последнюю картинку",
-            timeOfLastMessage = "15:16",
+            name = "Марина Ландышева",
+            messages = listOf(),
             chatPhotoUrl = "",
-            unreadCount = 0
+            unreadCount = 0,
+            channelMembers = listOf(),
         ),
         ChatShortUiModel(
             id = "2",
-            title = "Александр Иванов",
-            lastMessage = "Завтра встреча в 10:00",
-            timeOfLastMessage = "12:30",
+            name = "Александр Иванов",
+            messages = listOf(),
             chatPhotoUrl = "",
-            unreadCount = 3
+            unreadCount = 3,
+            channelMembers = listOf(),
         ),
         ChatShortUiModel(
             id = "3",
-            title = "Рабочая группа",
-            lastMessage = "Марина: Я отправила финальный отчет",
-            timeOfLastMessage = "10:15",
+            name = "Рабочая группа",
+            messages = listOf(),
             chatPhotoUrl = "",
-            unreadCount = 0
+            unreadCount = 0,
+            channelMembers = listOf(),
         ),
         ChatShortUiModel(
             id = "4",
-            title = "Сергей Петров",
-            lastMessage = "Спасибо за помощь!",
-            timeOfLastMessage = "09:45",
+            name = "Сергей Петров",
+            messages = listOf(),
             chatPhotoUrl = "",
-            unreadCount = 1
+            unreadCount = 1,
+            channelMembers = listOf(),
         ),
         ChatShortUiModel(
             id = "5",
-            title = "Поддержка",
-            lastMessage = "Ваш вопрос решен",
-            timeOfLastMessage = "Вчера",
+            name = "Поддержка",
+            messages = listOf(),
             chatPhotoUrl = "",
-            unreadCount = 0
+            unreadCount = 0,
+            channelMembers = listOf(),
         ),
         ChatShortUiModel(
             id = "6",
-            title = "Дизайн-команда",
-            lastMessage = "Новые макеты готовы",
-            timeOfLastMessage = "Вчера",
+            name = "Дизайн-команда",
+            messages = listOf(),
             chatPhotoUrl = "",
-            unreadCount = 5
+            unreadCount = 5,
+            channelMembers = listOf(),
         )
     )
 
@@ -156,27 +164,51 @@ fun MyChatsScreenContentPreviewDark() {
     val mockChats = listOf(
         ChatShortUiModel(
             id = "1",
-            title = "Марина Ландышева",
-            lastMessage = "Вы: пришли мне, пожалуйста, последнюю картинку",
-            timeOfLastMessage = "15:16",
+            name = "Марина Ландышева",
+            messages = listOf(),
             chatPhotoUrl = "",
-            unreadCount = 5
+            unreadCount = 0,
+            channelMembers = listOf(),
         ),
         ChatShortUiModel(
             id = "2",
-            title = "Александр Иванов",
-            lastMessage = "Завтра встреча в 10:00",
-            timeOfLastMessage = "12:30",
+            name = "Александр Иванов",
+            messages = listOf(),
             chatPhotoUrl = "",
-            unreadCount = 55
+            unreadCount = 3,
+            channelMembers = listOf(),
         ),
         ChatShortUiModel(
             id = "3",
-            title = "Поддержка",
-            lastMessage = "Ваш вопрос решен",
-            timeOfLastMessage = "Вчера",
+            name = "Рабочая группа",
+            messages = listOf(),
             chatPhotoUrl = "",
-            unreadCount = 555
+            unreadCount = 0,
+            channelMembers = listOf(),
+        ),
+        ChatShortUiModel(
+            id = "4",
+            name = "Сергей Петров",
+            messages = listOf(),
+            chatPhotoUrl = "",
+            unreadCount = 1,
+            channelMembers = listOf(),
+        ),
+        ChatShortUiModel(
+            id = "5",
+            name = "Поддержка",
+            messages = listOf(),
+            chatPhotoUrl = "",
+            unreadCount = 0,
+            channelMembers = listOf(),
+        ),
+        ChatShortUiModel(
+            id = "6",
+            name = "Дизайн-команда",
+            messages = listOf(),
+            chatPhotoUrl = "",
+            unreadCount = 5,
+            channelMembers = listOf(),
         )
     )
 
@@ -215,19 +247,51 @@ fun MyChatsScreenContentPreviewWithSearchLight() {
     val mockChats = listOf(
         ChatShortUiModel(
             id = "1",
-            title = "Марина",
-            lastMessage = "Вы: пришли мне, пожалуйста, последнюю картинку",
-            timeOfLastMessage = "15:16",
+            name = "Марина Ландышева",
+            messages = listOf(),
             chatPhotoUrl = "",
-            unreadCount = 0
+            unreadCount = 0,
+            channelMembers = listOf(),
         ),
         ChatShortUiModel(
             id = "2",
-            title = "Мария",
-            lastMessage = "Когда сможем встретиться?",
-            timeOfLastMessage = "11:20",
+            name = "Александр Иванов",
+            messages = listOf(),
             chatPhotoUrl = "",
-            unreadCount = 2
+            unreadCount = 3,
+            channelMembers = listOf(),
+        ),
+        ChatShortUiModel(
+            id = "3",
+            name = "Рабочая группа",
+            messages = listOf(),
+            chatPhotoUrl = "",
+            unreadCount = 0,
+            channelMembers = listOf(),
+        ),
+        ChatShortUiModel(
+            id = "4",
+            name = "Сергей Петров",
+            messages = listOf(),
+            chatPhotoUrl = "",
+            unreadCount = 1,
+            channelMembers = listOf(),
+        ),
+        ChatShortUiModel(
+            id = "5",
+            name = "Поддержка",
+            messages = listOf(),
+            chatPhotoUrl = "",
+            unreadCount = 0,
+            channelMembers = listOf(),
+        ),
+        ChatShortUiModel(
+            id = "6",
+            name = "Дизайн-команда",
+            messages = listOf(),
+            chatPhotoUrl = "",
+            unreadCount = 5,
+            channelMembers = listOf(),
         )
     )
 

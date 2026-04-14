@@ -40,4 +40,6 @@ interface ChatRepository {
     suspend fun markMessageAsRead(messageId: String)
 
     suspend fun markMessagesAsRead(chatId: String)
+
+    suspend fun observeUnreadCount(chatId: String): Flow<Int>
 }

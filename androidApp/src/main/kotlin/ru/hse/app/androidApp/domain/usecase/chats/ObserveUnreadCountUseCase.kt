@@ -1,12 +1,12 @@
 package ru.hse.app.androidApp.domain.usecase.chats
 
 import kotlinx.coroutines.flow.Flow
-import ru.hse.app.androidApp.data.roomstorage.ChatDao
+import ru.hse.app.androidApp.domain.repository.ChatRepository
 import javax.inject.Inject
 
 class ObserveUnreadCountUseCase @Inject constructor(
-    private val chatDao: ChatDao
+    private val chatRepository: ChatRepository
 ) {
-    operator fun invoke(chatId: String): Flow<Int> =
-        chatDao.observeUnreadCount(chatId)
+    suspend operator fun invoke(chatId: String): Flow<Int> =
+        chatRepository.observeUnreadCount(chatId)
 }

@@ -45,7 +45,8 @@ fun ChannelsBottomSheet(
 //    onMuteClick: () -> Unit,
     onCreateChannel: () -> Unit,
     onDismiss: () -> Unit,
-    isModerator: Boolean
+    isModerator: Boolean,
+    showRead: Boolean = true,
 ) {
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -93,11 +94,13 @@ fun ChannelsBottomSheet(
 
             Spacer(Modifier.height(5.dp))
 
-            IconTextButton(
-                onClick = onReadClick,
-                text = "Пометить как прочитанное",
-                iconResource = if (isDarkTheme) R.drawable.eye_dark else R.drawable.eye_light
-            )
+            if (showRead) {
+                IconTextButton(
+                    onClick = onReadClick,
+                    text = "Пометить как прочитанное",
+                    iconResource = if (isDarkTheme) R.drawable.eye_dark else R.drawable.eye_light
+                )
+            }
 
 //            IconTextButton(
 //                onClick = onMuteClick,

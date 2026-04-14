@@ -97,4 +97,8 @@ class ChatRepositoryImpl @Inject constructor(
     override suspend fun markMessagesAsRead(chatId: String) {
         chatDao.markAllMessagesAsRead(chatId)
     }
+
+    override suspend fun observeUnreadCount(chatId: String): Flow<Int> {
+        return chatDao.observeUnreadCount(chatId)
+    }
 }

@@ -1,8 +1,12 @@
 package ru.hse.app.androidApp.ui.entity.model.chats
 
 import androidx.compose.runtime.Immutable
+import ru.hse.app.androidApp.data.roomstorage.MessageEntity
+import ru.hse.app.androidApp.domain.model.entity.ChatInfo
 import ru.hse.app.androidApp.ui.entity.model.ChatShortUiModel
 import ru.hse.app.androidApp.ui.entity.model.FriendUiModel
+import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
+import java.time.LocalDateTime
 
 sealed interface ChatsUiState {
     data object Loading : ChatsUiState
@@ -16,54 +20,36 @@ data class ChatsUiModel(
     val friends: List<FriendUiModel>
 )
 
-//todo убрать
-val mockChats = listOf(
-    ChatShortUiModel(
-        id = "chat_1",
-        title = "Марина Ландышева",
-        lastMessage = "Вы: пришли мне, пожалуйста, последнюю картинку",
-        timeOfLastMessage = "15:16",
-        chatPhotoUrl = "",
-        unreadCount = 0
-    ),
-    ChatShortUiModel(
-        id = "chat_2",
-        title = "Александр Иванов",
-        lastMessage = "Завтра встреча в 10:00",
-        timeOfLastMessage = "12:30",
-        chatPhotoUrl = "",
-        unreadCount = 3
-    ),
-    ChatShortUiModel(
-        id = "chat_3",
-        title = "Рабочая группа",
-        lastMessage = "Марина: Я отправила финальный отчет",
-        timeOfLastMessage = "10:15",
-        chatPhotoUrl = "",
-        unreadCount = 0
-    ),
-    ChatShortUiModel(
-        id = "4",
-        title = "Сергей Петров",
-        lastMessage = "Спасибо за помощь!",
-        timeOfLastMessage = "09:45",
-        chatPhotoUrl = "",
-        unreadCount = 1
-    ),
-    ChatShortUiModel(
-        id = "5",
-        title = "Поддержка",
-        lastMessage = "Ваш вопрос решен",
-        timeOfLastMessage = "Вчера",
-        chatPhotoUrl = "",
-        unreadCount = 0
-    ),
-    ChatShortUiModel(
-        id = "6",
-        title = "Дизайн-команда",
-        lastMessage = "Новые макеты готовы",
-        timeOfLastMessage = "Вчера",
-        chatPhotoUrl = "",
-        unreadCount = 5
-    )
+@Immutable
+data class MessageShortUiModel(
+    val id: String,
+    val content: String,
+    val timestamp: LocalDateTime,
+    val isRead: Boolean
 )
+
+fun ChatInfo.toChatShort(): ChatShortUiModel {
+    return ChatShortUiModel(
+        id = this.id,
+        name = this.chatMembers
+            .firstOrNull { !it.isCurrentUser }
+            ?.name
+            ?: "Личный чат",
+        channelMembers = this.chatMembers.map { it.toUi() },
+        messages = emptyList(),
+        chatPhotoUrl = this.chatMembers
+            .firstOrNull { !it.isCurrentUser }
+            ?.photoURL
+            ?: "",
+        unreadCount = 0
+    )
+}
+
+fun MessageEntity.toMessageShortUi(): MessageShortUiModel {
+    return MessageShortUiModel(
+        id = this.id,
+        content = this.content?:"",
+        timestamp = this.createdAt,
+        isRead = this.isRead
+    )
+}

@@ -7,6 +7,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import ru.hse.app.androidApp.BuildConfig
+import ru.hse.app.androidApp.data.centrifugo.CentrifugeService
 import ru.hse.app.androidApp.data.local.DataManager
 import ru.hse.app.androidApp.domain.service.common.CropProfilePhotoService
 import ru.hse.app.androidApp.domain.usecase.chats.GetChatMessagesUseCase
@@ -50,6 +52,7 @@ class ChatViewModel @Inject constructor(
     private val errorHandler: ErrorHandler,
 
     val cropProfilePhotoService: CropProfilePhotoService,
+    private val centrifugeService: CentrifugeService,
     val imageLoader: ImageLoader
 ) : ViewModel() {
     val isDark = dataManager.isDark.value
@@ -101,6 +104,8 @@ class ChatViewModel @Inject constructor(
                                             }
                                         }
 
+                                        connectToCentrifugo(chatId)
+
                                         _uiState.value = ChatUiState.Success(
                                             data = curState.data.copy(messages = uiMessages)
                                         )
@@ -118,6 +123,11 @@ class ChatViewModel @Inject constructor(
                 }
             )
         }
+    }
+
+    fun connectToCentrifugo(chatId: String) {
+        centrifugeService.connect(BuildConfig.CENTRIFUGO_URL, dataManager.jwtFlow.value?:"")
+        centrifugeService.subscribeToChannel(chatId)
     }
 
     fun markMessageAsRead(messageId: String) {

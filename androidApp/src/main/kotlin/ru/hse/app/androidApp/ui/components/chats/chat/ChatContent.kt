@@ -72,7 +72,7 @@ fun ChatContent(
                 .padding(paddingValues),
         ) {
             Messages(
-                messages = messages,
+                messages = messages.sortedByDescending { it.timestamp },
                 scrollState = scrollState,
                 onAuthorClick = onAuthorClick,
                 isDarkTheme = isDarkTheme,

@@ -22,6 +22,7 @@ import ru.hse.app.androidApp.domain.usecase.channel.CreateChannelUseCase
 import ru.hse.app.androidApp.domain.usecase.channel.DeleteChannelUseCase
 import ru.hse.app.androidApp.domain.usecase.channel.GetChannelInfoUseCase
 import ru.hse.app.androidApp.domain.usecase.channel.PatchChannelPropertiesUseCase
+import ru.hse.app.androidApp.domain.usecase.chats.MarkChatAsReadUseCase
 import ru.hse.app.androidApp.domain.usecase.friends.CreateFriendRequestUseCase
 import ru.hse.app.androidApp.domain.usecase.friends.DeleteFriendshipUseCase
 import ru.hse.app.androidApp.domain.usecase.friends.GetChosenUserCommonServersUseCase
@@ -91,6 +92,8 @@ class ServerCardViewModel @Inject constructor(
 
     private val sendServerInvitationUseCase: SendServerInvitationUseCase,
     private val searchMembersUseCase: SearchMembersUseCase,
+
+    private val markChatAsReadUseCase: MarkChatAsReadUseCase,
 
     private val errorHandler: ErrorHandler,
 
@@ -698,6 +701,25 @@ class ServerCardViewModel @Inject constructor(
                     onFailure = {}
                 )
             }
+        }
+    }
+
+    fun markAsReadAll() {
+        viewModelScope.launch {
+            val currentState = _uiState.value
+            if (currentState is ServerCardUiState.Success) {
+                val data = currentState.data
+
+                for (channel in data.chosenServer.textChannels) {
+                    markChatAsReadUseCase(channel.id)
+                }
+            }
+        }
+    }
+
+    fun markAsRead(chatId: String) {
+        viewModelScope.launch {
+            markChatAsReadUseCase(chatId)
         }
     }
 
