@@ -277,6 +277,7 @@ fun ServerMembersInfoScreenWithStateContent(
             onMessageClick = { viewModel.onMessageClick(userId = data.chosenUser.id) },
             onCallClick = {
                 viewModel.onCallClick(
+                    targetUserId = data.chosenUser.id,
                     memberName = data.currentUser?.name ?: "Unknown",
                     roomName = "Звонок с " + data.chosenUser.name,
                     friendshipId = data.chosenUser.friendshipId
@@ -284,6 +285,7 @@ fun ServerMembersInfoScreenWithStateContent(
             },
             onVideoCallClick = {
                 viewModel.onVideoCallClick(
+                    targetUserId = data.chosenUser.id,
                     memberName = data.currentUser?.name ?: "Unknown",
                     roomName = "Звонок с " + data.chosenUser.name,
                     friendshipId = data.chosenUser.friendshipId

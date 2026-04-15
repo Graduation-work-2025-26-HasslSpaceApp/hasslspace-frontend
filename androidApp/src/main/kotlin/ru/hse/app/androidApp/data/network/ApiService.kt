@@ -164,10 +164,9 @@ interface ApiService {
     ): Response<String>
 
     // Удалить приглашение на сервер
-    @DELETE(SERVER_SERVICE_URL) //TODO
+    @DELETE(SERVER_SERVICE_URL + DELETE_INVITE_URL)
     suspend fun deleteServerInvitation(
-        @Query("serverId") serverId: String,
-        @Query("invitationId") invitationId: String
+        @Query("inviteCode") inviteCode: String
     ): Response<String>
 
     // Удалить сервер

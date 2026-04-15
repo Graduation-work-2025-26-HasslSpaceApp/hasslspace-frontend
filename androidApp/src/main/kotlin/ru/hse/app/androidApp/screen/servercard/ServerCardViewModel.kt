@@ -38,6 +38,7 @@ import ru.hse.app.androidApp.domain.usecase.servers.GetServerInfoUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.LeaveServerUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.SearchMembersUseCase
 import ru.hse.app.androidApp.domain.usecase.voice.GetVoiceRoomTokenUseCase
+import ru.hse.app.androidApp.domain.usecase.voice.SendVoiceInviteToUserUseCase
 import ru.hse.app.androidApp.ui.entity.model.FriendCheckboxUiModel
 import ru.hse.app.androidApp.ui.entity.model.RoleMiniCheckboxUiModel
 import ru.hse.app.androidApp.ui.entity.model.ServerMemberUiModel
@@ -100,6 +101,9 @@ class ServerCardViewModel @Inject constructor(
     private val searchMembersUseCase: SearchMembersUseCase,
 
     private val markChatAsReadUseCase: MarkChatAsReadUseCase,
+
+    private val sendVoiceInviteToUserUseCase: SendVoiceInviteToUserUseCase,
+
 
     private val errorHandler: ErrorHandler,
 
@@ -418,7 +422,7 @@ class ServerCardViewModel @Inject constructor(
         }
     }
 
-    fun onCallClick(memberName: String, roomName: String, friendshipId: String?) {
+    fun onCallClick(targetUserId: String, memberName: String, roomName: String, friendshipId: String?) {
         viewModelScope.launch {
             val result = getVoiceRoomTokenUseCase(
                 name = memberName,
@@ -428,6 +432,9 @@ class ServerCardViewModel @Inject constructor(
 
             _getTokenEvent.value = result.fold(
                 onSuccess = { token ->
+                    viewModelScope.launch {
+                        sendVoiceInviteToUserUseCase(targetUserId, memberName)
+                    }
                     GetTokenEvent.Success(token, roomName, videoEnabled = false)
                 },
                 onFailure = {
@@ -452,7 +459,7 @@ class ServerCardViewModel @Inject constructor(
         }
     }
 
-    fun onVideoCallClick(memberName: String, roomName: String, friendshipId: String?) {
+    fun onVideoCallClick(targetUserId: String, memberName: String, roomName: String, friendshipId: String?) {
         viewModelScope.launch {
             val result = getVoiceRoomTokenUseCase(
                 name = memberName,
@@ -462,6 +469,9 @@ class ServerCardViewModel @Inject constructor(
 
             _getTokenEvent.value = result.fold(
                 onSuccess = { token ->
+                    viewModelScope.launch {
+                        sendVoiceInviteToUserUseCase(targetUserId, memberName)
+                    }
                     GetTokenEvent.Success(token, roomName, videoEnabled = true)
                 },
                 onFailure = {

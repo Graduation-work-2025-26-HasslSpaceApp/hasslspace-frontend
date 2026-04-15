@@ -633,11 +633,10 @@ class FakeApiService : ApiService {
     }
 
     override suspend fun deleteServerInvitation(
-        serverId: String,
-        invitationId: String
+        inviteCode: String
     ): Response<String> {
         fakeInvitations.remove(
-            fakeInvitations.find { it.code == invitationId }
+            fakeInvitations.find { it.code == inviteCode }
         )
         return Response.success("true")
     }

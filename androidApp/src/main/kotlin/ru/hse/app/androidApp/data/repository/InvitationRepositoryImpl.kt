@@ -17,10 +17,9 @@ class InvitationRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteServerInvitation(
-        serverId: String,
         invitationId: String
     ): Result<String> {
-        return apiCaller.safeApiCall { apiService.deleteServerInvitation(serverId, invitationId) }
+        return apiCaller.safeApiCall { apiService.deleteServerInvitation(invitationId) }
     }
 
     override suspend fun getServerInvitations(serverId: String): Result<List<Invitation>> {

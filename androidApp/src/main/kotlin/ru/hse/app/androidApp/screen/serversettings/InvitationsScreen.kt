@@ -125,6 +125,6 @@ fun InvitationsScreenWithStateContent(
 
             viewModel.errorHandler("Ссылка скопирована в буфер обмена")
         },
-        onCancelClick = { viewModel.deleteInvitation(serverId, it.code) },
+        onCancelClick = { viewModel.deleteInvitation(it.code) },
     )
 }

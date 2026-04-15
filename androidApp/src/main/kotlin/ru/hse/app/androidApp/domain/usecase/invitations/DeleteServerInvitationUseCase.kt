@@ -6,7 +6,7 @@ import javax.inject.Inject
 class DeleteServerInvitationUseCase @Inject constructor(
     private val invitationRepository: InvitationRepository
 ) {
-    suspend operator fun invoke(serverId: String, invitationId: String): Result<String> {
-        return invitationRepository.deleteServerInvitation(serverId, invitationId)
+    suspend operator fun invoke(invitationId: String): Result<String> {
+        return invitationRepository.deleteServerInvitation(invitationId)
     }
 }

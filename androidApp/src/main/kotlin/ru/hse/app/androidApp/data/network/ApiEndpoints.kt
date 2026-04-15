@@ -51,6 +51,8 @@ const val UPDATE_SERVER_OWNER_URL = "/servers/members/change-owner" // Обно�
 const val CREATE_INVITE_URL = "/servers/invites" // Создать приглашение
 const val GET_ACTIVE_INVITES_URL = "/servers/invites" // Список активных приглашений
 
+const val DELETE_INVITE_URL = "/servers/invites" // Удалить приглашение
+
 // Роли
 const val CREATE_ROLE_URL = "/servers/roles" // Создать роль
 const val GET_ROLES_URL = "/servers/roles" // Список ролей

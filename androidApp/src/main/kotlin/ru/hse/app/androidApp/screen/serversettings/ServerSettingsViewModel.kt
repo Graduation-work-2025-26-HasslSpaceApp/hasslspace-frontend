@@ -372,9 +372,9 @@ class ServerSettingsViewModel @Inject constructor(
         }
     }
 
-    fun deleteInvitation(serverId: String, invitationId: String) {
+    fun deleteInvitation(invitationId: String) {
         viewModelScope.launch {
-            val result = deleteInvitationUseCase(serverId, invitationId)
+            val result = deleteInvitationUseCase(invitationId)
             _deleteInvitationEvent.value = result.fold(
                 onSuccess = {
                     DeleteInvitationEvent.SuccessDelete
