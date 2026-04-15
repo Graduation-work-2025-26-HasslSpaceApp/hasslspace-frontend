@@ -293,6 +293,11 @@ interface ApiService {
     @GET(CHAT_SERVICE_URL + GET_CHAT_URL)// todo
     suspend fun getPrivateChats(): Response<List<ChatInfoDto>>
 
+    @GET(CHAT_SERVICE_URL + GET_CHAT_URL)// todo
+    suspend fun getChat(
+        @Query("chatId") chatId: String
+    ): Response<ChatInfoDto> // todo заменить потом usecase на такой
+
     @GET(CHAT_SERVICE_URL + GET_MESSAGES_HISTORY_URL) // todo
     suspend fun getMessageHistory(
         @Query("chatId") chatId: String,
@@ -305,9 +310,9 @@ interface ApiService {
         @Body newMessageDto: NewMessageDto
     ): Response<String>
 
-    @POST(CHAT_SERVICE_URL + START_CHAT_URL) // todo
+    @POST(CHAT_SERVICE_URL + START_CHAT_URL)
     suspend fun startChat(
-        @Query("userId") userId: String
+        @Query("targetUserId") targetUserId: String
     ): Response<String>
 
 }

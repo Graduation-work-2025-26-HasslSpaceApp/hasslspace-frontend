@@ -21,6 +21,7 @@ import ru.hse.app.androidApp.ui.components.userinfocard.CommonServersBottomSheet
 import ru.hse.app.androidApp.ui.components.userinfocard.UserInfoBottomSheet
 import ru.hse.app.androidApp.ui.entity.model.TypeUiModel
 import ru.hse.app.androidApp.ui.entity.model.call.events.GetTokenEvent
+import ru.hse.app.androidApp.ui.entity.model.chats.events.StartChatEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.ProfileUiState
 import ru.hse.app.androidApp.ui.entity.model.profile.events.CreateFriendRequestEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.events.DeleteFriendshipEvent
@@ -48,6 +49,27 @@ fun FriendsScreen(
     val loadChosenUserCommonServersEvent by viewModel.loadChosenUserCommonServersEvent.collectAsState()
     val respondToFriendRequestEvent by viewModel.respondToFriendshipRequestEvent.collectAsState()
     val getTokenEvent by viewModel.getTokenEvent.collectAsState()
+    val startChatEvent by viewModel.startChatEvent.collectAsState()
+
+    LaunchedEffect(startChatEvent) {
+        when (startChatEvent) {
+            is StartChatEvent.Success -> {
+                val chatId = (startChatEvent as StartChatEvent.Success).chatId
+
+                navController.navigate(NavigationItem.Chat.route + "/${chatId}")
+
+            }
+
+            is StartChatEvent.Error -> {
+                val message = (startChatEvent as StartChatEvent.Error).message
+                viewModel.handleError(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetStartChatEvent()
+    }
+
 
     LaunchedEffect(Unit) {
         viewModel.loadUserData()

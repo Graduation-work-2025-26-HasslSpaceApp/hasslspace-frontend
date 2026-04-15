@@ -1,7 +1,6 @@
 package ru.hse.app.androidApp.screen.servers
 
 import android.net.Uri
-import android.widget.Toast
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -151,24 +150,18 @@ class ServersViewModel @Inject constructor(
         }
     }
 
-    fun joinServer(link: String) {
+    fun joinServer(code: String) {
         val linkPattern = Regex("^https://hasslspace\\.ru/[a-zA-Z0-9]+$")
 
         when {
-            link.isBlank() -> {
-                toastManager.showToast("Ссылка не может быть пустой")
+            code.isBlank() -> {
+                errorHandler.handleError("Код не может быть пустым")
                 return
             }
-
-            !linkPattern.matches(link) -> {
-                toastManager.showToast("Неверный формат ссылки. Ожидается: https://hasslspace.ru/код")
-                return
-            }
-
             else -> {
                 viewModelScope.launch {
                     val result =
-                        joinServerUseCase(link) //TODO параметром идет код, у нас пока что ссылка
+                        joinServerUseCase(code)
 
                     _joinServerEvent.value = result.fold(
                         onSuccess = {

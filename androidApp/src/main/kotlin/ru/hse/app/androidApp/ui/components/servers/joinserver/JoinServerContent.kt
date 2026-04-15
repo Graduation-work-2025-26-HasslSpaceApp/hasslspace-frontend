@@ -21,6 +21,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import ru.hse.app.androidApp.ui.components.common.bar.SearchBar
 import ru.hse.app.androidApp.ui.components.common.button.BackButton
 import ru.hse.app.androidApp.ui.components.common.button.BigButton
 import ru.hse.app.androidApp.ui.components.common.field.LinkCustomField
@@ -71,35 +72,42 @@ fun JoinServerContent(
 
             Spacer(Modifier.height(25.dp))
 
-            LinkCustomField(
+            SearchBar(
                 text = linkText,
-                onStringChanged = onLinkTextChanged,
-                placeholder = "Введите ссылку-приглашение",
-                description = "Ссылка-приглашение",
-                maxCharacters = null,
+                placeholder = "Введите код-приглашение",
+                onValueChange = onLinkTextChanged,
                 modifier = Modifier.fillMaxWidth()
             )
 
+//            LinkCustomField(
+//                text = linkText,
+//                onStringChanged = onLinkTextChanged,
+//                placeholder = "Введите код-приглашение",
+//                description = "Код-приглашение",
+//                maxCharacters = null,
+//                modifier = Modifier.fillMaxWidth()
+//            )
+
             Spacer(Modifier.height(25.dp))
 
-            SelectionContainer {
-                Text(
-                    text = buildAnnotatedString {
-                        append("Приглашения должны выглядеть так \n«")
-                        withStyle(
-                            style = SpanStyle(
-                                color = MaterialTheme.colorScheme.onBackground
-                            )
-                        ) {
-                            append("https://hasslspace.ru/hTKzmak")
-                        }
-                        append("»")
-                    },
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Light,
-                    color = MaterialTheme.colorScheme.outline,
-                )
-            }
+//            SelectionContainer {
+//                Text(
+//                    text = buildAnnotatedString {
+//                        append("Приглашения должны выглядеть так \n«")
+//                        withStyle(
+//                            style = SpanStyle(
+//                                color = MaterialTheme.colorScheme.onBackground
+//                            )
+//                        ) {
+//                            append("https://hasslspace.ru/hTKzmak")
+//                        }
+//                        append("»")
+//                    },
+//                    fontSize = 14.sp,
+//                    fontWeight = FontWeight.Light,
+//                    color = MaterialTheme.colorScheme.outline,
+//                )
+//            }
 
 
             Spacer(Modifier.weight(1f))
@@ -107,7 +115,7 @@ fun JoinServerContent(
             BigButton(
                 modifier = Modifier.padding(bottom = 20.dp),
                 onClick = onButtonClick,
-                text = "Присоединиться по ссылке-приглашению",
+                text = "Присоединиться по коду-приглашению",
                 fontSize = 16.sp
             )
         }

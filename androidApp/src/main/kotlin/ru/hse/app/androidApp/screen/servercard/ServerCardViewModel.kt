@@ -23,6 +23,7 @@ import ru.hse.app.androidApp.domain.usecase.channel.DeleteChannelUseCase
 import ru.hse.app.androidApp.domain.usecase.channel.GetChannelInfoUseCase
 import ru.hse.app.androidApp.domain.usecase.channel.PatchChannelPropertiesUseCase
 import ru.hse.app.androidApp.domain.usecase.chats.MarkChatAsReadUseCase
+import ru.hse.app.androidApp.domain.usecase.chats.StartChatUseCase
 import ru.hse.app.androidApp.domain.usecase.friends.CreateFriendRequestUseCase
 import ru.hse.app.androidApp.domain.usecase.friends.DeleteFriendshipUseCase
 import ru.hse.app.androidApp.domain.usecase.friends.GetChosenUserCommonServersUseCase
@@ -34,6 +35,7 @@ import ru.hse.app.androidApp.domain.usecase.roles.GetServerRolesUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.DeleteServerUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.GetFriendsNotInServerUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.GetServerInfoUseCase
+import ru.hse.app.androidApp.domain.usecase.servers.LeaveServerUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.SearchMembersUseCase
 import ru.hse.app.androidApp.domain.usecase.voice.GetVoiceRoomTokenUseCase
 import ru.hse.app.androidApp.ui.entity.model.FriendCheckboxUiModel
@@ -42,6 +44,7 @@ import ru.hse.app.androidApp.ui.entity.model.ServerMemberUiModel
 import ru.hse.app.androidApp.ui.entity.model.TextChannelUiModel
 import ru.hse.app.androidApp.ui.entity.model.VoiceChannelUiModel
 import ru.hse.app.androidApp.ui.entity.model.call.events.GetTokenEvent
+import ru.hse.app.androidApp.ui.entity.model.chats.events.StartChatEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.events.CreateFriendRequestEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.events.DeleteFriendshipEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadChosenUserCommonServersEvent
@@ -56,6 +59,8 @@ import ru.hse.app.androidApp.ui.entity.model.servers.events.DeleteChannelEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.DeleteServerEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetFriendsNotInServerEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerInfoEvent
+import ru.hse.app.androidApp.ui.entity.model.servers.events.JoinServerEvent
+import ru.hse.app.androidApp.ui.entity.model.servers.events.LeaveServerEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.LoadChosenChannelEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.PatchChannelEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.SendServerInvitationEvent
@@ -76,6 +81,7 @@ class ServerCardViewModel @Inject constructor(
 
     private val deleteChannelUseCase: DeleteChannelUseCase,
     private val deleteServerUseCase: DeleteServerUseCase,
+    private val leaveServerUseCase: LeaveServerUseCase,
 
     private val getServerInfoUseCase: GetServerInfoUseCase,
     private val getServerRolesUseCase: GetServerRolesUseCase,
@@ -98,6 +104,8 @@ class ServerCardViewModel @Inject constructor(
     private val errorHandler: ErrorHandler,
 
     private val getVoiceRoomTokenUseCase: GetVoiceRoomTokenUseCase,
+
+    private val startChatUseCase: StartChatUseCase,
 
     private val dataManager: DataManager,
     private val toastManager: ToastManager,
@@ -151,6 +159,9 @@ class ServerCardViewModel @Inject constructor(
     private val _getTokenEvent = MutableStateFlow<GetTokenEvent?>(null)
     val getTokenEvent: StateFlow<GetTokenEvent?> = _getTokenEvent
 
+    private val _leaveServerEvent = MutableStateFlow<LeaveServerEvent?>(null)
+    val leaveServerEvent: StateFlow<LeaveServerEvent?> = _leaveServerEvent
+
     private val _getVoiceChannelTokenEvent = MutableStateFlow<GetTokenEvent?>(null)
     val getVoiceChannelTokenEvent: StateFlow<GetTokenEvent?> = _getVoiceChannelTokenEvent
 
@@ -162,6 +173,9 @@ class ServerCardViewModel @Inject constructor(
 
     private val _loadUserInfoEvent = MutableStateFlow<LoadUserDataEvent?>(null)
     val loadUserInfoEvent: StateFlow<LoadUserDataEvent?> = _loadUserInfoEvent
+
+    private val _startChatEvent = MutableStateFlow<StartChatEvent?>(null)
+    val startChatEvent: StateFlow<StartChatEvent?> = _startChatEvent
 
     private val _respondToFriendshipRequestEvent =
         MutableStateFlow<RespondToFriendRequestEvent?>(null)
@@ -204,6 +218,8 @@ class ServerCardViewModel @Inject constructor(
     // Server Settings Bar
     val showServerSettingsSheet = mutableStateOf(false)
     val showDeleteServerDialog = mutableStateOf(false)
+    val showLeaveServerDialog = mutableStateOf(false)
+
 
     // Channel Settings
     val loadedMembers = mutableStateListOf<FriendCheckboxUiModel>()
@@ -308,6 +324,21 @@ class ServerCardViewModel @Inject constructor(
         }
     }
 
+    fun leaveServer(serverId: String) {
+        viewModelScope.launch {
+            val result = leaveServerUseCase(serverId)
+
+            _leaveServerEvent.value = result.fold(
+                onSuccess = {
+                    LeaveServerEvent.Success
+                },
+                onFailure = { error ->
+                    LeaveServerEvent.Error("Ошибка при удалении сервера. ${error.message}")
+                }
+            )
+        }
+    }
+
     fun patchChannel(
         serverId: String,
         channelId: String,
@@ -407,7 +438,18 @@ class ServerCardViewModel @Inject constructor(
     }
 
     fun onMessageClick(userId: String) {
-        //TODO
+        viewModelScope.launch {
+            val result = startChatUseCase(userId)
+
+            _startChatEvent.value = result.fold(
+                onSuccess = { chatId ->
+                    StartChatEvent.Success(chatId)
+                },
+                onFailure = {
+                    StartChatEvent.Error("Ошибка при создании чата. " + it.message)
+                }
+            )
+        }
     }
 
     fun onVideoCallClick(memberName: String, roomName: String, friendshipId: String?) {
@@ -954,5 +996,13 @@ class ServerCardViewModel @Inject constructor(
 
     fun resetLoadUserInfoEvent() {
         _loadUserInfoEvent.value = null
+    }
+
+    fun resetLeaveServerEvent() {
+        _leaveServerEvent.value = null
+    }
+
+    fun resetStartChatEvent() {
+        _startChatEvent.value = null
     }
 }

@@ -948,6 +948,33 @@ class FakeApiService : ApiService {
         return Response.success(privateChats)
     }
 
+    override suspend fun getChat(chatId: String): Response<ChatInfoDto> {
+        return Response.success(
+            ChatInfoDto(
+                id = "chat_3",
+                name = "",
+                chatMembers = listOf(
+                    ChatInfoDto.ChatMemberDto(
+                        id = "123",
+                        name = "Юлия Кухтина",
+                        username = "yuulkht",
+                        status = "ONLINE",
+                        photoURL = "https://i.postimg.cc/J4DLnLCS/accountphoto.jpg",
+                        isCurrentUser = true
+                    ),
+                    ChatInfoDto.ChatMemberDto(
+                        id = "3",
+                        name = "Ирина Смирнова",
+                        username = "irina_smirnov",
+                        status = "DO_NOT_DISTURB",
+                        photoURL = "https://i.postimg.cc/3RmDC39Y/friend3.jpg",
+                        isCurrentUser = false
+                    )
+                )
+            )
+        )
+    }
+
     override suspend fun getMessageHistory(
         chatId: String,
         lastMessageId: String?

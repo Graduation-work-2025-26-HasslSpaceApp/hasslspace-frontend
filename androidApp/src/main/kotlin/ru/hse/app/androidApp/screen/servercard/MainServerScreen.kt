@@ -23,6 +23,7 @@ import ru.hse.app.androidApp.ui.components.servers.servercard.ChannelCardBottomS
 import ru.hse.app.androidApp.ui.components.servers.servercard.ChannelsBottomSheet
 import ru.hse.app.androidApp.ui.components.servers.servercard.ServerCardContent
 import ru.hse.app.androidApp.ui.entity.model.call.events.GetTokenEvent
+import ru.hse.app.androidApp.ui.entity.model.chats.events.StartChatEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadUserDataEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.ServerCardUiState
 import ru.hse.app.androidApp.ui.entity.model.servers.events.CreateChannelEvent
@@ -30,6 +31,7 @@ import ru.hse.app.androidApp.ui.entity.model.servers.events.DeleteChannelEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.DeleteServerEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetFriendsNotInServerEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerInfoEvent
+import ru.hse.app.androidApp.ui.entity.model.servers.events.LeaveServerEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.LoadChosenChannelEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.PatchChannelEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.SendServerInvitationEvent
@@ -53,10 +55,53 @@ fun MainServerScreen(
     val patchChannelEvent by viewModel.patchChannelEvent.collectAsState()
     val getVoiceChannelTokenEvent by viewModel.getVoiceChannelTokenEvent.collectAsState()
     val loadUserDataEvent by viewModel.loadUserInfoEvent.collectAsState()
+    val leaveServerEvent by viewModel.leaveServerEvent.collectAsState()
+    val startChatEvent by viewModel.startChatEvent.collectAsState()
 
+    LaunchedEffect(startChatEvent) {
+        when (startChatEvent) {
+            is StartChatEvent.Success -> {
+                val chatId = (startChatEvent as StartChatEvent.Success).chatId
+
+                navController.navigate(NavigationItem.Chat.route + "/${chatId}")
+
+            }
+
+            is StartChatEvent.Error -> {
+                val message = (startChatEvent as StartChatEvent.Error).message
+                viewModel.handleError(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetStartChatEvent()
+    }
 
     LaunchedEffect(serverId) {
         viewModel.getServerInfo(serverId)
+    }
+
+    // todo проверить
+    LaunchedEffect(leaveServerEvent) {
+        when (leaveServerEvent) {
+            is LeaveServerEvent.Success -> {
+                viewModel.showLeaveServerDialog.value = false
+                viewModel.showServerSettingsSheet.value = false
+                navController.navigate(NavigationItem.ServersMain.route) {
+                    popUpTo(NavigationItem.ServersMain.route) { inclusive = true }
+                }
+            }
+
+            is LeaveServerEvent.Error -> {
+                val message = (leaveServerEvent as LeaveServerEvent.Error).message
+                viewModel.handleError(message)
+                viewModel.showLeaveServerDialog.value = false
+                viewModel.showServerSettingsSheet.value = false
+            }
+
+            null -> {}
+        }
+        viewModel.resetLeaveServerEvent()
     }
 
     LaunchedEffect(loadUserDataEvent) {
@@ -530,7 +575,10 @@ fun MainServerScreenWithStateContent(
                 navController.navigate(NavigationItem.ServerMembersInfo.route + "/${data.chosenServer.id}")
                 viewModel.showServerSettingsSheet.value = false
             },
-            isOwner = data.chosenServer.isOwner
+            isOwner = data.chosenServer.isOwner,
+            onLeaveClick = {
+                viewModel.showLeaveServerDialog.value = true
+            }
         )
     }
 
@@ -553,6 +601,17 @@ fun MainServerScreenWithStateContent(
             dismiss = "Оставить",
             onApplyClick = { viewModel.deleteServer(data.chosenServer.id) },
             onDismissClick = { viewModel.showDeleteServerDialog.value = false }
+        )
+    }
+
+    if (viewModel.showLeaveServerDialog.value) {
+        RowButtonDialog(
+            showDialog = viewModel.showLeaveServerDialog,
+            questionText = "Вы действительно хотите покинуть сервер?",
+            apply = "Покинуть",
+            dismiss = "Остаться",
+            onApplyClick = { viewModel.leaveServer(data.chosenServer.id) },
+            onDismissClick = { viewModel.showLeaveServerDialog.value = false }
         )
     }
 }

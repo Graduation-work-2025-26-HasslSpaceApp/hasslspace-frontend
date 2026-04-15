@@ -48,6 +48,7 @@ fun InfoServerBottomSheet(
     onInviteClick: () -> Unit,
     onSettingsClick: () -> Unit,
     onDeleteClick: () -> Unit,
+    onLeaveClick: () -> Unit,
     modifier: Modifier = Modifier,
     isDarkTheme: Boolean,
     onDismiss: () -> Unit,
@@ -129,6 +130,12 @@ fun InfoServerBottomSheet(
                     text = "Удалить сервер"
                 )
                 Spacer(Modifier.height(5.dp))
+            } else {
+                Exit(
+                    onClick = onLeaveClick,
+                    text = "Покинуть канал"
+                )
+                Spacer(Modifier.height(5.dp))
             }
 
         }
@@ -152,6 +159,7 @@ fun InfoServerBottomSheetPreviewWithRequestsLight() {
             onSettingsClick = {},
             onDeleteClick = {},
             onMembersClick = {},
+            onLeaveClick = {},
             isOwner = false
         )
     }
@@ -174,6 +182,7 @@ fun InfoServerBottomSheetPreviewWithRequestsDark() {
             onSettingsClick = {},
             onDeleteClick = {},
             onMembersClick = {},
+            onLeaveClick = {},
             isOwner = true
         )
     }

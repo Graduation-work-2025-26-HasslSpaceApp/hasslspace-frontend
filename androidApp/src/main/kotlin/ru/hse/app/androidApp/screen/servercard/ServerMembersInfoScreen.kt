@@ -21,6 +21,7 @@ import ru.hse.app.androidApp.ui.components.userinfocard.CommonServersBottomSheet
 import ru.hse.app.androidApp.ui.components.userinfocard.UserInfoBottomSheet
 import ru.hse.app.androidApp.ui.entity.model.TypeUiModel
 import ru.hse.app.androidApp.ui.entity.model.call.events.GetTokenEvent
+import ru.hse.app.androidApp.ui.entity.model.chats.events.StartChatEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.events.CreateFriendRequestEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.events.DeleteFriendshipEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadChosenUserCommonServersEvent
@@ -45,7 +46,26 @@ fun ServerMembersInfoScreen(
     val deleteFriendshipEvent by viewModel.deleteFriendshipEvent.collectAsState()
     val respondToFriendRequestEvent by viewModel.respondToFriendshipRequestEvent.collectAsState()
     val getTokenEvent by viewModel.getTokenEvent.collectAsState()
+    val startChatEvent by viewModel.startChatEvent.collectAsState()
 
+    LaunchedEffect(startChatEvent) {
+        when (startChatEvent) {
+            is StartChatEvent.Success -> {
+                val chatId = (startChatEvent as StartChatEvent.Success).chatId
+
+                navController.navigate(NavigationItem.Chat.route + "/${chatId}")
+
+            }
+
+            is StartChatEvent.Error -> {
+                val message = (startChatEvent as StartChatEvent.Error).message
+                viewModel.handleError(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetStartChatEvent()
+    }
     LaunchedEffect(serverId) {
         viewModel.getServerInfo(serverId)
     }
@@ -254,7 +274,7 @@ fun ServerMembersInfoScreenWithStateContent(
                     viewModel.showCommonServers.value = true
                 }
             },
-            onMessageClick = { /* todo viewModel.onMessageClick(userId = data.chosenUser.id) */ },
+            onMessageClick = { viewModel.onMessageClick(userId = data.chosenUser.id) },
             onCallClick = {
                 viewModel.onCallClick(
                     memberName = data.currentUser?.name ?: "Unknown",
@@ -272,7 +292,7 @@ fun ServerMembersInfoScreenWithStateContent(
             aboutUserInfo = data.chosenUser.description,
             onDismiss = { viewModel.showFriendCard.value = false },
             onInvite = { /*todo*/ },
-            onCopyNickname = { //todo зачем копировать если поиска пока нет
+            onCopyNickname = {
                 val clipboard =
                     context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                 val clip = ClipData.newPlainText("Copied Text", data.chosenUser.nickname)

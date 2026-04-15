@@ -28,11 +28,13 @@ import ru.hse.app.androidApp.domain.usecase.profile.SaveUserPhotoUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.GetServersUseCase
 import ru.hse.app.androidApp.domain.usecase.voice.GetVoiceRoomTokenUseCase
 import ru.hse.app.androidApp.data.centrifugo.CentrifugeService
+import ru.hse.app.androidApp.domain.usecase.chats.StartChatUseCase
 import ru.hse.app.androidApp.ui.entity.model.FriendUiModel
 import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
 import ru.hse.app.androidApp.ui.entity.model.TypeUiModel
 import ru.hse.app.androidApp.ui.entity.model.auth.events.SavePhotoEvent
 import ru.hse.app.androidApp.ui.entity.model.call.events.GetTokenEvent
+import ru.hse.app.androidApp.ui.entity.model.chats.events.StartChatEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.ProfileUiState
 import ru.hse.app.androidApp.ui.entity.model.profile.events.CreateFriendRequestEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.events.DeleteFriendshipEvent
@@ -80,6 +82,9 @@ class ProfileViewModel @Inject constructor(
     // Voice
     private val getVoiceRoomTokenUseCase: GetVoiceRoomTokenUseCase,
 
+    // Chats
+    private val startChatUseCase: StartChatUseCase,
+
     private val photoConverterService: PhotoConverterService,
     private val toastManager: ToastManager,
     val cropProfilePhotoService: CropProfilePhotoService,
@@ -102,6 +107,9 @@ class ProfileViewModel @Inject constructor(
 
     private val _loadChosenUserEvent = MutableStateFlow<LoadChosenUserEvent?>(null)
     val loadChosenUserEvent: StateFlow<LoadChosenUserEvent?> = _loadChosenUserEvent
+
+    private val _startChatEvent = MutableStateFlow<StartChatEvent?>(null)
+    val startChatEvent: StateFlow<StartChatEvent?> = _startChatEvent
 
     private val _loadChosenUserCommonServersEvent =
         MutableStateFlow<LoadChosenUserCommonServersEvent?>(null)
@@ -553,8 +561,18 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun onMessageClick(userId: String) {
-        //TODO
-        // должны получить с бэка айди нового приватного чата. Если успешно, то ивент успешности, далее с screen переходим в личные сообщения через navController.navigate(NavigationItem.Chat.route + "/${chat.id}")
+        viewModelScope.launch {
+            val result = startChatUseCase(userId)
+
+            _startChatEvent.value = result.fold(
+                onSuccess = { chatId ->
+                    StartChatEvent.Success(chatId)
+                },
+                onFailure = {
+                    StartChatEvent.Error("Ошибка при создании чата. " + it.message)
+                }
+            )
+        }
     }
 
     fun onVideoCallClick(memberName: String,roomName: String, friendshipId: String?) {
@@ -643,5 +661,9 @@ class ProfileViewModel @Inject constructor(
 
     fun resetGetTokenEvent() {
         _getTokenEvent.value = null
+    }
+
+    fun resetStartChatEvent() {
+        _startChatEvent.value = null
     }
 }
