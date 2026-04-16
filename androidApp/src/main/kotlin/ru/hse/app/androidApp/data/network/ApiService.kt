@@ -277,11 +277,35 @@ interface ApiService {
         @Body updateRoleDto: UpdateRoleDto
     ): Response<String>
 
-    @GET(SERVER_SERVICE_URL + GET_CHANNEL_INFO_URL) //TODO
+    // Получить информацию о канале
+    @GET(SERVER_SERVICE_URL + GET_CHANNEL_INFO_URL)
     suspend fun getChannelInfo(
         @Query("serverId") serverId: String,
         @Query("channelId") channelId: String,
     ): Response<ChannelInfoDto>
+
+    // Удалить права роли на канал
+    @DELETE(SERVER_SERVICE_URL + DELETE_CHANNEL_PERMISSION_URL)
+    suspend fun deleteChannelPermission(
+        @Query("serverId") serverId: String,
+        @Query("channelId") channelId: String,
+        @Query("roleId") roleId: String,
+    ): Response<String>
+
+    // Назначить права роли на канал
+    @POST(SERVER_SERVICE_URL + ASSIGN_CHANNEL_PERMISSION_URL)
+    suspend fun assignChannelPermission(
+        @Query("serverId") serverId: String,
+        @Query("channelId") channelId: String,
+        @Query("roleId") roleId: String,
+    ): Response<String>
+
+    // Получить роли, которым доступен канал
+    @GET(SERVER_SERVICE_URL + ASSIGN_CHANNEL_PERMISSION_URL)
+    suspend fun getChannelPermissions(
+        @Query("serverId") serverId: String,
+        @Query("channelId") channelId: String,
+    ): Response<List<RoleInfoDto>>
 
     @POST(VOICE_SERVICE_URL + GET_TOKEN_FOR_VOICE_ROOM)
     suspend fun getTokenForVoiceRoom(

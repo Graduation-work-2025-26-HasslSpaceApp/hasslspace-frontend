@@ -9,18 +9,16 @@ data class ChannelInfoDto(
     @JsonProperty("name")
     val name: String,
 
-    @JsonProperty("is_private")
+    @JsonProperty("isPrivate")
     val isPrivate: Boolean = false,
 
     @JsonProperty("type")
-    val type: String = "text",
+    val type: String = "TEXT",
 
-    @JsonProperty("limit")
-    val limit: Int? = null,
+    @JsonProperty("maxMembers")
+    val maxMembers: Int? = null,
 
-    @JsonProperty("members")
-    val members: List<String>,
+    @JsonProperty("position")
+    val position: Int = 1,
 
-    @JsonProperty("roles")
-    val roles: List<String>,
 )

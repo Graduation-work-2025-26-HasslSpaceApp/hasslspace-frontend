@@ -5,6 +5,7 @@ import ru.hse.app.androidApp.data.network.ApiCaller
 import ru.hse.app.androidApp.data.network.ApiService
 import ru.hse.app.androidApp.domain.model.entity.ChannelInfo
 import ru.hse.app.androidApp.domain.model.entity.CreateChannel
+import ru.hse.app.androidApp.domain.model.entity.RoleInfo
 import ru.hse.app.androidApp.domain.model.entity.toDomain
 import ru.hse.app.androidApp.domain.model.entity.toDto
 import ru.hse.app.androidApp.domain.repository.ChannelRepository
@@ -49,5 +50,46 @@ class ChannelRepositoryImpl @Inject constructor(
                 updateChannelDto
             )
         }
+    }
+
+    override suspend fun deleteChannelPermission(
+        serverId: String,
+        channelId: String,
+        roleId: String
+    ): Result<String> {
+        return apiCaller.safeApiCall {
+            apiService.deleteChannelPermission(
+                serverId,
+                channelId,
+                roleId
+            )
+        }
+    }
+
+    override suspend fun assignChannelPermission(
+        serverId: String,
+        channelId: String,
+        roleId: String
+    ): Result<String> {
+        return apiCaller.safeApiCall {
+            apiService.assignChannelPermission(
+                serverId,
+                channelId,
+                roleId
+            )
+        }
+    }
+
+    override suspend fun getChannelPermissions(
+        serverId: String,
+        channelId: String
+    ): Result<List<RoleInfo>> {
+        return apiCaller.safeApiCall {
+            apiService.getChannelPermissions(
+                serverId,
+                channelId
+            )
+        }.mapCatching { roles -> roles.map { it.toDomain() } }
+
     }
 }

@@ -15,9 +15,6 @@ data class CreateChannelDto(
     @JsonProperty("maxMembers")
     val limit: Int? = null,
 
-    @JsonProperty("members")
-    val members: List<String>,
-
-    @JsonProperty("roles")
-    val roles: List<String>,
+    @JsonProperty("position")
+    val position: Int = 1,
 )

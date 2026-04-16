@@ -476,7 +476,6 @@ fun MainServerScreenWithStateContent(
                     isPrivate = viewModel.newChannelIsPrivate.value,
                     type = viewModel.typeOfCreatingChannel.value,
                     limit = viewModel.limitNewChannel.floatValue,
-                    members = data.newChannelMembers,
                     roles = data.newChannelRoles
                 )
                 viewModel.resetMembersAndRoles()

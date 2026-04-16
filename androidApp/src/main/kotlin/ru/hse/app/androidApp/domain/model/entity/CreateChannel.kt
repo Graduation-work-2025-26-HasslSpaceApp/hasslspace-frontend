@@ -7,8 +7,6 @@ data class CreateChannel(
     val isPrivate: Boolean = false,
     val type: String = "text",
     val limit: Int? = null,
-    val members: List<String>,
-    val roles: List<String>,
 )
 
 fun CreateChannel.toDto(): CreateChannelDto {
@@ -17,7 +15,5 @@ fun CreateChannel.toDto(): CreateChannelDto {
         isPrivate = this.isPrivate,
         type = this.type,
         limit = this.limit,
-        members = this.members,
-        roles = this.roles
     )
 }

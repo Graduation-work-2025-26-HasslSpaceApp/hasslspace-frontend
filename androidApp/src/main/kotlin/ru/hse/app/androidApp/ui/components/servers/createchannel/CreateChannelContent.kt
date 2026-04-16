@@ -81,7 +81,7 @@ fun CreateChannelContent(
             Spacer(Modifier.height(25.dp))
             TextArrowButton(
                 onClick = onAddMembers,
-                text = "Настроить участников или роли"
+                text = "Настроить роли"
             )
         }
         if (type != "TEXT") {

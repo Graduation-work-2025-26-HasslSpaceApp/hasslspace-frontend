@@ -795,9 +795,7 @@ class FakeApiService : ApiService {
                     name = "Unknown Channel",
                     isPrivate = false,
                     type = "TEXT",
-                    limit = null,
-                    members = emptyList(),
-                    roles = emptyList(),
+                    maxMembers = null,
                     id = "1"
                 )
             )
@@ -858,12 +856,33 @@ class FakeApiService : ApiService {
                 name = channelName,
                 isPrivate = isPrivate,
                 type = channelType,
-                limit = limit,
-                members = finalMembers,
-                roles = finalRoles,
+                maxMembers = limit,
                 id = channelId
             )
         )
+    }
+
+    override suspend fun deleteChannelPermission(
+        serverId: String,
+        channelId: String,
+        roleId: String
+    ): Response<String> {
+        return Response.success("Permission deleted successfully")
+    }
+
+    override suspend fun assignChannelPermission(
+        serverId: String,
+        channelId: String,
+        roleId: String
+    ): Response<String> {
+        return Response.success("Permission deleted successfully")
+    }
+
+    override suspend fun getChannelPermissions(
+        serverId: String,
+        channelId: String
+    ): Response<List<RoleInfoDto>> {
+        return Response.success(fakeUserRoles)
     }
 
     override suspend fun getTokenForVoiceRoom(

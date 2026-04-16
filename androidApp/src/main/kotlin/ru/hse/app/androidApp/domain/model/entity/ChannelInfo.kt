@@ -8,8 +8,6 @@ data class ChannelInfo(
     val isPrivate: Boolean = false,
     val type: String = "text",
     val limit: Int? = null,
-    val members: List<String>,
-    val roles: List<String>,
 )
 
 fun ChannelInfoDto.toDomain(): ChannelInfo {
@@ -18,8 +16,6 @@ fun ChannelInfoDto.toDomain(): ChannelInfo {
         name = this.name,
         isPrivate = this.isPrivate,
         type = this.type,
-        limit = this.limit,
-        members = this.members,
-        roles = this.roles
+        limit = this.maxMembers,
     )
 }

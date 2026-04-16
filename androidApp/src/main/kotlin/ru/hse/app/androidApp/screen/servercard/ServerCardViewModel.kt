@@ -18,9 +18,12 @@ import kotlinx.coroutines.withContext
 import ru.hse.app.androidApp.data.local.DataManager
 import ru.hse.app.androidApp.domain.model.entity.CreateChannel
 import ru.hse.app.androidApp.domain.service.common.CropProfilePhotoService
+import ru.hse.app.androidApp.domain.usecase.channel.AssignChannelPermissionUseCase
 import ru.hse.app.androidApp.domain.usecase.channel.CreateChannelUseCase
+import ru.hse.app.androidApp.domain.usecase.channel.DeleteChannelPermissionUseCase
 import ru.hse.app.androidApp.domain.usecase.channel.DeleteChannelUseCase
 import ru.hse.app.androidApp.domain.usecase.channel.GetChannelInfoUseCase
+import ru.hse.app.androidApp.domain.usecase.channel.GetChannelPermissionsUseCase
 import ru.hse.app.androidApp.domain.usecase.channel.PatchChannelPropertiesUseCase
 import ru.hse.app.androidApp.domain.usecase.chats.MarkChatAsReadUseCase
 import ru.hse.app.androidApp.domain.usecase.chats.StartChatUseCase
@@ -60,7 +63,6 @@ import ru.hse.app.androidApp.ui.entity.model.servers.events.DeleteChannelEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.DeleteServerEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetFriendsNotInServerEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.GetServerInfoEvent
-import ru.hse.app.androidApp.ui.entity.model.servers.events.JoinServerEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.LeaveServerEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.LoadChosenChannelEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.PatchChannelEvent
@@ -79,6 +81,9 @@ class ServerCardViewModel @Inject constructor(
     private val loadUserInfoUseCase: LoadUserInfoUseCase,
 
     private val createChannelUseCase: CreateChannelUseCase,
+    private val getChannelPermissionsUseCase: GetChannelPermissionsUseCase,
+    private val assignChannelPermissionUseCase: AssignChannelPermissionUseCase,
+    private val deleteChannelPermissionUseCase: DeleteChannelPermissionUseCase,
 
     private val deleteChannelUseCase: DeleteChannelUseCase,
     private val deleteServerUseCase: DeleteServerUseCase,
@@ -296,7 +301,6 @@ class ServerCardViewModel @Inject constructor(
         isPrivate: Boolean,
         type: String,
         limit: Float,
-        members: List<FriendCheckboxUiModel> = listOf(),
         roles: List<RoleMiniCheckboxUiModel> = listOf()
     ) {
         if (channelName.isEmpty()) {
@@ -304,7 +308,6 @@ class ServerCardViewModel @Inject constructor(
             return
         }
         val roundLimit = limit.roundToInt()
-        val membersId = members.filter { it.isChosen }.map { it.id }
         val rolesId = roles.filter { it.isChosen }.map { it.id }
         viewModelScope.launch {
             val data = CreateChannel(
@@ -312,13 +315,14 @@ class ServerCardViewModel @Inject constructor(
                 isPrivate = isPrivate,
                 type = type,
                 limit = if (roundLimit > 0f) roundLimit else null,
-                members = membersId,
-                roles = rolesId
             )
             val result = createChannelUseCase(serverId, data)
 
             _createChannelEvent.value = result.fold(
                 onSuccess = {
+                    launch {
+                        // todo загружать канал и добавлять туда роли
+                    }
                     CreateChannelEvent.SuccessCreate
                 },
                 onFailure = {
@@ -326,6 +330,28 @@ class ServerCardViewModel @Inject constructor(
                 }
             )
         }
+    }
+
+    suspend fun assignRoleToChannel(serverId: String, channelId: String, roleId: String) {
+        val result = assignChannelPermissionUseCase(serverId, channelId, roleId)
+
+        result.fold(
+            onSuccess = {},
+            onFailure = {
+                errorHandler.handleError("Ошибка при назначении прав роли. " +it.message)
+            }
+        )
+    }
+
+    suspend fun deleteRoleFromChannel(serverId: String, channelId: String, roleId: String) {
+        val result = deleteChannelPermissionUseCase(serverId, channelId, roleId)
+
+        result.fold(
+            onSuccess = {},
+            onFailure = {
+                errorHandler.handleError("Ошибка при удалении прав роли. " +it.message)
+            }
+        )
     }
 
     fun leaveServer(serverId: String) {
@@ -468,7 +494,7 @@ class ServerCardViewModel @Inject constructor(
         }
     }
 
-    fun onVideoCallClick(targetUserId: String, memberName: String,roomName: String) {
+    fun onVideoCallClick(targetUserId: String, memberName: String, roomName: String) {
         viewModelScope.launch {
             val resultChatId = startChatUseCase(targetUserId)
 
@@ -627,7 +653,17 @@ class ServerCardViewModel @Inject constructor(
 
             _loadChosenChannelEvent.value = result.fold(
                 onSuccess = { channel ->
-                    val checkboxRoles = idsToRolesCheckboxInChannel(server, channel.roles)
+                    val checkboxRoles = if (channel.isPrivate) {
+                        getChannelPermissionsUseCase(server.id, channel.id)
+                            .fold({ roles ->
+                                idsToRolesCheckboxInChannel(
+                                    server,
+                                    roles.map { it.id })
+                            }, { idsToRolesCheckboxInChannel(server, emptyList()) })
+                    } else {
+                        idsToRolesCheckboxInChannel(server, null)
+                    }
+
                     if (currentState is ServerCardUiState.Success) {
                         val updatedData = currentState.data.copy(
                             editChannel = currentState.data.editChannel.copy(
@@ -636,7 +672,7 @@ class ServerCardViewModel @Inject constructor(
                                 name = channel.name,
                                 isPrivate = channel.isPrivate,
                                 limit = channel.limit?.toFloat() ?: 0f,
-                                members = idsToFriendCheckboxInChannel(server, channel.members),
+                                members = emptyList(),
                                 roles = checkboxRoles
                             )
                         )
@@ -651,39 +687,33 @@ class ServerCardViewModel @Inject constructor(
         }
     }
 
-
-    fun idsToFriendCheckboxInChannel(
-        server: ServerExpandedUiModel,
-        ids: List<String>
-    ): List<FriendCheckboxUiModel> {
-        return server.members.map { member ->
-            FriendCheckboxUiModel(
-                id = member.id,
-                name = member.name,
-                nickname = member.nickname,
-                status = member.status,
-                avatarUrl = member.avatarUrl,
-                isChosen = ids.contains(member.id)
-            )
-        }
-    }
-
     suspend fun idsToRolesCheckboxInChannel(
         server: ServerExpandedUiModel,
-        ids: List<String>
+        ids: List<String>?
     ): List<RoleMiniCheckboxUiModel> {
         return withContext(Dispatchers.IO) {
             val result = getServerRolesUseCase(server.id)
 
             result.fold(
                 onSuccess = { roles ->
-                    roles.map { role ->
-                        RoleMiniCheckboxUiModel(
-                            id = role.id,
-                            title = role.name,
-                            color = Color(role.color.toColorInt()),
-                            isChosen = ids.contains(role.id)
-                        )
+                    if (ids == null) {
+                        roles.map { role ->
+                            RoleMiniCheckboxUiModel(
+                                id = role.id,
+                                title = role.name,
+                                color = Color(role.color.toColorInt()),
+                                isChosen = true
+                            )
+                        }
+                    } else {
+                        roles.map { role ->
+                            RoleMiniCheckboxUiModel(
+                                id = role.id,
+                                title = role.name,
+                                color = Color(role.color.toColorInt()),
+                                isChosen = ids.contains(role.id)
+                            )
+                        }
                     }
                 },
                 onFailure = {
@@ -858,27 +888,6 @@ class ServerCardViewModel @Inject constructor(
         }
     }
 
-    fun onToggleFriendEditChannel(user: FriendCheckboxUiModel) {
-        val currentState = _uiState.value
-        if (currentState is ServerCardUiState.Success) {
-            //todo сразу обновлять бэк
-            val updatedMembers = currentState.data.editChannel.members.map { friend ->
-                if (friend.id == user.id) {
-                    friend.copy(isChosen = !friend.isChosen)
-                } else {
-                    friend
-                }
-            }
-            _uiState.value = currentState.copy(
-                data = currentState.data.copy(
-                    editChannel = currentState.data.editChannel.copy(
-                        members = updatedMembers
-                    )
-                )
-            )
-        }
-    }
-
     fun resetMembersAndRoles() {
         val currentState = _uiState.value
         if (currentState is ServerCardUiState.Success) {
@@ -908,7 +917,6 @@ class ServerCardViewModel @Inject constructor(
     }
 
     fun onToggleRoleEditChannel(role: RoleMiniCheckboxUiModel) {
-        //todo сразу обновлять бэк
         val currentState = _uiState.value
         if (currentState is ServerCardUiState.Success) {
             val updatedRoles = currentState.data.editChannel.roles.map { r ->
@@ -922,6 +930,38 @@ class ServerCardViewModel @Inject constructor(
             _uiState.value = currentState.copy(
                 data = currentState.data.copy(editChannel = currentState.data.editChannel.copy(roles = updatedRoles))
             )
+
+            viewModelScope.launch {
+                if (role.isChosen) {
+                    val result = assignChannelPermissionUseCase(currentState.data.chosenServer.id, currentState.data.editChannel.id, role.id)
+                    result.fold(
+                        onSuccess = {},
+                        onFailure = {
+                            errorHandler.handleError("Не удалось назначить роль в канале")
+                            val revertedRoles = updatedRoles.map { r ->
+                                if (r.id == role.id) r.copy(isChosen = !r.isChosen) else r
+                            }
+                            _uiState.value = currentState.copy(
+                                data = currentState.data.copy(editChannel = currentState.data.editChannel.copy(roles = revertedRoles))
+                            )
+                        }
+                    )
+                } else {
+                    val result = deleteChannelPermissionUseCase(currentState.data.chosenServer.id, currentState.data.editChannel.id, role.id)
+                    result.fold(
+                        onSuccess = { },
+                        onFailure = {
+                            errorHandler.handleError("Не удалось удалить роль из канала")
+                            val revertedRoles = updatedRoles.map { r ->
+                                if (r.id == role.id) r.copy(isChosen = !r.isChosen) else r
+                            }
+                            _uiState.value = currentState.copy(
+                                data = currentState.data.copy(editChannel = currentState.data.editChannel.copy(roles = revertedRoles))
+                            )
+                        }
+                    )
+                }
+            }
         }
     }
 
