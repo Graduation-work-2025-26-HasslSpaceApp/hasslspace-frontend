@@ -126,7 +126,7 @@ class ChatViewModel @Inject constructor(
     }
 
     fun connectToCentrifugo(chatId: String) {
-        centrifugeService.connect(BuildConfig.CENTRIFUGO_URL, dataManager.jwtFlow.value?:"")
+        centrifugeService.connect(BuildConfig.CENTRIFUGO_URL)
         centrifugeService.subscribeToChannel(chatId)
     }
 

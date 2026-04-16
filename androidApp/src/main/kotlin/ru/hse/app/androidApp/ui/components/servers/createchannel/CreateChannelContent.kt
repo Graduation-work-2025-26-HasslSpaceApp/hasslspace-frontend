@@ -154,7 +154,7 @@ fun CreateChannelContentPreviewDarkEmpty() {
             onCreateChannelClick = {},
             isDarkTheme = true,
             onAddMembers = {},
-            type = "voice",
+            type = "VOICE",
             sliderValue = 25f,
             onSliderValueChange = {}
         )
@@ -174,7 +174,7 @@ fun CreateChannelContentPreviewDark1() {
             onCreateChannelClick = {},
             isDarkTheme = true,
             onAddMembers = {},
-            type = "text",
+            type = "TEXT",
             sliderValue = 25f,
             onSliderValueChange = {}
         )

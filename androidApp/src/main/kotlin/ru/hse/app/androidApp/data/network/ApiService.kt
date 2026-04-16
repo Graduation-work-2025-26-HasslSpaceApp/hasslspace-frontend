@@ -312,6 +312,9 @@ interface ApiService {
         @Body tokenRequest: TokenRequest
     ): Response<String>
 
+    @GET(CHAT_SERVICE_URL + GET_TOKEN_FOR_CENTRIFUGO)
+    suspend fun getTokenForCentrifugo(): Response<String>
+
     // чаты
     @GET(CHAT_SERVICE_URL + GET_CHAT_URL)// todo
     suspend fun getPrivateChats(): Response<List<ChatInfoDto>>

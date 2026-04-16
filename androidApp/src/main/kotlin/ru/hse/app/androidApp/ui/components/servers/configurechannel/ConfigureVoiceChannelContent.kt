@@ -122,7 +122,7 @@ fun ConfigureChannelContent(
         }
 
         Spacer(Modifier.height(25.dp))
-        if (type != "text") {
+        if (type != "TEXT") {
             UserLimitSlider(
                 sliderValue = sliderValue,
                 onSliderValueChange = onSliderValueChange
@@ -157,7 +157,7 @@ fun ConfigureChannelContentPreviewLightEmpty() {
             onAddMembers = {},
             sliderValue = 25f,
             onSliderValueChange = {},
-            type = "text"
+            type = "TEXT"
         )
     }
 }
@@ -199,7 +199,7 @@ fun ConfigureChannelContentPreviewDarkEmpty() {
             onAddMembers = {},
             sliderValue = 25f,
             onSliderValueChange = {},
-            type = "text"
+            type = "TEXT"
         )
     }
 }

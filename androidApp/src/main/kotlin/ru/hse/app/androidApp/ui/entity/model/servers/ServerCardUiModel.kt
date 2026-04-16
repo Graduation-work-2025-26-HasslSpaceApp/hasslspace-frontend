@@ -31,7 +31,7 @@ data class ServerCardUiModel(
 ) {
     data class EditChannelUiModel(
         val id: String,
-        val type: String = "text",
+        val type: String = "TEXT",
         val name: String,
         val isPrivate: Boolean,
         val limit: Float = 0f,

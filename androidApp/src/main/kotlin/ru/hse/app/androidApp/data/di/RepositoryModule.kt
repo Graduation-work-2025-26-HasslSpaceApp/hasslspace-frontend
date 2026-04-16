@@ -15,6 +15,7 @@ import ru.hse.app.androidApp.data.centrifugo.CentrifugeService
 import ru.hse.app.androidApp.data.network.ApiCaller
 import ru.hse.app.androidApp.data.network.ApiService
 import ru.hse.app.androidApp.data.repository.CallRepositoryImpl
+import ru.hse.app.androidApp.data.repository.CentrifugoRepositoryImpl
 import ru.hse.app.androidApp.data.repository.ChannelRepositoryImpl
 import ru.hse.app.androidApp.data.repository.ChatRepositoryImpl
 import ru.hse.app.androidApp.data.repository.FriendRepositoryImpl
@@ -25,6 +26,7 @@ import ru.hse.app.androidApp.data.repository.UserRepositoryImpl
 import ru.hse.app.androidApp.data.roomstorage.AppDatabase
 import ru.hse.app.androidApp.data.roomstorage.ChatDao
 import ru.hse.app.androidApp.domain.repository.CallRepository
+import ru.hse.app.androidApp.domain.repository.CentrifugoRepository
 import ru.hse.app.androidApp.domain.repository.ChannelRepository
 import ru.hse.app.androidApp.domain.repository.ChatRepository
 import ru.hse.app.androidApp.domain.repository.FriendRepository
@@ -78,6 +80,11 @@ object RepositoryModule {
     @Provides
     fun provideCallRepository(apiService: ApiService, apiCaller: ApiCaller): CallRepository {
         return CallRepositoryImpl(apiService, apiCaller)
+    }
+
+    @Provides
+    fun provideCentrifugoRepository(apiService: ApiService, apiCaller: ApiCaller): CentrifugoRepository {
+        return CentrifugoRepositoryImpl(apiService, apiCaller)
     }
 
     @Provides

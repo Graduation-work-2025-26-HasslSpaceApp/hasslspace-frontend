@@ -5,7 +5,7 @@ import ru.hse.app.androidApp.data.model.CreateChannelDto
 data class CreateChannel(
     val name: String,
     val isPrivate: Boolean = false,
-    val type: String = "text",
+    val type: String = "TEXT",
     val limit: Int? = null,
 )
 

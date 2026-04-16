@@ -76,6 +76,7 @@ const val VOICE_SERVICE_URL = "/api/voice-service"
 const val GET_TOKEN_FOR_VOICE_ROOM = "/token"
 
 // Чаты
+const val GET_TOKEN_FOR_CENTRIFUGO = "/token"
 const val CHAT_SERVICE_URL = "/api/chat-service" //todo
 const val GET_CHAT_URL = "/chats"//todo
 const val GET_MESSAGES_HISTORY_URL = "/chat/messages"//todo

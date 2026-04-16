@@ -891,6 +891,10 @@ class FakeApiService : ApiService {
         return Response.success("token 123124123")
     }
 
+    override suspend fun getTokenForCentrifugo(): Response<String> {
+        return Response.success("token 123124123")
+    }
+
     override suspend fun getPrivateChats(): Response<List<ChatInfoDto>> {
         val privateChats = listOf(
             ChatInfoDto(

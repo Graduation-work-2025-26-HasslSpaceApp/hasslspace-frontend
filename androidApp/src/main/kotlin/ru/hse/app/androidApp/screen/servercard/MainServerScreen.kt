@@ -143,7 +143,7 @@ fun MainServerScreen(
         when (patchChannelEvent) {
             is PatchChannelEvent.Success -> {
                 viewModel.getServerInfo(serverId)
-                navController.popBackStack()
+                viewModel.showEditChannel.value = false
             }
 
             is PatchChannelEvent.Error -> {

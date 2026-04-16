@@ -27,9 +27,9 @@ fun LoginScreen(
     val checkEmailVerificationEvent by viewModel.checkEmailVerificationEvent.collectAsState()
 
     LaunchedEffect(loginUserEvent) {
-        viewModel.connectCentrifugoClient()
         when (loginUserEvent) {
             is LoginUserEvent.SuccessLogin -> {
+                viewModel.connectCentrifugoClient()
                 viewModel.checkEmailVerification()
             }
 

@@ -6,7 +6,7 @@ data class ChannelInfo(
     val id: String,
     val name: String,
     val isPrivate: Boolean = false,
-    val type: String = "text",
+    val type: String = "TEXT",
     val limit: Int? = null,
 )
 

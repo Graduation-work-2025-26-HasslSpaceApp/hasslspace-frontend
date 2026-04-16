@@ -401,7 +401,7 @@ class AuthViewModel @Inject constructor(
 
     fun connectCentrifugoClient() {
         try {
-            centrifugeService.connect(BuildConfig.CENTRIFUGO_URL, dataManager.jwtFlow.value?:"")
+            centrifugeService.connect(BuildConfig.CENTRIFUGO_URL)
         } catch (e: Exception) {
             errorHandler.handleError(e.message ?: "")
         }

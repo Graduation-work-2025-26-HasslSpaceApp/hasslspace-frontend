@@ -21,12 +21,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import ru.hse.app.androidApp.data.model.MessageDto
 import ru.hse.app.androidApp.domain.model.entity.toDomain
+import ru.hse.app.androidApp.domain.usecase.chats.GetCentrifugoTokenUseCase
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class CentrifugeServiceImpl @Inject constructor(
-    private val mapper: ObjectMapper
+    private val getCentrifugoTokenUseCase: GetCentrifugoTokenUseCase,
+    private val mapper: ObjectMapper,
 ) : CentrifugeService {
 
     private val _incomingMessages = MutableSharedFlow<IncomingMessage>()
@@ -39,41 +41,75 @@ class CentrifugeServiceImpl @Inject constructor(
     private val subscriptions = mutableMapOf<String, Subscription>()
     private val scope = CoroutineScope(Dispatchers.IO)
 
-    override fun connect(url: String, token: String) {
+    override fun connect(url: String) {
         if (client != null && _connectionState.value == ConnectionState.CONNECTED) {
             Log.d("CentrifugeServiceImpl", "Already connected, skipping")
             return
         }
 
-        val listener = object : EventListener() {
-            override fun onConnected(client: Client, event: ConnectedEvent) {
-                Log.d("CentrifugeServiceImpl", "Connected")
-                _connectionState.value = ConnectionState.CONNECTED
-            }
-            override fun onConnecting(client: Client, event: ConnectingEvent) {
-                Log.d("CentrifugeServiceImpl", "Connecting...")
-                _connectionState.value = ConnectionState.CONNECTING
-            }
-            override fun onDisconnected(client: Client, event: DisconnectedEvent) {
-                Log.d("CentrifugeServiceImpl", "Disconnected")
-                _connectionState.value = ConnectionState.DISCONNECTED
-            }
-            override fun onError(client: Client, event: ErrorEvent) {
-                Log.d("CentrifugeServiceImpl", "Error: ${event.error}")
+        scope.launch {
+            _connectionState.value = ConnectionState.CONNECTING
+
+            val connectionTokenResult = runCatching {
+                getCentrifugoTokenUseCase()
+            }.getOrElse { e ->
+                Log.e("CentrifugeServiceImpl", "Failed to get Centrifugo token", e)
                 _connectionState.value = ConnectionState.ERROR
+                return@launch
             }
+
+            val listener = object : EventListener() {
+                override fun onConnected(client: Client, event: ConnectedEvent) {
+                    Log.d("CentrifugeServiceImpl", "Connected")
+                    _connectionState.value = ConnectionState.CONNECTED
+                }
+
+                override fun onConnecting(client: Client, event: ConnectingEvent) {
+                    Log.d("CentrifugeServiceImpl", "Connecting...")
+                    _connectionState.value = ConnectionState.CONNECTING
+                }
+
+                override fun onDisconnected(client: Client, event: DisconnectedEvent) {
+                    Log.d("CentrifugeServiceImpl", "Disconnected: ${event.reason}")
+                    _connectionState.value = ConnectionState.DISCONNECTED
+                }
+
+                override fun onError(client: Client, event: ErrorEvent) {
+                    Log.e("CentrifugeServiceImpl", "Centrifuge error: ${event.error}")
+                    _connectionState.value = ConnectionState.ERROR
+                }
+            }
+
+            connectionTokenResult.fold(
+                onSuccess = { token ->
+                    val options = Options().apply {
+                        this.token = token
+                    }
+
+                    try {
+                        client?.disconnect()
+                        client = Client(url, options, listener)
+                        client?.connect()
+                    } catch (e: Exception) {
+                        Log.e("CentrifugeServiceImpl", "Failed to connect to Centrifugo", e)
+                        _connectionState.value = ConnectionState.ERROR
+                        client = null
+                    }
+                },
+                onFailure = {
+                    Log.e("CentrifugeServiceImpl", "Failed to get Centrifugo token. Getting token failed")
+                    _connectionState.value = ConnectionState.ERROR
+                    return@launch
+                }
+            )
         }
-
-        val options = Options()
-//        options.token = token todo
-
-        client = Client(url, options, listener)
-        client?.connect()
     }
 
     override fun subscribeToChannel(channel: String) {
-        if (subscriptions.containsKey(channel)) {
-            Log.d("CentrifugeServiceImpl", "Already subscribed to channel: $channel")
+        val chatChannelId = "chat:$channel"
+
+        if (subscriptions.containsKey(chatChannelId)) {
+            Log.d("CentrifugeServiceImpl", "Already subscribed to channel: $chatChannelId")
             return
         }
 
@@ -86,7 +122,8 @@ class CentrifugeServiceImpl @Inject constructor(
                     val dto: MessageDto = mapper.readValue(json, MessageDto::class.java)
 
                     scope.launch {
-                        _incomingMessages.emit(IncomingMessage(channel = sub.channel, data = dto.toDomain()))
+                        val cleanedChannelName = sub.channel.replace("chat:", "")
+                        _incomingMessages.emit(IncomingMessage(channel = cleanedChannelName, data = dto.toDomain()))
                     }
                 } catch (e: Exception) {
                     Log.e("CentrifugeServiceImpl", "Error parsing JSON", e)
@@ -94,11 +131,11 @@ class CentrifugeServiceImpl @Inject constructor(
             }
         }
 
-        val sub = client.newSubscription(channel, subListener)
-        subscriptions[channel] = sub
+        val sub = client.newSubscription(chatChannelId, subListener)
+        subscriptions[chatChannelId] = sub
         sub.subscribe()
 
-        Log.d("CentrifugeServiceImpl", "Subscribed to channel: $channel")
+        Log.d("CentrifugeServiceImpl", "Subscribed to channel: $chatChannelId")
     }
 
     override fun subscribeToChannels(channels: List<String>) {
@@ -108,8 +145,10 @@ class CentrifugeServiceImpl @Inject constructor(
     }
 
     override fun unsubscribeFromChannel(channel: String) {
-        subscriptions[channel]?.unsubscribe()
-        subscriptions.remove(channel)
+        val chatChannelId = "chat:$channel"
+
+        subscriptions[chatChannelId]?.unsubscribe()
+        subscriptions.remove(chatChannelId)
     }
 
     override fun unsubscribeFromChannels(channels: List<String>) {
