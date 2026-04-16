@@ -6,9 +6,6 @@ data class UserInfoExtendedDto(
     @JsonProperty("id")
     val id: String,
 
-    @JsonProperty("friendshipId")
-    val friendshipId: String?,
-
     @JsonProperty("name")
     val name: String,
 

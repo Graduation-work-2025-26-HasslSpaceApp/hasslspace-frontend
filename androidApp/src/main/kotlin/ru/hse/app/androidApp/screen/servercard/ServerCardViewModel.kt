@@ -422,23 +422,32 @@ class ServerCardViewModel @Inject constructor(
         }
     }
 
-    fun onCallClick(targetUserId: String, memberName: String, roomName: String, friendshipId: String?) {
+    fun onCallClick(targetUserId: String, memberName: String, roomName: String) {
         viewModelScope.launch {
-            val result = getVoiceRoomTokenUseCase(
-                name = memberName,
-                roomName = friendshipId,
-                roomType = "PRIVATE_ROOM"
-            )
+            val resultChatId = startChatUseCase(targetUserId)
 
-            _getTokenEvent.value = result.fold(
-                onSuccess = { token ->
-                    viewModelScope.launch {
-                        sendVoiceInviteToUserUseCase(targetUserId, memberName)
-                    }
-                    GetTokenEvent.Success(token, roomName, videoEnabled = false)
+            _getTokenEvent.value = resultChatId.fold(
+                onSuccess = { chatId ->
+                    val result = getVoiceRoomTokenUseCase(
+                        name = memberName,
+                        roomName = chatId,
+                        roomType = "PRIVATE_ROOM"
+                    )
+
+                    result.fold(
+                        onSuccess = { token ->
+                            viewModelScope.launch {
+                                sendVoiceInviteToUserUseCase(targetUserId, memberName)
+                            }
+                            GetTokenEvent.Success(token, roomName, videoEnabled = false)
+                        },
+                        onFailure = {
+                            GetTokenEvent.Error("Ошибка при подключении к звонку. " + it.message)
+                        }
+                    )
                 },
                 onFailure = {
-                    GetTokenEvent.Error("Ошибка при подключении к звонку. " + it.message)
+                    GetTokenEvent.Error("Ошибка при получении комнаты. " + it.message)
                 }
             )
         }
@@ -459,23 +468,32 @@ class ServerCardViewModel @Inject constructor(
         }
     }
 
-    fun onVideoCallClick(targetUserId: String, memberName: String, roomName: String, friendshipId: String?) {
+    fun onVideoCallClick(targetUserId: String, memberName: String,roomName: String) {
         viewModelScope.launch {
-            val result = getVoiceRoomTokenUseCase(
-                name = memberName,
-                roomName = friendshipId,
-                roomType = "PRIVATE_ROOM"
-            )
+            val resultChatId = startChatUseCase(targetUserId)
 
-            _getTokenEvent.value = result.fold(
-                onSuccess = { token ->
-                    viewModelScope.launch {
-                        sendVoiceInviteToUserUseCase(targetUserId, memberName)
-                    }
-                    GetTokenEvent.Success(token, roomName, videoEnabled = true)
+            _getTokenEvent.value = resultChatId.fold(
+                onSuccess = { chatId ->
+                    val result = getVoiceRoomTokenUseCase(
+                        name = memberName,
+                        roomName = chatId,
+                        roomType = "PRIVATE_ROOM"
+                    )
+
+                    result.fold(
+                        onSuccess = { token ->
+                            viewModelScope.launch {
+                                sendVoiceInviteToUserUseCase(targetUserId, memberName)
+                            }
+                            GetTokenEvent.Success(token, roomName, videoEnabled = true)
+                        },
+                        onFailure = {
+                            GetTokenEvent.Error("Ошибка при подключении к видеозвонку. " + it.message)
+                        }
+                    )
                 },
                 onFailure = {
-                    GetTokenEvent.Error("Ошибка при подключении к видеозвонку. " + it.message)
+                    GetTokenEvent.Error("Ошибка при получении комнаты. " + it.message)
                 }
             )
         }

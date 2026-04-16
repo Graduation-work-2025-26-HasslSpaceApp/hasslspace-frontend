@@ -144,7 +144,7 @@ interface ApiService {
     ): Response<String>
 
     // Создать сервер
-    @POST(SERVER_SERVICE_URL + CREATE_SERVER_URL) //TODO у Саши сейчас другое описание апи метода
+    @POST(SERVER_SERVICE_URL + CREATE_SERVER_URL)
     suspend fun createServer(
         @Body createServerDto: CreateServerDto
     ): Response<String>
@@ -218,7 +218,7 @@ interface ApiService {
         @Query("serverId") serverId: String,
     ): Response<List<ServerInviteDto>>
 
-    @GET(SERVER_SERVICE_URL + GET_FRIENDS_NOT_IN_SERVER_URL) //TODO аналогичная проблема, пока не передают статусы
+    @GET(SERVER_SERVICE_URL + GET_FRIENDS_NOT_IN_SERVER_URL)
     suspend fun getFriendsNotInServer(
         @Query("serverId") serverId: String,
     ): Response<List<UserInfoDto>>
@@ -283,7 +283,7 @@ interface ApiService {
         @Query("channelId") channelId: String,
     ): Response<ChannelInfoDto>
 
-    @POST(VOICE_SERVICE_URL + GET_TOKEN_FOR_VOICE_ROOM) // todo
+    @POST(VOICE_SERVICE_URL + GET_TOKEN_FOR_VOICE_ROOM)
     suspend fun getTokenForVoiceRoom(
         @Body tokenRequest: TokenRequest
     ): Response<String>

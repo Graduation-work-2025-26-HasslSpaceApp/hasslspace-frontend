@@ -13,12 +13,12 @@ class GetVoiceRoomTokenUseCase @Inject constructor(
         roomType: String
     ): Result<String> {
 
-//        if (roomName == null) {
-//            return Result.failure(
-//                ApiException(null, ApiException.ROOM_NOT_FOUND, null)
-//            )
-//        } todo вернуть
+        if (roomName == null) {
+            return Result.failure(
+                ApiException(null, ApiException.ROOM_NOT_FOUND, null)
+            )
+        }
 
-        return callRepository.getTokenForVoiceRoom(name, roomName?: "", roomType)
+        return callRepository.getTokenForVoiceRoom(name, roomName, roomType)
     }
 }

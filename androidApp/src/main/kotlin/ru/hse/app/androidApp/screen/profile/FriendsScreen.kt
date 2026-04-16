@@ -302,8 +302,7 @@ fun FriendsScreenWithStateContent(
                 viewModel.onCallClick(
                     targetUserId = data.chosenUser.id,
                     memberName = data.name,
-                    roomName = "Звонок с " + data.chosenUser.name,
-                    friendshipId = data.chosenUser.friendshipId
+                    roomName = "Звонок с " + data.chosenUser.name
                 )
             },
             onVideoCallClick = {
@@ -311,8 +310,7 @@ fun FriendsScreenWithStateContent(
                     targetUserId = data.chosenUser.id,
                     memberName = data.name,
                     roomName = "Звонок с " +
-                            data.chosenUser.name,
-                    friendshipId = data.chosenUser.friendshipId
+                            data.chosenUser.name
                 )
             },
             aboutUserInfo = data.chosenUser.description,

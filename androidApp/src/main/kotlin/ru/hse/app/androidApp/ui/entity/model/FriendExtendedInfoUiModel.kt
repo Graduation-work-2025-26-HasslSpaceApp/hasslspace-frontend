@@ -6,7 +6,6 @@ import ru.hse.app.androidApp.domain.model.entity.UserExpandedInfoWithStatus
 @Immutable
 data class FriendExtendedInfoUiModel(
     val id: String,
-    val friendshipId: String?,
     val name: String,
     val nickname: String,
     val status: StatusPresentation,
@@ -18,7 +17,6 @@ data class FriendExtendedInfoUiModel(
 fun UserExpandedInfoWithStatus.toUi(): FriendExtendedInfoUiModel {
     return FriendExtendedInfoUiModel(
         id = this.id,
-        friendshipId = this.friendshipId,
         name = this.username,
         nickname = this.nickname,
         status = this.status.toStatusPresentation(),

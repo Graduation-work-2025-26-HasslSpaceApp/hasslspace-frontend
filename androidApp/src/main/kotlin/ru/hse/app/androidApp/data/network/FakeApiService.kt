@@ -44,7 +44,6 @@ class FakeApiService : ApiService {
     private val fakeUserExtended =
         UserInfoExtendedDto(
             "1",
-            UUID.randomUUID().toString(),
             "Юлия Кухтина",
             "yuulkht",
             "ONLINE",
@@ -516,7 +515,6 @@ class FakeApiService : ApiService {
                     status = friend.status,
                     photoURL = friend.photoURL,
                     description = getDescriptionForUser(friend.id),
-                    friendshipId = UUID.randomUUID().toString(),
                     friendshipStatus = when (friend.type) {
                         TypeDto.FRIEND -> UserInfoExtendedDto.StatusType.FRIEND
                         TypeDto.OUTGOING_REQUEST -> UserInfoExtendedDto.StatusType.OUTGOING_REQUEST
@@ -536,7 +534,6 @@ class FakeApiService : ApiService {
                     status = "OFFLINE",
                     photoURL = null,
                     description = "Описание профиля Васи",
-                    friendshipId = UUID.randomUUID().toString(),
                     friendshipStatus = UserInfoExtendedDto.StatusType.FRIEND,
                 )
             )

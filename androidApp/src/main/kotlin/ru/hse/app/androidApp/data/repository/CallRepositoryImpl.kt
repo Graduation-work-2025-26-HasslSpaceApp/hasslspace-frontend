@@ -14,13 +14,13 @@ class CallRepositoryImpl @Inject constructor(
 
     override suspend fun getTokenForVoiceRoom(
         name: String,
-        roomName: String, // todo вернуть не хардкод
+        roomName: String,
         roomType: String,
     ): Result<String> {
         return apiCaller.safeApiCall {
             apiService.getTokenForVoiceRoom(TokenRequest(
                 name = name,
-                roomName =  "05237F2A-7802-4AD8-B7DB-5EAA9F4FC467",//roomName,
+                roomName =  roomName,
                 roomType = roomType.toRoomTypeDto()
             ))
         }
