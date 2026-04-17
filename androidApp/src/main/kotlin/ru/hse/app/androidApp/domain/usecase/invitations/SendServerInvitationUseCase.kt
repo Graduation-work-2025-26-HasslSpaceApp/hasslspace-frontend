@@ -24,6 +24,6 @@ class SendServerInvitationUseCase @Inject constructor(
     private fun buildInvitationMessage(
         invitation: Invitation
     ): String {
-        return "Пользователь ${invitation.creatorName} приглашает вас на сервер ${invitation.serverName}. Чтобы присоединиться к серверу, перейдите по ссылке ${invitation.inviteUrl} или присоединитесь по коду ${invitation.code} в приложении"
+        return "Пользователь ${invitation.creatorName} приглашает вас на сервер \"${invitation.serverName}\". Чтобы присоединиться к серверу, перейдите по ссылке ${invitation.inviteUrl} или присоединитесь по коду ${invitation.code} в приложении"
     }
 }

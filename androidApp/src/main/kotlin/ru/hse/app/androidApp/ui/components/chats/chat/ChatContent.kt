@@ -41,6 +41,7 @@ fun ChatContent(
     onAuthorClick: (ChatMemberUiModel?) -> Unit,
     onSendMessage: (String) -> Unit,
     onReadMsg: (String) -> Unit,
+    onCodeExtracted: (String) -> Unit = {},
     isDarkTheme: Boolean,
     imageLoader: ImageLoader,
     messages: List<MessageUiModel>,
@@ -78,7 +79,8 @@ fun ChatContent(
                 isDarkTheme = isDarkTheme,
                 imageLoader = imageLoader,
                 modifier = Modifier.weight(1f),
-                onReadMsg = onReadMsg
+                onReadMsg = onReadMsg,
+                onCodeExtracted = onCodeExtracted
             )
             UserInput(
                 onMessageSent = { content ->

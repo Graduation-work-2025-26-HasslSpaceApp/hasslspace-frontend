@@ -1,5 +1,7 @@
 package ru.hse.app.androidApp.ui.components.chats.chat
 
+import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -22,6 +24,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -72,7 +75,8 @@ fun Messages(
     onReadMsg: (String) -> Unit,
     isDarkTheme: Boolean,
     imageLoader: ImageLoader,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onCodeExtracted: (String) -> Unit = {},
 ) {
     val jumpToBottomThreshold = 56.dp
     val scope = rememberCoroutineScope()
@@ -137,6 +141,7 @@ fun Messages(
                         isLastMessageByAuthor = isLastMessageByAuthor,
                         isDarkTheme = isDarkTheme,
                         imageLoader = imageLoader,
+                        onCodeExtracted = onCodeExtracted,
                         modifier = Modifier.onVisibilityChanged { visibility ->
                             if (visibility && !content.isRead) {
                                 onReadMsg(content.id)
@@ -185,7 +190,8 @@ fun Message(
     isLastMessageByAuthor: Boolean,
     isDarkTheme: Boolean,
     imageLoader: ImageLoader,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onCodeExtracted: (String) -> Unit = {},
 ) {
     val borderColor = if (isUserMe) {
         MaterialTheme.colorScheme.secondary
@@ -228,6 +234,7 @@ fun Message(
             isUserMe = isUserMe,
             isFirstMessageByAuthor = isFirstMessageByAuthor,
             isLastMessageByAuthor = isLastMessageByAuthor,
+            onCodeExtracted = onCodeExtracted,
             modifier = Modifier
                 .padding(end = 16.dp)
                 .weight(1f),
@@ -242,6 +249,7 @@ fun AuthorAndTextMessage(
     isFirstMessageByAuthor: Boolean,
     isLastMessageByAuthor: Boolean,
     modifier: Modifier = Modifier,
+    onCodeExtracted: (String) -> Unit = {},
 ) {
     Column(modifier = modifier) {
         if (isLastMessageByAuthor) {
@@ -250,6 +258,7 @@ fun AuthorAndTextMessage(
         ChatItemBubble(
             message = msg,
             isUserMe = isUserMe,
+            onCodeExtracted = onCodeExtracted
         )
         if (isFirstMessageByAuthor) {
             Spacer(modifier = Modifier.height(8.dp))
@@ -272,7 +281,8 @@ private fun AuthorName(msg: MessageUiModel) {
 @Composable
 fun ChatItemBubble(
     message: MessageUiModel,
-    isUserMe: Boolean
+    isUserMe: Boolean,
+    onCodeExtracted: (String) -> Unit = {},
 ) {
     val backgroundBubbleColor = if (isUserMe) {
         MaterialTheme.colorScheme.secondary
@@ -294,6 +304,10 @@ fun ChatItemBubble(
                 ClickableMessage(
                     message = message,
                     isUserMe = isUserMe,
+                    onProtectedLinkClick = { protectedUrl ->
+                        handleProtectedLinkClick(protectedUrl, onCodeExtracted)
+                    }
+
                 )
 
                 // Время сообщения (стиль Telegram)
@@ -312,7 +326,8 @@ fun ChatItemBubble(
 fun ClickableMessage(
     message: MessageUiModel,
     isUserMe: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onProtectedLinkClick: ((String) -> Unit)? = null
 ) {
     val uriHandler = LocalUriHandler.current
 
@@ -321,27 +336,36 @@ fun ClickableMessage(
         primary = isUserMe,
     )
 
-    ClickableText(
-        text = styledMessage,
-        style = MaterialTheme.typography.bodyLarge.copy(
-            color = if (isUserMe)
-                MaterialTheme.colorScheme.onSecondary
-            else
-                MaterialTheme.colorScheme.onBackground
-        ),
-        modifier = modifier,
-        onClick = {
-            styledMessage
-                .getStringAnnotations(start = it, end = it)
-                .firstOrNull()
-                ?.let { annotation ->
-                    when (annotation.tag) {
-                        SymbolAnnotationType.LINK.name -> uriHandler.openUri(annotation.item)
-                        else -> Unit
+    SelectionContainer {
+        ClickableText(
+            text = styledMessage,
+            style = MaterialTheme.typography.bodyLarge.copy(
+                color = if (isUserMe)
+                    MaterialTheme.colorScheme.onSecondary
+                else
+                    MaterialTheme.colorScheme.onBackground
+            ),
+            modifier = modifier,
+            onClick = {
+                styledMessage
+                    .getStringAnnotations(start = it, end = it)
+                    .firstOrNull()
+                    ?.let { annotation ->
+                        when (annotation.tag) {
+                            SymbolAnnotationType.LINK.name -> {
+                                val url = annotation.item
+                                if (url.startsWith("https://n1.hasslspace.work.gd")) {
+                                    onProtectedLinkClick?.invoke(url)
+                                } else {
+                                    uriHandler.openUri(url)
+                                }
+                            }
+                            else -> Unit
+                        }
                     }
-                }
-        },
-    )
+            },
+        )
+    }
 }
 
 @Composable
@@ -395,6 +419,16 @@ private fun RowScope.DayHeaderLine() {
             .align(Alignment.CenterVertically),
         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
     )
+}
+
+fun handleProtectedLinkClick(protectedUrl: String, onCodeExtracted: (String) -> Unit) {
+    val uri = Uri.parse(protectedUrl)
+    val code = uri.getQueryParameter("code")
+    if (code != null) {
+        onCodeExtracted(code)
+    } else {
+        Log.d("handleProtectedLinkClick", "Код не найден в URL: $protectedUrl")
+    }
 }
 
 

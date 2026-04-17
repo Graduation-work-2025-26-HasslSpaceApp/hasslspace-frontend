@@ -149,7 +149,8 @@ private fun getSymbolAnnotation(
             AnnotatedString(
                 text = matchResult.value,
                 spanStyle = SpanStyle(
-                    color = if (primary) colorScheme.inversePrimary else colorScheme.primary,
+                    color = colorScheme.primary,
+                    textDecoration = TextDecoration.Underline,
                 ),
             ),
             StringAnnotation(

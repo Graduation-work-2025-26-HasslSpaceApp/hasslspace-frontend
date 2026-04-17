@@ -21,7 +21,9 @@ import ru.hse.app.androidApp.ui.entity.model.chats.events.GetPrivateChatMessages
 import ru.hse.app.androidApp.ui.entity.model.chats.events.GetPrivateChatsEvent
 import ru.hse.app.androidApp.ui.entity.model.chats.events.SendMessageEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadUserFriendsEvent
+import ru.hse.app.androidApp.ui.entity.model.servers.events.JoinServerEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.LoadTextChannelEvent
+import ru.hse.app.androidApp.ui.navigation.BottomNavigationItem
 
 @Composable
 fun TextChannelScreen(
@@ -40,6 +42,24 @@ fun TextChannelScreen(
     val getPrivateChatMessagesEvent by viewModel.getPrivateChatMessagesEvent.collectAsState()
     val loadTextChannelEvent by viewModel.loadTextChannelEvent.collectAsState()
     val sendMessageEvent by viewModel.sendMessageEvent.collectAsState()
+    val joinServerEvent by viewModel.joinServerEvent.collectAsState()
+
+    LaunchedEffect(joinServerEvent) {
+        when (joinServerEvent) {
+            is JoinServerEvent.Success -> {
+                viewModel.handleError("Успешно присоединились к серверу")
+                navController.navigate(BottomNavigationItem.Servers.route)
+            }
+
+            is JoinServerEvent.Error -> {
+                val message = (joinServerEvent as JoinServerEvent.Error).message
+                viewModel.handleError(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetJoinServerEvent()
+    }
 
     LaunchedEffect(sendMessageEvent) {
         when (sendMessageEvent) {
@@ -124,5 +144,6 @@ fun TextChannelWithStateContent(
         imageLoader = viewModel.imageLoader,
         messages = uiState.data.messages,
         onReadMsg = { viewModel.markMessageAsRead(it) },
+        onCodeExtracted = { code -> viewModel.joinServer(code) }
     )
 }

@@ -24,6 +24,7 @@ import ru.hse.app.androidApp.domain.usecase.chats.SendMessageUseCase
 import ru.hse.app.androidApp.domain.usecase.chats.StartChatUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.LoadUserInfoUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.GetServerInfoUseCase
+import ru.hse.app.androidApp.domain.usecase.servers.JoinServerUseCase
 import ru.hse.app.androidApp.ui.entity.model.chats.ChatUiState
 import ru.hse.app.androidApp.ui.entity.model.chats.MessageUiModel
 import ru.hse.app.androidApp.ui.entity.model.chats.events.GetPrivateChatMessagesEvent
@@ -32,6 +33,7 @@ import ru.hse.app.androidApp.ui.entity.model.chats.events.SendMessageEvent
 import ru.hse.app.androidApp.ui.entity.model.chats.toUi
 import ru.hse.app.androidApp.ui.entity.model.chats.toUiChat
 import ru.hse.app.androidApp.ui.entity.model.chats.toUiPrivate
+import ru.hse.app.androidApp.ui.entity.model.servers.events.JoinServerEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.LoadTextChannelEvent
 import ru.hse.app.androidApp.ui.errorhandling.ErrorHandler
 import ru.hse.coursework.godaily.ui.notification.ToastManager
@@ -54,6 +56,7 @@ class TextChannelViewModel @Inject constructor(
     private val loadUserInfoUseCase: LoadUserInfoUseCase,
     private val getChannelInfoUseCase: GetChannelInfoUseCase,
     private val getServerInfoUseCase: GetServerInfoUseCase,
+    private val joinServerUseCase: JoinServerUseCase,
 
     private val dataManager: DataManager,
     private val toastManager: ToastManager,
@@ -80,6 +83,9 @@ class TextChannelViewModel @Inject constructor(
 
     private val _sendMessageEvent = MutableStateFlow<SendMessageEvent?>(null)
     val sendMessageEvent: StateFlow<SendMessageEvent?> = _sendMessageEvent
+
+    private val _joinServerEvent = MutableStateFlow<JoinServerEvent?>(null)
+    val joinServerEvent: StateFlow<JoinServerEvent?> = _joinServerEvent
 
     fun loadTextChannelInitInfo(curUserId: String, serverId: String, channelId: String) {
         viewModelScope.launch {
@@ -132,8 +138,30 @@ class TextChannelViewModel @Inject constructor(
                     LoadTextChannelEvent.Error("Ошибка при загрузке канала. " + it.message)
                 }
             )
+        }
+    }
 
+    fun joinServer(code: String) {
+        when {
+            code.isBlank() -> {
+                errorHandler.handleError("Код не может быть пустым")
+                return
+            }
+            else -> {
+                viewModelScope.launch {
+                    val result =
+                        joinServerUseCase(code)
 
+                    _joinServerEvent.value = result.fold(
+                        onSuccess = {
+                            JoinServerEvent.Success
+                        },
+                        onFailure = { error ->
+                            JoinServerEvent.Error("Ошибка при присоединении к серверу. ${error.message}")
+                        }
+                    )
+                }
+            }
         }
     }
 
@@ -181,5 +209,9 @@ class TextChannelViewModel @Inject constructor(
 
     fun resetSendMessageEvent() {
         _sendMessageEvent.value = null
+    }
+
+    fun resetJoinServerEvent() {
+        _joinServerEvent.value = null
     }
 }
