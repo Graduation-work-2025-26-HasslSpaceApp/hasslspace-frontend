@@ -419,6 +419,7 @@ fun getMessagePreview(): MessageUiModel {
     return MessageUiModel(
         author = getMeChat(),
         content = "Hello, how are you?",
+        fileUrl = null,
         timestamp = LocalDateTime.now(),
         id = "1",
         isRead = true,
@@ -546,6 +547,7 @@ fun AuthorNameTimestampPreview() {
         author = getMeChat(),
         content = "Hello, how are you?",
         timestamp = LocalDateTime.now().minusDays(1),
+        fileUrl = null,
         id = "1",
         isRead = true,
     )
@@ -563,6 +565,7 @@ fun AuthorNameTimestampPreviewDark() {
         content = "Hello, how are you?",
         timestamp = LocalDateTime.now(),
         id = "1",
+        fileUrl = null,
         isRead = true,
     )
 
@@ -714,6 +717,7 @@ val messages = listOf(
         timestamp = LocalDateTime.now().minusDays(1),
         id = "1",
         isRead = true,
+        fileUrl = null,
     ),
     MessageUiModel(
         author = getMeChat(),
@@ -721,6 +725,7 @@ val messages = listOf(
         timestamp = LocalDateTime.now().minusHours(2),
         id = "2",
         isRead = false,
+        fileUrl = null,
     ),
     MessageUiModel(
         author = getNotMeChat(),
@@ -728,6 +733,7 @@ val messages = listOf(
         timestamp = LocalDateTime.now().minusHours(1),
         id = "3",
         isRead = false,
+        fileUrl = null,
     ),
     MessageUiModel(
         author = getNotMeChat(),
@@ -735,6 +741,7 @@ val messages = listOf(
         timestamp = LocalDateTime.now(),
         id = "4",
         isRead = false,
+        fileUrl = null,
     ),
     MessageUiModel(
         author = getAlexey(),
@@ -742,6 +749,7 @@ val messages = listOf(
         timestamp = LocalDateTime.now().minusDays(3),
         id = "5",
         isRead = true,
+        fileUrl = null,
     ),
     MessageUiModel(
         author = getAlexey(),
@@ -749,6 +757,7 @@ val messages = listOf(
         timestamp = LocalDateTime.now().minusDays(2),
         id = "6",
         isRead = true,
+        fileUrl = null,
     ),
     MessageUiModel(
         author = getEkaterina(),
@@ -756,6 +765,7 @@ val messages = listOf(
         timestamp = LocalDateTime.now().minusDays(4),
         id = "7",
         isRead = true,
+        fileUrl = null,
     ),
     MessageUiModel(
         author = getEkaterina(),
@@ -763,6 +773,7 @@ val messages = listOf(
         timestamp = LocalDateTime.now().minusDays(5),
         id = "8",
         isRead = true,
+        fileUrl = null,
     ),
     MessageUiModel(
         author = getEkaterina(),
@@ -770,6 +781,7 @@ val messages = listOf(
         timestamp = LocalDateTime.now().minusDays(5),
         id = "11",
         isRead = true,
+        fileUrl = null,
     ),
     MessageUiModel(
         author = getMeChat(),
@@ -777,6 +789,7 @@ val messages = listOf(
         timestamp = LocalDateTime.now().minusHours(6),
         id = "9",
         isRead = false,
+        fileUrl = null,
     ),
     MessageUiModel(
         author = getMeChat(),
@@ -784,6 +797,7 @@ val messages = listOf(
         timestamp = LocalDateTime.now().minusHours(7),
         id = "10",
         isRead = false,
+        fileUrl = null,
     ),
 )
 
@@ -817,6 +831,7 @@ fun getMessagePreview(isCurrentUser: Boolean): MessageUiModel {
         timestamp = LocalDateTime.now(),
         id = "11",
         isRead = true,
+        fileUrl = null,
     )
 }
 

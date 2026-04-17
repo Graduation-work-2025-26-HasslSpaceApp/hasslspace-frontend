@@ -871,23 +871,6 @@ class ServerCardViewModel @Inject constructor(
         }
     }
 
-
-    fun onToggleFriend(user: FriendCheckboxUiModel) {
-        val currentState = _uiState.value
-        if (currentState is ServerCardUiState.Success) {
-            val updatedMembers = currentState.data.newChannelMembers.map { friend ->
-                if (friend.id == user.id) {
-                    friend.copy(isChosen = !friend.isChosen)
-                } else {
-                    friend
-                }
-            }
-            _uiState.value = currentState.copy(
-                data = currentState.data.copy(newChannelMembers = updatedMembers)
-            )
-        }
-    }
-
     fun resetMembersAndRoles() {
         val currentState = _uiState.value
         if (currentState is ServerCardUiState.Success) {
@@ -975,6 +958,7 @@ class ServerCardViewModel @Inject constructor(
                     if (currentState is ServerCardUiState.Success) {
                         val updatedData = currentState.data.copy(
                             currentUser = ServerCardUiModel.CurrentUserUiModel(
+                                id = info.id,
                                 username = info.nickname,
                                 name = info.username,
                                 avatarUrl = info.avatarUrl,

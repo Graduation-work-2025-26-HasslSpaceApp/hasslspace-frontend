@@ -6,7 +6,7 @@ import androidx.room.TypeConverters
 
 @Database(
     entities = [MessageEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = true
 )
 @TypeConverters(DateTimeConverter::class)

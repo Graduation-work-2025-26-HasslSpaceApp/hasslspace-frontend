@@ -27,6 +27,9 @@ data class MessageEntity(
     @ColumnInfo(name = "content")
     val content: String?,
 
+    @ColumnInfo(name = "file_url")
+    val fileUrl: String? = null,
+
     @ColumnInfo(name = "created_at")
     val createdAt: LocalDateTime,
 

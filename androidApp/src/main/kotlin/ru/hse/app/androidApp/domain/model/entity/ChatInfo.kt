@@ -17,21 +17,21 @@ data class ChatInfo(
     )
 }
 
-fun ChatInfoDto.toDomain(): ChatInfo {
+fun ChatInfoDto.toDomain(curUserId: String): ChatInfo {
     return ChatInfo(
         id = this.id,
-        name = this.name,
-        chatMembers = this.chatMembers.map { it.toDomain() }
+        name = this.name?:"",
+        chatMembers = this.chatMembers.map { it.toDomain(curUserId) }
     )
 }
 
-private fun ChatInfoDto.ChatMemberDto.toDomain(): ChatInfo.ChatMember {
+private fun ChatInfoDto.ChatMemberDto.toDomain(curUserId: String): ChatInfo.ChatMember {
     return ChatInfo.ChatMember(
         id = this.id,
         name = this.name,
         username = this.username,
         status = this.status,
         photoURL = this.photoURL,
-        isCurrentUser = this.isCurrentUser
+        isCurrentUser = (this.id == curUserId)
     )
 }

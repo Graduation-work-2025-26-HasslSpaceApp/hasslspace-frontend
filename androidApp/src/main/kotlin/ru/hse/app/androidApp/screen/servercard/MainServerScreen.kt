@@ -331,7 +331,14 @@ fun MainServerScreenWithStateContent(
             serverName = data.chosenServer.name,
             textChannels = data.chosenServer.textChannels,
             voiceChannels = data.chosenServer.voiceChannels,
-            onTextChannelShortClick = {/*todo*/ },
+            onTextChannelShortClick = {
+                if (data.currentUser != null) {
+                    navController.navigate(NavigationItem.TextChannelChat.route + "/${data.chosenServer.id}" + "/${it.id}" + "/${data.currentUser.id}")
+                } else {
+                    viewModel.handleError("Не загружен текущий пользователь")
+                }
+
+            },
             onTextChannelLongClick = {
                 viewModel.chosenTextChannel.value = it
                 viewModel.showTextChannelOptions.value = true

@@ -316,10 +316,10 @@ interface ApiService {
     suspend fun getTokenForCentrifugo(): Response<String>
 
     // чаты
-    @GET(CHAT_SERVICE_URL + GET_CHAT_URL)// todo
+    @GET(CHAT_SERVICE_URL + GET_CHAT_URL)
     suspend fun getPrivateChats(): Response<List<ChatInfoDto>>
 
-    @GET(CHAT_SERVICE_URL + GET_CHAT_URL)// todo
+    @GET(CHAT_SERVICE_URL + GET_CHAT_URL)
     suspend fun getChat(
         @Query("chatId") chatId: String
     ): Response<ChatInfoDto> // todo заменить потом usecase на такой

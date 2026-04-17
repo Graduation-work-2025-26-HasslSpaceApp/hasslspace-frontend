@@ -28,6 +28,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import ru.hse.app.androidApp.BuildConfig
 import ru.hse.app.androidApp.screen.call.CallScreen
+import ru.hse.app.androidApp.screen.channel.TextChannelScreen
 import ru.hse.app.androidApp.screen.chats.ChatScreen
 import ru.hse.app.androidApp.screen.chats.ChatsScreen
 import ru.hse.app.androidApp.screen.chats.NewMessageScreen
@@ -166,6 +167,30 @@ fun BottomNavigation(bottomNavController: NavHostController) {
             }
         }
 
+        composable(
+            route = NavigationItem.TextChannelChat.route + "/{serverId}/{chatId}/{curUserId}",
+            arguments = listOf(
+                navArgument(name = "serverId") {
+                    type = NavType.StringType
+                },
+                navArgument(name = "chatId") {
+                    type = NavType.StringType
+                },
+                navArgument(name = "curUserId") {
+                    type = NavType.StringType
+                },
+            )
+        ) { backStackEntry ->
+            val serverId = backStackEntry.arguments?.getString("serverId")
+            val chatId = backStackEntry.arguments?.getString("chatId")
+            val curUserId = backStackEntry.arguments?.getString("curUserId")
+
+
+            if (serverId != null && chatId != null && curUserId != null) {
+                TextChannelScreen(serverId, chatId, curUserId, bottomNavController)
+            }
+        }
+
         composable(NavigationItem.NewMessageScreen.route) {
             NewMessageScreen(bottomNavController)
         }
@@ -248,7 +273,8 @@ fun MainScreen(
 
     val isChatOrVoiceScreen =
         currentRoute?.startsWith(NavigationItem.Chat.route.substringBefore("/{")) == true ||
-                currentRoute?.startsWith(NavigationItem.VoiceRoom.route.substringBefore("/{")) == true
+                currentRoute?.startsWith(NavigationItem.VoiceRoom.route.substringBefore("/{")) == true ||
+                currentRoute?.startsWith(NavigationItem.TextChannelChat.route.substringBefore("/{")) == true
 
 
     Scaffold(

@@ -24,3 +24,5 @@ data class UserDto(
     @JsonProperty("description")
     val description: String?
 )
+
+// todo при перезаходе в приложении почистить кэш фото

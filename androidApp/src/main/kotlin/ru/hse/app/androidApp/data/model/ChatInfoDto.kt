@@ -7,7 +7,7 @@ data class ChatInfoDto(
     val id: String,
 
     @JsonProperty("name")
-    val name: String,
+    val name: String?,
 
     @JsonProperty("chatMembers")
     val chatMembers: List<ChatMemberDto>,
@@ -27,8 +27,5 @@ data class ChatInfoDto(
 
         @JsonProperty("photoUrl")
         val photoURL: String?,
-
-        @JsonProperty("isCurrentUser")
-        val isCurrentUser: Boolean,
     )
 }

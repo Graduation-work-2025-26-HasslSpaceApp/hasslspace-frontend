@@ -9,6 +9,7 @@ data class Message(
     val chatId: String,
     val userId: String,
     val content: String,
+    val fileUrl: String?,
     val createdAt: LocalDateTime,
     val isRead: Boolean = false
 )
@@ -19,6 +20,7 @@ fun MessageEntity.toDomain(): Message {
         chatId = this.chatId,
         userId = this.userId,
         content = this.content ?: "",
+        fileUrl = this.fileUrl,
         createdAt = this.createdAt,
         isRead = this.isRead
     )
@@ -30,6 +32,7 @@ fun MessageDto.toDomain(): Message {
         chatId = this.chatId,
         userId = this.userId,
         content = this.content ?: "",
+        fileUrl = this.fileUrl,
         createdAt = this.createdAt
     )
 }
@@ -40,6 +43,7 @@ fun Message.toEntity(): MessageEntity {
         chatId = this.chatId,
         userId = this.userId,
         content = this.content,
+        fileUrl = this.fileUrl,
         createdAt = this.createdAt,
         isRead = false
     )
@@ -51,6 +55,7 @@ fun MessageDto.toEntity(): MessageEntity {
         chatId = this.chatId,
         userId = this.userId,
         content = this.content ?: "",
+        fileUrl = this.fileUrl,
         createdAt = this.createdAt
     )
 }

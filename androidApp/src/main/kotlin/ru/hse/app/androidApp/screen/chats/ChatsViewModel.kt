@@ -12,7 +12,6 @@ import kotlinx.coroutines.launch
 import ru.hse.app.androidApp.BuildConfig
 import ru.hse.app.androidApp.data.centrifugo.CentrifugeService
 import ru.hse.app.androidApp.data.local.DataManager
-import ru.hse.app.androidApp.domain.model.entity.ChatInfo
 import ru.hse.app.androidApp.domain.service.common.CropProfilePhotoService
 import ru.hse.app.androidApp.domain.usecase.chats.GetChatMessagesUseCase
 import ru.hse.app.androidApp.domain.usecase.chats.GetPrivateChatsUseCase
@@ -25,6 +24,7 @@ import ru.hse.app.androidApp.domain.usecase.chats.SearchChatsUseCase
 import ru.hse.app.androidApp.domain.usecase.chats.SendMessageUseCase
 import ru.hse.app.androidApp.domain.usecase.chats.StartChatUseCase
 import ru.hse.app.androidApp.domain.usecase.friends.GetUserFriendsUseCase
+import ru.hse.app.androidApp.domain.usecase.profile.LoadUserInfoUseCase
 import ru.hse.app.androidApp.ui.entity.model.ChatShortUiModel
 import ru.hse.app.androidApp.ui.entity.model.chats.ChatsUiModel
 import ru.hse.app.androidApp.ui.entity.model.chats.ChatsUiState
@@ -49,6 +49,8 @@ class ChatsViewModel @Inject constructor(
     private val markMessageAsReadUseCase: MarkMessageAsReadUseCase,
     private val markChatAsReadUseCase: MarkChatAsReadUseCase,
 
+    private val loadUserInfoUseCase: LoadUserInfoUseCase,
+
     private val centrifugeService: CentrifugeService,
 
     private val dataManager: DataManager,
@@ -60,6 +62,9 @@ class ChatsViewModel @Inject constructor(
     private val getUserFriendsUseCase: GetUserFriendsUseCase,
     val imageLoader: ImageLoader
 ) : ViewModel() {
+
+    // todo исправить на экране с чатами при добавлении нового отсутствие друзей
+
     val isDark = dataManager.isDark.value
 
     private val _uiState =
@@ -109,22 +114,29 @@ class ChatsViewModel @Inject constructor(
 
     fun loadChats() {
         viewModelScope.launch {
-            val result = getPrivateChatsUseCase()
-            _uiState.value = result.fold(
-                onSuccess = { chats ->
-                    val chatModels = chats.map { it.toChatShort() }
-                    chatModels.forEach { observeMessagesAndUnreadCount(it) }
+            val curUserResult = loadUserInfoUseCase()
 
-                    connectToCentrifugo(chatModels.map { it.id })
+            curUserResult.fold(
+                onSuccess = { user ->
+                    val result = getPrivateChatsUseCase(user.id)
+                    _uiState.value = result.fold(
+                        onSuccess = { chats ->
+                            val chatModels = chats.map { it.toChatShort() }
+                            chatModels.forEach { observeMessagesAndUnreadCount(it) }
 
-                    originalChats.clear()
-                    originalChats.addAll(chatModels)
+                            connectToCentrifugo(chatModels.map { it.id })
 
-                    ChatsUiState.Success(
-                        data = ChatsUiModel(chats = chatModels, friends = emptyList())
+                            originalChats.clear()
+                            originalChats.addAll(chatModels)
+
+                            ChatsUiState.Success(
+                                data = ChatsUiModel(chats = chatModels, friends = emptyList())
+                            )
+                        },
+                        onFailure = {
+                            ChatsUiState.Error("Ошибка при загрузке чатов: ${it.message}")
+                        }
                     )
-
-
                 },
                 onFailure = {
                     ChatsUiState.Error("Ошибка при загрузке чатов: ${it.message}")

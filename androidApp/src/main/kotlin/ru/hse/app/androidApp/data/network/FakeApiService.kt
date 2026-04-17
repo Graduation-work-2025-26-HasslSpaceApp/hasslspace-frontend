@@ -907,7 +907,6 @@ class FakeApiService : ApiService {
                         username = "yuulkht",
                         status = "ONLINE",
                         photoURL = "https://i.postimg.cc/J4DLnLCS/accountphoto.jpg",
-                        isCurrentUser = true
                     ),
                     ChatInfoDto.ChatMemberDto(
                         id = "1",
@@ -915,7 +914,6 @@ class FakeApiService : ApiService {
                         username = "alex_ivanov",
                         status = "ONLINE",
                         photoURL = "https://i.postimg.cc/1XfF8BZh/friend1.jpg",
-                        isCurrentUser = false
                     )
                 )
             ),
@@ -929,7 +927,6 @@ class FakeApiService : ApiService {
                         username = "yuulkht",
                         status = "ONLINE",
                         photoURL = "https://i.postimg.cc/J4DLnLCS/accountphoto.jpg",
-                        isCurrentUser = true
                     ),
                     ChatInfoDto.ChatMemberDto(
                         id = "2",
@@ -937,7 +934,6 @@ class FakeApiService : ApiService {
                         username = "masha_petrov",
                         status = "INVISIBLE",
                         photoURL = "https://i.postimg.cc/K8Jxt5wQ/friend2.jpg",
-                        isCurrentUser = false
                     )
                 )
             ),
@@ -951,7 +947,6 @@ class FakeApiService : ApiService {
                         username = "yuulkht",
                         status = "ONLINE",
                         photoURL = "https://i.postimg.cc/J4DLnLCS/accountphoto.jpg",
-                        isCurrentUser = true
                     ),
                     ChatInfoDto.ChatMemberDto(
                         id = "3",
@@ -959,7 +954,6 @@ class FakeApiService : ApiService {
                         username = "irina_smirnov",
                         status = "DO_NOT_DISTURB",
                         photoURL = "https://i.postimg.cc/3RmDC39Y/friend3.jpg",
-                        isCurrentUser = false
                     )
                 )
             )
@@ -979,7 +973,6 @@ class FakeApiService : ApiService {
                         username = "yuulkht",
                         status = "ONLINE",
                         photoURL = "https://i.postimg.cc/J4DLnLCS/accountphoto.jpg",
-                        isCurrentUser = true
                     ),
                     ChatInfoDto.ChatMemberDto(
                         id = "3",
@@ -987,7 +980,6 @@ class FakeApiService : ApiService {
                         username = "irina_smirnov",
                         status = "DO_NOT_DISTURB",
                         photoURL = "https://i.postimg.cc/3RmDC39Y/friend3.jpg",
-                        isCurrentUser = false
                     )
                 )
             )

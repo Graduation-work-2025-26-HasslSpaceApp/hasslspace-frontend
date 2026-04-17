@@ -40,6 +40,7 @@ data class ServerCardUiModel(
     )
 
     data class CurrentUserUiModel(
+        val id: String,
         val username: String,
         val name: String,
         val avatarUrl: String?,

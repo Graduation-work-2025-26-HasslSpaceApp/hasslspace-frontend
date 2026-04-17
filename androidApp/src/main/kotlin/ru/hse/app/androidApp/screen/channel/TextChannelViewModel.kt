@@ -1,4 +1,4 @@
-package ru.hse.app.androidApp.screen.chats
+package ru.hse.app.androidApp.screen.channel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,6 +11,7 @@ import ru.hse.app.androidApp.BuildConfig
 import ru.hse.app.androidApp.data.centrifugo.CentrifugeService
 import ru.hse.app.androidApp.data.local.DataManager
 import ru.hse.app.androidApp.domain.service.common.CropProfilePhotoService
+import ru.hse.app.androidApp.domain.usecase.channel.GetChannelInfoUseCase
 import ru.hse.app.androidApp.domain.usecase.chats.GetChatMessagesUseCase
 import ru.hse.app.androidApp.domain.usecase.chats.GetPrivateChatsUseCase
 import ru.hse.app.androidApp.domain.usecase.chats.MarkChatAsReadUseCase
@@ -22,19 +23,22 @@ import ru.hse.app.androidApp.domain.usecase.chats.SearchChatsUseCase
 import ru.hse.app.androidApp.domain.usecase.chats.SendMessageUseCase
 import ru.hse.app.androidApp.domain.usecase.chats.StartChatUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.LoadUserInfoUseCase
+import ru.hse.app.androidApp.domain.usecase.servers.GetServerInfoUseCase
 import ru.hse.app.androidApp.ui.entity.model.chats.ChatUiState
 import ru.hse.app.androidApp.ui.entity.model.chats.MessageUiModel
 import ru.hse.app.androidApp.ui.entity.model.chats.events.GetPrivateChatMessagesEvent
 import ru.hse.app.androidApp.ui.entity.model.chats.events.GetPrivateChatsEvent
 import ru.hse.app.androidApp.ui.entity.model.chats.events.SendMessageEvent
 import ru.hse.app.androidApp.ui.entity.model.chats.toUi
+import ru.hse.app.androidApp.ui.entity.model.chats.toUiChat
 import ru.hse.app.androidApp.ui.entity.model.chats.toUiPrivate
+import ru.hse.app.androidApp.ui.entity.model.servers.events.LoadTextChannelEvent
 import ru.hse.app.androidApp.ui.errorhandling.ErrorHandler
 import ru.hse.coursework.godaily.ui.notification.ToastManager
 import javax.inject.Inject
 
 @HiltViewModel
-class ChatViewModel @Inject constructor(
+class TextChannelViewModel @Inject constructor(
     private val getChatMessagesUseCase: GetChatMessagesUseCase,
     private val getPrivateChatsUseCase: GetPrivateChatsUseCase,
     private val observeAllUnreadCountsUseCase: ObserveAllUnreadCountsUseCase,
@@ -48,6 +52,8 @@ class ChatViewModel @Inject constructor(
     private val markChatAsReadUseCase: MarkChatAsReadUseCase,
 
     private val loadUserInfoUseCase: LoadUserInfoUseCase,
+    private val getChannelInfoUseCase: GetChannelInfoUseCase,
+    private val getServerInfoUseCase: GetServerInfoUseCase,
 
     private val dataManager: DataManager,
     private val toastManager: ToastManager,
@@ -69,68 +75,61 @@ class ChatViewModel @Inject constructor(
     val getPrivateChatMessagesEvent: StateFlow<GetPrivateChatMessagesEvent?> =
         _getPrivateChatMessagesEvent
 
-    private val _getPrivateChatsEvent = MutableStateFlow<GetPrivateChatsEvent?>(null)
-    val getPrivateChatsEvent: StateFlow<GetPrivateChatsEvent?> = _getPrivateChatsEvent
+    private val _loadTextChannelEvent = MutableStateFlow<LoadTextChannelEvent?>(null)
+    val loadTextChannelEvent: StateFlow<LoadTextChannelEvent?> = _loadTextChannelEvent
 
     private val _sendMessageEvent = MutableStateFlow<SendMessageEvent?>(null)
     val sendMessageEvent: StateFlow<SendMessageEvent?> = _sendMessageEvent
 
-    fun loadChatInitInfo(chatId: String) {
+    fun loadTextChannelInitInfo(curUserId: String, serverId: String, channelId: String) {
         viewModelScope.launch {
-            val curUserResult = loadUserInfoUseCase()
+            val textChannelInfoResult = getChannelInfoUseCase(serverId, channelId)
+            val serverInfoResult = getServerInfoUseCase(serverId)
 
-            _getPrivateChatsEvent.value = curUserResult.fold(
-                onSuccess = { curUser ->
-                    val result = getPrivateChatsUseCase(curUser.id)
+            _loadTextChannelEvent.value = textChannelInfoResult.fold(
+                onSuccess = { channel ->
+                    serverInfoResult.fold(
+                        onSuccess = { serverInfo ->
+                            val chatUi = channel.toUiChat(curUserId, serverInfo.members)
 
-                    result.fold(
-                        onSuccess = { chats ->
-                            val currentChat = chats.find { it.id == chatId }
-                            if (currentChat != null) {
-                                val chatUi = currentChat.toUiPrivate()
+                            _uiState.value = ChatUiState.Success(
+                                data = chatUi
+                            )
 
-                                _uiState.value = ChatUiState.Success(
-                                    data = chatUi
-                                )
-
-                                viewModelScope.launch {
-                                    getChatMessagesUseCase.observeMessages(chatId)
-                                        .collect { messages ->
-                                            val curState = _uiState.value
-                                            if (curState is ChatUiState.Success) {
-                                                val uiMessages = messages.map { message ->
-                                                    val cachedMessage = messagesCache[message.id]
-                                                    if (cachedMessage != null && cachedMessage.isRead != message.isRead) {
-                                                        messagesCache[message.id] =
-                                                            message.toUi(curState.data.channelMembers)
-                                                    }
-
-                                                    messagesCache.getOrPut(message.id) {
+                            viewModelScope.launch {
+                                getChatMessagesUseCase.observeMessages(channelId)
+                                    .collect { messages ->
+                                        val curState = _uiState.value
+                                        if (curState is ChatUiState.Success) {
+                                            val uiMessages = messages.map { message ->
+                                                val cachedMessage = messagesCache[message.id]
+                                                if (cachedMessage != null && cachedMessage.isRead != message.isRead) {
+                                                    messagesCache[message.id] =
                                                         message.toUi(curState.data.channelMembers)
-                                                    }
                                                 }
 
-                                                connectToCentrifugo(chatId)
-
-                                                _uiState.value = ChatUiState.Success(
-                                                    data = curState.data.copy(messages = uiMessages)
-                                                )
+                                                messagesCache.getOrPut(message.id) {
+                                                    message.toUi(curState.data.channelMembers)
+                                                }
                                             }
-                                        }
-                                }
 
-                            } else {
-                                GetPrivateChatsEvent.Error("Ошибка при загрузке выбранного чата. ")
+                                            connectToCentrifugo(channelId)
+
+                                            _uiState.value = ChatUiState.Success(
+                                                data = curState.data.copy(messages = uiMessages)
+                                            )
+                                        }
+                                    }
                             }
-                            GetPrivateChatsEvent.SuccessLoad
+                            LoadTextChannelEvent.SuccessLoad
                         },
                         onFailure = {
-                            GetPrivateChatsEvent.Error("Ошибка при загрузке чатов. " + it.message)
+                            LoadTextChannelEvent.Error("Ошибка при загрузке участников. " + it.message)
                         }
                     )
                 },
                 onFailure = {
-                    GetPrivateChatsEvent.Error("Ошибка при загрузке текущего пользователя. " + it.message)
+                    LoadTextChannelEvent.Error("Ошибка при загрузке канала. " + it.message)
                 }
             )
 
@@ -172,8 +171,8 @@ class ChatViewModel @Inject constructor(
         errorHandler.handleError(msg)
     }
 
-    fun resetGetPrivateChatsEvent() {
-        _getPrivateChatsEvent.value = null
+    fun resetLoadTextChannelEvent() {
+        _loadTextChannelEvent.value = null
     }
 
     fun resetGetPrivateChatMessagesEvent() {

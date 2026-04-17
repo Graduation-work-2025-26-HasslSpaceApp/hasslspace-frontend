@@ -43,7 +43,7 @@ class ChatRepositoryImpl @Inject constructor(
         isRead: Boolean
     ): Result<Unit> {
         return runCatching {
-            chatDao.insertMessage(MessageEntity(id, chatId, userId, content, createdAt, isRead))
+            chatDao.insertMessage(MessageEntity(id, chatId, userId, content, null, createdAt, isRead)) // todo fileUrl
         }
     }
 
@@ -62,7 +62,6 @@ class ChatRepositoryImpl @Inject constructor(
         }
     }
 
-    // todo тут прописываем все логику получения сообщений из чата. центрифуга будет про нас знать из вью модели и автоматически обновлять руум, а при загрузке чата синхронизируемс историю
     override suspend fun getChatMessagesFromRoom(chatId: String): Flow<List<MessageEntity>> {
         getChatMessagesFromServer(chatId)
         return chatDao.observeMessagesByChatId(chatId)
@@ -84,9 +83,9 @@ class ChatRepositoryImpl @Inject constructor(
         return apiCaller.safeApiCall { apiService.startChat(userId) }
     }
 
-    override suspend fun getPrivateChats(): Result<List<ChatInfo>> {
+    override suspend fun getPrivateChats(curUserId: String): Result<List<ChatInfo>> {
         return apiCaller.safeApiCall { apiService.getPrivateChats() }.mapCatching { chats ->
-            chats.map { it.toDomain() }
+            chats.map { it.toDomain(curUserId) }
         }
     }
 
