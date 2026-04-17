@@ -107,7 +107,7 @@ fun CallScreenContent(
     LaunchedEffect(Unit) {
         viewModel.errors.collect { message ->
             viewModel.handleError(message)
-            //onDisconnect() //todo потом включить
+            onDisconnect() //todo потом включить
             //snackbarHostState.showSnackbar(message)
         }
     }

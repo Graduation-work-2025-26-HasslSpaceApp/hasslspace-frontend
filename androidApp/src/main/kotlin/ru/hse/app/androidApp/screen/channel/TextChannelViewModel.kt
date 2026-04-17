@@ -22,6 +22,7 @@ import ru.hse.app.androidApp.domain.usecase.chats.SaveMessageToRoomUseCase
 import ru.hse.app.androidApp.domain.usecase.chats.SearchChatsUseCase
 import ru.hse.app.androidApp.domain.usecase.chats.SendMessageUseCase
 import ru.hse.app.androidApp.domain.usecase.chats.StartChatUseCase
+import ru.hse.app.androidApp.domain.usecase.chats.UpdateChatMessagesRestUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.LoadUserInfoUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.GetServerInfoUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.JoinServerUseCase
@@ -49,6 +50,8 @@ class TextChannelViewModel @Inject constructor(
     private val searchChatsUseCase: SearchChatsUseCase,
     private val sendMessageUseCase: SendMessageUseCase,
     private val startChatUseCase: StartChatUseCase,
+    private val updateChatMessagesRestUseCase: UpdateChatMessagesRestUseCase,
+
 
     private val markMessageAsReadUseCase: MarkMessageAsReadUseCase,
     private val markChatAsReadUseCase: MarkChatAsReadUseCase,
@@ -138,6 +141,12 @@ class TextChannelViewModel @Inject constructor(
                     LoadTextChannelEvent.Error("Ошибка при загрузке канала. " + it.message)
                 }
             )
+        }
+    }
+
+    fun refreshMessages(chatId: String) {
+        viewModelScope.launch {
+            updateChatMessagesRestUseCase(chatId)
         }
     }
 

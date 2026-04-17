@@ -9,6 +9,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import ru.hse.app.androidApp.domain.service.common.CropProfilePhotoService
+import ru.hse.app.androidApp.domain.service.common.ImageCacheManager
 import ru.hse.coursework.godaily.ui.notification.ToastManager
 import javax.inject.Singleton
 
@@ -66,12 +67,12 @@ object AppModule {
     fun provideCropProfilePhotoService(): CropProfilePhotoService {
         return CropProfilePhotoService()
     }
-//
-//    @Provides
-//    @Singleton
-//    fun provideCropRoutePreviewService(): CropRoutePreviewService {
-//        return CropRoutePreviewService()
-//    }
+
+    @Provides
+    @Singleton
+    fun provideImageCacheManager(
+        imageLoader: ImageLoader
+    ): ImageCacheManager = ImageCacheManager(imageLoader)
 
     @Provides
     @Singleton

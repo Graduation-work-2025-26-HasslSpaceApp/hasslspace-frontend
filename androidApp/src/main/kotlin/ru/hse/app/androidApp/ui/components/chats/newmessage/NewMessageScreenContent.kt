@@ -61,12 +61,12 @@ fun NewMessageScreenContent(
             )
         }
         Spacer(Modifier.height(15.dp))
-        SearchBar(
-            placeholder = "Кому? Найти друзей",
-            text = searchText,
-            onValueChange = onValueChange
-        )
-        Spacer(Modifier.height(15.dp))
+//        SearchBar(
+//            placeholder = "Кому? Найти друзей",
+//            text = searchText,
+//            onValueChange = onValueChange
+//        )
+//        Spacer(Modifier.height(15.dp))
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(1),

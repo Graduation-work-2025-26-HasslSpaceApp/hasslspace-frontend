@@ -59,7 +59,6 @@ class CallViewModel @Inject constructor(
     }
 
     fun onError(error: Exception) {
-        println("Полная ошибка: $error") // todo убрать
         viewModelScope.launch {
             _errors.emit(error.message ?: "Неизвестная ошибка")
         }

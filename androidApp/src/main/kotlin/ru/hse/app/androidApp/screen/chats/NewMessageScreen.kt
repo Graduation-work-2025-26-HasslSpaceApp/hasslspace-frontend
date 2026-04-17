@@ -19,6 +19,7 @@ import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
 import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
 import ru.hse.app.androidApp.ui.entity.model.chats.ChatUiState
 import ru.hse.app.androidApp.ui.entity.model.chats.ChatsUiState
+import ru.hse.app.androidApp.ui.entity.model.chats.events.StartChatEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadUserFriendsEvent
 import ru.hse.app.androidApp.ui.navigation.NavigationItem
 
@@ -30,6 +31,26 @@ fun NewMessageScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     val loadUserFriendsEvent by viewModel.loadUserFriendsEvent.collectAsState()
+    val startChatEvent by viewModel.startChatEvent.collectAsState()
+
+    LaunchedEffect(startChatEvent) {
+        when (startChatEvent) {
+            is StartChatEvent.Success -> {
+                val chatId = (startChatEvent as StartChatEvent.Success).chatId
+
+                navController.navigate(NavigationItem.Chat.route + "/${chatId}")
+
+            }
+
+            is StartChatEvent.Error -> {
+                val message = (startChatEvent as StartChatEvent.Error).message
+                viewModel.handleError(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetStartChatEvent()
+    }
 
     LaunchedEffect(loadUserFriendsEvent) {
         when (loadUserFriendsEvent) {
@@ -78,7 +99,7 @@ fun NewMessageWithStateContent(
         imageLoader = viewModel.imageLoader,
         friends = uiState.data.friends,
         onBackClick = { navController.popBackStack() },
-        onFriendClick = {/*todo*/},
+        onFriendClick = { viewModel.onMessageClick(it.id)},
         onAddFriendClick = {},
         onNewGroupClick = {},
         searchText = viewModel.searchTextFriends.value,

@@ -5,12 +5,18 @@ import android.app.Application
 import android.content.Context
 import android.os.Process
 import dagger.hilt.android.HiltAndroidApp
+import ru.hse.app.androidApp.domain.service.common.ImageCacheManager
+import javax.inject.Inject
 
 @HiltAndroidApp
 class HasslSpaceApp : Application() {
+    @Inject
+    lateinit var imageCacheManager: ImageCacheManager
 
     override fun onCreate() {
         super.onCreate()
+
+        imageCacheManager.clearAllCache(this)
 
 //        if (isMainProcess()) {
 //            MapKitFactory.setApiKey(BuildConfig.MAPKIT_API_KEY)

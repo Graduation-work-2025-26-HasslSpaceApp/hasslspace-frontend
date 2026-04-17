@@ -21,6 +21,7 @@ import ru.hse.app.androidApp.domain.usecase.chats.SaveMessageToRoomUseCase
 import ru.hse.app.androidApp.domain.usecase.chats.SearchChatsUseCase
 import ru.hse.app.androidApp.domain.usecase.chats.SendMessageUseCase
 import ru.hse.app.androidApp.domain.usecase.chats.StartChatUseCase
+import ru.hse.app.androidApp.domain.usecase.chats.UpdateChatMessagesRestUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.LoadUserInfoUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.JoinServerUseCase
 import ru.hse.app.androidApp.ui.entity.model.chats.ChatUiState
@@ -45,6 +46,7 @@ class ChatViewModel @Inject constructor(
     private val searchChatsUseCase: SearchChatsUseCase,
     private val sendMessageUseCase: SendMessageUseCase,
     private val startChatUseCase: StartChatUseCase,
+    private val updateChatMessagesRestUseCase: UpdateChatMessagesRestUseCase,
 
     private val markMessageAsReadUseCase: MarkMessageAsReadUseCase,
     private val markChatAsReadUseCase: MarkChatAsReadUseCase,
@@ -140,6 +142,12 @@ class ChatViewModel @Inject constructor(
                     GetPrivateChatsEvent.Error("Ошибка при загрузке текущего пользователя. " + it.message)
                 }
             )
+        }
+    }
+
+    fun refreshMessages(chatId: String) {
+        viewModelScope.launch {
+            updateChatMessagesRestUseCase(chatId)
         }
     }
 

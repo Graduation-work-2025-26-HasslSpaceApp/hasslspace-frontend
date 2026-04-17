@@ -23,11 +23,13 @@ import ru.hse.app.androidApp.domain.usecase.chats.SaveMessageToRoomUseCase
 import ru.hse.app.androidApp.domain.usecase.chats.SearchChatsUseCase
 import ru.hse.app.androidApp.domain.usecase.chats.SendMessageUseCase
 import ru.hse.app.androidApp.domain.usecase.chats.StartChatUseCase
+import ru.hse.app.androidApp.domain.usecase.chats.UpdateChatMessagesRestUseCase
 import ru.hse.app.androidApp.domain.usecase.friends.GetUserFriendsUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.LoadUserInfoUseCase
 import ru.hse.app.androidApp.ui.entity.model.ChatShortUiModel
 import ru.hse.app.androidApp.ui.entity.model.chats.ChatsUiModel
 import ru.hse.app.androidApp.ui.entity.model.chats.ChatsUiState
+import ru.hse.app.androidApp.ui.entity.model.chats.events.StartChatEvent
 import ru.hse.app.androidApp.ui.entity.model.chats.toChatShort
 import ru.hse.app.androidApp.ui.entity.model.chats.toMessageShortUi
 import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadUserFriendsEvent
@@ -48,6 +50,7 @@ class ChatsViewModel @Inject constructor(
 
     private val markMessageAsReadUseCase: MarkMessageAsReadUseCase,
     private val markChatAsReadUseCase: MarkChatAsReadUseCase,
+    private val updateChatMessagesRestUseCase: UpdateChatMessagesRestUseCase,
 
     private val loadUserInfoUseCase: LoadUserInfoUseCase,
 
@@ -73,6 +76,9 @@ class ChatsViewModel @Inject constructor(
 
     private val _loadUserFriendsEvent = MutableStateFlow<LoadUserFriendsEvent?>(null)
     val loadUserFriendsEvent: StateFlow<LoadUserFriendsEvent?> = _loadUserFriendsEvent
+
+    private val _startChatEvent = MutableStateFlow<StartChatEvent?>(null)
+    val startChatEvent: StateFlow<StartChatEvent?> = _startChatEvent
 
     val originalChats = mutableStateListOf<ChatShortUiModel>()
 
@@ -137,11 +143,28 @@ class ChatsViewModel @Inject constructor(
                             ChatsUiState.Error("Ошибка при загрузке чатов: ${it.message}")
                         }
                     )
+
+                    launch {
+                        loadUserFriends()
+                    }
                 },
                 onFailure = {
                     ChatsUiState.Error("Ошибка при загрузке чатов: ${it.message}")
                 }
             )
+        }
+    }
+
+    fun refreshMessages() {
+        viewModelScope.launch {
+            val curState = _uiState.value
+            if (curState is ChatsUiState.Success) {
+                val chats = curState.data.chats
+
+                for (chat in chats) {
+                    updateChatMessagesRestUseCase(chat.id)
+                }
+            }
         }
     }
 
@@ -181,6 +204,21 @@ class ChatsViewModel @Inject constructor(
         }
     }
 
+    fun onMessageClick(userId: String) {
+        viewModelScope.launch {
+            val result = startChatUseCase(userId)
+
+            _startChatEvent.value = result.fold(
+                onSuccess = { chatId ->
+                    StartChatEvent.Success(chatId)
+                },
+                onFailure = {
+                    StartChatEvent.Error("Ошибка при создании чата. " + it.message)
+                }
+            )
+        }
+    }
+
     fun connectToCentrifugo(chatIds: List<String>) {
         centrifugeService.connect(BuildConfig.CENTRIFUGO_URL)
         centrifugeService.subscribeToChannels(chatIds)
@@ -203,7 +241,17 @@ class ChatsViewModel @Inject constructor(
         }
     }
 
+    fun handleError(message: String) {
+        errorHandler.handleError(
+            message = message
+        )
+    }
+
     fun resetLoadUserFriendsEvent() {
         _loadUserFriendsEvent.value = null
+    }
+
+    fun resetStartChatEvent() {
+        _startChatEvent.value = null
     }
 }
