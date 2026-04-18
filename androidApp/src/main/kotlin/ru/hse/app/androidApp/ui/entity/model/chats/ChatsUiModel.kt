@@ -5,7 +5,6 @@ import ru.hse.app.androidApp.data.roomstorage.MessageEntity
 import ru.hse.app.androidApp.domain.model.entity.ChatInfo
 import ru.hse.app.androidApp.ui.entity.model.ChatShortUiModel
 import ru.hse.app.androidApp.ui.entity.model.FriendUiModel
-import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
 import java.time.LocalDateTime
 
 sealed interface ChatsUiState {
@@ -48,7 +47,7 @@ fun ChatInfo.toChatShort(): ChatShortUiModel {
 fun MessageEntity.toMessageShortUi(): MessageShortUiModel {
     return MessageShortUiModel(
         id = this.id,
-        content = this.content?:"",
+        content = this.content ?: "",
         timestamp = this.createdAt,
         isRead = this.isRead
     )

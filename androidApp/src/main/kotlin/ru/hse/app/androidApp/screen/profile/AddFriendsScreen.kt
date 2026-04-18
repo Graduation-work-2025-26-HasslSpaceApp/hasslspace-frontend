@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil3.imageLoader
 import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
 import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
 import ru.hse.app.androidApp.ui.components.profile.addfriens.AddFriendsScreenContent

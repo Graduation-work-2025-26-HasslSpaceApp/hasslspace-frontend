@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,7 +26,6 @@ import coil3.ImageLoader
 import coil3.imageLoader
 import kotlinx.coroutines.launch
 import ru.hse.app.androidApp.ui.components.common.card.participantsLabel
-import ru.hse.app.androidApp.ui.entity.model.ServerMemberUiModel
 import ru.hse.app.androidApp.ui.entity.model.chats.ChatMemberUiModel
 import ru.hse.app.androidApp.ui.entity.model.chats.MessageUiModel
 import ru.hse.app.androidApp.ui.theme.AppTheme

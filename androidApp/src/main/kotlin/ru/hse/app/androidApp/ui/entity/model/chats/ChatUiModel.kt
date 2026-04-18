@@ -6,7 +6,6 @@ import ru.hse.app.androidApp.domain.model.entity.ChannelInfo
 import ru.hse.app.androidApp.domain.model.entity.ChatInfo
 import ru.hse.app.androidApp.domain.model.entity.Message
 import ru.hse.app.androidApp.domain.model.entity.ServerInfoExpanded
-import ru.hse.app.androidApp.ui.entity.model.ServerMemberUiModel
 import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
 import ru.hse.app.androidApp.ui.entity.model.toStatusPresentation
 import java.time.LocalDateTime
@@ -99,14 +98,17 @@ fun MessageEntity.toUi(members: List<ChatMemberUiModel>): MessageUiModel {
                 photoURL = "",
                 isCurrentUser = false
             ),
-        content = this.content?:"",
+        content = this.content ?: "",
         fileUrl = this.fileUrl,
         timestamp = this.createdAt,
         isRead = this.isRead
     )
 }
 
-fun ChannelInfo.toUiChat(curUserId: String, membersServer: List<ServerInfoExpanded.ServerMember>): ChatUiModel {
+fun ChannelInfo.toUiChat(
+    curUserId: String,
+    membersServer: List<ServerInfoExpanded.ServerMember>
+): ChatUiModel {
     return ChatUiModel(
         id = this.id,
         name = this.name,

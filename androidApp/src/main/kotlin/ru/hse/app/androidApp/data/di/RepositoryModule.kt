@@ -83,7 +83,10 @@ object RepositoryModule {
     }
 
     @Provides
-    fun provideCentrifugoRepository(apiService: ApiService, apiCaller: ApiCaller): CentrifugoRepository {
+    fun provideCentrifugoRepository(
+        apiService: ApiService,
+        apiCaller: ApiCaller
+    ): CentrifugoRepository {
         return CentrifugoRepositoryImpl(apiService, apiCaller)
     }
 

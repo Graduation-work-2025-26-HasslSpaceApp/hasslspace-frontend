@@ -232,7 +232,7 @@ fun BottomNavigation(bottomNavController: NavHostController) {
 
         // Voice Rooms
         composable(
-            route = NavigationItem.VoiceRoom.route + "/{token}/{roomName}/{videoEnabled}",
+            route = NavigationItem.VoiceRoom.route + "/{token}/{roomName}/{videoEnabled}/{limit}",
             arguments = listOf(
                 navArgument(name = "token") {
                     type = NavType.StringType
@@ -243,11 +243,16 @@ fun BottomNavigation(bottomNavController: NavHostController) {
                 navArgument(name = "videoEnabled") {
                     type = NavType.BoolType
                 },
+                navArgument(name = "limit") {
+                    type = NavType.IntType
+                },
             )
         ) { backStackEntry ->
             val token = backStackEntry.arguments?.getString("token")
             val roomName = backStackEntry.arguments?.getString("roomName")
             val videoEnabled = backStackEntry.arguments?.getBoolean("videoEnabled") ?: false
+            val limit = backStackEntry.arguments?.getInt("limit")
+
 
 
             if (token != null && roomName != null) {
@@ -255,6 +260,7 @@ fun BottomNavigation(bottomNavController: NavHostController) {
                     url = BuildConfig.LIVEKIT_URL,
                     token = token,
                     roomName = roomName,
+                    limit = limit,
                     videoEnabled = videoEnabled,
                     navController = bottomNavController,
                 )

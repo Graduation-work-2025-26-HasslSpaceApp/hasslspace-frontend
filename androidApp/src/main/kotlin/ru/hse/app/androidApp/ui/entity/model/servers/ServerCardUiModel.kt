@@ -14,7 +14,6 @@ sealed interface ServerCardUiState {
     data class Error(val message: String) : ServerCardUiState
 }
 
-//TODO
 @Immutable
 data class ServerCardUiModel(
     val chosenServer: ServerExpandedUiModel,

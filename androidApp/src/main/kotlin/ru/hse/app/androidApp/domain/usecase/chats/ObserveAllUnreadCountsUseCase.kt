@@ -19,19 +19,3 @@ class ObserveAllUnreadCountsUseCase @Inject constructor(
             pairs.toMap()
         }
 }
-
-//todo View Model
-//// ViewModel
-//val unreadCounts: StateFlow<Map<String, Int>> = chats
-//    .flatMapLatest { chatList ->
-//        observeAllUnreadCounts(chatList.map { it.id })
-//    }
-//    .stateIn(viewModelScope, SharingStarted.Lazily, emptyMap())
-//
-//// Compose
-//val unreadCounts by viewModel.unreadCounts.collectAsState()
-//
-//chats.forEach { chat ->
-//    val count = unreadCounts[chat.id] ?: 0
-//    if (count > 0) Badge { Text("$count") }
-//}

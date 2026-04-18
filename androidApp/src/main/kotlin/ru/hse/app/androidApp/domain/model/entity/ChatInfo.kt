@@ -20,7 +20,7 @@ data class ChatInfo(
 fun ChatInfoDto.toDomain(curUserId: String): ChatInfo {
     return ChatInfo(
         id = this.id,
-        name = this.name?:"",
+        name = this.name ?: "",
         chatMembers = this.chatMembers.map { it.toDomain(curUserId) }
     )
 }

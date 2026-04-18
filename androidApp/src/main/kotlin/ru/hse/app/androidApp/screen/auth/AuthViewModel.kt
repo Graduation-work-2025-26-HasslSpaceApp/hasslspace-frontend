@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import ru.hse.app.androidApp.BuildConfig
+import ru.hse.app.androidApp.data.centrifugo.CentrifugeService
 import ru.hse.app.androidApp.data.local.DataManager
 import ru.hse.app.androidApp.domain.service.common.CropProfilePhotoService
 import ru.hse.app.androidApp.domain.usecase.auth.CheckEmailVerificationUseCase
@@ -17,7 +18,6 @@ import ru.hse.app.androidApp.domain.usecase.auth.LoginUserUseCase
 import ru.hse.app.androidApp.domain.usecase.auth.RegisterUserUseCase
 import ru.hse.app.androidApp.domain.usecase.auth.SendVerificationCodeUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.SaveUserPhotoUseCase
-import ru.hse.app.androidApp.data.centrifugo.CentrifugeService
 import ru.hse.app.androidApp.ui.entity.model.auth.AuthUiState
 import ru.hse.app.androidApp.ui.entity.model.auth.events.CheckEmailVerificationEvent
 import ru.hse.app.androidApp.ui.entity.model.auth.events.LoginUserEvent

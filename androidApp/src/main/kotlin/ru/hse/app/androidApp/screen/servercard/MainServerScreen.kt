@@ -125,8 +125,9 @@ fun MainServerScreen(
                 val token = (getVoiceChannelTokenEvent as GetTokenEvent.Success).token
                 val roomName = (getVoiceChannelTokenEvent as GetTokenEvent.Success).roomName
                 val videoEnabled = (getVoiceChannelTokenEvent as GetTokenEvent.Success).videoEnabled
+                val limit = (getVoiceChannelTokenEvent as GetTokenEvent.Success).limit
 
-                navController.navigate(NavigationItem.VoiceRoom.route + "/$token/$roomName/$videoEnabled")
+                navController.navigate(NavigationItem.VoiceRoom.route + "/$token/$roomName/$videoEnabled/$limit")
             }
 
             is GetTokenEvent.Error -> {
@@ -346,9 +347,10 @@ fun MainServerScreenWithStateContent(
             onVoiceChannelShortClick = {
                 if (data.currentUser != null) {
                     viewModel.onJoinVoiceChannelClick(
+                        serverId = data.chosenServer.id,
                         memberName = data.currentUser.name,
                         channelId = it.id,
-                        channelName = it.title
+                        channelName = it.title,
                     )
                 } else {
                     viewModel.handleError("Не загружены данные текущего пользователя")

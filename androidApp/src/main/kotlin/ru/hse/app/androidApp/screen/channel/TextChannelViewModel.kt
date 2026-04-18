@@ -29,11 +29,9 @@ import ru.hse.app.androidApp.domain.usecase.servers.JoinServerUseCase
 import ru.hse.app.androidApp.ui.entity.model.chats.ChatUiState
 import ru.hse.app.androidApp.ui.entity.model.chats.MessageUiModel
 import ru.hse.app.androidApp.ui.entity.model.chats.events.GetPrivateChatMessagesEvent
-import ru.hse.app.androidApp.ui.entity.model.chats.events.GetPrivateChatsEvent
 import ru.hse.app.androidApp.ui.entity.model.chats.events.SendMessageEvent
 import ru.hse.app.androidApp.ui.entity.model.chats.toUi
 import ru.hse.app.androidApp.ui.entity.model.chats.toUiChat
-import ru.hse.app.androidApp.ui.entity.model.chats.toUiPrivate
 import ru.hse.app.androidApp.ui.entity.model.servers.events.JoinServerEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.LoadTextChannelEvent
 import ru.hse.app.androidApp.ui.errorhandling.ErrorHandler
@@ -156,6 +154,7 @@ class TextChannelViewModel @Inject constructor(
                 errorHandler.handleError("Код не может быть пустым")
                 return
             }
+
             else -> {
                 viewModelScope.launch {
                     val result =

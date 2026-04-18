@@ -9,7 +9,6 @@ sealed interface ServersUiState {
     data class Error(val message: String) : ServersUiState
 }
 
-//TODO
 @Immutable
 data class ServersUiModel(
     val userServers: List<ServerShortUiModel>,

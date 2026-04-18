@@ -9,18 +9,22 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface ChatDao {
 
-    @Query("""
+    @Query(
+        """
         SELECT * FROM message
         WHERE chat_id = :chatId
         ORDER BY created_at ASC
-    """)
+    """
+    )
     fun observeMessagesByChatId(chatId: String): Flow<List<MessageEntity>>
 
-    @Query("""
+    @Query(
+        """
         SELECT * FROM message
         WHERE chat_id = :chatId
         ORDER BY created_at ASC
-    """)
+    """
+    )
     suspend fun getMessagesByChatId(chatId: String): List<MessageEntity>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

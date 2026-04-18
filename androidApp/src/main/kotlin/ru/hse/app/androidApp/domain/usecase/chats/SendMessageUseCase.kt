@@ -1,6 +1,5 @@
 package ru.hse.app.androidApp.domain.usecase.chats
 
-import ru.hse.app.androidApp.domain.repository.ChannelRepository
 import ru.hse.app.androidApp.domain.repository.ChatRepository
 import javax.inject.Inject
 

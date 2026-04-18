@@ -46,7 +46,7 @@ fun ServerInfoExpanded.toUi(): ServerExpandedUiModel {
                         color = Color(role.color.toColorInt())
                     )
                 } ?: emptyList(),
-                isOwner = false //todo
+                isOwner = false
             )
         },
         textChannels = this.textChannels.map { channel ->

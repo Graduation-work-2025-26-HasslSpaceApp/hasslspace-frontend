@@ -34,6 +34,7 @@ fun CallScreen(
     token: String,
     roomName: String,
     videoEnabled: Boolean,
+    limit: Int? = null,
     navController: NavController,
     viewModel: CallViewModel = hiltViewModel(),
 ) {
@@ -46,6 +47,7 @@ fun CallScreen(
             videoEnabled = videoEnabled,
             navController = navController,
             viewModel = viewModel,
+            limit = limit
         )
     }
 }
@@ -56,6 +58,7 @@ fun CallScreenWithStateContent(
     token: String,
     roomName: String,
     videoEnabled: Boolean,
+    limit: Int?,
     navController: NavController,
     viewModel: CallViewModel
 ) {
@@ -67,7 +70,8 @@ fun CallScreenWithStateContent(
         onDisconnect = {
             navController.popBackStack()
         },
-        viewModel = viewModel
+        viewModel = viewModel,
+        limit = limit
     )
 }
 
@@ -77,6 +81,7 @@ fun CallScreenContent(
     token: String,
     roomName: String,
     videoEnabled: Boolean,
+    limit: Int?,
     onDisconnect: () -> Unit,
     viewModel: CallViewModel,
 ) {
@@ -107,8 +112,7 @@ fun CallScreenContent(
     LaunchedEffect(Unit) {
         viewModel.errors.collect { message ->
             viewModel.handleError(message)
-            onDisconnect() //todo потом включить
-            //snackbarHostState.showSnackbar(message)
+            onDisconnect()
         }
     }
 
@@ -135,7 +139,7 @@ fun CallScreenContent(
         val remoteParticipants by room::remoteParticipants.flow.collectAsState()
 
         LaunchedEffect(remoteParticipants) {
-            viewModel.onParticipantCountChanged(remoteParticipants.size)
+            viewModel.onParticipantCountChanged(remoteParticipants.size, limit, onDisconnect)
         }
 
         //todo добавить возможность скриншеринга

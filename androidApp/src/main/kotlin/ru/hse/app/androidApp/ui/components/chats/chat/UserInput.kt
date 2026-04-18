@@ -433,7 +433,7 @@ fun EmojiSelector(
             )
         }
 
-        val themeRes = if (isDark) { // todo
+        val themeRes = if (isDark) {
             R.style.Theme_EmojiPicker_Dark
         } else {
             R.style.Theme_EmojiPicker_Light

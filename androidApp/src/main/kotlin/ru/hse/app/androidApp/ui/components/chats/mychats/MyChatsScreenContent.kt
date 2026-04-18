@@ -16,7 +16,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.ImageLoader
 import ru.hse.app.androidApp.ui.components.chats.chat.formatMessageTime
-import ru.hse.app.androidApp.ui.components.chats.chat.getMessagePreview
 import ru.hse.app.androidApp.ui.components.common.bar.SearchBar
 import ru.hse.app.androidApp.ui.components.common.box.NoItemsBox
 import ru.hse.app.androidApp.ui.components.common.button.AddTextButton

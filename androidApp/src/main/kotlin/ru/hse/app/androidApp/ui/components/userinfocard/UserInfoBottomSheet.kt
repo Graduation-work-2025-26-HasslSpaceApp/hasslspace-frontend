@@ -71,6 +71,7 @@ fun UserInfoBottomSheet(
     onCopyNickname: () -> Unit,
     onThirdOptionClick: () -> Unit,
     onDismissFriendRequest: () -> Unit = {},
+    extractMainColor: (Bitmap) -> Color,
     type: TypeUiModel
 ) {
 
@@ -347,7 +348,8 @@ fun UserInfoBottomSheetLightPreview() {
             onInvite = {},
             onCopyNickname = {},
             onThirdOptionClick = {},
-            type = TypeUiModel.FRIEND
+            type = TypeUiModel.FRIEND,
+            extractMainColor = { Color.Transparent }
         )
     }
 }
@@ -377,7 +379,8 @@ fun UserInfoBottomSheetLightPreviewWithPhoto() {
             onInvite = {},
             onCopyNickname = {},
             onThirdOptionClick = {},
-            type = TypeUiModel.INCOMING_REQUEST
+            type = TypeUiModel.INCOMING_REQUEST,
+            extractMainColor = { Color.Transparent }
         )
     }
 }
@@ -407,7 +410,8 @@ fun UserInfoBottomSheetLightPreviewWithPhoto2() {
             onInvite = {},
             onCopyNickname = {},
             onThirdOptionClick = {},
-            type = TypeUiModel.OUTGOING_REQUEST
+            type = TypeUiModel.OUTGOING_REQUEST,
+            extractMainColor = { Color.Transparent }
         )
     }
 }
@@ -437,7 +441,8 @@ fun UserInfoBottomSheetDarkPreview() {
             onInvite = {},
             onCopyNickname = {},
             onThirdOptionClick = {},
-            type = TypeUiModel.NONE
+            type = TypeUiModel.NONE,
+            extractMainColor = { Color.Transparent }
         )
     }
 }
@@ -467,7 +472,8 @@ fun UserInfoBottomSheetDarkPreviewWithPhoto() {
             onInvite = {},
             onCopyNickname = {},
             onThirdOptionClick = {},
-            type = TypeUiModel.FRIEND
+            type = TypeUiModel.FRIEND,
+            extractMainColor = { Color.Transparent }
         )
     }
 }
@@ -497,7 +503,8 @@ fun UserInfoBottomSheetDarkPreviewWithPhoto2() {
             onInvite = {},
             onCopyNickname = {},
             onThirdOptionClick = {},
-            type = TypeUiModel.FRIEND
+            type = TypeUiModel.FRIEND,
+            extractMainColor = { Color.Transparent }
         )
     }
 }

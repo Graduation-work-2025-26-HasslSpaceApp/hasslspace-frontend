@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.core.graphics.toColorInt
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import coil3.Bitmap
 import coil3.ImageLoader
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -17,6 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.hse.app.androidApp.data.local.DataManager
 import ru.hse.app.androidApp.domain.model.entity.CreateChannel
+import ru.hse.app.androidApp.domain.service.common.ColorService
 import ru.hse.app.androidApp.domain.service.common.CropProfilePhotoService
 import ru.hse.app.androidApp.domain.usecase.channel.AssignChannelPermissionUseCase
 import ru.hse.app.androidApp.domain.usecase.channel.CreateChannelUseCase
@@ -119,6 +121,8 @@ class ServerCardViewModel @Inject constructor(
     private val dataManager: DataManager,
     private val toastManager: ToastManager,
     val cropProfilePhotoService: CropProfilePhotoService,
+    val colorService: ColorService,
+
     val imageLoader: ImageLoader
 
 ) : ViewModel() {
@@ -338,7 +342,7 @@ class ServerCardViewModel @Inject constructor(
         result.fold(
             onSuccess = {},
             onFailure = {
-                errorHandler.handleError("Ошибка при назначении прав роли. " +it.message)
+                errorHandler.handleError("Ошибка при назначении прав роли. " + it.message)
             }
         )
     }
@@ -349,7 +353,7 @@ class ServerCardViewModel @Inject constructor(
         result.fold(
             onSuccess = {},
             onFailure = {
-                errorHandler.handleError("Ошибка при удалении прав роли. " +it.message)
+                errorHandler.handleError("Ошибка при удалении прав роли. " + it.message)
             }
         )
     }
@@ -426,26 +430,41 @@ class ServerCardViewModel @Inject constructor(
     }
 
     fun onJoinVoiceChannelClick(
+        serverId: String,
         memberName: String,
         channelId: String,
-        channelName: String
+        channelName: String,
     ) {
         viewModelScope.launch {
-            val result = getVoiceRoomTokenUseCase(
-                name = memberName,
-                roomName = channelId,
-                roomType = "SERVER"
-            )
+            val channelInfoResult = getChannelInfoUseCase(serverId, channelId)
 
-            _getVoiceChannelTokenEvent.value = result.fold(
-                onSuccess = { token ->
-                    GetTokenEvent.Success(token, channelName, videoEnabled = false)
+            _getVoiceChannelTokenEvent.value = channelInfoResult.fold(
+                onSuccess = { channel ->
+                    val result = getVoiceRoomTokenUseCase(
+                        name = memberName,
+                        roomName = channelId,
+                        roomType = "SERVER"
+                    )
+                    result.fold(
+                        onSuccess = { token ->
+                            GetTokenEvent.Success(
+                                token,
+                                channelName,
+                                videoEnabled = false,
+                                channel.limit ?: 0
+                            )
+                        },
+                        onFailure = {
+                            GetTokenEvent.Error("Ошибка при подключении к голосовому каналу. " + it.message)
+                        }
+                    )
                 },
-                onFailure = {
-                    GetTokenEvent.Error("Ошибка при подключении к голосовому каналу. " + it.message)
+                onFailure = { error ->
+                    GetTokenEvent.Error("Ошибка при получении информации о канале. " + error.message)
                 }
             )
         }
+
     }
 
     fun onCallClick(targetUserId: String, memberName: String, roomName: String) {
@@ -916,7 +935,11 @@ class ServerCardViewModel @Inject constructor(
 
             viewModelScope.launch {
                 if (role.isChosen) {
-                    val result = assignChannelPermissionUseCase(currentState.data.chosenServer.id, currentState.data.editChannel.id, role.id)
+                    val result = assignChannelPermissionUseCase(
+                        currentState.data.chosenServer.id,
+                        currentState.data.editChannel.id,
+                        role.id
+                    )
                     result.fold(
                         onSuccess = {},
                         onFailure = {
@@ -925,12 +948,20 @@ class ServerCardViewModel @Inject constructor(
                                 if (r.id == role.id) r.copy(isChosen = !r.isChosen) else r
                             }
                             _uiState.value = currentState.copy(
-                                data = currentState.data.copy(editChannel = currentState.data.editChannel.copy(roles = revertedRoles))
+                                data = currentState.data.copy(
+                                    editChannel = currentState.data.editChannel.copy(
+                                        roles = revertedRoles
+                                    )
+                                )
                             )
                         }
                     )
                 } else {
-                    val result = deleteChannelPermissionUseCase(currentState.data.chosenServer.id, currentState.data.editChannel.id, role.id)
+                    val result = deleteChannelPermissionUseCase(
+                        currentState.data.chosenServer.id,
+                        currentState.data.editChannel.id,
+                        role.id
+                    )
                     result.fold(
                         onSuccess = { },
                         onFailure = {
@@ -939,7 +970,11 @@ class ServerCardViewModel @Inject constructor(
                                 if (r.id == role.id) r.copy(isChosen = !r.isChosen) else r
                             }
                             _uiState.value = currentState.copy(
-                                data = currentState.data.copy(editChannel = currentState.data.editChannel.copy(roles = revertedRoles))
+                                data = currentState.data.copy(
+                                    editChannel = currentState.data.editChannel.copy(
+                                        roles = revertedRoles
+                                    )
+                                )
                             )
                         }
                     )
@@ -980,6 +1015,10 @@ class ServerCardViewModel @Inject constructor(
                 }
             )
         }
+    }
+
+    fun extractMainColor(bitmap: Bitmap): Color {
+        return colorService.extractMainColor(bitmap)
     }
 
 

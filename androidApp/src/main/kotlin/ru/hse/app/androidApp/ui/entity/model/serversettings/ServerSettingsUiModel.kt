@@ -71,7 +71,7 @@ fun ServerInfoExpanded.toServerSettingsUiModel(): ServerSettingsUiModel {
                         color = Color(role.color.toColorInt())
                     )
                 } ?: emptyList(),
-                isOwner = false //todo
+                isOwner = false
             )
         },
         roles = listOf(),

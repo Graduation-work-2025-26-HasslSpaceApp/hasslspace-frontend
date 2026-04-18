@@ -20,9 +20,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.ImageLoader
-import ru.hse.app.androidApp.R
-import ru.hse.app.androidApp.ui.components.common.bar.SearchBar
-import ru.hse.app.androidApp.ui.components.common.button.AddButton
 import ru.hse.app.androidApp.ui.components.common.button.BackButton
 import ru.hse.app.androidApp.ui.components.common.card.UserCardArrow
 import ru.hse.app.androidApp.ui.components.common.text.VariableBold
@@ -45,7 +42,8 @@ fun NewMessageScreenContent(
     isDarkTheme: Boolean
 ) {
     Column(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
             .padding(top = 50.dp)
             .padding(16.dp)
     ) {

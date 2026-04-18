@@ -3,6 +3,7 @@ package ru.hse.app.androidApp.data.repository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import ru.hse.app.androidApp.data.centrifugo.CentrifugeService
 import ru.hse.app.androidApp.data.model.NewMessageDto
 import ru.hse.app.androidApp.data.network.ApiCaller
 import ru.hse.app.androidApp.data.network.ApiService
@@ -12,7 +13,6 @@ import ru.hse.app.androidApp.domain.model.entity.ChatInfo
 import ru.hse.app.androidApp.domain.model.entity.toDomain
 import ru.hse.app.androidApp.domain.model.entity.toEntity
 import ru.hse.app.androidApp.domain.repository.ChatRepository
-import ru.hse.app.androidApp.data.centrifugo.CentrifugeService
 import java.time.LocalDateTime
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -43,7 +43,17 @@ class ChatRepositoryImpl @Inject constructor(
         isRead: Boolean
     ): Result<Unit> {
         return runCatching {
-            chatDao.insertMessage(MessageEntity(id, chatId, userId, content, null, createdAt, isRead)) // todo fileUrl
+            chatDao.insertMessage(
+                MessageEntity(
+                    id,
+                    chatId,
+                    userId,
+                    content,
+                    null,
+                    createdAt,
+                    isRead
+                )
+            ) // todo fileUrl
         }
     }
 
@@ -72,11 +82,12 @@ class ChatRepositoryImpl @Inject constructor(
         lastMessageId: String?
     ) {
 //    ): Result<List<Message>> {
-        apiCaller.safeApiCall { apiService.getMessageHistory(chatId, lastMessageId) }.mapCatching { messages ->
-            messages.map {
-                chatDao.insertMessage(it.toEntity())
+        apiCaller.safeApiCall { apiService.getMessageHistory(chatId, lastMessageId) }
+            .mapCatching { messages ->
+                messages.map {
+                    chatDao.insertMessage(it.toEntity())
+                }
             }
-        }
     }
 
     override suspend fun startChat(userId: String): Result<String> {

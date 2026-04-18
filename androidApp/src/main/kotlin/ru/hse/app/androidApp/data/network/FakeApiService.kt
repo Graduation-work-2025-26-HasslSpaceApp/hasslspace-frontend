@@ -1077,6 +1077,7 @@ class FakeApiService : ApiService {
                     createdAt = LocalDateTime.now().minusMinutes(1)
                 )
             )
+
             "chat_2" -> listOf(
                 MessageDto(
                     id = "msg_5",
@@ -1114,6 +1115,7 @@ class FakeApiService : ApiService {
                     createdAt = LocalDateTime.now().minusDays(1).minusMinutes(0)
                 )
             )
+
             "chat_3" -> listOf(
                 MessageDto(
                     id = "sdvjklnsvsuik;erht;",
@@ -1151,6 +1153,7 @@ class FakeApiService : ApiService {
                     createdAt = LocalDateTime.now().minusDays(2).minusMinutes(1)
                 )
             )
+
             else -> listOf(
                 MessageDto(
                     id = "msg_default_1",

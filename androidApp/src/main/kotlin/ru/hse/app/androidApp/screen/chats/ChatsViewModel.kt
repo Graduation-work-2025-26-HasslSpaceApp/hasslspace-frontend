@@ -66,8 +66,6 @@ class ChatsViewModel @Inject constructor(
     val imageLoader: ImageLoader
 ) : ViewModel() {
 
-    // todo исправить на экране с чатами при добавлении нового отсутствие друзей
-
     val isDark = dataManager.isDark.value
 
     private val _uiState =

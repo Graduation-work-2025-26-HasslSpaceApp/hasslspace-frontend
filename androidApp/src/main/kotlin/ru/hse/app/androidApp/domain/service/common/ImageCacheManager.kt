@@ -10,7 +10,7 @@ import javax.inject.Singleton
 class ImageCacheManager @Inject constructor(
     private val imageLoader: ImageLoader
 ) {
-    
+
     fun clearAllCache(context: Context) {
         imageLoader.memoryCache?.clear()
         imageLoader.diskCache?.clear()

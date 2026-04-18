@@ -22,17 +22,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil3.ImageLoader
-import coil3.imageLoader
 import ru.hse.app.androidApp.ui.components.common.button.AddTextButton
 import ru.hse.app.androidApp.ui.components.common.button.BackButton
 import ru.hse.app.androidApp.ui.components.common.card.RoleCardCheckbox
-import ru.hse.app.androidApp.ui.components.common.card.UserCardCheckbox
 import ru.hse.app.androidApp.ui.components.common.text.VariableBold
 import ru.hse.app.androidApp.ui.components.common.text.VariableMedium
 import ru.hse.app.androidApp.ui.entity.model.FriendCheckboxUiModel

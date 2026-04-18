@@ -10,14 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil3.imageLoader
-import ru.hse.app.androidApp.ui.components.chats.chat.ChatContent
-import ru.hse.app.androidApp.ui.components.chats.mychats.MyChatsScreenContent
 import ru.hse.app.androidApp.ui.components.chats.newmessage.NewMessageScreenContent
-import ru.hse.app.androidApp.ui.components.common.card.participantsLabel
 import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
 import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
-import ru.hse.app.androidApp.ui.entity.model.chats.ChatUiState
 import ru.hse.app.androidApp.ui.entity.model.chats.ChatsUiState
 import ru.hse.app.androidApp.ui.entity.model.chats.events.StartChatEvent
 import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadUserFriendsEvent
@@ -99,7 +94,7 @@ fun NewMessageWithStateContent(
         imageLoader = viewModel.imageLoader,
         friends = uiState.data.friends,
         onBackClick = { navController.popBackStack() },
-        onFriendClick = { viewModel.onMessageClick(it.id)},
+        onFriendClick = { viewModel.onMessageClick(it.id) },
         onAddFriendClick = {},
         onNewGroupClick = {},
         searchText = viewModel.searchTextFriends.value,

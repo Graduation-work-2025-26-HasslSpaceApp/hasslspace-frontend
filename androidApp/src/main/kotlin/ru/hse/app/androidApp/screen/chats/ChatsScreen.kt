@@ -13,12 +13,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
-import coil3.imageLoader
 import ru.hse.app.androidApp.ui.components.chats.mychats.MyChatsScreenContent
 import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
 import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
 import ru.hse.app.androidApp.ui.entity.model.chats.ChatsUiState
-import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadUserFriendsEvent
 import ru.hse.app.androidApp.ui.navigation.NavigationItem
 
 @Composable

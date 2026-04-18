@@ -7,7 +7,6 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import ru.hse.app.androidApp.data.exception.ApiException
 import ru.hse.app.androidApp.domain.repository.ServerRepository
-import ru.hse.app.androidApp.domain.repository.UserRepository
 import ru.hse.app.androidApp.domain.service.common.PhotoConverterService
 
 class UploadServerPhotoUseCase @Inject constructor(

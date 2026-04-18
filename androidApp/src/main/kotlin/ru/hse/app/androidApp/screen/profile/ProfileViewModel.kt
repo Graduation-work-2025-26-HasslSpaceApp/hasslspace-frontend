@@ -3,16 +3,21 @@ package ru.hse.app.androidApp.screen.profile
 import android.net.Uri
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import coil3.Bitmap
 import coil3.ImageLoader
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import ru.hse.app.androidApp.data.centrifugo.CentrifugeService
 import ru.hse.app.androidApp.data.local.DataManager
+import ru.hse.app.androidApp.domain.service.common.ColorService
 import ru.hse.app.androidApp.domain.service.common.CropProfilePhotoService
 import ru.hse.app.androidApp.domain.service.common.PhotoConverterService
+import ru.hse.app.androidApp.domain.usecase.chats.StartChatUseCase
 import ru.hse.app.androidApp.domain.usecase.friends.CreateFriendRequestUseCase
 import ru.hse.app.androidApp.domain.usecase.friends.DeleteFriendshipUseCase
 import ru.hse.app.androidApp.domain.usecase.friends.GetChosenUserCommonServersUseCase
@@ -27,8 +32,6 @@ import ru.hse.app.androidApp.domain.usecase.profile.LoadUserInfoUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.SaveUserPhotoUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.GetServersUseCase
 import ru.hse.app.androidApp.domain.usecase.voice.GetVoiceRoomTokenUseCase
-import ru.hse.app.androidApp.data.centrifugo.CentrifugeService
-import ru.hse.app.androidApp.domain.usecase.chats.StartChatUseCase
 import ru.hse.app.androidApp.domain.usecase.voice.SendVoiceInviteToUserUseCase
 import ru.hse.app.androidApp.ui.entity.model.FriendUiModel
 import ru.hse.app.androidApp.ui.entity.model.StatusPresentation
@@ -90,6 +93,7 @@ class ProfileViewModel @Inject constructor(
     private val photoConverterService: PhotoConverterService,
     private val toastManager: ToastManager,
     val cropProfilePhotoService: CropProfilePhotoService,
+    val colorService: ColorService,
     val imageLoader: ImageLoader
 ) : ViewModel() {
     val isDark = dataManager.isDark
@@ -589,7 +593,7 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun onVideoCallClick(targetUserId: String, memberName: String,roomName: String) {
+    fun onVideoCallClick(targetUserId: String, memberName: String, roomName: String) {
         viewModelScope.launch {
             val resultChatId = startChatUseCase(targetUserId)
 
@@ -618,6 +622,10 @@ class ProfileViewModel @Inject constructor(
                 }
             )
         }
+    }
+
+    fun extractMainColor(bitmap: Bitmap): Color {
+        return colorService.extractMainColor(bitmap)
     }
 
     fun onDismiss() {

@@ -187,6 +187,7 @@ class ChatViewModel @Inject constructor(
                 errorHandler.handleError("Код не может быть пустым")
                 return
             }
+
             else -> {
                 viewModelScope.launch {
                     val result =

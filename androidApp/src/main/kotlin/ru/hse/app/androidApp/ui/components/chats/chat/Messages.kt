@@ -296,7 +296,7 @@ fun ChatItemBubble(
             shape = ChatBubbleShape,
         ) {
             // Контейнер для текста и времени в одной строке
-            Column (
+            Column(
                 modifier = Modifier.padding(12.dp, 8.dp),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
@@ -360,6 +360,7 @@ fun ClickableMessage(
                                     uriHandler.openUri(url)
                                 }
                             }
+
                             else -> Unit
                         }
                     }
@@ -440,9 +441,11 @@ fun formatMessageTime(dateTime: LocalDateTime): String {
         messageDate.isEqual(now) -> {
             dateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
         }
+
         messageDate.isEqual(now.minusDays(1)) -> {
             "Вчера ${dateTime.format(DateTimeFormatter.ofPattern("HH:mm"))}"
         }
+
         else -> {
             dateTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
         }

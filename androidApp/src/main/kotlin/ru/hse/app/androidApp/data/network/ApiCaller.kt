@@ -12,7 +12,13 @@ class ApiCaller {
             if (response.isSuccessful && response.body() != null) {
                 Result.success(response.body()!!)
             } else {
-                Result.failure(ApiException(response.code(), response.errorBody()?.string()?:"Ошибка при вызове бэкенда", null))
+                Result.failure(
+                    ApiException(
+                        response.code(),
+                        response.errorBody()?.string() ?: "Ошибка при вызове бэкенда",
+                        null
+                    )
+                )
             }
         } catch (e: Exception) {
             Result.failure(ApiException(null, e.message ?: "Ошибка при вызове бэкенда", e))

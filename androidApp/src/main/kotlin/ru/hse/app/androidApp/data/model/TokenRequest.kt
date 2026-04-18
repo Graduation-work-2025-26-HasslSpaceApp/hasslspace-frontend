@@ -19,7 +19,7 @@ data class TokenRequest(
 }
 
 fun String.toRoomTypeDto(): TokenRequest.RoomType {
-    return  when (this) {
+    return when (this) {
         "SERVER" -> TokenRequest.RoomType.SERVER
         "PRIVATE_ROOM" -> TokenRequest.RoomType.PRIVATE_ROOM
         else -> TokenRequest.RoomType.PRIVATE_ROOM

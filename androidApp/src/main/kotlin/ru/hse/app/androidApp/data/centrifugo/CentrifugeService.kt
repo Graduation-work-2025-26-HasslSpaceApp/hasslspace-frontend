@@ -7,7 +7,7 @@ import ru.hse.app.androidApp.domain.model.entity.Message
 interface CentrifugeService {
     val incomingMessages: SharedFlow<IncomingMessage>
     val connectionState: StateFlow<ConnectionState>
-    
+
     fun connect(url: String)
     fun disconnect()
     fun subscribeToChannel(channel: String)

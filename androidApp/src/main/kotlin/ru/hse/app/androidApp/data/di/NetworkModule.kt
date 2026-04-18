@@ -19,7 +19,6 @@ import ru.hse.app.androidApp.BuildConfig
 import ru.hse.app.androidApp.data.local.DataManager
 import ru.hse.app.androidApp.data.network.ApiCaller
 import ru.hse.app.androidApp.data.network.ApiService
-import ru.hse.app.androidApp.data.network.FakeApiService
 import ru.hse.app.androidApp.data.network.JWTInterceptor
 import ru.hse.app.androidApp.data.network.RetryInterceptor
 import javax.inject.Singleton

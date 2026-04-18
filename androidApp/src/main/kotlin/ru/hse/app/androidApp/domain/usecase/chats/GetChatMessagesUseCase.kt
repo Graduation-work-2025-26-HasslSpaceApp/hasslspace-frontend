@@ -2,7 +2,6 @@ package ru.hse.app.androidApp.domain.usecase.chats
 
 import kotlinx.coroutines.flow.Flow
 import ru.hse.app.androidApp.data.roomstorage.MessageEntity
-import ru.hse.app.androidApp.domain.model.entity.Message
 import ru.hse.app.androidApp.domain.repository.ChatRepository
 import javax.inject.Inject
 

@@ -9,6 +9,6 @@ class GetUserFriendsUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(): Result<List<UserInfo>> {
-        return friendRepository.getFriends() //TODO исправить когда будет отбор по статусу
+        return friendRepository.getFriends()
     }
 }

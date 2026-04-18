@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil3.imageLoader
 import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
 import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
 import ru.hse.app.androidApp.ui.components.servers.members.ServerMembersContent
@@ -76,10 +75,11 @@ fun ServerMembersInfoScreen(
                 val token = (getTokenEvent as GetTokenEvent.Success).token
                 val roomName = (getTokenEvent as GetTokenEvent.Success).roomName
                 val videoEnabled = (getTokenEvent as GetTokenEvent.Success).videoEnabled
+                val limit = (getTokenEvent as GetTokenEvent.Success).limit
 
                 viewModel.showFriendCard.value = false
 
-                navController.navigate(NavigationItem.VoiceRoom.route + "/$token/$roomName/$videoEnabled")
+                navController.navigate(NavigationItem.VoiceRoom.route + "/$token/$roomName/$videoEnabled/$limit")
             }
 
             is GetTokenEvent.Error -> {
@@ -322,7 +322,8 @@ fun ServerMembersInfoScreenWithStateContent(
                     TypeUiModel.BLOCKED -> {}
                 }
             },
-            type = data.chosenUser.type
+            type = data.chosenUser.type,
+            extractMainColor = viewModel::extractMainColor
         )
     }
 

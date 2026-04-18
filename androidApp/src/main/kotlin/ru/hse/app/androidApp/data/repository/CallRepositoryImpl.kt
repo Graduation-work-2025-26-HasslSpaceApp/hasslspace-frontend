@@ -18,11 +18,13 @@ class CallRepositoryImpl @Inject constructor(
         roomType: String,
     ): Result<String> {
         return apiCaller.safeApiCall {
-            apiService.getTokenForVoiceRoom(TokenRequest(
-                name = name,
-                roomName =  roomName,
-                roomType = roomType.toRoomTypeDto()
-            ))
+            apiService.getTokenForVoiceRoom(
+                TokenRequest(
+                    name = name,
+                    roomName = roomName,
+                    roomType = roomType.toRoomTypeDto()
+                )
+            )
         }
     }
 }

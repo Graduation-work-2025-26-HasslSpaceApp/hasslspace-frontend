@@ -2,7 +2,6 @@ package ru.hse.app.androidApp.domain.usecase.servers
 
 import android.net.Uri
 import ru.hse.app.androidApp.data.exception.ApiException
-import ru.hse.app.androidApp.domain.usecase.photo.UploadPhotoUseCase
 import ru.hse.app.androidApp.domain.usecase.photo.UploadServerPhotoUseCase
 import javax.inject.Inject
 

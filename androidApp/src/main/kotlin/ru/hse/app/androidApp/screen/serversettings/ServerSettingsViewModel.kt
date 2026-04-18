@@ -112,7 +112,8 @@ class ServerSettingsViewModel @Inject constructor(
     val getServerRolesEvent: StateFlow<GetServerRolesEvent?> = _getServerRolesEvent
 
     private val _loadChosenServerRolesEvent = MutableStateFlow<LoadChosenServerRolesEvent?>(null)
-    val loadChosenServerRolesEvent: StateFlow<LoadChosenServerRolesEvent?> = _loadChosenServerRolesEvent
+    val loadChosenServerRolesEvent: StateFlow<LoadChosenServerRolesEvent?> =
+        _loadChosenServerRolesEvent
 
     private val _deleteInvitationEvent = MutableStateFlow<DeleteInvitationEvent?>(null)
     val deleteInvitationEvent: StateFlow<DeleteInvitationEvent?> = _deleteInvitationEvent

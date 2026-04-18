@@ -54,7 +54,7 @@ class CallViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(isConnecting = false)
     }
 
-    fun onParticipantCountChanged(count: Int) {
+    fun onParticipantCountChanged(count: Int, limit: Int?, onDisconnect: () -> Unit) {
         _uiState.value = _uiState.value.copy(participantCount = count + 1)
     }
 
@@ -114,10 +114,7 @@ class CallViewModel @Inject constructor(
     }
 }
 
-// ─── UI State ─────────────────────────────────────────────────────────────────
-
 data class CallUiState(
-    //todo перенести
     val isConnecting: Boolean = true,
     val isMicEnabled: Boolean = true,
     val isCameraEnabled: Boolean = true,

@@ -97,7 +97,10 @@ class CentrifugeServiceImpl @Inject constructor(
                     }
                 },
                 onFailure = {
-                    Log.e("CentrifugeServiceImpl", "Failed to get Centrifugo token. Getting token failed")
+                    Log.e(
+                        "CentrifugeServiceImpl",
+                        "Failed to get Centrifugo token. Getting token failed"
+                    )
                     _connectionState.value = ConnectionState.ERROR
                     return@launch
                 }
@@ -123,7 +126,12 @@ class CentrifugeServiceImpl @Inject constructor(
 
                     scope.launch {
                         val cleanedChannelName = sub.channel.replace("chat:", "")
-                        _incomingMessages.emit(IncomingMessage(channel = cleanedChannelName, data = dto.toDomain()))
+                        _incomingMessages.emit(
+                            IncomingMessage(
+                                channel = cleanedChannelName,
+                                data = dto.toDomain()
+                            )
+                        )
                     }
                 } catch (e: Exception) {
                     Log.e("CentrifugeServiceImpl", "Error parsing JSON", e)

@@ -7,23 +7,18 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
-import coil3.imageLoader
-import ru.hse.app.androidApp.screen.chats.ChatViewModel
 import ru.hse.app.androidApp.ui.components.chats.chat.ChatContent
 import ru.hse.app.androidApp.ui.components.common.card.participantsLabel
 import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
 import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
 import ru.hse.app.androidApp.ui.entity.model.chats.ChatUiState
 import ru.hse.app.androidApp.ui.entity.model.chats.events.GetPrivateChatMessagesEvent
-import ru.hse.app.androidApp.ui.entity.model.chats.events.GetPrivateChatsEvent
 import ru.hse.app.androidApp.ui.entity.model.chats.events.SendMessageEvent
-import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadUserFriendsEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.JoinServerEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.LoadTextChannelEvent
 import ru.hse.app.androidApp.ui.navigation.BottomNavigationItem
@@ -39,7 +34,7 @@ fun TextChannelScreen(
     val uiState by viewModel.uiState.collectAsState()
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    LaunchedEffect(serverId,chatId, curUserId) {
+    LaunchedEffect(serverId, chatId, curUserId) {
         viewModel.loadTextChannelInitInfo(curUserId, serverId, chatId)
     }
 

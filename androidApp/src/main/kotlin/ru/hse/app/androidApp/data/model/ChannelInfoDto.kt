@@ -21,4 +21,4 @@ data class ChannelInfoDto(
     @JsonProperty("position")
     val position: Int = 1,
 
-)
+    )
