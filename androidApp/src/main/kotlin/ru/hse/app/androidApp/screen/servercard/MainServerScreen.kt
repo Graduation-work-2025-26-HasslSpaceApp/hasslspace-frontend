@@ -35,6 +35,7 @@ import ru.hse.app.androidApp.ui.entity.model.servers.events.LeaveServerEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.LoadChosenChannelEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.PatchChannelEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.SendServerInvitationEvent
+import ru.hse.app.androidApp.ui.entity.model.servers.events.StartChatChannelEvent
 import ru.hse.app.androidApp.ui.navigation.NavigationItem
 
 @Composable
@@ -57,6 +58,28 @@ fun MainServerScreen(
     val loadUserDataEvent by viewModel.loadUserInfoEvent.collectAsState()
     val leaveServerEvent by viewModel.leaveServerEvent.collectAsState()
     val startChatEvent by viewModel.startChatEvent.collectAsState()
+    val startChannelChatEvent by viewModel.startChannelChatEvent.collectAsState()
+
+    LaunchedEffect(startChannelChatEvent) {
+        when (startChannelChatEvent) {
+            is StartChatChannelEvent.Success -> {
+                val serverId = (startChannelChatEvent as StartChatChannelEvent.Success).serverId
+                val channelId = (startChannelChatEvent as StartChatChannelEvent.Success).channelId
+                val chatId = (startChannelChatEvent as StartChatChannelEvent.Success).chatId
+                val currestUserId = (startChannelChatEvent as StartChatChannelEvent.Success).currestUserId
+
+                navController.navigate(NavigationItem.TextChannelChat.route + "/$serverId" + "/$channelId" + "/$chatId" + "/$currestUserId")
+            }
+
+            is StartChatChannelEvent.Error -> {
+                val message = (startChannelChatEvent as StartChatChannelEvent.Error).message
+                viewModel.handleError(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetStartChatChannelEvent()
+    }
 
     LaunchedEffect(startChatEvent) {
         when (startChatEvent) {
@@ -81,7 +104,6 @@ fun MainServerScreen(
         viewModel.getServerInfo(serverId)
     }
 
-    // todo проверить
     LaunchedEffect(leaveServerEvent) {
         when (leaveServerEvent) {
             is LeaveServerEvent.Success -> {
@@ -334,7 +356,11 @@ fun MainServerScreenWithStateContent(
             voiceChannels = data.chosenServer.voiceChannels,
             onTextChannelShortClick = {
                 if (data.currentUser != null) {
-                    navController.navigate(NavigationItem.TextChannelChat.route + "/${data.chosenServer.id}" + "/${it.id}" + "/${data.currentUser.id}")
+                    viewModel.loadChannelChatId(
+                        serverId = data.chosenServer.id,
+                        channelId = it.id,
+                        currentUserId = data.currentUser.id
+                    )
                 } else {
                     viewModel.handleError("Не загружен текущий пользователь")
                 }

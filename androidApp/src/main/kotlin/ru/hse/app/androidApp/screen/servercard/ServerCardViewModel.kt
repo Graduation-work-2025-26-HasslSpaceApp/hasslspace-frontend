@@ -28,6 +28,7 @@ import ru.hse.app.androidApp.domain.usecase.channel.GetChannelInfoUseCase
 import ru.hse.app.androidApp.domain.usecase.channel.GetChannelPermissionsUseCase
 import ru.hse.app.androidApp.domain.usecase.channel.PatchChannelPropertiesUseCase
 import ru.hse.app.androidApp.domain.usecase.chats.MarkChatAsReadUseCase
+import ru.hse.app.androidApp.domain.usecase.chats.StartChatChannelUseCase
 import ru.hse.app.androidApp.domain.usecase.chats.StartChatUseCase
 import ru.hse.app.androidApp.domain.usecase.friends.CreateFriendRequestUseCase
 import ru.hse.app.androidApp.domain.usecase.friends.DeleteFriendshipUseCase
@@ -69,6 +70,7 @@ import ru.hse.app.androidApp.ui.entity.model.servers.events.LeaveServerEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.LoadChosenChannelEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.PatchChannelEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.SendServerInvitationEvent
+import ru.hse.app.androidApp.ui.entity.model.servers.events.StartChatChannelEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.toUi
 import ru.hse.app.androidApp.ui.entity.model.toInvitationUi
 import ru.hse.app.androidApp.ui.entity.model.toStatusPresentation
@@ -110,6 +112,7 @@ class ServerCardViewModel @Inject constructor(
     private val markChatAsReadUseCase: MarkChatAsReadUseCase,
 
     private val sendVoiceInviteToUserUseCase: SendVoiceInviteToUserUseCase,
+    private val startChatChannelUseCase: StartChatChannelUseCase,
 
 
     private val errorHandler: ErrorHandler,
@@ -153,6 +156,9 @@ class ServerCardViewModel @Inject constructor(
 
     private val _loadChosenUserEvent = MutableStateFlow<LoadChosenUserEvent?>(null)
     val loadChosenUserEvent: StateFlow<LoadChosenUserEvent?> = _loadChosenUserEvent
+
+    private val _startChannelChatEvent = MutableStateFlow<StartChatChannelEvent?>(null)
+    val startChannelChatEvent: StateFlow<StartChatChannelEvent?> = _startChannelChatEvent
 
     private val _loadChosenUserCommonServersEvent =
         MutableStateFlow<LoadChosenUserCommonServersEvent?>(null)
@@ -427,6 +433,31 @@ class ServerCardViewModel @Inject constructor(
                 }
             )
         }
+    }
+
+    fun loadChannelChatId(
+        serverId: String,
+        channelId: String,
+        currentUserId: String
+    ) {
+        viewModelScope.launch {
+            val result = startChatChannelUseCase(channelId)
+
+            _startChannelChatEvent.value = result.fold(
+                onSuccess = { chatId ->
+                    StartChatChannelEvent.Success(
+                        serverId = serverId,
+                        channelId = channelId,
+                        chatId = chatId,
+                        currestUserId = currentUserId
+                    )
+                },
+                onFailure = {
+                    StartChatChannelEvent.Error("Ошибка при получении ID чата. " + it.message)
+                }
+            )
+        }
+
     }
 
     fun onJoinVoiceChannelClick(
@@ -1095,5 +1126,9 @@ class ServerCardViewModel @Inject constructor(
 
     fun resetStartChatEvent() {
         _startChatEvent.value = null
+    }
+
+    fun resetStartChatChannelEvent() {
+        _startChannelChatEvent.value = null
     }
 }

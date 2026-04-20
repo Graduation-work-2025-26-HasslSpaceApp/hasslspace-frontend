@@ -1202,4 +1202,8 @@ class FakeApiService : ApiService {
         val chatId = existingChat ?: "chat_new_${System.currentTimeMillis()}"
         return Response.success(chatId)
     }
+
+    override suspend fun startChatChannel(channelId: String): Response<String> {
+        return Response.success("123u1hi23h")
+    }
 }

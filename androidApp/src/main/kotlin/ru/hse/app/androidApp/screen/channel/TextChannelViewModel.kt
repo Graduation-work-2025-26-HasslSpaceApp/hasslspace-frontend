@@ -21,6 +21,7 @@ import ru.hse.app.androidApp.domain.usecase.chats.ObserveUnreadCountUseCase
 import ru.hse.app.androidApp.domain.usecase.chats.SaveMessageToRoomUseCase
 import ru.hse.app.androidApp.domain.usecase.chats.SearchChatsUseCase
 import ru.hse.app.androidApp.domain.usecase.chats.SendMessageUseCase
+import ru.hse.app.androidApp.domain.usecase.chats.StartChatChannelUseCase
 import ru.hse.app.androidApp.domain.usecase.chats.StartChatUseCase
 import ru.hse.app.androidApp.domain.usecase.chats.UpdateChatMessagesRestUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.LoadUserInfoUseCase
@@ -47,7 +48,7 @@ class TextChannelViewModel @Inject constructor(
     private val saveMessageToRoomUseCase: SaveMessageToRoomUseCase,
     private val searchChatsUseCase: SearchChatsUseCase,
     private val sendMessageUseCase: SendMessageUseCase,
-    private val startChatUseCase: StartChatUseCase,
+    private val startChatChannelUseCase: StartChatChannelUseCase,
     private val updateChatMessagesRestUseCase: UpdateChatMessagesRestUseCase,
 
 
@@ -88,23 +89,23 @@ class TextChannelViewModel @Inject constructor(
     private val _joinServerEvent = MutableStateFlow<JoinServerEvent?>(null)
     val joinServerEvent: StateFlow<JoinServerEvent?> = _joinServerEvent
 
-    fun loadTextChannelInitInfo(curUserId: String, serverId: String, channelId: String) {
+    fun loadTextChannelInitInfo(curUserId: String, serverId: String, chatId: String, channelId: String) {
         viewModelScope.launch {
-            val textChannelInfoResult = getChannelInfoUseCase(serverId, channelId)
+            val textChannelInfoResult = getChannelInfoUseCase(serverId, channelId) // айди канала
             val serverInfoResult = getServerInfoUseCase(serverId)
 
             _loadTextChannelEvent.value = textChannelInfoResult.fold(
                 onSuccess = { channel ->
                     serverInfoResult.fold(
                         onSuccess = { serverInfo ->
-                            val chatUi = channel.toUiChat(curUserId, serverInfo.members)
+                            val chatUi = channel.toUiChat(curUserId, serverInfo.members, chatId) // айди чата
 
                             _uiState.value = ChatUiState.Success(
                                 data = chatUi
                             )
 
                             viewModelScope.launch {
-                                getChatMessagesUseCase.observeMessages(channelId)
+                                getChatMessagesUseCase.observeMessages(chatId) // айди чата
                                     .collect { messages ->
                                         val curState = _uiState.value
                                         if (curState is ChatUiState.Success) {
@@ -120,7 +121,7 @@ class TextChannelViewModel @Inject constructor(
                                                 }
                                             }
 
-                                            connectToCentrifugo(channelId)
+                                            connectToCentrifugo(chatId)
 
                                             _uiState.value = ChatUiState.Success(
                                                 data = curState.data.copy(messages = uiMessages)
@@ -142,7 +143,7 @@ class TextChannelViewModel @Inject constructor(
         }
     }
 
-    fun refreshMessages(chatId: String) {
+    fun refreshMessages(chatId: String, channelId: String) {
         viewModelScope.launch {
             updateChatMessagesRestUseCase(chatId)
         }

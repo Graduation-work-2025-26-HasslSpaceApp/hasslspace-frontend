@@ -94,6 +94,10 @@ class ChatRepositoryImpl @Inject constructor(
         return apiCaller.safeApiCall { apiService.startChat(userId) }
     }
 
+    override suspend fun startChatChannel(channelId: String): Result<String> {
+        return apiCaller.safeApiCall { apiService.startChatChannel(channelId) }
+    }
+
     override suspend fun getPrivateChats(curUserId: String): Result<List<ChatInfo>> {
         return apiCaller.safeApiCall { apiService.getPrivateChats() }.mapCatching { chats ->
             chats.map { it.toDomain(curUserId) }

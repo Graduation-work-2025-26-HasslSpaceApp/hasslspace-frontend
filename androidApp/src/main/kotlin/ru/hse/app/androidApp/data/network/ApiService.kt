@@ -341,4 +341,9 @@ interface ApiService {
         @Query("targetUserId") targetUserId: String
     ): Response<String>
 
+    @POST(CHAT_SERVICE_URL + START_CHAT_URL)
+    suspend fun startChatChannel(
+        @Query("channelId") channelId: String
+    ): Response<String>
+
 }

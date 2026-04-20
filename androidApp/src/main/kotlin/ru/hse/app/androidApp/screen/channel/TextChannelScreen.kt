@@ -26,6 +26,7 @@ import ru.hse.app.androidApp.ui.navigation.BottomNavigationItem
 @Composable
 fun TextChannelScreen(
     serverId: String,
+    channelId: String,
     chatId: String,
     curUserId: String,
     navController: NavController,
@@ -34,13 +35,13 @@ fun TextChannelScreen(
     val uiState by viewModel.uiState.collectAsState()
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    LaunchedEffect(serverId, chatId, curUserId) {
-        viewModel.loadTextChannelInitInfo(curUserId, serverId, chatId)
+    LaunchedEffect(serverId, channelId, chatId, curUserId) {
+        viewModel.loadTextChannelInitInfo(curUserId, serverId, chatId, channelId)
     }
 
     LaunchedEffect(lifecycleOwner) {
         lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-            viewModel.refreshMessages(chatId)
+            viewModel.refreshMessages(chatId, channelId)
         }
     }
 

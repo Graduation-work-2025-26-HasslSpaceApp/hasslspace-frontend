@@ -107,10 +107,11 @@ fun MessageEntity.toUi(members: List<ChatMemberUiModel>): MessageUiModel {
 
 fun ChannelInfo.toUiChat(
     curUserId: String,
-    membersServer: List<ServerInfoExpanded.ServerMember>
+    membersServer: List<ServerInfoExpanded.ServerMember>,
+    chatId: String? = null
 ): ChatUiModel {
     return ChatUiModel(
-        id = this.id,
+        id = chatId ?: this.id,
         name = this.name,
         channelMembers = membersServer.map { it.toUiChatMember(curUserId) },
         messages = emptyList()

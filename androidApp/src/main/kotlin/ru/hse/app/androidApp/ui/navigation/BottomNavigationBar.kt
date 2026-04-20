@@ -168,9 +168,12 @@ fun BottomNavigation(bottomNavController: NavHostController) {
         }
 
         composable(
-            route = NavigationItem.TextChannelChat.route + "/{serverId}/{chatId}/{curUserId}",
+            route = NavigationItem.TextChannelChat.route + "/{serverId}/{channelId}/{chatId}/{curUserId}",
             arguments = listOf(
                 navArgument(name = "serverId") {
+                    type = NavType.StringType
+                },
+                navArgument(name = "channelId") {
                     type = NavType.StringType
                 },
                 navArgument(name = "chatId") {
@@ -182,12 +185,13 @@ fun BottomNavigation(bottomNavController: NavHostController) {
             )
         ) { backStackEntry ->
             val serverId = backStackEntry.arguments?.getString("serverId")
+            val channelId = backStackEntry.arguments?.getString("channelId")
             val chatId = backStackEntry.arguments?.getString("chatId")
             val curUserId = backStackEntry.arguments?.getString("curUserId")
 
 
-            if (serverId != null && chatId != null && curUserId != null) {
-                TextChannelScreen(serverId, chatId, curUserId, bottomNavController)
+            if (serverId != null && chatId != null && channelId != null&& curUserId != null) {
+                TextChannelScreen(serverId, channelId, chatId, curUserId, bottomNavController)
             }
         }
 

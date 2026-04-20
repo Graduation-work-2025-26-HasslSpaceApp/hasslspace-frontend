@@ -35,6 +35,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -63,6 +64,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.view.WindowCompat
 import androidx.emoji2.emojipicker.EmojiPickerView
 import ru.hse.app.androidApp.R
 import ru.hse.app.androidApp.ui.theme.AppTheme
@@ -168,7 +170,7 @@ private fun SelectorExpanded(
     if (currentSelector == InputSelector.NONE) return
 
     val focusRequester = remember { FocusRequester() }
-    SideEffect {
+    LaunchedEffect(currentSelector) {
         if (currentSelector == InputSelector.EMOJI) {
             focusRequester.requestFocus()
         }
@@ -192,7 +194,7 @@ private fun UserInputSelector(
 ) {
     Row(
         modifier = modifier
-            .height(72.dp)
+            .height(56.dp)
             .wrapContentHeight()
             .padding(start = 16.dp, end = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -298,7 +300,7 @@ private fun UserInputText(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(min = 64.dp, max = 200.dp),
+            .heightIn(min = 48.dp, max = 200.dp),
         horizontalArrangement = Arrangement.End,
     ) {
         Box() {
