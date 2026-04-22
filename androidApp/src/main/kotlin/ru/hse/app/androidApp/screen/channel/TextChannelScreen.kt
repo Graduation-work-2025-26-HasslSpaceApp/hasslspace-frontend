@@ -150,6 +150,8 @@ fun TextChannelWithStateContent(
         imageLoader = viewModel.imageLoader,
         messages = uiState.data.messages,
         onReadMsg = { viewModel.markMessageAsRead(it) },
-        onCodeExtracted = { code -> viewModel.joinServer(code) }
+        onCodeExtracted = { code -> viewModel.joinServer(code) },
+        enabledCall = false,
+        onCallClick = {}
     )
 }

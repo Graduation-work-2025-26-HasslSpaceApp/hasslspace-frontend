@@ -139,7 +139,30 @@ fun CallScreenContent(
         val remoteParticipants by room::remoteParticipants.flow.collectAsState()
 
         LaunchedEffect(remoteParticipants) {
-            viewModel.onParticipantCountChanged(remoteParticipants.size, limit, onDisconnect)
+            if (limit != null && limit > 0 && (remoteParticipants.size + 1) > limit) {
+                val localParticipant = room.localParticipant
+                val localJoinedAt = localParticipant.joinedAt
+                val localIdentity = localParticipant.identity?.value ?: ""
+
+                val allParticipants = remoteParticipants.values.map { remote ->
+                    Pair(remote.joinedAt, remote.identity?.value ?: "")
+                } + Pair(localJoinedAt, localIdentity)
+
+                val sorted = allParticipants.sortedWith(
+                    compareBy({ it.first }, { it.second })
+                )
+
+                val overLimit = sorted.drop(limit)
+                val isLocalOverLimit = overLimit.any { it.second == localIdentity }
+
+                if (isLocalOverLimit) {
+                    viewModel.handleError("В звонке максимум участников")
+                    room.disconnect()
+                    onDisconnect()
+                }
+            } else {
+                viewModel.onParticipantCountChanged(remoteParticipants.size, limit, onDisconnect)
+            }
         }
 
         //todo добавить возможность скриншеринга

@@ -16,12 +16,14 @@ import ru.hse.app.androidApp.ui.components.chats.chat.ChatContent
 import ru.hse.app.androidApp.ui.components.common.card.participantsLabel
 import ru.hse.app.androidApp.ui.components.common.error.ErrorScreen
 import ru.hse.app.androidApp.ui.components.common.loading.LoadingScreen
+import ru.hse.app.androidApp.ui.entity.model.call.events.GetTokenEvent
 import ru.hse.app.androidApp.ui.entity.model.chats.ChatUiState
 import ru.hse.app.androidApp.ui.entity.model.chats.events.GetPrivateChatMessagesEvent
 import ru.hse.app.androidApp.ui.entity.model.chats.events.GetPrivateChatsEvent
 import ru.hse.app.androidApp.ui.entity.model.chats.events.SendMessageEvent
 import ru.hse.app.androidApp.ui.entity.model.servers.events.JoinServerEvent
 import ru.hse.app.androidApp.ui.navigation.BottomNavigationItem
+import ru.hse.app.androidApp.ui.navigation.NavigationItem
 
 @Composable
 fun ChatScreen(
@@ -46,6 +48,28 @@ fun ChatScreen(
     val getPrivateChatsEvent by viewModel.getPrivateChatsEvent.collectAsState()
     val sendMessageEvent by viewModel.sendMessageEvent.collectAsState()
     val joinServerEvent by viewModel.joinServerEvent.collectAsState()
+    val getTokenEvent by viewModel.getTokenEvent.collectAsState()
+
+    LaunchedEffect(getTokenEvent) {
+        when (getTokenEvent) {
+            is GetTokenEvent.Success -> {
+                val token = (getTokenEvent as GetTokenEvent.Success).token
+                val roomName = (getTokenEvent as GetTokenEvent.Success).roomName
+                val videoEnabled = (getTokenEvent as GetTokenEvent.Success).videoEnabled
+                val limit = (getTokenEvent as GetTokenEvent.Success).limit
+
+                navController.navigate(NavigationItem.VoiceRoom.route + "/$token/$roomName/$videoEnabled/$limit")
+            }
+
+            is GetTokenEvent.Error -> {
+                val message = (getTokenEvent as GetTokenEvent.Error).message
+                viewModel.handleError(message)
+            }
+
+            null -> {}
+        }
+        viewModel.resetGetTokenEvent()
+    }
 
     LaunchedEffect(joinServerEvent) {
         when (joinServerEvent) {
@@ -147,6 +171,20 @@ fun ChatWithStateContent(
         imageLoader = viewModel.imageLoader,
         messages = uiState.data.messages,
         onReadMsg = { viewModel.markMessageAsRead(it) },
-        onCodeExtracted = { code -> viewModel.joinServer(code) }
+        onCodeExtracted = { code -> viewModel.joinServer(code) },
+        enabledCall = (members.size == 2),
+        onCallClick = {
+            val firstMember = uiState.data.channelMembers.firstOrNull { !it.isCurrentUser }
+            val me = uiState.data.channelMembers.firstOrNull { it.isCurrentUser }
+            if (firstMember != null && me != null) {
+                viewModel.onCallClick(
+                    uiState.data.id,
+                    firstMember.id,
+                    me.name,
+                    "Звонок с ${firstMember.name}"
+                )
+            }
+
+        }
     )
 }

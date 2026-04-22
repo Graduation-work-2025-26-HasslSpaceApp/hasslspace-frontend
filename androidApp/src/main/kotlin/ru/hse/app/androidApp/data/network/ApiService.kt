@@ -32,6 +32,7 @@ import ru.hse.app.androidApp.data.model.UpdateServerDto
 import ru.hse.app.androidApp.data.model.UserDto
 import ru.hse.app.androidApp.data.model.UserInfoDto
 import ru.hse.app.androidApp.data.model.UserInfoExtendedDto
+import java.time.LocalDateTime
 
 interface ApiService {
 
@@ -327,7 +328,10 @@ interface ApiService {
     @GET(CHAT_SERVICE_URL + GET_MESSAGES_HISTORY_URL) // todo
     suspend fun getMessageHistory(
         @Query("chatId") chatId: String,
-        @Query("lastMessageId") lastMessageId: String?
+        @Query("fromMessageId") fromMessageId: String?,
+        @Query("fromDate") fromDate: LocalDateTime?,
+        @Query("toDate") toDate: LocalDateTime? = null,
+        @Query("limit") limit: Int?
     ): Response<List<MessageDto>>
 
     @POST(CHAT_SERVICE_URL + SEND_MESSAGE_URL) // todo

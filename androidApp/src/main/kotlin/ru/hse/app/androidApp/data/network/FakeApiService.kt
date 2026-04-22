@@ -988,7 +988,10 @@ class FakeApiService : ApiService {
 
     override suspend fun getMessageHistory(
         chatId: String,
-        lastMessageId: String?
+        fromMessageId: String?,
+        fromDate: LocalDateTime?,
+        toDate: LocalDateTime?,
+        limit: Int?
     ): Response<List<MessageDto>> {
         val messages = when (chatId) {
             "chat_1" -> listOf(
@@ -1166,8 +1169,8 @@ class FakeApiService : ApiService {
         }
 
         // Если передан lastMessageId, возвращаем сообщения только после него
-        val filteredMessages = if (lastMessageId != null) {
-            val lastIndex = messages.indexOfFirst { it.id == lastMessageId }
+        val filteredMessages = if (fromMessageId != null) {
+            val lastIndex = messages.indexOfFirst { it.id == fromMessageId }
             if (lastIndex != -1) {
                 messages.drop(lastIndex + 1)
             } else {

@@ -1,12 +1,15 @@
 package ru.hse.app.androidApp.ui.components.chats.chat
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -15,6 +18,8 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,6 +40,8 @@ fun ChannelNameBar(
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior? = null,
     onNavIconPressed: () -> Unit = { },
+    onCallClick: () -> Unit = { },
+    enabledCall: Boolean
 ) {
     ChatAppBar(
         modifier = modifier,
@@ -56,14 +63,28 @@ fun ChannelNameBar(
             }
         },
         actions = {
-            Image(
-                painter = painterResource(id = R.drawable.app_icon),
-                contentDescription = "App Icon",
-                modifier = Modifier
-                    .padding(end = 16.dp)
-                    .size(30.dp),
-                contentScale = ContentScale.Crop
-            )
+            if (enabledCall) {
+                Image(
+                    painter = painterResource(R.drawable.option_call),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .padding(end = 16.dp)
+                        .size(30.dp)
+                        .clip(CircleShape)
+                        .background(Color.LightGray, shape = CircleShape)
+                        .clickable(onClick = onCallClick),
+                    contentScale = ContentScale.Crop
+                )
+            } else {
+                Image(
+                    painter = painterResource(id = R.drawable.app_icon),
+                    contentDescription = "App Icon",
+                    modifier = Modifier
+                        .padding(end = 16.dp)
+                        .size(30.dp),
+                    contentScale = ContentScale.Crop
+                )
+            }
         }
     )
 }
@@ -107,7 +128,8 @@ fun ChannelNameBarPreview() {
             channelName = "# composers",
             channelSubtitle = participantsLabel(count = 10),
             scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
-            onNavIconPressed = {}
+            onNavIconPressed = {},
+            enabledCall = true
         )
     }
 }
@@ -122,7 +144,8 @@ fun ChannelNameBarPreviewD() {
             channelName = "# composers",
             channelSubtitle = "subtitle",
             scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
-            onNavIconPressed = {}
+            onNavIconPressed = {},
+            enabledCall = false
         )
     }
 }

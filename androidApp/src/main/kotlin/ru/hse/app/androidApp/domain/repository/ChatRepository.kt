@@ -27,7 +27,10 @@ interface ChatRepository {
 
     suspend fun getChatMessagesFromServer(
         chatId: String,
-        lastMessageId: String? = null,
+        lastMessageId: String?,
+        fromDate: LocalDateTime?,
+        toDate: LocalDateTime?,
+        limit: Int?
     )//: Result<List<Message>>
 
     suspend fun startChat(

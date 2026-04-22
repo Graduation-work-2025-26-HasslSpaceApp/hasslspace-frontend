@@ -73,16 +73,30 @@ class ChatRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getChatMessagesFromRoom(chatId: String): Flow<List<MessageEntity>> {
-        getChatMessagesFromServer(chatId)
+        getChatMessagesFromServer(
+            chatId,
+            lastMessageId = null,
+            fromDate = null,
+            toDate = LocalDateTime.now(),
+            limit = null
+        )
         return chatDao.observeMessagesByChatId(chatId)
     }
 
     override suspend fun getChatMessagesFromServer(
         chatId: String,
-        lastMessageId: String?
+        lastMessageId: String?,
+        fromDate: LocalDateTime?,
+        toDate: LocalDateTime?,
+        limit: Int?
     ) {
 //    ): Result<List<Message>> {
-        apiCaller.safeApiCall { apiService.getMessageHistory(chatId, lastMessageId) }
+        apiCaller.safeApiCall { apiService.getMessageHistory(
+            chatId, lastMessageId,
+            fromDate = fromDate,
+            toDate = toDate,
+            limit = limit
+        ) }
             .mapCatching { messages ->
                 messages.map {
                     chatDao.insertMessage(it.toEntity())

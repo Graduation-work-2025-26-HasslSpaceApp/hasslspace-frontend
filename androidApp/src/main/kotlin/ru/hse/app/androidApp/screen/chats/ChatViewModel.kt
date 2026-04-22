@@ -24,6 +24,9 @@ import ru.hse.app.androidApp.domain.usecase.chats.StartChatUseCase
 import ru.hse.app.androidApp.domain.usecase.chats.UpdateChatMessagesRestUseCase
 import ru.hse.app.androidApp.domain.usecase.profile.LoadUserInfoUseCase
 import ru.hse.app.androidApp.domain.usecase.servers.JoinServerUseCase
+import ru.hse.app.androidApp.domain.usecase.voice.GetVoiceRoomTokenUseCase
+import ru.hse.app.androidApp.domain.usecase.voice.SendVoiceInviteToUserUseCase
+import ru.hse.app.androidApp.ui.entity.model.call.events.GetTokenEvent
 import ru.hse.app.androidApp.ui.entity.model.chats.ChatUiState
 import ru.hse.app.androidApp.ui.entity.model.chats.MessageUiModel
 import ru.hse.app.androidApp.ui.entity.model.chats.events.GetPrivateChatMessagesEvent
@@ -50,6 +53,10 @@ class ChatViewModel @Inject constructor(
 
     private val markMessageAsReadUseCase: MarkMessageAsReadUseCase,
     private val markChatAsReadUseCase: MarkChatAsReadUseCase,
+
+    // Voice
+    private val getVoiceRoomTokenUseCase: GetVoiceRoomTokenUseCase,
+    private val sendVoiceInviteToUserUseCase: SendVoiceInviteToUserUseCase,
 
     private val loadUserInfoUseCase: LoadUserInfoUseCase,
 
@@ -83,6 +90,9 @@ class ChatViewModel @Inject constructor(
 
     private val _joinServerEvent = MutableStateFlow<JoinServerEvent?>(null)
     val joinServerEvent: StateFlow<JoinServerEvent?> = _joinServerEvent
+
+    private val _getTokenEvent = MutableStateFlow<GetTokenEvent?>(null)
+    val getTokenEvent: StateFlow<GetTokenEvent?> = _getTokenEvent
 
     fun loadChatInitInfo(chatId: String) {
         viewModelScope.launch {
@@ -206,6 +216,28 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    fun onCallClick(chatId: String, targetUserId: String, memberName: String, roomName: String) {
+        viewModelScope.launch {
+            val result = getVoiceRoomTokenUseCase(
+                name = memberName,
+                roomName = chatId,
+                roomType = "PRIVATE_ROOM"
+            )
+
+            _getTokenEvent.value = result.fold(
+                onSuccess = { token ->
+                    viewModelScope.launch {
+                        sendVoiceInviteToUserUseCase(targetUserId, memberName)
+                    }
+                    GetTokenEvent.Success(token, roomName, videoEnabled = false)
+                },
+                onFailure = {
+                    GetTokenEvent.Error("Ошибка при подключении к звонку. " + it.message)
+                }
+            )
+        }
+    }
+
     fun handleError(msg: String) {
         errorHandler.handleError(msg)
     }
@@ -224,5 +256,9 @@ class ChatViewModel @Inject constructor(
 
     fun resetJoinServerEvent() {
         _joinServerEvent.value = null
+    }
+
+    fun resetGetTokenEvent() {
+        _getTokenEvent.value = null
     }
 }

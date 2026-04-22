@@ -44,6 +44,8 @@ fun ChatContent(
     imageLoader: ImageLoader,
     messages: List<MessageUiModel>,
     modifier: Modifier = Modifier,
+    onCallClick: () -> Unit,
+    enabledCall: Boolean = false
 ) {
     val scrollState = rememberLazyListState()
     val topBarState = rememberTopAppBarState()
@@ -56,6 +58,8 @@ fun ChatContent(
                 channelSubtitle = channelSubtitle,
                 onNavIconPressed = onBackClick,
                 scrollBehavior = scrollBehavior,
+                onCallClick = onCallClick,
+                enabledCall = enabledCall
             )
         },
         contentWindowInsets = ScaffoldDefaults
@@ -114,7 +118,8 @@ fun ChatContentLight() {
             messages = messages.sortedByDescending { it.timestamp },
             onReadMsg = {
                 Log.d("ChatContentDark", "onReadMsg: $it")
-            }
+            },
+            onCallClick = {},
         )
     }
 }
@@ -134,7 +139,8 @@ fun ChatContentDark() {
             messages = messages.sortedByDescending { it.timestamp },
             onReadMsg = {
                 Log.d("ChatContentDark", "onReadMsg: $it")
-            }
+            },
+            onCallClick = {},
         )
     }
 }
