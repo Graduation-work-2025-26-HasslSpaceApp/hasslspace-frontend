@@ -6,14 +6,14 @@ data class CreateChannelDto(
     @JsonProperty("name")
     val name: String,
 
-    @JsonProperty("isPrivate")
+    @get:JsonProperty("isPrivate")
     val isPrivate: Boolean = false,
 
     @JsonProperty("type")
     val type: String = "TEXT",
 
-    @JsonProperty("maxMembers")
-    val limit: Int? = null,
+    @JsonProperty("max_members")
+    val maxMembers: Int? = null,
 
     @JsonProperty("position")
     val position: Int = 1,

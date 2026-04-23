@@ -14,6 +14,6 @@ fun CreateChannel.toDto(): CreateChannelDto {
         name = this.name,
         isPrivate = this.isPrivate,
         type = this.type,
-        limit = this.limit,
+        maxMembers = this.limit,
     )
 }

@@ -34,18 +34,21 @@ fun AddPhotoScreen(
     LaunchedEffect(event) {
         when (event) {
             is SavePhotoEvent.SuccessSave -> {
+                viewModel.saveVerificationStatusToStorage(true)
+                viewModel.connectCentrifugoClient()
                 viewModel.handleError("Фотография успешно добавлена")
             }
 
             is SavePhotoEvent.Error -> {
                 val message = (event as SavePhotoEvent.Error).message
                 viewModel.handleError(message)
+                viewModel.saveVerificationStatusToStorage(true)
+                viewModel.connectCentrifugoClient()
             }
 
             null -> {}
         }
-        viewModel.saveVerificationStatusToStorage(true)
-        viewModel.connectCentrifugoClient()
+
 
         viewModel.resetSavePhotoEvent()
 

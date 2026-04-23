@@ -151,7 +151,7 @@ interface ApiService {
     ): Response<String>
 
     // Создать канал на сервере
-    @POST(SERVER_SERVICE_URL + CREATE_CHANNEL_URL) //TODO у Саши сейчас нет в дто ролей и юзеров, обсудим
+    @POST(SERVER_SERVICE_URL + CREATE_CHANNEL_URL)
     suspend fun createChannel(
         @Query("serverId") serverId: String,
         @Body createChannelDto: CreateChannelDto
@@ -325,7 +325,7 @@ interface ApiService {
         @Query("chatId") chatId: String
     ): Response<ChatInfoDto> // todo заменить потом usecase на такой
 
-    @GET(CHAT_SERVICE_URL + GET_MESSAGES_HISTORY_URL) // todo
+    @GET(CHAT_SERVICE_URL + GET_MESSAGES_HISTORY_URL)
     suspend fun getMessageHistory(
         @Query("chatId") chatId: String,
         @Query("fromMessageId") fromMessageId: String?,
@@ -334,7 +334,7 @@ interface ApiService {
         @Query("limit") limit: Int?
     ): Response<List<MessageDto>>
 
-    @POST(CHAT_SERVICE_URL + SEND_MESSAGE_URL) // todo
+    @POST(CHAT_SERVICE_URL + SEND_MESSAGE_URL)
     suspend fun sendNewMessage(
         @Query("chatId") chatId: String,
         @Body newMessageDto: NewMessageDto

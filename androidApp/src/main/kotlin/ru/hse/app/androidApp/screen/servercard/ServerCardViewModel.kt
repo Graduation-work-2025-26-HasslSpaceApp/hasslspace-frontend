@@ -330,9 +330,6 @@ class ServerCardViewModel @Inject constructor(
 
             _createChannelEvent.value = result.fold(
                 onSuccess = {
-                    launch {
-                        // todo загружать канал и добавлять туда роли
-                    }
                     CreateChannelEvent.SuccessCreate
                 },
                 onFailure = {
@@ -746,8 +743,10 @@ class ServerCardViewModel @Inject constructor(
 
             result.fold(
                 onSuccess = { roles ->
+                    val filteredRoles = roles.filter { it.name != "Admin" }
+
                     if (ids == null) {
-                        roles.map { role ->
+                        filteredRoles.map { role ->
                             RoleMiniCheckboxUiModel(
                                 id = role.id,
                                 title = role.name,
@@ -756,7 +755,7 @@ class ServerCardViewModel @Inject constructor(
                             )
                         }
                     } else {
-                        roles.map { role ->
+                        filteredRoles.map { role ->
                             RoleMiniCheckboxUiModel(
                                 id = role.id,
                                 title = role.name,
@@ -950,67 +949,44 @@ class ServerCardViewModel @Inject constructor(
     }
 
     fun onToggleRoleEditChannel(role: RoleMiniCheckboxUiModel) {
-        val currentState = _uiState.value
-        if (currentState is ServerCardUiState.Success) {
-            val updatedRoles = currentState.data.editChannel.roles.map { r ->
-                if (r.id == role.id) {
-                    r.copy(isChosen = !r.isChosen)
-                } else {
-                    r
-                }
+        val currentState = _uiState.value as? ServerCardUiState.Success ?: return
+        val newIsChosen = !role.isChosen
+
+        viewModelScope.launch {
+            val result = if (newIsChosen) {
+                assignChannelPermissionUseCase(
+                    currentState.data.chosenServer.id,
+                    currentState.data.editChannel.id,
+                    role.id
+                )
+            } else {
+                deleteChannelPermissionUseCase(
+                    currentState.data.chosenServer.id,
+                    currentState.data.editChannel.id,
+                    role.id
+                )
             }
 
-            _uiState.value = currentState.copy(
-                data = currentState.data.copy(editChannel = currentState.data.editChannel.copy(roles = updatedRoles))
+            result.fold(
+                onSuccess = {
+                    val latestState = _uiState.value as? ServerCardUiState.Success ?: return@fold
+                    val updatedRoles = latestState.data.editChannel.roles.map { r ->
+                        if (r.id == role.id) r.copy(isChosen = newIsChosen) else r
+                    }
+                    _uiState.value = latestState.copy(
+                        data = latestState.data.copy(
+                            editChannel = latestState.data.editChannel.copy(roles = updatedRoles)
+                        )
+                    )
+                },
+                onFailure = {
+                    val errorMessage = if (newIsChosen)
+                        "Не удалось назначить роль в канале"
+                    else
+                        "Не удалось удалить роль из канала"
+                    errorHandler.handleError(errorMessage)
+                }
             )
-
-            viewModelScope.launch {
-                if (role.isChosen) {
-                    val result = assignChannelPermissionUseCase(
-                        currentState.data.chosenServer.id,
-                        currentState.data.editChannel.id,
-                        role.id
-                    )
-                    result.fold(
-                        onSuccess = {},
-                        onFailure = {
-                            errorHandler.handleError("Не удалось назначить роль в канале")
-                            val revertedRoles = updatedRoles.map { r ->
-                                if (r.id == role.id) r.copy(isChosen = !r.isChosen) else r
-                            }
-                            _uiState.value = currentState.copy(
-                                data = currentState.data.copy(
-                                    editChannel = currentState.data.editChannel.copy(
-                                        roles = revertedRoles
-                                    )
-                                )
-                            )
-                        }
-                    )
-                } else {
-                    val result = deleteChannelPermissionUseCase(
-                        currentState.data.chosenServer.id,
-                        currentState.data.editChannel.id,
-                        role.id
-                    )
-                    result.fold(
-                        onSuccess = { },
-                        onFailure = {
-                            errorHandler.handleError("Не удалось удалить роль из канала")
-                            val revertedRoles = updatedRoles.map { r ->
-                                if (r.id == role.id) r.copy(isChosen = !r.isChosen) else r
-                            }
-                            _uiState.value = currentState.copy(
-                                data = currentState.data.copy(
-                                    editChannel = currentState.data.editChannel.copy(
-                                        roles = revertedRoles
-                                    )
-                                )
-                            )
-                        }
-                    )
-                }
-            }
         }
     }
 

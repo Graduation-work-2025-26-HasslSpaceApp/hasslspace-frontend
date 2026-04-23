@@ -36,6 +36,7 @@ import ru.hse.app.androidApp.ui.entity.model.profile.events.LoadUserFriendsEvent
 import ru.hse.app.androidApp.ui.entity.model.toUi
 import ru.hse.app.androidApp.ui.errorhandling.ErrorHandler
 import ru.hse.coursework.godaily.ui.notification.ToastManager
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -126,6 +127,9 @@ class ChatsViewModel @Inject constructor(
                     _uiState.value = result.fold(
                         onSuccess = { chats ->
                             val chatModels = chats.map { it.toChatShort() }
+                                .sortedByDescending { chat ->
+                                    chat.messages.maxByOrNull { it.timestamp }?.timestamp ?: LocalDateTime.MIN
+                                }
                             chatModels.forEach { observeMessagesAndUnreadCount(it) }
 
                             connectToCentrifugo(chatModels.map { it.id })
@@ -193,11 +197,15 @@ class ChatsViewModel @Inject constructor(
                 updatedChats.add(updatedChat)
             }
 
+            val sortedChats = updatedChats.sortedByDescending { chat ->
+                chat.messages.maxByOrNull { it.timestamp }?.timestamp ?: LocalDateTime.MIN
+            }
+
             originalChats.clear()
-            originalChats.addAll(updatedChats)
+            originalChats.addAll(sortedChats)
 
             _uiState.value = ChatsUiState.Success(
-                data = currentState.data.copy(chats = updatedChats)
+                data = currentState.data.copy(chats = sortedChats)
             )
         }
     }
@@ -232,7 +240,9 @@ class ChatsViewModel @Inject constructor(
 
                 val result = searchChatsUseCase(originalChats.map { it }, value)
                 val updatedData = currentState.data.copy(
-                    chats = result.map { it }
+                    chats = result.map { it }.sortedByDescending { chat ->
+                        chat.messages.maxByOrNull { it.timestamp }?.timestamp ?: LocalDateTime.MIN
+                    }
                 )
                 _uiState.value = ChatsUiState.Success(updatedData)
             }

@@ -70,7 +70,6 @@ fun RolesScreen(
         when (patchServerRoleEvent) {
             is PatchServerRoleEvent.Success -> {
                 viewModel.getServerInfo(serverId)
-                viewModel.getServerRoles(serverId)
                 viewModel.showEditRole.value = false
             }
 
@@ -261,7 +260,7 @@ fun RolesScreenWithStateContent(
             questionText = "Вы действительно хотите удалить роль?",
             apply = "Удалить",
             dismiss = "Оставить",
-            onApplyClick = { viewModel.deleteRole(serverId, data.editedRole.id) },
+            onApplyClick = { viewModel.deleteRole(serverId, data.editedRole.id, data.editedRole.name) },
             onDismissClick = { viewModel.showDeleteRoleDialog.value = false }
         )
     }

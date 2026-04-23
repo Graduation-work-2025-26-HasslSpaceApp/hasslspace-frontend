@@ -9,9 +9,9 @@ data class UpdateChannelDto(
     @JsonProperty("position")
     val position: Int? = null,
 
-    @JsonProperty("max_members")
+    @get:JsonProperty("maxMembers")
     val maxMembers: Int? = null,
 
-    @JsonProperty("is_private")
+    @get:JsonProperty("isPrivate")
     val isPrivate: Boolean? = null,
 )

@@ -220,6 +220,21 @@ class ServerSettingsViewModel @Inject constructor(
                         )
                         _assignRoleEvent.value = result.fold(
                             onSuccess = {
+                                val updatedNewRoleMembers = currentState.data.editedRole.members.map { member ->
+                                    if (member.id == tapped.id) {
+                                        member.copy(isChosen = !member.isChosen)
+                                    } else {
+                                        member
+                                    }
+                                }
+
+                                val updatedData = currentState.data.copy(
+                                    editedRole = currentState.data.editedRole.copy(
+                                        members = updatedNewRoleMembers
+                                    )
+                                )
+
+                                _uiState.value = ServerSettingsUiState.Success(updatedData)
                                 AssignRoleEvent.Success
                             },
 
@@ -236,6 +251,21 @@ class ServerSettingsViewModel @Inject constructor(
 
                         _revokeRoleEvent.value = result.fold(
                             onSuccess = {
+                                val updatedNewRoleMembers = currentState.data.editedRole.members.map { member ->
+                                    if (member.id == tapped.id) {
+                                        member.copy(isChosen = !member.isChosen)
+                                    } else {
+                                        member
+                                    }
+                                }
+
+                                val updatedData = currentState.data.copy(
+                                    editedRole = currentState.data.editedRole.copy(
+                                        members = updatedNewRoleMembers
+                                    )
+                                )
+
+                                _uiState.value = ServerSettingsUiState.Success(updatedData)
                                 RevokeRoleEvent.Success
                             },
 
@@ -244,23 +274,6 @@ class ServerSettingsViewModel @Inject constructor(
                             }
                         )
                     }
-
-                    val updatedNewRoleMembers = currentState.data.editedRole.members.map { member ->
-                        if (member.id == tapped.id) {
-                            member.copy(isChosen = !member.isChosen)
-                        } else {
-                            member
-                        }
-                    }
-
-                    val updatedData = currentState.data.copy(
-                        editedRole = currentState.data.editedRole.copy(
-                            members = updatedNewRoleMembers
-                        )
-                    )
-
-                    _uiState.value = ServerSettingsUiState.Success(updatedData)
-
                 } catch (e: Exception) {
                     // todo ловить и показывать ошибку
                     // _uiState.value = ServerSettingsUiState.Error(e.message)
@@ -309,7 +322,7 @@ class ServerSettingsViewModel @Inject constructor(
                             if (roleInfo.members.any { it.id == member.id }) {
                                 member.copy(isChosen = true)
                             } else {
-                                member
+                                member.copy(isChosen = false)
                             }
                         }
                     )
@@ -357,7 +370,11 @@ class ServerSettingsViewModel @Inject constructor(
         }
     }
 
-    fun deleteRole(serverId: String, roleId: String) {
+    fun deleteRole(serverId: String, roleId: String, roleName: String) {
+        if (roleName == "Admin" || roleName == "Member") {
+            errorHandler.handleError("Нельзя удалить стандартную роль")
+            return
+        }
         viewModelScope.launch {
             val result = deleteRoleUseCase(serverId, roleId)
 
@@ -395,6 +412,12 @@ class ServerSettingsViewModel @Inject constructor(
             errorHandler("Название роли не может быть пустым")
             return
         }
+
+        if (newRole.name == "Admin" || newRole.name == "Member") {
+            errorHandler("Нельзя создать новую роль со стандартным названием")
+            return
+        }
+
         val colorInt = if (newRole.color != Color.Transparent) newRole.color else Color.LightGray
         viewModelScope.launch {
             val data = CreateRole(
