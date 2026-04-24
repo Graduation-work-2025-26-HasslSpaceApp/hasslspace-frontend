@@ -29,6 +29,5 @@ dependencyResolutionManagement {
         maven { url = uri("https://jitpack.io") }
     }
 }
-include(":sharedUI")
 include(":androidApp")
 

@@ -1,0 +1,96 @@
+package ru.hse.app.hasslspace.ui.components.settings.usersettings
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import ru.hse.app.hasslspace.ui.components.auth.register.UsernameField
+import ru.hse.app.hasslspace.ui.components.common.button.AddTextButton
+import ru.hse.app.hasslspace.ui.theme.AppTheme
+
+@Composable
+fun UsernameSetting(
+    editedUsername: String,
+    onEditedUsernameChanged: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean,
+    onApplyClick: () -> Unit,
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        UsernameField(
+            text = editedUsername,
+            onTextChanged = onEditedUsernameChanged,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        AddTextButton(
+            onClick = onApplyClick,
+            enabled = enabled,
+            text = "Применить",
+            modifier = Modifier.align(Alignment.End)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun UsernameSettingPreview() {
+    val username = "username"
+    AppTheme(isDark = false) {
+        UsernameSetting(
+            editedUsername = username,
+            enabled = true,
+            onApplyClick = {},
+            onEditedUsernameChanged = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun UsernameSettingPreview1() {
+    val username = "username10username10username10"
+    AppTheme(isDark = false) {
+        UsernameSetting(
+            editedUsername = username,
+            enabled = false,
+            onApplyClick = {},
+            onEditedUsernameChanged = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun UsernameSettingPreview2() {
+    val username = "username"
+    AppTheme(isDark = true) {
+        UsernameSetting(
+            editedUsername = username,
+            enabled = true,
+            onApplyClick = {},
+            onEditedUsernameChanged = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun UsernameSettingPreview3() {
+    val username = "username"
+    AppTheme(isDark = true) {
+        UsernameSetting(
+            editedUsername = username,
+            enabled = false,
+            onApplyClick = {},
+            onEditedUsernameChanged = {}
+        )
+    }
+}
