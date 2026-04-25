@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name" translatable="false">HasslSpace</string>
+
+    <string name="ucrop_label_original">Original</string>
+    <string name="ucrop_label_edit_photo">Редактировать фото</string>
+    <string name="ucrop_menu_next">Далее</string>
+    <string name="ucrop_rotate">Вращать</string>
+    <string name="ucrop_scale">Масштабировать</string>
+    <string name="ucrop_crop">Обрезать</string>
+
+    <string name="emoji_category_recent" msgid="7142376595414250279">"Недавние"</string>
+    <string name="emoji_category_emotions" msgid="1570830970240985537">"Смайлики и эмоции"</string>
+    <string name="emoji_category_people" msgid="7968173366822927025">"Люди"</string>
+    <string name="emoji_category_animals_nature" msgid="4640771324837307541">"Природа и животные"</string>
+    <string name="emoji_category_food_drink" msgid="1189971856721244395">"Еда и напитки"</string>
+    <string name="emoji_category_travel_places" msgid="8105712773237012672">"Путешествия"</string>
+    <string name="emoji_category_activity" msgid="4381135114947330911">"Действия и события"</string>
+    <string name="emoji_category_objects" msgid="6106115586332708067">"Объекты"</string>
+    <string name="emoji_category_symbols" msgid="5626171724310261787">"Символы"</string>
+    <string name="emoji_category_flags" msgid="6185639503532784871">"Флаги"</string>
+    <string name="emoji_empty_non_recent_category" msgid="288822832574892625">"Нет доступных эмодзи"</string>
+    <string name="emoji_empty_recent_category" msgid="7863877827879290200">"Вы ещё не использовали эмодзи"</string>
+    <string name="emoji_bidirectional_switcher_content_desc" msgid="5084600168354220605">"Двухсторонний переключатель эмодзи"</string>
+    <string name="emoji_bidirectional_switcher_clicked_desc" msgid="5055290162204827523">"изменен поворот лица эмодзи"</string>
+    <string name="emoji_variant_selector_content_desc" msgid="2898934883418401376">"выбор вариантов эмодзи"</string>
+    <string name="emoji_variant_content_desc_template" msgid="6381933050671041489">"%1$s и %2$s"</string>
+    <string name="emoji_skin_tone_shadow_content_desc" msgid="1759906883307507376">"теневой"</string>
+    <string name="emoji_skin_tone_light_content_desc" msgid="1052239040923092881">"светлый оттенок кожи"</string>
+    <string name="emoji_skin_tone_medium_light_content_desc" msgid="3968357909948619626">"умеренно светлый оттенок кожи"</string>
+    <string name="emoji_skin_tone_medium_content_desc" msgid="8880212664699697283">"нейтральный оттенок кожи"</string>
+    <string name="emoji_skin_tone_medium_dark_content_desc" msgid="5500271767005002413">"умеренно темный оттенок кожи"</string>
+    <string name="emoji_skin_tone_dark_content_desc" msgid="943874297162865134">"темный оттенок кожи"</string>
+</resources>

@@ -1,0 +1,22 @@
+package ru.hse.app.hasslspace.domain.usecase.chats
+
+import ru.hse.app.hasslspace.domain.repository.ChatRepository
+import java.time.LocalDateTime
+import javax.inject.Inject
+
+class SaveMessageToRoomUseCase @Inject constructor(
+    private val chatRepository: ChatRepository
+) {
+    suspend operator fun invoke(
+        id: String,
+        chatId: String,
+        userId: String,
+        content: String,
+        fileUrl: String?,
+        createdAt: LocalDateTime,
+    ): Result<Unit> {
+        return runCatching {
+            chatRepository.saveMessageToRoom(id, chatId, userId, content, fileUrl, createdAt)
+        }
+    }
+}

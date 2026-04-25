@@ -1,0 +1,100 @@
+package ru.hse.app.hasslspace.data.repository
+
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import ru.hse.app.hasslspace.data.model.RegisterUserDto
+import ru.hse.app.hasslspace.data.model.UpdateProfileDto
+import ru.hse.app.hasslspace.data.network.ApiCaller
+import ru.hse.app.hasslspace.data.network.ApiService
+import ru.hse.app.hasslspace.domain.model.entity.UserExpandedInfo
+import ru.hse.app.hasslspace.domain.model.entity.toDomain
+import ru.hse.app.hasslspace.domain.repository.UserRepository
+import javax.inject.Inject
+
+class UserRepositoryImpl @Inject constructor(
+    private val apiService: ApiService,
+    private val apiCaller: ApiCaller
+) : UserRepository {
+
+    override suspend fun registerUser(
+        email: String,
+        password: String,
+        name: String,
+        username: String
+    ): Result<String> {
+        return apiCaller.safeApiCall {
+            apiService.registerUser(
+                RegisterUserDto(
+                    name = name,
+                    username = username,
+                    email = email,
+                    password = password
+                )
+            )
+        }
+    }
+
+    override suspend fun loginUser(
+        email: String,
+        password: String
+    ): Result<String> {
+        return apiCaller.safeApiCall { apiService.loginUser(email, password) }
+    }
+
+    override suspend fun sendVerificationCode(email: String): Result<String> {
+        return apiCaller.safeApiCall { apiService.sendVerificationCode(email) }
+    }
+
+    override suspend fun checkVerificationCode(code: String): Result<String> {
+        return apiCaller.safeApiCall { apiService.checkVerificationCode(code) }
+    }
+
+    override suspend fun checkEmailVerification(): Result<Boolean> {
+        return apiCaller.safeApiCall { apiService.checkVerification() }
+    }
+
+    override suspend fun getUserInfo(): Result<UserExpandedInfo> {
+        return apiCaller.safeApiCall { apiService.getUserInfo() }
+            .mapCatching { userDto -> userDto.toDomain() }
+    }
+
+    override suspend fun saveUserPhoto(photoUrl: String): Result<String> {
+        return apiCaller.safeApiCall {
+            val updateProfileDto = UpdateProfileDto(
+                photoUrl = photoUrl
+            )
+            apiService.updateUserProfile(updateProfileDto)
+        }
+    }
+
+    override suspend fun uploadPhoto(
+        photo: MultipartBody.Part,
+        type: RequestBody,
+        photoUrl: RequestBody?
+    ): Result<String> {
+        return apiCaller.safeApiCall { apiService.uploadPhoto(photo, type, photoUrl) }
+    }
+
+    override suspend fun changeUserName(newName: String): Result<String> {
+        return apiCaller.safeApiCall {
+            val updateProfileDto = UpdateProfileDto(
+                name = newName
+            )
+            apiService.updateUserProfile(updateProfileDto)
+        }
+    }
+
+    override suspend fun changeUserStatus(status: String): Result<String> {
+        //ONLINE, INVISIBLE, DO_NOT_DISTURB, OFFLINE
+        return apiCaller.safeApiCall { apiService.changeStatus(status) }
+    }
+
+    override suspend fun changeUserDesc(desc: String): Result<String> {
+        return apiCaller.safeApiCall {
+            val updateProfileDto = UpdateProfileDto(
+                description = desc
+            )
+            apiService.updateUserProfile(updateProfileDto)
+        }
+    }
+}
