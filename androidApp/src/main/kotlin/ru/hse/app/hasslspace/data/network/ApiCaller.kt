@@ -4,7 +4,6 @@ import retrofit2.Response
 import ru.hse.app.hasslspace.data.exception.ApiException
 
 
-//TODO Подумать над тем, что ошибки в домейн должны обрабатываться в UI
 class ApiCaller {
     suspend fun <T> safeApiCall(apiCall: suspend () -> Response<T>): Result<T> {
         return try {

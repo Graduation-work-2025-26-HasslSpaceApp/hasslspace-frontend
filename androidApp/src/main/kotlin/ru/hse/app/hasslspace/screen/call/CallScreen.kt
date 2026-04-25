@@ -25,7 +25,7 @@ import androidx.navigation.NavController
 import io.livekit.android.compose.local.RoomScope
 import io.livekit.android.util.flow
 import ru.hse.app.hasslspace.screen.call.state.rememberCallPermissions
-import ru.hse.app.hasslspace.screen.call.ui.CallLayout
+import ru.hse.app.hasslspace.ui.components.call.CallLayout
 import ru.hse.app.hasslspace.ui.theme.AppTheme
 
 @Composable

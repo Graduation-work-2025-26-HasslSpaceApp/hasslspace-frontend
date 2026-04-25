@@ -1,4 +1,4 @@
-package ru.hse.app.hasslspace.screen.call.ui
+package ru.hse.app.hasslspace.ui.components.call
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

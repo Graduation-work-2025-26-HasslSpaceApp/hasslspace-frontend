@@ -1,4 +1,4 @@
-package ru.hse.app.hasslspace.screen.call.ui
+package ru.hse.app.hasslspace.ui.components.call
 
 import android.content.res.Configuration
 import androidx.compose.foundation.border
