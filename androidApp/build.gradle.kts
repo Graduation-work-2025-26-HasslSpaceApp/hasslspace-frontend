@@ -151,6 +151,7 @@ dependencies {
     implementation(libs.coil)
     implementation(libs.coil.network.okhttp)
     implementation(libs.androidx.palette.ktx)
+    implementation("io.coil-kt.coil3:coil-video:3.4.0")
 
     //Image Cropper
     implementation(libs.ucrop)

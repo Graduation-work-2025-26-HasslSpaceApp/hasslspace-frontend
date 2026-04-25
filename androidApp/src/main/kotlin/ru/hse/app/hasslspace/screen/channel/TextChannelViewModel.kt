@@ -1,5 +1,6 @@
 package ru.hse.app.hasslspace.screen.channel
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil3.ImageLoader
@@ -184,11 +185,12 @@ class TextChannelViewModel @Inject constructor(
         }
     }
 
-    fun addCurrentUserMessage(chatId: String, content: String) {
+    fun addCurrentUserMessage(chatId: String, content: String, attachments: List<Uri>) {
         viewModelScope.launch {
             val result = sendMessageUseCase(
                 chatId = chatId,
-                content = content
+                content = content,
+                attachments = attachments
             )
 
             _sendMessageEvent.value = result.fold(

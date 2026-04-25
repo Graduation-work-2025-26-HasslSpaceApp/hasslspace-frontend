@@ -1,5 +1,6 @@
 package ru.hse.app.hasslspace.ui.components.chats.chat
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -37,7 +38,7 @@ fun ChatContent(
     channelSubtitle: String,
     onBackClick: () -> Unit,
     onAuthorClick: (ChatMemberUiModel?) -> Unit,
-    onSendMessage: (String) -> Unit,
+    onSendMessage: (String, List<Uri>) -> Unit,
     onReadMsg: (String) -> Unit,
     onCodeExtracted: (String) -> Unit = {},
     isDarkTheme: Boolean,
@@ -85,8 +86,8 @@ fun ChatContent(
                 onCodeExtracted = onCodeExtracted
             )
             UserInput(
-                onMessageSent = { content ->
-                    onSendMessage(content)
+                onMessageSent = { text, attachments ->
+                    onSendMessage(text, attachments)
                 },
                 resetScroll = {
                     scope.launch {
@@ -112,7 +113,7 @@ fun ChatContentLight() {
             channelSubtitle = participantsLabel(count = 10),
             onBackClick = {},
             onAuthorClick = {},
-            onSendMessage = {},
+            onSendMessage = {_,_->},
             isDarkTheme = false,
             imageLoader = LocalContext.current.imageLoader,
             messages = messages.sortedByDescending { it.timestamp },
@@ -133,7 +134,7 @@ fun ChatContentDark() {
             channelSubtitle = participantsLabel(count = 10),
             onBackClick = {},
             onAuthorClick = {},
-            onSendMessage = {},
+            onSendMessage = {_,_->},
             isDarkTheme = true,
             imageLoader = LocalContext.current.imageLoader,
             messages = messages.sortedByDescending { it.timestamp },

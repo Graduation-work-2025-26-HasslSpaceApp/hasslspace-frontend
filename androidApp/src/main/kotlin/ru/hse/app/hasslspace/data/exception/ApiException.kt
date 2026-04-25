@@ -14,6 +14,7 @@ class ApiException(
         const val SERVER_ERROR = "Ошибка сервера или сети"
 
         const val PHOTO_UPLOADING_ERROR = "Ошибка загрузки фото"
+        const val FILE_UPLOADING_ERROR = "Ошибка загрузки файла"
 
         const val ROOM_NOT_FOUND = "Комната не найдена"
     }

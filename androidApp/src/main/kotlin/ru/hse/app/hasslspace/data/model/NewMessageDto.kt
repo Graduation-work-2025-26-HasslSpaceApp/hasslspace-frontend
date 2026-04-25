@@ -7,6 +7,9 @@ data class NewMessageDto(
     @JsonProperty("content")
     val content: String?,
 
+    @JsonProperty("fileUrl")
+    val fileUrl: String?,
+
     @JsonProperty("createdAt")
     val createdAt: LocalDateTime,
 )

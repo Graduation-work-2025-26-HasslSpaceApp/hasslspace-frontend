@@ -12,10 +12,11 @@ class SaveMessageToRoomUseCase @Inject constructor(
         chatId: String,
         userId: String,
         content: String,
+        fileUrl: String?,
         createdAt: LocalDateTime,
     ): Result<Unit> {
         return runCatching {
-            chatRepository.saveMessageToRoom(id, chatId, userId, content, createdAt)
+            chatRepository.saveMessageToRoom(id, chatId, userId, content, fileUrl, createdAt)
         }
     }
 }

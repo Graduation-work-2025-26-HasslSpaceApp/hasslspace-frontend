@@ -145,7 +145,7 @@ fun TextChannelWithStateContent(
         channelSubtitle = participantsLabel(members.size),
         onBackClick = { navController.popBackStack() },
         onAuthorClick = {/*todo*/ },
-        onSendMessage = { viewModel.addCurrentUserMessage(uiState.data.id, it) },
+        onSendMessage = { text, attachments -> viewModel.addCurrentUserMessage(uiState.data.id, text, attachments) },
         isDarkTheme = viewModel.isDark,
         imageLoader = viewModel.imageLoader,
         messages = uiState.data.messages,

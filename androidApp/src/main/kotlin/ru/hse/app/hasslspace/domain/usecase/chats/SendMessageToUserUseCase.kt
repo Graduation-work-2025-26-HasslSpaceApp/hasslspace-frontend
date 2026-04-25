@@ -17,6 +17,7 @@ class SendMessageToUserUseCase @Inject constructor(
                 return sendMessageUseCase(
                     chatId = chatId,
                     content = content,
+                    attachments = emptyList() // todo
                 )
             },
             onFailure = {

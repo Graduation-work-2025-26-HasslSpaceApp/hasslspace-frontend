@@ -23,6 +23,7 @@ data class ChatsUiModel(
 data class MessageShortUiModel(
     val id: String,
     val content: String,
+    val fileUrl: String?,
     val timestamp: LocalDateTime,
     val isRead: Boolean
 )
@@ -48,6 +49,7 @@ fun MessageEntity.toMessageShortUi(): MessageShortUiModel {
     return MessageShortUiModel(
         id = this.id,
         content = this.content ?: "",
+        fileUrl = this.fileUrl,
         timestamp = this.createdAt,
         isRead = this.isRead
     )

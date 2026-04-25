@@ -1,6 +1,8 @@
 package ru.hse.app.hasslspace.domain.repository
 
 import kotlinx.coroutines.flow.Flow
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import ru.hse.app.hasslspace.data.roomstorage.MessageEntity
 import ru.hse.app.hasslspace.domain.model.entity.ChatInfo
 import java.time.LocalDateTime
@@ -12,6 +14,7 @@ interface ChatRepository {
         chatId: String,
         userId: String,
         content: String,
+        fileUrl: String?,
         createdAt: LocalDateTime,
         isRead: Boolean = false,
     ): Result<Unit>
@@ -19,6 +22,7 @@ interface ChatRepository {
     suspend fun sendMessage(
         chatId: String,
         content: String,
+        fileUrl: String?
     ): Result<String>
 
     suspend fun getChatMessagesFromRoom(
@@ -32,6 +36,12 @@ interface ChatRepository {
         toDate: LocalDateTime?,
         limit: Int?
     )//: Result<List<Message>>
+
+    suspend fun uploadFile(
+        file: MultipartBody.Part,
+        photoUrl: RequestBody?,
+        fileType: RequestBody
+    ): Result<String>
 
     suspend fun startChat(
         userId: String

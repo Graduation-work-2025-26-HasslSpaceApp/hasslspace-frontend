@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 import ru.hse.app.hasslspace.data.local.DataManager
 import ru.hse.app.hasslspace.domain.model.entity.CreateRole
 import ru.hse.app.hasslspace.domain.service.common.CropProfilePhotoService
-import ru.hse.app.hasslspace.domain.service.common.PhotoConverterService
+import ru.hse.app.hasslspace.domain.service.common.FileConverterService
 import ru.hse.app.hasslspace.domain.usecase.invitations.DeleteServerInvitationUseCase
 import ru.hse.app.hasslspace.domain.usecase.invitations.GetServerInvitationsUseCase
 import ru.hse.app.hasslspace.domain.usecase.roles.AssignRoleUseCase
@@ -86,7 +86,7 @@ class ServerSettingsViewModel @Inject constructor(
 
     private val patchServerRoleUseCase: PatchServerRoleUseCase,
 
-    private val photoConverterService: PhotoConverterService,
+    private val fileConverterService: FileConverterService,
 
 
     private val dataManager: DataManager,
@@ -451,7 +451,7 @@ class ServerSettingsViewModel @Inject constructor(
     }
 
     fun urlToUri(url: String?): Uri? {
-        return photoConverterService.urlToUri(url)
+        return fileConverterService.urlToUri(url)
     }
 
     fun getServerInfo(serverId: String) {

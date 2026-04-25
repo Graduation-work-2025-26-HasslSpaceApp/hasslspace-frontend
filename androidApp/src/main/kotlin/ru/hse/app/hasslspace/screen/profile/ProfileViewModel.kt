@@ -16,7 +16,7 @@ import ru.hse.app.hasslspace.data.centrifugo.CentrifugeService
 import ru.hse.app.hasslspace.data.local.DataManager
 import ru.hse.app.hasslspace.domain.service.common.ColorService
 import ru.hse.app.hasslspace.domain.service.common.CropProfilePhotoService
-import ru.hse.app.hasslspace.domain.service.common.PhotoConverterService
+import ru.hse.app.hasslspace.domain.service.common.FileConverterService
 import ru.hse.app.hasslspace.domain.usecase.chats.StartChatUseCase
 import ru.hse.app.hasslspace.domain.usecase.friends.CreateFriendRequestUseCase
 import ru.hse.app.hasslspace.domain.usecase.friends.DeleteFriendshipUseCase
@@ -90,7 +90,7 @@ class ProfileViewModel @Inject constructor(
     // Chats
     private val startChatUseCase: StartChatUseCase,
 
-    private val photoConverterService: PhotoConverterService,
+    private val fileConverterService: FileConverterService,
     private val toastManager: ToastManager,
     val cropProfilePhotoService: CropProfilePhotoService,
     val colorService: ColorService,
@@ -334,7 +334,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun urlToUri(url: String?): Uri? {
-        return photoConverterService.urlToUri(url)
+        return fileConverterService.urlToUri(url)
     }
 
     fun loadAppTheme() {

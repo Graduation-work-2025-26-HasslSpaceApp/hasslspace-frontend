@@ -3,6 +3,8 @@ package ru.hse.app.hasslspace.data.repository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import ru.hse.app.hasslspace.data.centrifugo.CentrifugeService
 import ru.hse.app.hasslspace.data.model.NewMessageDto
 import ru.hse.app.hasslspace.data.network.ApiCaller
@@ -39,6 +41,7 @@ class ChatRepositoryImpl @Inject constructor(
         chatId: String,
         userId: String,
         content: String,
+        fileUrl: String?,
         createdAt: LocalDateTime,
         isRead: Boolean
     ): Result<Unit> {
@@ -49,23 +52,25 @@ class ChatRepositoryImpl @Inject constructor(
                     chatId,
                     userId,
                     content,
-                    null,
+                    fileUrl,
                     createdAt,
                     isRead
                 )
-            ) // todo fileUrl
+            )
         }
     }
 
     override suspend fun sendMessage(
         chatId: String,
-        content: String
+        content: String,
+        fileUrl: String?
     ): Result<String> {
         return apiCaller.safeApiCall {
             apiService.sendNewMessage(
                 chatId,
                 NewMessageDto(
                     content = content,
+                    fileUrl = fileUrl,
                     createdAt = LocalDateTime.now()
                 )
             )
@@ -102,6 +107,14 @@ class ChatRepositoryImpl @Inject constructor(
                     chatDao.insertMessage(it.toEntity())
                 }
             }
+    }
+
+    override suspend fun uploadFile(
+        file: MultipartBody.Part,
+        photoUrl: RequestBody?,
+        fileType: RequestBody
+    ): Result<String> {
+        return apiCaller.safeApiCall { apiService.uploadFileToChat(file, photoUrl, fileType) }
     }
 
     override suspend fun startChat(userId: String): Result<String> {

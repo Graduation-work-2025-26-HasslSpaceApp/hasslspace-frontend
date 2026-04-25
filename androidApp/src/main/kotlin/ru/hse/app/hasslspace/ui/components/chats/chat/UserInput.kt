@@ -1,12 +1,19 @@
 package ru.hse.app.hasslspace.ui.components.chats.chat
 
+import android.net.Uri
+import android.provider.OpenableColumns
 import android.view.ContextThemeWrapper
 import android.view.ViewGroup
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,11 +27,19 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AttachFile
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -43,6 +58,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusTarget
@@ -51,6 +67,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.SemanticsPropertyKey
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
@@ -60,16 +78,22 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.emoji2.emojipicker.EmojiPickerView
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.video.videoFrameMillis
 import ru.hse.app.hasslspace.R
 import ru.hse.app.hasslspace.ui.theme.AppTheme
 
 enum class InputSelector {
     NONE,
     EMOJI,
+    MEDIA,
+    FILE,
 }
 
 enum class EmojiStickerSelector {
@@ -80,13 +104,26 @@ enum class EmojiStickerSelector {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun UserInput(
-    onMessageSent: (String) -> Unit,
+    onMessageSent: (String, List<Uri>) -> Unit,
     modifier: Modifier = Modifier,
     resetScroll: () -> Unit = {},
     isDark: Boolean
 ) {
     var currentInputSelector by rememberSaveable { mutableStateOf(InputSelector.NONE) }
     val dismissKeyboard = { currentInputSelector = InputSelector.NONE }
+    var attachments by remember { mutableStateOf<List<Uri>>(emptyList()) }
+
+    val mediaLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        uri?.let { attachments = listOf(it) }
+    }
+
+    val fileLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        uri?.let { attachments = listOf(it) }
+    }
 
     if (currentInputSelector != InputSelector.NONE) {
         BackHandler(onBack = dismissKeyboard)
@@ -102,6 +139,10 @@ fun UserInput(
             modifier = modifier
                 .background(MaterialTheme.colorScheme.background)
         ) {
+            AttachmentsPreview(
+                attachments = attachments,
+                onRemove = { attachments = attachments - it }
+            )
             UserInputText(
                 textFieldValue = textState,
                 onTextChanged = { textState = it },
@@ -114,25 +155,29 @@ fun UserInput(
                     textFieldFocusState = focused
                 },
                 onMessageSent = {
-                    onMessageSent(textState.text)
+                    onMessageSent(textState.text, attachments)
                     textState = TextFieldValue()
+                    attachments = emptyList()
                     resetScroll()
                 },
                 focusState = textFieldFocusState,
             )
             UserInputSelector(
                 onSelectorChange = { currentInputSelector = it },
-                sendMessageEnabled = textState.text.isNotBlank(),
+                sendMessageEnabled = (textState.text.isNotBlank() || attachments.isNotEmpty()),
                 onMessageSent = {
-                    onMessageSent(textState.text)
+                    onMessageSent(textState.text, attachments)
                     textState = TextFieldValue()
+                    attachments = emptyList()
                     resetScroll()
                     dismissKeyboard()
                 },
                 currentInputSelector = currentInputSelector,
                 makeKeyboardVisible = {
                     textFieldFocusState = true
-                }
+                },
+                mediaLauncher = mediaLauncher,
+                fileLauncher = fileLauncher
             )
             SelectorExpanded(
                 onCloseRequested = dismissKeyboard,
@@ -176,7 +221,10 @@ private fun SelectorExpanded(
 
     Surface(tonalElevation = 8.dp) {
         when (currentSelector) {
+            InputSelector.NONE -> {}
             InputSelector.EMOJI -> EmojiSelector(onTextAdded, focusRequester, isDark)
+            InputSelector.MEDIA,
+            InputSelector.FILE -> {}
         }
     }
 }
@@ -188,6 +236,8 @@ private fun UserInputSelector(
     onMessageSent: () -> Unit,
     currentInputSelector: InputSelector,
     modifier: Modifier = Modifier,
+    mediaLauncher: ManagedActivityResultLauncher<PickVisualMediaRequest, Uri?>,
+    fileLauncher: ManagedActivityResultLauncher<Array<String>, Uri?>,
     makeKeyboardVisible: () -> Unit
 ) {
     Row(
@@ -209,6 +259,26 @@ private fun UserInputSelector(
             icon = painterResource(id = R.drawable.ic_mood),
             selected = currentInputSelector == InputSelector.EMOJI,
             description = "",
+        )
+
+        InputSelectorButton(
+            onClick = {
+                mediaLauncher.launch(
+                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo)
+                )
+            },
+            icon = painterResource(R.drawable.ic_attach_image),
+            selected = false,
+            description = "Прикрепить медиа",
+        )
+
+        InputSelectorButton(
+            onClick = {
+                fileLauncher.launch(arrayOf("*/*"))
+            },
+            icon = painterResource(R.drawable.ic_attach_file),
+            selected = false,
+            description = "Прикрепить файл",
         )
 
         val border = if (!sendMessageEnabled) {
@@ -277,6 +347,131 @@ private fun InputSelectorButton(
                 .size(56.dp),
             contentDescription = description,
         )
+    }
+}
+
+@Composable
+fun AttachmentsPreview(
+    attachments: List<Uri>,
+    onRemove: (Uri) -> Unit
+) {
+    if (attachments.isEmpty()) return
+
+    val context = LocalContext.current
+
+    LazyRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(items = attachments) { uri ->
+            val mimeType = remember(uri) {
+                context.contentResolver.getType(uri)
+            }
+            val isVideo = mimeType?.startsWith("video/") == true
+            val isImage = mimeType?.startsWith("image/") == true
+
+            Box {
+                when {
+                    isImage -> {
+                        AsyncImage(
+                            model = uri,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(72.dp)
+                                .clip(RoundedCornerShape(8.dp)),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+
+                    isVideo -> {
+                        Box(
+                            modifier = Modifier
+                                .size(72.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(Color.Black),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            AsyncImage(
+                                model = ImageRequest.Builder(context)
+                                    .data(uri)
+                                    .videoFrameMillis(0)
+                                    .build(),
+                                contentDescription = null,
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                            Icon(
+                                imageVector = Icons.Filled.PlayArrow,
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(32.dp)
+                            )
+                        }
+                    }
+
+                    else -> {
+                        val fileName = remember(uri) {
+                            context.contentResolver
+                                .query(uri, null, null, null, null)
+                                ?.use { cursor ->
+                                    val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                                    cursor.moveToFirst()
+                                    cursor.getString(nameIndex)
+                                } ?: uri.lastPathSegment ?: "Файл"
+                        }
+
+                        Row(
+                            modifier = Modifier
+                                .height(72.dp)
+                                .widthIn(max = 200.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(MaterialTheme.colorScheme.surface)
+                                .padding(horizontal = 12.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.AttachFile,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Text(
+                                text = fileName,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.primary,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .size(20.dp)
+                        .background(
+                            MaterialTheme.colorScheme.primary,
+                            CircleShape
+                        )
+                        .clickable(
+                            onClick = { onRemove(uri) },
+                            role = androidx.compose.ui.semantics.Role.Button
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        Icons.Default.Close,
+                        contentDescription = "Удалить",
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.size(14.dp)
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -510,7 +705,7 @@ fun UserInputPreviewLight() {
             Spacer(modifier = Modifier.weight(1f))
             UserInput(
                 modifier = Modifier.fillMaxWidth(),
-                onMessageSent = {},
+                onMessageSent = {_, _ -> },
                 isDark = false
             )
         }
@@ -530,7 +725,7 @@ fun UserInputPreviewDark() {
             Spacer(modifier = Modifier.weight(1f))
             UserInput(
                 modifier = Modifier.fillMaxWidth(),
-                onMessageSent = {},
+                onMessageSent = {_, _ -> },
                 isDark = true
             )
         }

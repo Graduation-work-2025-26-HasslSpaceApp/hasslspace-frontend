@@ -75,7 +75,13 @@ fun MyChatsScreenContent(
             ChatCard(
                 imageLoader = imageLoader,
                 title = chat.name,
-                lastMessage = sorted.firstOrNull()?.content ?: "",
+                lastMessage = sorted.firstOrNull()?.let { message ->
+                    when {
+                        message.fileUrl?.isNotEmpty() == true -> "Вложение"
+                        message.content.isNotBlank() -> message.content
+                        else -> ""
+                    }
+                } ?: "",
                 timeOfLastMessage = if (sorted.isNotEmpty() && sorted.firstOrNull()?.timestamp != null) {
                     formatMessageTime(sorted.firstOrNull()!!.timestamp)
                 } else {

@@ -1209,4 +1209,12 @@ class FakeApiService : ApiService {
     override suspend fun startChatChannel(channelId: String): Response<String> {
         return Response.success("123u1hi23h")
     }
+
+    override suspend fun uploadFileToChat(
+        file: MultipartBody.Part,
+        photoUrl: RequestBody?,
+        fileType: RequestBody
+    ): Response<String> {
+        return Response.success("123u1hi23h")
+    }
 }

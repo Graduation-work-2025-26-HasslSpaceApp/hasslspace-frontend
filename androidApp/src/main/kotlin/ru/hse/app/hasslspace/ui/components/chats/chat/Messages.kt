@@ -1,8 +1,15 @@
 package ru.hse.app.hasslspace.ui.components.chats.chat
 
+import android.app.DownloadManager
+import android.content.ActivityNotFoundException
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
+import android.os.Environment
 import android.util.Log
+import android.webkit.MimeTypeMap
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +21,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFrom
 import androidx.compose.foundation.layout.size
@@ -25,7 +33,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AttachFile
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -41,6 +53,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.layout.onVisibilityChanged
@@ -48,12 +61,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.ImageLoader
+import coil3.compose.AsyncImage
 import coil3.compose.rememberAsyncImagePainter
 import coil3.imageLoader
+import coil3.request.ImageRequest
+import coil3.video.videoFrameMillis
 import kotlinx.coroutines.launch
 import ru.hse.app.hasslspace.R
 import ru.hse.app.hasslspace.ui.components.common.text.VariableLight
@@ -258,6 +275,7 @@ fun AuthorAndTextMessage(
         ChatItemBubble(
             message = msg,
             isUserMe = isUserMe,
+            imageLoader = LocalContext.current.imageLoader,
             onCodeExtracted = onCodeExtracted
         )
         if (isFirstMessageByAuthor) {
@@ -282,35 +300,58 @@ private fun AuthorName(msg: MessageUiModel) {
 fun ChatItemBubble(
     message: MessageUiModel,
     isUserMe: Boolean,
+    imageLoader: ImageLoader,
     onCodeExtracted: (String) -> Unit = {},
 ) {
-    val backgroundBubbleColor = if (isUserMe) {
+    val context = LocalContext.current
+    val backgroundBubbleColor = if (isUserMe)
         MaterialTheme.colorScheme.secondary
-    } else {
+    else
         MaterialTheme.colorScheme.surfaceContainer
-    }
 
     Column {
         Surface(
             color = backgroundBubbleColor,
             shape = ChatBubbleShape,
         ) {
-            // Контейнер для текста и времени в одной строке
-            Column(
-                modifier = Modifier.padding(12.dp, 8.dp),
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
-                // Текст сообщения
-                ClickableMessage(
-                    message = message,
-                    isUserMe = isUserMe,
-                    onProtectedLinkClick = { protectedUrl ->
-                        handleProtectedLinkClick(protectedUrl, onCodeExtracted)
+            Column(modifier = Modifier.padding(12.dp, 8.dp)) {
+
+                // Вложение
+                message.fileUrl?.let { url ->
+                    val mimeType = remember(url) { getMimeTypeFromUrl(url) }
+                    val isImage = (mimeType?.startsWith("image/") == true) || url.contains("/photo/")
+                    val isVideo = mimeType?.startsWith("video/") == true
+
+                    when {
+                        isImage -> ImageAttachment(
+                            url = url,
+                            imageLoader = imageLoader,
+                            onClick = { openFullscreen(context, url) }
+                        )
+                        isVideo -> VideoAttachment(
+                            url = url,
+                            imageLoader = imageLoader,
+                            onClick = { openWithIntent(context, url, mimeType) }
+                        )
+                        else -> FileAttachment(
+                            url = url,
+                            onClick = { openWithIntent(context, url, mimeType ?: "*/*") }
+                        )
                     }
 
-                )
+                    if (message.content.isNotBlank()) {
+                        Spacer(modifier = Modifier.height(6.dp))
+                    }
+                }
 
-                // Время сообщения (стиль Telegram)
+                if (message.content.isNotBlank()) {
+                    ClickableMessage(
+                        message = message,
+                        isUserMe = isUserMe,
+                        onProtectedLinkClick = { handleProtectedLinkClick(it, onCodeExtracted) }
+                    )
+                }
+
                 Spacer(modifier = Modifier.width(8.dp))
                 MessageTimestamp(
                     timestamp = message.timestamp,
@@ -422,6 +463,102 @@ private fun RowScope.DayHeaderLine() {
     )
 }
 
+@Composable
+fun ImageAttachment(
+    url: String,
+    imageLoader: ImageLoader,
+    onClick: () -> Unit
+) {
+    AsyncImage(
+        model = url,
+        imageLoader = imageLoader,
+        contentDescription = null,
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(max = 260.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .clickable { onClick() },
+        contentScale = ContentScale.Crop
+    )
+}
+
+@Composable
+fun VideoAttachment(
+    url: String,
+    imageLoader: ImageLoader,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(max = 260.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .clickable { onClick() },
+        contentAlignment = Alignment.Center
+    ) {
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(url)
+                .videoFrameMillis(0)
+                .build(),
+            imageLoader = imageLoader,
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+        Box(
+            modifier = Modifier
+                .size(52.dp)
+                .background(Color.Black.copy(alpha = 0.5f), CircleShape),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Filled.PlayArrow,
+                contentDescription = "Воспроизвести",
+                tint = Color.White,
+                modifier = Modifier.size(32.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun FileAttachment(
+    url: String,
+    onClick: () -> Unit
+) {
+    val fileName = remember(url) {
+        url.substringAfterLast('/').substringBefore('?')
+            .ifBlank { "Файл" }
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(8.dp))
+            .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
+            .clickable { onClick() }
+            .padding(horizontal = 12.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        Icon(
+            imageVector = Icons.Default.AttachFile,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.size(28.dp)
+        )
+        Text(
+            text = fileName,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onBackground,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.weight(1f)
+        )
+    }
+}
+
 fun handleProtectedLinkClick(protectedUrl: String, onCodeExtracted: (String) -> Unit) {
     val uri = Uri.parse(protectedUrl)
     val code = uri.getQueryParameter("code")
@@ -450,6 +587,35 @@ fun formatMessageTime(dateTime: LocalDateTime): String {
             dateTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
         }
     }
+}
+
+fun openFullscreen(context: Context, url: String) {
+    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+    context.startActivity(intent)
+}
+
+fun openWithIntent(context: Context, url: String, mimeType: String) {
+    val intent = Intent(Intent.ACTION_VIEW).apply {
+        setDataAndType(Uri.parse(url), mimeType)
+        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    }
+    try {
+        context.startActivity(intent)
+    } catch (e: ActivityNotFoundException) {
+        val dm = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val request = DownloadManager.Request(Uri.parse(url))
+            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+            .setDestinationInExternalPublicDir(
+                Environment.DIRECTORY_DOWNLOADS,
+                url.substringAfterLast('/')
+            )
+        dm.enqueue(request)
+    }
+}
+
+fun getMimeTypeFromUrl(url: String): String? {
+    val extension = url.substringAfterLast('.', "").lowercase().substringBefore('?')
+    return MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
 }
 
 fun getMessagePreview(): MessageUiModel {
@@ -516,10 +682,12 @@ fun ChatItemBubblePreview() {
             ChatItemBubble(
                 message = messageFromMe,
                 isUserMe = true,
+                imageLoader = LocalContext.current.imageLoader
             )
             ChatItemBubble(
                 message = messageFromOthers,
                 isUserMe = false,
+                imageLoader = LocalContext.current.imageLoader
             )
         }
     }
@@ -535,10 +703,12 @@ fun ChatItemBubblePreviewDark() {
             ChatItemBubble(
                 message = messageFromMe,
                 isUserMe = true,
+                imageLoader = LocalContext.current.imageLoader
             )
             ChatItemBubble(
                 message = messageFromOthers,
                 isUserMe = false,
+                imageLoader = LocalContext.current.imageLoader
             )
         }
     }

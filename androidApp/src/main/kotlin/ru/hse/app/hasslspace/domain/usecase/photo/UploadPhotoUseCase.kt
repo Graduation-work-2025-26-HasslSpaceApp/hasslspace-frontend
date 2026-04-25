@@ -7,12 +7,12 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import ru.hse.app.hasslspace.data.exception.ApiException
 import ru.hse.app.hasslspace.domain.repository.UserRepository
-import ru.hse.app.hasslspace.domain.service.common.PhotoConverterService
+import ru.hse.app.hasslspace.domain.service.common.FileConverterService
 
 class UploadPhotoUseCase @Inject constructor(
     private val userRepository: UserRepository,
     private val imageLoader: ImageLoader,
-    private val photoConverterService: PhotoConverterService,
+    private val fileConverterService: FileConverterService,
 ) {
     suspend operator fun invoke(
         imageUri: Uri?,
@@ -21,7 +21,7 @@ class UploadPhotoUseCase @Inject constructor(
         imageLoader.memoryCache?.clear()
         imageLoader.diskCache?.clear()
 
-        val userPhotoMultipart = imageUri?.let { photoConverterService.uriToMultipart(it) }
+        val userPhotoMultipart = imageUri?.let { fileConverterService.uriToMultipart(it) }
 
         userPhotoMultipart?.let { multipart ->
             val typePart = "user".toRequestBody("text/plain".toMediaType())

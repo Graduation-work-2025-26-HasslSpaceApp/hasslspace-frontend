@@ -350,4 +350,12 @@ interface ApiService {
         @Query("channelId") channelId: String
     ): Response<String>
 
+    @Multipart
+    @PUT(CHAT_SERVICE_URL + PUT_FILE_CHAT_URL)
+    suspend fun uploadFileToChat(
+        @Part file: MultipartBody.Part,
+        @Part("photoUrl") photoUrl: RequestBody?,
+        @Part("fileType") fileType: RequestBody
+    ): Response<String>
+
 }
