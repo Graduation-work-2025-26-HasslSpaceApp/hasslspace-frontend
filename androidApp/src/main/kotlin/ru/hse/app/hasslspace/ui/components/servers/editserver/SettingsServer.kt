@@ -1,0 +1,190 @@
+package ru.hse.app.hasslspace.ui.components.servers.editserver
+
+import android.net.Uri
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import ru.hse.app.hasslspace.R
+import ru.hse.app.hasslspace.ui.components.common.button.BackButton
+import ru.hse.app.hasslspace.ui.components.common.text.VariableBold
+import ru.hse.app.hasslspace.ui.components.common.text.VariableLight
+import ru.hse.app.hasslspace.ui.components.settings.usersettings.PhotoSetting
+import ru.hse.app.hasslspace.ui.theme.AppTheme
+
+@Composable
+fun SettingsServer(
+    modifier: Modifier = Modifier,
+    onBackClick: () -> Unit,
+    selectedImageUri: Uri?,
+    onPhotoPickClick: () -> Unit,
+    editedServerName: String,
+    onEditedServernameChanged: (String) -> Unit,
+    enabledChangeServerName: Boolean,
+    onApplyNewServerName: () -> Unit,
+    onMembersClick: () -> Unit,
+    onRolesClick: () -> Unit,
+    onInvitationsClick: () -> Unit,
+    isDark: Boolean
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(top = 50.dp)
+            .padding(16.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            BackButton(onClick = onBackClick)
+            Spacer(Modifier.width(10.dp))
+            VariableBold(
+                text = "Настройки сервера",
+                fontSize = 20.sp,
+                modifier = Modifier.weight(1f)
+            )
+        }
+        Spacer(Modifier.height(20.dp))
+
+        PhotoSetting(
+            selectedImageUri = selectedImageUri,
+            onPhotoPickClick = onPhotoPickClick,
+            isDark = isDark
+        )
+
+        Spacer(Modifier.height(15.dp))
+
+        ServernameSetting(
+            editedServername = editedServerName,
+            onApplyClick = onApplyNewServerName,
+            enabled = enabledChangeServerName,
+            onEditedServernameChanged = onEditedServernameChanged
+        )
+        Spacer(Modifier.height(15.dp))
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(40.dp)
+                .clickable { onMembersClick() },
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            VariableLight(
+                text = "Участники",
+                fontSize = 16.sp,
+            )
+            Spacer(Modifier.width(5.dp))
+
+            Icon(
+                painter = painterResource(R.drawable.arrow),
+                contentDescription = "Accept",
+                tint = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier
+                    .size(14.dp)
+            )
+        }
+        Spacer(Modifier.height(10.dp))
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(40.dp)
+                .clickable { onRolesClick() },
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            VariableLight(
+                text = "Роли",
+                fontSize = 16.sp,
+            )
+            Spacer(Modifier.width(5.dp))
+
+            Icon(
+                painter = painterResource(R.drawable.arrow),
+                contentDescription = "Accept",
+                tint = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier
+                    .size(14.dp)
+            )
+        }
+        Spacer(Modifier.height(10.dp))
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(40.dp)
+                .clickable { onInvitationsClick() },
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            VariableLight(
+                text = "Приглашения",
+                fontSize = 16.sp,
+            )
+            Spacer(Modifier.width(5.dp))
+
+            Icon(
+                painter = painterResource(R.drawable.arrow),
+                contentDescription = "Accept",
+                tint = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier
+                    .size(14.dp)
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SettingsServerPreviewWithRequestsLight() {
+
+    AppTheme(isDark = false) {
+        SettingsServer(
+            onBackClick = {},
+            selectedImageUri = Uri.EMPTY,
+            onPhotoPickClick = {},
+            editedServerName = "Тест сервер",
+            onEditedServernameChanged = {},
+            enabledChangeServerName = true,
+            onApplyNewServerName = {},
+            onMembersClick = {},
+            onRolesClick = {},
+            onInvitationsClick = {},
+            isDark = false
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SettingsServerPreviewWithRequestsDark() {
+
+    AppTheme(isDark = true) {
+        SettingsServer(
+            onBackClick = {},
+            selectedImageUri = Uri.EMPTY,
+            onPhotoPickClick = {},
+            editedServerName = "Тест сервер",
+            onEditedServernameChanged = {},
+            enabledChangeServerName = true,
+            onApplyNewServerName = {},
+            onMembersClick = {},
+            onRolesClick = {},
+            onInvitationsClick = {},
+            isDark = true
+        )
+    }
+}

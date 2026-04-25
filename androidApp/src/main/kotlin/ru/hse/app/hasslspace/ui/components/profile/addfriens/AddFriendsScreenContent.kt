@@ -1,0 +1,326 @@
+package ru.hse.app.hasslspace.ui.components.profile.addfriens
+
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import coil3.ImageLoader
+import ru.hse.app.hasslspace.ui.components.common.bar.SearchFriendsToolbar
+import ru.hse.app.hasslspace.ui.components.common.button.BackButton
+import ru.hse.app.hasslspace.ui.components.common.card.UserCardUndo
+import ru.hse.app.hasslspace.ui.components.common.grid.UniversalVerticalGrid
+import ru.hse.app.hasslspace.ui.components.common.text.VariableBold
+import ru.hse.app.hasslspace.ui.components.common.text.VariableLight
+import ru.hse.app.hasslspace.ui.entity.model.FriendUiModel
+import ru.hse.app.hasslspace.ui.entity.model.ServerShortUiModel
+import ru.hse.app.hasslspace.ui.entity.model.StatusPresentation
+import ru.hse.app.hasslspace.ui.entity.model.TypeUiModel
+import ru.hse.app.hasslspace.ui.theme.AppTheme
+
+@Composable
+fun AddFriendsScreenContent(
+    imageLoader: ImageLoader,
+    requests: List<FriendUiModel>,
+    onBackClick: () -> Unit,
+    onRequestClick: (FriendUiModel) -> Unit,
+    searchText: String,
+    onValueChange: (String) -> Unit,
+    onSendClick: () -> Unit,
+    onUndoClick: (FriendUiModel) -> Unit,
+    modifier: Modifier = Modifier,
+    infoText: String? = null,
+    error: Boolean = false,
+    isDarkTheme: Boolean
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(top = 50.dp)
+            .padding(16.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            BackButton(onClick = onBackClick)
+            Spacer(Modifier.width(10.dp))
+            VariableBold(
+                text = "Добавить в друзья",
+                fontSize = 28.sp,
+                modifier = Modifier.weight(1f)
+            )
+        }
+        Spacer(Modifier.height(15.dp))
+        SearchFriendsToolbar(
+            modifier = Modifier.fillMaxWidth(),
+            searchValue = searchText,
+            onValueChange = onValueChange,
+            onSendClick = onSendClick,
+            infoText = infoText,
+            error = error
+        )
+        Spacer(Modifier.height(15.dp))
+
+        if (requests.isNotEmpty()) {
+            VariableLight(
+                text = "Отправленные заявки",
+                fontSize = 16.sp
+            )
+            Spacer(Modifier.height(5.dp))
+            UniversalVerticalGrid(
+                items = requests,
+                columns = 1
+            ) { request ->
+                UserCardUndo(
+                    imageLoader = imageLoader,
+                    username = request.name,
+                    nickname = request.nickname,
+                    status = request.status,
+                    profilePictureUrl = request.avatarUrl,
+                    isDarkTheme = isDarkTheme,
+                    onCardClick = { onRequestClick(request) },
+                    onUndoClick = { onUndoClick(request) },
+                    enabled = false
+                )
+            }
+        }
+
+
+    }
+}
+
+private fun previewServer(id: String, name: String, count: Int) = ServerShortUiModel(
+    id = id,
+    name = name,
+    avatarUrl = "",
+)
+
+private fun previewFriend(id: String, name: String) = FriendUiModel(
+    id = id,
+    name = name,
+    nickname = name.lowercase().replace(" ", "_"),
+    avatarUrl = "",
+    status = StatusPresentation.ONLINE,
+    type = TypeUiModel.FRIEND
+)
+
+@Preview(showBackground = true)
+@Composable
+fun FriendsContentPreviewWithRequestsLight() {
+    val friends = listOf(
+        previewFriend("1", "Александр Иванов"),
+        previewFriend("2", "Мария Петрова"),
+        previewFriend("3", "Дмитрий Сидоров"),
+        previewFriend("4", "Александр Иванов"),
+        previewFriend("5", "Мария Петрова"),
+        previewFriend("6", "Дмитрий Сидоров"),
+        previewFriend("7", "Александр Иванов"),
+        previewFriend("8", "Мария Петрова"),
+        previewFriend("9", "Дмитрий Сидоров"),
+        previewFriend("10", "Александр Иванов"),
+        previewFriend("11", "Мария Петрова"),
+        previewFriend("12", "Дмитрий Сидоров"),
+    )
+
+    AppTheme(isDark = false) {
+        AddFriendsScreenContent(
+            imageLoader = ImageLoader(LocalContext.current),
+            requests = friends,
+            onBackClick = {},
+            onRequestClick = {},
+            onSendClick = {},
+            onUndoClick = {},
+            searchText = "",
+            onValueChange = {},
+            isDarkTheme = false,
+            infoText = null,
+            error = false
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun FriendsContentPreviewWithRequestsLightOk() {
+    val friends = listOf(
+        previewFriend("1", "Александр Иванов"),
+        previewFriend("2", "Мария Петрова"),
+        previewFriend("3", "Дмитрий Сидоров"),
+        previewFriend("4", "Александр Иванов"),
+        previewFriend("5", "Мария Петрова"),
+        previewFriend("6", "Дмитрий Сидоров"),
+        previewFriend("7", "Александр Иванов"),
+        previewFriend("8", "Мария Петрова"),
+        previewFriend("9", "Дмитрий Сидоров"),
+        previewFriend("10", "Александр Иванов"),
+        previewFriend("11", "Мария Петрова"),
+        previewFriend("12", "Дмитрий Сидоров"),
+    )
+
+    AppTheme(isDark = false) {
+        AddFriendsScreenContent(
+            imageLoader = ImageLoader(LocalContext.current),
+            requests = friends,
+            onBackClick = {},
+            onRequestClick = {},
+            onSendClick = {},
+            onUndoClick = {},
+            searchText = "",
+            onValueChange = {},
+            isDarkTheme = false,
+            infoText = "Получилось! Отправили заявку в друзья пользователю @yuulkht",
+            error = false
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun FriendsContentPreviewWithRequestsLightError() {
+    val friends = listOf(
+        previewFriend("1", "Александр Иванов"),
+        previewFriend("2", "Мария Петрова"),
+        previewFriend("3", "Дмитрий Сидоров"),
+        previewFriend("4", "Александр Иванов"),
+        previewFriend("5", "Мария Петрова"),
+        previewFriend("6", "Дмитрий Сидоров"),
+        previewFriend("7", "Александр Иванов"),
+        previewFriend("8", "Мария Петрова"),
+        previewFriend("9", "Дмитрий Сидоров"),
+        previewFriend("10", "Александр Иванов"),
+        previewFriend("11", "Мария Петрова"),
+        previewFriend("12", "Дмитрий Сидоров"),
+    )
+
+    AppTheme(isDark = false) {
+        AddFriendsScreenContent(
+            imageLoader = ImageLoader(LocalContext.current),
+            requests = friends,
+            onBackClick = {},
+            onRequestClick = {},
+            onSendClick = {},
+            onUndoClick = {},
+            searchText = "",
+            onValueChange = {},
+            isDarkTheme = false,
+            infoText = "Хм... Не получилось. Проверьте, что вы ввели правильное имя пользователя",
+            error = true
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun FriendsContentPreviewWithRequestsDark() {
+    val friends = listOf(
+        previewFriend("1", "Александр Иванов"),
+        previewFriend("2", "Мария Петрова"),
+        previewFriend("3", "Дмитрий Сидоров"),
+        previewFriend("4", "Александр Иванов"),
+        previewFriend("5", "Мария Петрова"),
+        previewFriend("6", "Дмитрий Сидоров"),
+        previewFriend("7", "Александр Иванов"),
+        previewFriend("8", "Мария Петрова"),
+        previewFriend("9", "Дмитрий Сидоров"),
+        previewFriend("10", "Александр Иванов"),
+        previewFriend("11", "Мария Петрова"),
+        previewFriend("12", "Дмитрий Сидоров"),
+    )
+
+    AppTheme(isDark = false) {
+        AddFriendsScreenContent(
+            imageLoader = ImageLoader(LocalContext.current),
+            requests = friends,
+            onBackClick = {},
+            onRequestClick = {},
+            onSendClick = {},
+            onUndoClick = {},
+            searchText = "",
+            onValueChange = {},
+            isDarkTheme = false,
+            infoText = null,
+            error = false
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun FriendsContentPreviewWithRequestsDarkOk() {
+    val friends = listOf(
+        previewFriend("1", "Александр Иванов"),
+        previewFriend("2", "Мария Петрова"),
+        previewFriend("3", "Дмитрий Сидоров"),
+        previewFriend("4", "Александр Иванов"),
+        previewFriend("5", "Мария Петрова"),
+        previewFriend("6", "Дмитрий Сидоров"),
+        previewFriend("7", "Александр Иванов"),
+        previewFriend("8", "Мария Петрова"),
+        previewFriend("9", "Дмитрий Сидоров"),
+        previewFriend("10", "Александр Иванов"),
+        previewFriend("11", "Мария Петрова"),
+        previewFriend("12", "Дмитрий Сидоров"),
+    )
+
+    AppTheme(isDark = false) {
+        AddFriendsScreenContent(
+            imageLoader = ImageLoader(LocalContext.current),
+            requests = friends,
+            onBackClick = {},
+            onRequestClick = {},
+            onSendClick = {},
+            onUndoClick = {},
+            searchText = "",
+            onValueChange = {},
+            isDarkTheme = false,
+            infoText = "Получилось! Отправили заявку в друзья пользователю @yuulkht",
+            error = false
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun FriendsContentPreviewWithRequestsDarkError() {
+    val friends = listOf(
+        previewFriend("1", "Александр Иванов"),
+        previewFriend("2", "Мария Петрова"),
+        previewFriend("3", "Дмитрий Сидоров"),
+        previewFriend("4", "Александр Иванов"),
+        previewFriend("5", "Мария Петрова"),
+        previewFriend("6", "Дмитрий Сидоров"),
+        previewFriend("7", "Александр Иванов"),
+        previewFriend("8", "Мария Петрова"),
+        previewFriend("9", "Дмитрий Сидоров"),
+        previewFriend("10", "Александр Иванов"),
+        previewFriend("11", "Мария Петрова"),
+        previewFriend("12", "Дмитрий Сидоров"),
+    )
+
+    AppTheme(isDark = false) {
+        AddFriendsScreenContent(
+            imageLoader = ImageLoader(LocalContext.current),
+            requests = friends,
+            onBackClick = {},
+            onRequestClick = {},
+            onSendClick = {},
+            onUndoClick = {},
+            searchText = "",
+            onValueChange = {},
+            isDarkTheme = false,
+            infoText = "Хм... Не получилось. Проверьте, что вы ввели правильное имя пользователя",
+            error = true
+        )
+    }
+}
+

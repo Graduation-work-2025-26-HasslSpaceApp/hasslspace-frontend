@@ -27,6 +27,19 @@ val serverLiveKitUrl: String by extra {
     value
 }
 
+val centrifugoUrl: String by extra {
+    val properties = Properties()
+    val localPropertiesFile = project.rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        localPropertiesFile.inputStream().use { properties.load(it) }
+    }
+    val value = properties.getProperty("CENTRIFUGO_URL", "")
+    if (value.isEmpty()) {
+        throw InvalidUserDataException("Centrifugo URL is not provided")
+    }
+    value
+}
+
 plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.android)
@@ -37,19 +50,20 @@ plugins {
 }
 
 android {
-    namespace = "ru.hse.app.androidApp"
+    namespace = "ru.hse.app.hasslspace"
     compileSdk = 36
 
     defaultConfig {
         minSdk = 26
         targetSdk = 36
 
-        applicationId = "ru.hse.app.androidApp"
+        applicationId = "ru.hse.app.hasslspace"
         versionCode = 1
         versionName = "1.0.0"
 
         buildConfigField("String", "SERVER_URL", "\"$serverUrl\"")
         buildConfigField("String", "LIVEKIT_URL", "\"$serverLiveKitUrl\"")
+        buildConfigField("String", "CENTRIFUGO_URL", "\"$centrifugoUrl\"")
     }
     buildFeatures {
         compose = true
@@ -67,64 +81,90 @@ kotlin {
 }
 
 dependencies {
-    implementation("androidx.activity:activity-compose:1.6.1")
-    implementation("androidx.appcompat:appcompat:1.7.0")
+    implementation(libs.compose.runtime)
+    implementation(libs.compose.ui)
+    implementation(libs.compose.foundation)
+    implementation(libs.compose.material3)
+    implementation(libs.compose.ui.tooling.preview)
+
+    implementation(libs.kermit)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.client.serialization)
+    implementation(libs.ktor.serialization.json)
+    implementation(libs.ktor.client.logging)
+    implementation(libs.androidx.lifecycle.viewmodel)
+    implementation(libs.androidx.lifecycle.runtime)
+    implementation(libs.compose.nav3)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.coil)
+    implementation(libs.coil.network.ktor)
+    implementation(libs.multiplatformSettings)
+    implementation(libs.kotlinx.datetime)
+    implementation(libs.kstore)
+    implementation(libs.materialKolor)
+
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.ktor.client.okhttp)
+    implementation(libs.kstore.file)
+
+    implementation(libs.androidx.activity.compose.v161)
+    implementation(libs.androidx.appcompat.v170)
     // Jackson
-    implementation("com.squareup.retrofit2:converter-jackson:3.0.0")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.18.3")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.18.3")
+    implementation(libs.converter.jackson)
+    implementation(libs.jackson.module.kotlin.v2183)
+    implementation(libs.jackson.datatype.jsr310.v2183)
 
     //Logging
-    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation(libs.logging.interceptor)
+    implementation(libs.okhttp)
 
     // Kotlinx Serialization
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+    implementation(libs.kotlinx.serialization.json.v163)
 
-    implementation("com.squareup.retrofit2:retrofit:3.0.0")
-    implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
-    implementation("org.jetbrains.kotlin:kotlin-metadata-jvm:2.3.0")
+    implementation(libs.retrofit)
+    implementation(libs.converter.scalars)
+    implementation(libs.jetbrains.kotlin.metadata.jvm)
 
-    implementation(project(":sharedUI"))
+//    implementation(project(":sharedUI"))
     implementation(libs.androidx.activityCompose)
 
-    //TODO перенести в libs
     implementation(libs.androidx.material.icons.extended.android)
 
-    implementation("androidx.appcompat:appcompat:1.7.1")
+    implementation(libs.appcompat)
 
     // Color Picker
-    implementation("com.github.skydoves:colorpicker-compose:1.1.3")
+    implementation(libs.colorpicker.compose)
 
     // Navigation
-    implementation("androidx.navigation:navigation-compose:2.4.0")
+    implementation(libs.androidx.navigation.compose)
 
     // Hilt and kapt
-    implementation("com.google.dagger:hilt-android:2.57.1")
-    implementation("androidx.hilt:hilt-navigation-compose:1.3.0")
-    kapt("org.jetbrains.kotlin:kotlin-metadata-jvm:2.3.0")
-    ksp("com.google.dagger:hilt-android-compiler:2.57.1")
+    implementation(libs.hilt.android.v2571)
+    implementation(libs.androidx.hilt.navigation.compose)
+    kapt(libs.jetbrains.kotlin.metadata.jvm)
+    ksp(libs.hilt.android.compiler.v2571)
 
 
     //Coil
     implementation(libs.coil)
     implementation(libs.coil.network.okhttp)
     implementation(libs.androidx.palette.ktx)
+    implementation("io.coil-kt.coil3:coil-video:3.4.0")
 
     //Image Cropper
     implementation(libs.ucrop)
 
     //Easy Permissions
-    implementation("pub.devrel:easypermissions:3.0.0")
+    implementation(libs.easypermissions)
 
 
     // emoji
-    val emoji2Version = "1.6.0"
-
-    implementation("androidx.emoji2:emoji2-emojipicker:1.6.0")
-    implementation("androidx.emoji2:emoji2:$emoji2Version")
-    implementation("androidx.emoji2:emoji2-views:$emoji2Version")
-    implementation("androidx.emoji2:emoji2-views-helper:$emoji2Version")
+    implementation(libs.androidx.emoji2.emojipicker)
+    implementation(libs.androidx.emoji2)
+    implementation(libs.androidx.emoji2.views)
+    implementation(libs.androidx.emoji2.views.helper)
 
     // LiveKit
     implementation(libs.livekit.lib)
@@ -137,29 +177,9 @@ dependencies {
 
     // room
 
-    val roomVersion = "2.8.4"
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
 
-    implementation("androidx.room:room-runtime:$roomVersion")
-
-    // If this project only uses Java source, use the Java annotationProcessor
-    // No additional plugins are necessary
-    annotationProcessor("androidx.room:room-compiler:$roomVersion")
-
-//    // optional - Kotlin Extensions and Coroutines support for Room
-//    implementation("androidx.room:room-ktx:$room_version")
-//
-//    // optional - RxJava2 support for Room
-//    implementation("androidx.room:room-rxjava2:$room_version")
-//
-//    // optional - RxJava3 support for Room
-//    implementation("androidx.room:room-rxjava3:$room_version")
-//
-//    // optional - Guava support for Room, including Optional and ListenableFuture
-//    implementation("androidx.room:room-guava:$room_version")
-//
-//    // optional - Test helpers
-//    testImplementation("androidx.room:room-testing:$room_version")
-//
-//    // optional - Paging 3 Integration
-//    implementation("androidx.room:room-paging:$room_version")
+    // centrifugo
+    implementation(libs.centrifuge.java)
 }

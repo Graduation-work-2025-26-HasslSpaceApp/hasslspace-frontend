@@ -1,0 +1,18 @@
+package ru.hse.app.hasslspace.domain.usecase.roles
+
+import ru.hse.app.hasslspace.domain.repository.RoleRepository
+import javax.inject.Inject
+
+class PatchServerRoleUseCase @Inject constructor(
+    private val roleRepository: RoleRepository
+) {
+    suspend operator fun invoke(
+        serverId: String,
+        roleId: String,
+        name: String?,
+        position: Int?,
+        color: String?
+    ): Result<String> {
+        return roleRepository.patchRole(serverId, roleId, name, position, color)
+    }
+}
