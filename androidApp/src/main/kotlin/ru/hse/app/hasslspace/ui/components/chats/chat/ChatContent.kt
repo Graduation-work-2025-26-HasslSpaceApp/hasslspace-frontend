@@ -65,7 +65,6 @@ fun ChatContent(
         },
         contentWindowInsets = ScaffoldDefaults
             .contentWindowInsets
-//            .exclude(WindowInsets.navigationBars)
             .exclude(WindowInsets.ime),
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     ) { paddingValues ->
@@ -96,7 +95,6 @@ fun ChatContent(
                 },
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.background)
-//                    .navigationBarsPadding()
                     .imePadding(),
                 isDark = isDarkTheme,
             )
@@ -113,7 +111,7 @@ fun ChatContentLight() {
             channelSubtitle = participantsLabel(count = 10),
             onBackClick = {},
             onAuthorClick = {},
-            onSendMessage = {_,_->},
+            onSendMessage = { _, _ -> },
             isDarkTheme = false,
             imageLoader = LocalContext.current.imageLoader,
             messages = messages.sortedByDescending { it.timestamp },
@@ -134,7 +132,7 @@ fun ChatContentDark() {
             channelSubtitle = participantsLabel(count = 10),
             onBackClick = {},
             onAuthorClick = {},
-            onSendMessage = {_,_->},
+            onSendMessage = { _, _ -> },
             isDarkTheme = true,
             imageLoader = LocalContext.current.imageLoader,
             messages = messages.sortedByDescending { it.timestamp },

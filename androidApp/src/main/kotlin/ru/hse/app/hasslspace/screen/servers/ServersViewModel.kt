@@ -40,7 +40,6 @@ class ServersViewModel @Inject constructor(
 
     private val dataManager: DataManager,
 
-    private val toastManager: ToastManager,
     val cropProfilePhotoService: CropProfilePhotoService,
     val imageLoader: ImageLoader
 
@@ -93,7 +92,7 @@ class ServersViewModel @Inject constructor(
                     GetUserServersEvent.SuccessLoad
                 },
                 onFailure = {
-                    _uiState.value = ServersUiState.Error("") // todo
+                    _uiState.value = ServersUiState.Error("")
                     GetUserServersEvent.Error(
                         ("Ошибка при загрузке серверов. " + it.message)
                     )

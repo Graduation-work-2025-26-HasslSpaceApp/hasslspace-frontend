@@ -122,10 +122,7 @@ fun AddFriendsScreenWithStateContent(
         imageLoader = viewModel.imageLoader,
         requests = viewModel.getOutgoingRequests(data.friends),
         onBackClick = { navController.popBackStack() },
-        onRequestClick = {
-//            viewModel.loadChosenUserCommonServers(userId = it.id)
-//            viewModel.loadChosenUser(userId = it.id) todo
-        },
+        onRequestClick = {},
         searchText = viewModel.addFriendFieldValue.value,
         onValueChange = viewModel::changeAddFriendValue,
         onSendClick = { viewModel.createFriendshipRequest(viewModel.addFriendFieldValue.value) },

@@ -43,14 +43,7 @@ import javax.inject.Inject
 class ChatsViewModel @Inject constructor(
     private val getChatMessagesUseCase: GetChatMessagesUseCase,
     private val getPrivateChatsUseCase: GetPrivateChatsUseCase,
-    private val observeAllUnreadCountsUseCase: ObserveAllUnreadCountsUseCase,
-    private val observeUnreadCountUseCase: ObserveUnreadCountUseCase,
-    private val saveMessageToRoomUseCase: SaveMessageToRoomUseCase,
-    private val sendMessageUseCase: SendMessageUseCase,
     private val startChatUseCase: StartChatUseCase,
-
-    private val markMessageAsReadUseCase: MarkMessageAsReadUseCase,
-    private val markChatAsReadUseCase: MarkChatAsReadUseCase,
     private val updateChatMessagesRestUseCase: UpdateChatMessagesRestUseCase,
 
     private val loadUserInfoUseCase: LoadUserInfoUseCase,
@@ -58,7 +51,6 @@ class ChatsViewModel @Inject constructor(
     private val centrifugeService: CentrifugeService,
 
     private val dataManager: DataManager,
-    private val toastManager: ToastManager,
     val cropProfilePhotoService: CropProfilePhotoService,
     val errorHandler: ErrorHandler,
 
@@ -128,7 +120,8 @@ class ChatsViewModel @Inject constructor(
                         onSuccess = { chats ->
                             val chatModels = chats.map { it.toChatShort() }
                                 .sortedByDescending { chat ->
-                                    chat.messages.maxByOrNull { it.timestamp }?.timestamp ?: LocalDateTime.MIN
+                                    chat.messages.maxByOrNull { it.timestamp }?.timestamp
+                                        ?: LocalDateTime.MIN
                                 }
                             chatModels.forEach { observeMessagesAndUnreadCount(it) }
 

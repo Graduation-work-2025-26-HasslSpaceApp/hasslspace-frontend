@@ -224,7 +224,8 @@ private fun SelectorExpanded(
             InputSelector.NONE -> {}
             InputSelector.EMOJI -> EmojiSelector(onTextAdded, focusRequester, isDark)
             InputSelector.MEDIA,
-            InputSelector.FILE -> {}
+            InputSelector.FILE -> {
+            }
         }
     }
 }
@@ -416,7 +417,8 @@ fun AttachmentsPreview(
                             context.contentResolver
                                 .query(uri, null, null, null, null)
                                 ?.use { cursor ->
-                                    val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                                    val nameIndex =
+                                        cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
                                     cursor.moveToFirst()
                                     cursor.getString(nameIndex)
                                 } ?: uri.lastPathSegment ?: "Файл"
@@ -705,7 +707,7 @@ fun UserInputPreviewLight() {
             Spacer(modifier = Modifier.weight(1f))
             UserInput(
                 modifier = Modifier.fillMaxWidth(),
-                onMessageSent = {_, _ -> },
+                onMessageSent = { _, _ -> },
                 isDark = false
             )
         }
@@ -725,7 +727,7 @@ fun UserInputPreviewDark() {
             Spacer(modifier = Modifier.weight(1f))
             UserInput(
                 modifier = Modifier.fillMaxWidth(),
-                onMessageSent = {_, _ -> },
+                onMessageSent = { _, _ -> },
                 isDark = true
             )
         }

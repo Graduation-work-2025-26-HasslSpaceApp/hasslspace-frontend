@@ -90,7 +90,6 @@ class ServerSettingsViewModel @Inject constructor(
 
 
     private val dataManager: DataManager,
-    private val toastManager: ToastManager,
     val cropProfilePhotoService: CropProfilePhotoService,
     val imageLoader: ImageLoader
 ) : ViewModel() {
@@ -220,13 +219,14 @@ class ServerSettingsViewModel @Inject constructor(
                         )
                         _assignRoleEvent.value = result.fold(
                             onSuccess = {
-                                val updatedNewRoleMembers = currentState.data.editedRole.members.map { member ->
-                                    if (member.id == tapped.id) {
-                                        member.copy(isChosen = !member.isChosen)
-                                    } else {
-                                        member
+                                val updatedNewRoleMembers =
+                                    currentState.data.editedRole.members.map { member ->
+                                        if (member.id == tapped.id) {
+                                            member.copy(isChosen = !member.isChosen)
+                                        } else {
+                                            member
+                                        }
                                     }
-                                }
 
                                 val updatedData = currentState.data.copy(
                                     editedRole = currentState.data.editedRole.copy(
@@ -251,13 +251,14 @@ class ServerSettingsViewModel @Inject constructor(
 
                         _revokeRoleEvent.value = result.fold(
                             onSuccess = {
-                                val updatedNewRoleMembers = currentState.data.editedRole.members.map { member ->
-                                    if (member.id == tapped.id) {
-                                        member.copy(isChosen = !member.isChosen)
-                                    } else {
-                                        member
+                                val updatedNewRoleMembers =
+                                    currentState.data.editedRole.members.map { member ->
+                                        if (member.id == tapped.id) {
+                                            member.copy(isChosen = !member.isChosen)
+                                        } else {
+                                            member
+                                        }
                                     }
-                                }
 
                                 val updatedData = currentState.data.copy(
                                     editedRole = currentState.data.editedRole.copy(

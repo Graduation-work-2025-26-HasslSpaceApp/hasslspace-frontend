@@ -260,7 +260,13 @@ fun RolesScreenWithStateContent(
             questionText = "Вы действительно хотите удалить роль?",
             apply = "Удалить",
             dismiss = "Оставить",
-            onApplyClick = { viewModel.deleteRole(serverId, data.editedRole.id, data.editedRole.name) },
+            onApplyClick = {
+                viewModel.deleteRole(
+                    serverId,
+                    data.editedRole.id,
+                    data.editedRole.name
+                )
+            },
             onDismissClick = { viewModel.showDeleteRoleDialog.value = false }
         )
     }

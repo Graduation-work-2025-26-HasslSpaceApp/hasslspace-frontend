@@ -327,7 +327,6 @@ fun FriendsScreenWithStateContent(
             onThirdOptionClick = {
                 when (data.chosenUser.type) {
                     TypeUiModel.FRIEND -> {
-                        // todo показать окно-подтверждение
                         viewModel.deleteFriendship(data.chosenUser.id)
                     }
 

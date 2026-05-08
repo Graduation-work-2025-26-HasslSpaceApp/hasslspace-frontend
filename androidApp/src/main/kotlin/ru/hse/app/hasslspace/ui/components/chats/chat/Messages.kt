@@ -319,7 +319,8 @@ fun ChatItemBubble(
                 // Вложение
                 message.fileUrl?.let { url ->
                     val mimeType = remember(url) { getMimeTypeFromUrl(url) }
-                    val isImage = (mimeType?.startsWith("image/") == true) || url.contains("/photo/")
+                    val isImage =
+                        (mimeType?.startsWith("image/") == true) || url.contains("/photo/")
                     val isVideo = mimeType?.startsWith("video/") == true
 
                     when {
@@ -328,11 +329,13 @@ fun ChatItemBubble(
                             imageLoader = imageLoader,
                             onClick = { openFullscreen(context, url) }
                         )
+
                         isVideo -> VideoAttachment(
                             url = url,
                             imageLoader = imageLoader,
                             onClick = { openWithIntent(context, url, mimeType) }
                         )
+
                         else -> FileAttachment(
                             url = url,
                             onClick = { openWithIntent(context, url, mimeType ?: "*/*") }

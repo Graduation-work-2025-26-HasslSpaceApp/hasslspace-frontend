@@ -165,8 +165,6 @@ fun CallScreenContent(
             }
         }
 
-        //todo добавить возможность скриншеринга
-
         Box(modifier = Modifier.fillMaxSize()) {
             if (uiState.isConnecting) {
                 CircularProgressIndicator(

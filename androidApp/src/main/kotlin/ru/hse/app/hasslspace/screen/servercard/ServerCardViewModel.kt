@@ -122,7 +122,6 @@ class ServerCardViewModel @Inject constructor(
     private val startChatUseCase: StartChatUseCase,
 
     private val dataManager: DataManager,
-    private val toastManager: ToastManager,
     val cropProfilePhotoService: CropProfilePhotoService,
     val colorService: ColorService,
 

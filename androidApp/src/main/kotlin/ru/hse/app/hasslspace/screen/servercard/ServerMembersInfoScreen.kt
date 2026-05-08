@@ -291,7 +291,7 @@ fun ServerMembersInfoScreenWithStateContent(
             },
             aboutUserInfo = data.chosenUser.description,
             onDismiss = { viewModel.showFriendCard.value = false },
-            onInvite = { /*todo*/ },
+            onInvite = {},
             onCopyNickname = {
                 val clipboard =
                     context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -303,7 +303,6 @@ fun ServerMembersInfoScreenWithStateContent(
             onThirdOptionClick = {
                 when (data.chosenUser.type) {
                     TypeUiModel.FRIEND -> {
-                        // todo показать окно-подтверждение
                         viewModel.deleteFriendship(data.chosenUser.id)
                     }
 

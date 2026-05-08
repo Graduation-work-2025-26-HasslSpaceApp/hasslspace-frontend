@@ -44,18 +44,11 @@ import javax.inject.Inject
 @HiltViewModel
 class ChatViewModel @Inject constructor(
     private val getChatMessagesUseCase: GetChatMessagesUseCase,
-    private val getPrivateChatsUseCase: GetPrivateChatsUseCase,
     private val getPrivateChatUseCase: GetPrivateChatUseCase,
-    private val observeAllUnreadCountsUseCase: ObserveAllUnreadCountsUseCase,
-    private val observeUnreadCountUseCase: ObserveUnreadCountUseCase,
-    private val saveMessageToRoomUseCase: SaveMessageToRoomUseCase,
-    private val searchChatsUseCase: SearchChatsUseCase,
     private val sendMessageUseCase: SendMessageUseCase,
-    private val startChatUseCase: StartChatUseCase,
     private val updateChatMessagesRestUseCase: UpdateChatMessagesRestUseCase,
 
     private val markMessageAsReadUseCase: MarkMessageAsReadUseCase,
-    private val markChatAsReadUseCase: MarkChatAsReadUseCase,
 
     // Voice
     private val getVoiceRoomTokenUseCase: GetVoiceRoomTokenUseCase,
@@ -66,7 +59,6 @@ class ChatViewModel @Inject constructor(
     private val joinServerUseCase: JoinServerUseCase,
 
     private val dataManager: DataManager,
-    private val toastManager: ToastManager,
     private val errorHandler: ErrorHandler,
 
     val cropProfilePhotoService: CropProfilePhotoService,

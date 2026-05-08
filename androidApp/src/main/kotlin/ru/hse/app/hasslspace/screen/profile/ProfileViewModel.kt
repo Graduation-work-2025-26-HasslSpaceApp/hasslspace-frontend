@@ -91,7 +91,6 @@ class ProfileViewModel @Inject constructor(
     private val startChatUseCase: StartChatUseCase,
 
     private val fileConverterService: FileConverterService,
-    private val toastManager: ToastManager,
     val cropProfilePhotoService: CropProfilePhotoService,
     val colorService: ColorService,
     val imageLoader: ImageLoader

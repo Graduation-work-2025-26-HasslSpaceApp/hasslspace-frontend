@@ -42,26 +42,16 @@ import javax.inject.Inject
 @HiltViewModel
 class TextChannelViewModel @Inject constructor(
     private val getChatMessagesUseCase: GetChatMessagesUseCase,
-    private val getPrivateChatsUseCase: GetPrivateChatsUseCase,
-    private val observeAllUnreadCountsUseCase: ObserveAllUnreadCountsUseCase,
-    private val observeUnreadCountUseCase: ObserveUnreadCountUseCase,
-    private val saveMessageToRoomUseCase: SaveMessageToRoomUseCase,
-    private val searchChatsUseCase: SearchChatsUseCase,
     private val sendMessageUseCase: SendMessageUseCase,
-    private val startChatChannelUseCase: StartChatChannelUseCase,
     private val updateChatMessagesRestUseCase: UpdateChatMessagesRestUseCase,
 
 
     private val markMessageAsReadUseCase: MarkMessageAsReadUseCase,
-    private val markChatAsReadUseCase: MarkChatAsReadUseCase,
-
-    private val loadUserInfoUseCase: LoadUserInfoUseCase,
     private val getChannelInfoUseCase: GetChannelInfoUseCase,
     private val getServerInfoUseCase: GetServerInfoUseCase,
     private val joinServerUseCase: JoinServerUseCase,
 
     private val dataManager: DataManager,
-    private val toastManager: ToastManager,
     private val errorHandler: ErrorHandler,
 
     val cropProfilePhotoService: CropProfilePhotoService,
@@ -89,7 +79,12 @@ class TextChannelViewModel @Inject constructor(
     private val _joinServerEvent = MutableStateFlow<JoinServerEvent?>(null)
     val joinServerEvent: StateFlow<JoinServerEvent?> = _joinServerEvent
 
-    fun loadTextChannelInitInfo(curUserId: String, serverId: String, chatId: String, channelId: String) {
+    fun loadTextChannelInitInfo(
+        curUserId: String,
+        serverId: String,
+        chatId: String,
+        channelId: String
+    ) {
         viewModelScope.launch {
             val textChannelInfoResult = getChannelInfoUseCase(serverId, channelId) // айди канала
             val serverInfoResult = getServerInfoUseCase(serverId)
@@ -98,7 +93,8 @@ class TextChannelViewModel @Inject constructor(
                 onSuccess = { channel ->
                     serverInfoResult.fold(
                         onSuccess = { serverInfo ->
-                            val chatUi = channel.toUiChat(curUserId, serverInfo.members, chatId) // айди чата
+                            val chatUi =
+                                channel.toUiChat(curUserId, serverInfo.members, chatId) // айди чата
 
                             _uiState.value = ChatUiState.Success(
                                 data = chatUi

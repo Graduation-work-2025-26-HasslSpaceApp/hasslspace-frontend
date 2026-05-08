@@ -66,7 +66,8 @@ fun MainServerScreen(
                 val serverId = (startChannelChatEvent as StartChatChannelEvent.Success).serverId
                 val channelId = (startChannelChatEvent as StartChatChannelEvent.Success).channelId
                 val chatId = (startChannelChatEvent as StartChatChannelEvent.Success).chatId
-                val currestUserId = (startChannelChatEvent as StartChatChannelEvent.Success).currestUserId
+                val currestUserId =
+                    (startChannelChatEvent as StartChatChannelEvent.Success).currestUserId
 
                 navController.navigate(NavigationItem.TextChannelChat.route + "/$serverId" + "/$channelId" + "/$chatId" + "/$currestUserId")
             }

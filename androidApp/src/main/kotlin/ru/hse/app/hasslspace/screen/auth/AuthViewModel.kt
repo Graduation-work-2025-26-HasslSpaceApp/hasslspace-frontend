@@ -34,7 +34,6 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val dataManager: DataManager,
-    private val toastManager: ToastManager,
     private val loginUserUseCase: LoginUserUseCase,
     private val registerUserUseCase: RegisterUserUseCase,
     private val saveUserPhotoUseCase: SaveUserPhotoUseCase,
@@ -45,7 +44,6 @@ class AuthViewModel @Inject constructor(
     private val centrifugeService: CentrifugeService,
 
     private val errorHandler: ErrorHandler,
-//    private val errorHandler: ErrorHandler,
     val cropProfilePhotoService: CropProfilePhotoService,
 ) : ViewModel() {
     val isDarkTheme = dataManager.isDark.value
