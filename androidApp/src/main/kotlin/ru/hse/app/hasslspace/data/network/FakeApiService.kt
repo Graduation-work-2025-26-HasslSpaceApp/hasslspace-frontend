@@ -658,7 +658,7 @@ class FakeApiService : ApiService {
     }
 
     override suspend fun updateServerOwner(
-        userId: String,
+        newOwnerId: String,
         serverId: String
     ): Response<String> {
         fakeServer = fakeServer.copy(

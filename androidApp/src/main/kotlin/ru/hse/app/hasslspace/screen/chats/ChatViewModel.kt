@@ -13,6 +13,7 @@ import ru.hse.app.hasslspace.data.centrifugo.CentrifugeService
 import ru.hse.app.hasslspace.data.local.DataManager
 import ru.hse.app.hasslspace.domain.service.common.CropProfilePhotoService
 import ru.hse.app.hasslspace.domain.usecase.chats.GetChatMessagesUseCase
+import ru.hse.app.hasslspace.domain.usecase.chats.GetPrivateChatUseCase
 import ru.hse.app.hasslspace.domain.usecase.chats.GetPrivateChatsUseCase
 import ru.hse.app.hasslspace.domain.usecase.chats.MarkChatAsReadUseCase
 import ru.hse.app.hasslspace.domain.usecase.chats.MarkMessageAsReadUseCase
@@ -44,6 +45,7 @@ import javax.inject.Inject
 class ChatViewModel @Inject constructor(
     private val getChatMessagesUseCase: GetChatMessagesUseCase,
     private val getPrivateChatsUseCase: GetPrivateChatsUseCase,
+    private val getPrivateChatUseCase: GetPrivateChatUseCase,
     private val observeAllUnreadCountsUseCase: ObserveAllUnreadCountsUseCase,
     private val observeUnreadCountUseCase: ObserveUnreadCountUseCase,
     private val saveMessageToRoomUseCase: SaveMessageToRoomUseCase,
@@ -101,51 +103,45 @@ class ChatViewModel @Inject constructor(
 
             _getPrivateChatsEvent.value = curUserResult.fold(
                 onSuccess = { curUser ->
-                    val result = getPrivateChatsUseCase(curUser.id)
+                    val result = getPrivateChatUseCase(curUser.id, chatId)
 
                     result.fold(
-                        onSuccess = { chats ->
-                            val currentChat = chats.find { it.id == chatId }
-                            if (currentChat != null) {
-                                val chatUi = currentChat.toUiPrivate()
+                        onSuccess = { currentChat ->
+                            val chatUi = currentChat.toUiPrivate()
 
-                                _uiState.value = ChatUiState.Success(
-                                    data = chatUi
-                                )
+                            _uiState.value = ChatUiState.Success(
+                                data = chatUi
+                            )
 
-                                viewModelScope.launch {
-                                    getChatMessagesUseCase.observeMessages(chatId)
-                                        .collect { messages ->
-                                            val curState = _uiState.value
-                                            if (curState is ChatUiState.Success) {
-                                                val uiMessages = messages.map { message ->
-                                                    val cachedMessage = messagesCache[message.id]
-                                                    if (cachedMessage != null && cachedMessage.isRead != message.isRead) {
-                                                        messagesCache[message.id] =
-                                                            message.toUi(curState.data.channelMembers)
-                                                    }
-
-                                                    messagesCache.getOrPut(message.id) {
+                            viewModelScope.launch {
+                                getChatMessagesUseCase.observeMessages(chatId)
+                                    .collect { messages ->
+                                        val curState = _uiState.value
+                                        if (curState is ChatUiState.Success) {
+                                            val uiMessages = messages.map { message ->
+                                                val cachedMessage = messagesCache[message.id]
+                                                if (cachedMessage != null && cachedMessage.isRead != message.isRead) {
+                                                    messagesCache[message.id] =
                                                         message.toUi(curState.data.channelMembers)
-                                                    }
                                                 }
 
-                                                connectToCentrifugo(chatId)
-
-                                                _uiState.value = ChatUiState.Success(
-                                                    data = curState.data.copy(messages = uiMessages)
-                                                )
+                                                messagesCache.getOrPut(message.id) {
+                                                    message.toUi(curState.data.channelMembers)
+                                                }
                                             }
-                                        }
-                                }
 
-                            } else {
-                                GetPrivateChatsEvent.Error("Ошибка при загрузке выбранного чата. ")
+                                            connectToCentrifugo(chatId)
+
+                                            _uiState.value = ChatUiState.Success(
+                                                data = curState.data.copy(messages = uiMessages)
+                                            )
+                                        }
+                                    }
                             }
                             GetPrivateChatsEvent.SuccessLoad
                         },
                         onFailure = {
-                            GetPrivateChatsEvent.Error("Ошибка при загрузке чатов. " + it.message)
+                            GetPrivateChatsEvent.Error("Ошибка при загрузке чата. " + it.message)
                         }
                     )
                 },
@@ -159,6 +155,7 @@ class ChatViewModel @Inject constructor(
     fun refreshMessages(chatId: String) {
         viewModelScope.launch {
             updateChatMessagesRestUseCase(chatId)
+            connectToCentrifugo(chatId)
         }
     }
 
