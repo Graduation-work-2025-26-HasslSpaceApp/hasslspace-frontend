@@ -39,7 +39,8 @@ fun NewMessageScreen(
 
             is StartChatEvent.Error -> {
                 val message = (startChatEvent as StartChatEvent.Error).message
-                viewModel.handleError(message)
+                val exception = (startChatEvent as StartChatEvent.Error).exception
+                viewModel.errorHandler.handleError(message, exception)
             }
 
             null -> {}
@@ -54,7 +55,9 @@ fun NewMessageScreen(
             is LoadUserFriendsEvent.Error -> {
                 val message =
                     (loadUserFriendsEvent as LoadUserFriendsEvent.Error).message
-                viewModel.errorHandler.handleError(message)
+                val exception =
+                    (loadUserFriendsEvent as LoadUserFriendsEvent.Error).exception
+                viewModel.errorHandler.handleError(message, exception)
             }
 
             null -> {}

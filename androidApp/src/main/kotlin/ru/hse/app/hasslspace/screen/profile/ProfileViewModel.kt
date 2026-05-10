@@ -55,7 +55,6 @@ import ru.hse.app.hasslspace.ui.entity.model.profile.toUI
 import ru.hse.app.hasslspace.ui.entity.model.toDomain
 import ru.hse.app.hasslspace.ui.entity.model.toUi
 import ru.hse.app.hasslspace.ui.errorhandling.ErrorHandler
-import ru.hse.coursework.godaily.ui.notification.ToastManager
 import javax.inject.Inject
 
 
@@ -206,7 +205,7 @@ class ProfileViewModel @Inject constructor(
                 },
                 onFailure = {
                     LoadUserDataEvent.Error(
-                        ("Ошибка при загрузке профиля. " + it.message)
+                        ("Ошибка при загрузке профиля. " + it.message), it
                     )
                 }
             )
@@ -232,7 +231,7 @@ class ProfileViewModel @Inject constructor(
                 },
                 onFailure = {
                     LoadUserFriendsEvent.Error(
-                        ("Ошибка при загрузке друзей. " + it.message)
+                        ("Ошибка при загрузке друзей. " + it.message), it
                     )
                 }
             )
@@ -256,7 +255,7 @@ class ProfileViewModel @Inject constructor(
                 },
                 onFailure = {
                     LoadUserServersEvent.Error(
-                        ("Ошибка при загрузке серверов. " + it.message)
+                        ("Ошибка при загрузке серверов. " + it.message), it
                     )
                 }
             )
@@ -280,7 +279,7 @@ class ProfileViewModel @Inject constructor(
                 },
                 onFailure = {
                     LoadChosenUserEvent.Error(
-                        ("Ошибка при загрузке информации о пользователе. " + it.message)
+                        ("Ошибка при загрузке информации о пользователе. " + it.message), it
                     )
                 }
             )
@@ -304,7 +303,8 @@ class ProfileViewModel @Inject constructor(
                 },
                 onFailure = {
                     LoadChosenUserCommonServersEvent.Error(
-                        ("Ошибка при загрузке информации об общих серверах с пользователем. " + it.message)
+                        ("Ошибка при загрузке информации об общих серверах с пользователем. " + it.message),
+                        it
                     )
                 }
             )
@@ -398,7 +398,10 @@ class ProfileViewModel @Inject constructor(
                             name = originalUsername.value
                         )
                         _uiState.value = ProfileUiState.Success(updatedData)
-                        SaveUserNameEvent.Error("Ошибка при сохранении нового имени. " + it.message)
+                        SaveUserNameEvent.Error(
+                            "Ошибка при сохранении нового имени. " + it.message,
+                            it
+                        )
                     }
                 )
             }
@@ -430,7 +433,7 @@ class ProfileViewModel @Inject constructor(
                             description = originalDescription.value
                         )
                         _uiState.value = ProfileUiState.Success(updatedData)
-                        SaveUserDescEvent.Error("Ошибка при сохранении описания. " + it.message)
+                        SaveUserDescEvent.Error("Ошибка при сохранении описания. " + it.message, it)
                     }
                 )
             }
@@ -454,7 +457,7 @@ class ProfileViewModel @Inject constructor(
                             SavePhotoEvent.SuccessSave
                         },
                         onFailure = {
-                            SavePhotoEvent.Error(it.message ?: "")
+                            SavePhotoEvent.Error(it.message ?: "", it)
                         }
                     )
                 }
@@ -475,7 +478,10 @@ class ProfileViewModel @Inject constructor(
                         SaveUserStatusEvent.SuccessSave
                     },
                     onFailure = {
-                        SaveUserStatusEvent.Error("Ошибка при сохранении статуса. " + it.message)
+                        SaveUserStatusEvent.Error(
+                            "Ошибка при сохранении статуса. " + it.message,
+                            it
+                        )
                     }
                 )
             }
@@ -510,7 +516,10 @@ class ProfileViewModel @Inject constructor(
                     RespondToFriendRequestEvent.SuccessRespond
                 },
                 onFailure = {
-                    RespondToFriendRequestEvent.Error("Ошибка при изменении данных. " + it.message)
+                    RespondToFriendRequestEvent.Error(
+                        "Ошибка при изменении данных. " + it.message,
+                        it
+                    )
                 }
             )
         }
@@ -525,7 +534,7 @@ class ProfileViewModel @Inject constructor(
                     DeleteFriendshipEvent.SuccessDelete
                 },
                 onFailure = {
-                    DeleteFriendshipEvent.Error("Ошибка при удалении из друзей. " + it.message)
+                    DeleteFriendshipEvent.Error("Ошибка при удалении из друзей. " + it.message, it)
                 }
             )
         }
@@ -540,7 +549,7 @@ class ProfileViewModel @Inject constructor(
                     CreateFriendRequestEvent.SuccessRequest(nickname)
                 },
                 onFailure = {
-                    CreateFriendRequestEvent.Error("Ошибка при создании заявки" + it.message)
+                    CreateFriendRequestEvent.Error("Ошибка при создании заявки" + it.message, it)
                 }
             )
         }
@@ -566,12 +575,15 @@ class ProfileViewModel @Inject constructor(
                             GetTokenEvent.Success(token, roomName, videoEnabled = false)
                         },
                         onFailure = {
-                            GetTokenEvent.Error("Ошибка при подключении к звонку. " + it.message)
+                            GetTokenEvent.Error(
+                                "Ошибка при подключении к звонку. " + it.message,
+                                it
+                            )
                         }
                     )
                 },
                 onFailure = {
-                    GetTokenEvent.Error("Ошибка при получении комнаты. " + it.message)
+                    GetTokenEvent.Error("Ошибка при получении комнаты. " + it.message, it)
                 }
             )
         }
@@ -586,7 +598,7 @@ class ProfileViewModel @Inject constructor(
                     StartChatEvent.Success(chatId)
                 },
                 onFailure = {
-                    StartChatEvent.Error("Ошибка при создании чата. " + it.message)
+                    StartChatEvent.Error("Ошибка при создании чата. " + it.message, it)
                 }
             )
         }
@@ -612,12 +624,15 @@ class ProfileViewModel @Inject constructor(
                             GetTokenEvent.Success(token, roomName, videoEnabled = true)
                         },
                         onFailure = {
-                            GetTokenEvent.Error("Ошибка при подключении к видеозвонку. " + it.message)
+                            GetTokenEvent.Error(
+                                "Ошибка при подключении к видеозвонку. " + it.message,
+                                it
+                            )
                         }
                     )
                 },
                 onFailure = {
-                    GetTokenEvent.Error("Ошибка при получении комнаты. " + it.message)
+                    GetTokenEvent.Error("Ошибка при получении комнаты. " + it.message, it)
                 }
             )
         }
@@ -631,10 +646,15 @@ class ProfileViewModel @Inject constructor(
         onSelectedStatusChanged(originalStatusPresentation.value)
     }
 
-    fun handleError(message: String) {
+    fun handleError(message: String, exception: Throwable?) {
         errorHandler.handleError(
-            message = message
+            message = message,
+            exception = exception
         )
+    }
+
+    fun handleInfo(message: String) {
+        errorHandler.handleInfo(message = message)
     }
 
     fun exit() {

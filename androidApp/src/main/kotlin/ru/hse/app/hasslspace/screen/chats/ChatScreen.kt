@@ -63,7 +63,8 @@ fun ChatScreen(
 
             is GetTokenEvent.Error -> {
                 val message = (getTokenEvent as GetTokenEvent.Error).message
-                viewModel.handleError(message)
+                val exception = (getTokenEvent as GetTokenEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}
@@ -74,13 +75,14 @@ fun ChatScreen(
     LaunchedEffect(joinServerEvent) {
         when (joinServerEvent) {
             is JoinServerEvent.Success -> {
-                viewModel.handleError("Успешно присоединились к серверу")
+                viewModel.handleInfo("Успешно присоединились к серверу")
                 navController.navigate(BottomNavigationItem.Servers.route)
             }
 
             is JoinServerEvent.Error -> {
                 val message = (joinServerEvent as JoinServerEvent.Error).message
-                viewModel.handleError(message)
+                val exception = (joinServerEvent as JoinServerEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}
@@ -95,7 +97,8 @@ fun ChatScreen(
             is SendMessageEvent.Error -> {
                 val message =
                     (sendMessageEvent as SendMessageEvent.Error).message
-                viewModel.handleError(message)
+                val exception = (sendMessageEvent as SendMessageEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}
@@ -110,7 +113,9 @@ fun ChatScreen(
             is GetPrivateChatMessagesEvent.Error -> {
                 val message =
                     (getPrivateChatMessagesEvent as GetPrivateChatMessagesEvent.Error).message
-                viewModel.handleError(message)
+                val exception =
+                    (getPrivateChatMessagesEvent as GetPrivateChatMessagesEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}
@@ -125,7 +130,8 @@ fun ChatScreen(
             is GetPrivateChatsEvent.Error -> {
                 val message =
                     (getPrivateChatsEvent as GetPrivateChatsEvent.Error).message
-                viewModel.handleError(message)
+                val exception = (getPrivateChatsEvent as GetPrivateChatsEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}
@@ -165,7 +171,7 @@ fun ChatWithStateContent(
         channelName = uiState.data.name,
         channelSubtitle = if (members.size > 2) participantsLabel(members.size) else "Личный чат",
         onBackClick = { navController.popBackStack() },
-        onAuthorClick = {/*todo*/ },
+        onAuthorClick = {},
         onSendMessage = { text, attachments ->
             viewModel.addCurrentUserMessage(
                 uiState.data.id,

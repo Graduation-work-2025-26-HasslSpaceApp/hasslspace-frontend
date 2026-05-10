@@ -5,6 +5,8 @@ import android.app.Application
 import android.content.Context
 import android.os.Process
 import dagger.hilt.android.HiltAndroidApp
+import io.appmetrica.analytics.AppMetrica
+import io.appmetrica.analytics.AppMetricaConfig
 import ru.hse.app.hasslspace.domain.service.common.ImageCacheManager
 import javax.inject.Inject
 
@@ -23,12 +25,12 @@ class HasslSpaceApp : Application() {
 //            MapKitFactory.initialize(this)
 //        }
 //
-//        val config = AppMetricaConfig
-//            .newConfigBuilder(BuildConfig.APPMETRICA_API_KEY)
-//            .withLocationTracking(true)
-//            .build()
-//        AppMetrica.activate(this, config)
-//        AppMetrica.enableActivityAutoTracking(this)
+        val config = AppMetricaConfig
+            .newConfigBuilder(BuildConfig.APPMETRICA_API_KEY)
+            .withLocationTracking(true)
+            .build()
+        AppMetrica.activate(this, config)
+        AppMetrica.enableActivityAutoTracking(this)
     }
 
     private fun isMainProcess(): Boolean {

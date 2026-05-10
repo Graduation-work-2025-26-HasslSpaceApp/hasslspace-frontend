@@ -8,5 +8,5 @@ sealed class StartChatChannelEvent {
         val currestUserId: String
     ) : StartChatChannelEvent()
 
-    data class Error(val message: String) : StartChatChannelEvent()
+    data class Error(val message: String, val exception: Throwable) : StartChatChannelEvent()
 }

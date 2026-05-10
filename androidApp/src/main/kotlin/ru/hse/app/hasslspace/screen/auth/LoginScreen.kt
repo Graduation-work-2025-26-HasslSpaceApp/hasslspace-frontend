@@ -35,7 +35,8 @@ fun LoginScreen(
 
             is LoginUserEvent.Error -> {
                 val message = (loginUserEvent as LoginUserEvent.Error).message
-                viewModel.handleError(message)
+                val exception = (loginUserEvent as LoginUserEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}
@@ -55,7 +56,9 @@ fun LoginScreen(
             is CheckEmailVerificationEvent.Error -> {
                 val message =
                     (checkEmailVerificationEvent as CheckEmailVerificationEvent.Error).message
-                viewModel.handleError(message)
+                val exception =
+                    (checkEmailVerificationEvent as CheckEmailVerificationEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}

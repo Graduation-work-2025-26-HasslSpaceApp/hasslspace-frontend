@@ -14,15 +14,8 @@ import ru.hse.app.hasslspace.data.local.DataManager
 import ru.hse.app.hasslspace.domain.service.common.CropProfilePhotoService
 import ru.hse.app.hasslspace.domain.usecase.chats.GetChatMessagesUseCase
 import ru.hse.app.hasslspace.domain.usecase.chats.GetPrivateChatUseCase
-import ru.hse.app.hasslspace.domain.usecase.chats.GetPrivateChatsUseCase
-import ru.hse.app.hasslspace.domain.usecase.chats.MarkChatAsReadUseCase
 import ru.hse.app.hasslspace.domain.usecase.chats.MarkMessageAsReadUseCase
-import ru.hse.app.hasslspace.domain.usecase.chats.ObserveAllUnreadCountsUseCase
-import ru.hse.app.hasslspace.domain.usecase.chats.ObserveUnreadCountUseCase
-import ru.hse.app.hasslspace.domain.usecase.chats.SaveMessageToRoomUseCase
-import ru.hse.app.hasslspace.domain.usecase.chats.SearchChatsUseCase
 import ru.hse.app.hasslspace.domain.usecase.chats.SendMessageUseCase
-import ru.hse.app.hasslspace.domain.usecase.chats.StartChatUseCase
 import ru.hse.app.hasslspace.domain.usecase.chats.UpdateChatMessagesRestUseCase
 import ru.hse.app.hasslspace.domain.usecase.profile.LoadUserInfoUseCase
 import ru.hse.app.hasslspace.domain.usecase.servers.JoinServerUseCase
@@ -38,7 +31,6 @@ import ru.hse.app.hasslspace.ui.entity.model.chats.toUi
 import ru.hse.app.hasslspace.ui.entity.model.chats.toUiPrivate
 import ru.hse.app.hasslspace.ui.entity.model.servers.events.JoinServerEvent
 import ru.hse.app.hasslspace.ui.errorhandling.ErrorHandler
-import ru.hse.coursework.godaily.ui.notification.ToastManager
 import javax.inject.Inject
 
 @HiltViewModel
@@ -133,12 +125,18 @@ class ChatViewModel @Inject constructor(
                             GetPrivateChatsEvent.SuccessLoad
                         },
                         onFailure = {
-                            GetPrivateChatsEvent.Error("Ошибка при загрузке чата. " + it.message)
+                            GetPrivateChatsEvent.Error(
+                                "Ошибка при загрузке чата. " + it.message,
+                                it
+                            )
                         }
                     )
                 },
                 onFailure = {
-                    GetPrivateChatsEvent.Error("Ошибка при загрузке текущего пользователя. " + it.message)
+                    GetPrivateChatsEvent.Error(
+                        "Ошибка при загрузке текущего пользователя. " + it.message,
+                        it
+                    )
                 }
             )
         }
@@ -175,7 +173,10 @@ class ChatViewModel @Inject constructor(
                     SendMessageEvent.Success
                 },
                 onFailure = {
-                    SendMessageEvent.Error("Ошибка при отправке сообщения на сервер. " + it.message)
+                    SendMessageEvent.Error(
+                        "Ошибка при отправке сообщения на сервер. " + it.message,
+                        it
+                    )
                 }
             )
 
@@ -185,7 +186,7 @@ class ChatViewModel @Inject constructor(
     fun joinServer(code: String) {
         when {
             code.isBlank() -> {
-                errorHandler.handleError("Код не может быть пустым")
+                errorHandler.handleError("Код не может быть пустым", null)
                 return
             }
 
@@ -199,7 +200,10 @@ class ChatViewModel @Inject constructor(
                             JoinServerEvent.Success
                         },
                         onFailure = { error ->
-                            JoinServerEvent.Error("Ошибка при присоединении к серверу. ${error.message}")
+                            JoinServerEvent.Error(
+                                "Ошибка при присоединении к серверу. ${error.message}",
+                                error
+                            )
                         }
                     )
                 }
@@ -223,14 +227,18 @@ class ChatViewModel @Inject constructor(
                     GetTokenEvent.Success(token, roomName, videoEnabled = false)
                 },
                 onFailure = {
-                    GetTokenEvent.Error("Ошибка при подключении к звонку. " + it.message)
+                    GetTokenEvent.Error("Ошибка при подключении к звонку. " + it.message, it)
                 }
             )
         }
     }
 
-    fun handleError(msg: String) {
-        errorHandler.handleError(msg)
+    fun handleError(msg: String, exception: Throwable?) {
+        errorHandler.handleError(msg, exception)
+    }
+
+    fun handleInfo(message: String) {
+        errorHandler.handleInfo(message = message)
     }
 
     fun resetGetPrivateChatsEvent() {

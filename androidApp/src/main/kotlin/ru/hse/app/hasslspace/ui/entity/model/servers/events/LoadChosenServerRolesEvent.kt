@@ -2,5 +2,5 @@ package ru.hse.app.hasslspace.ui.entity.model.servers.events
 
 sealed class LoadChosenServerRolesEvent {
     data object SuccessLoad : LoadChosenServerRolesEvent()
-    data class Error(val message: String) : LoadChosenServerRolesEvent()
+    data class Error(val message: String, val exception: Throwable) : LoadChosenServerRolesEvent()
 }

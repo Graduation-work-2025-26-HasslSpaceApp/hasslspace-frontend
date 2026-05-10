@@ -2,6 +2,8 @@ package ru.hse.app.hasslspace.ui.errorhandling
 
 import android.content.Context
 import android.util.Log
+import io.appmetrica.analytics.AppMetrica
+import ru.hse.app.hasslspace.data.exception.ApiException
 import ru.hse.coursework.godaily.ui.notification.ToastManager
 import javax.inject.Inject
 
@@ -12,73 +14,48 @@ class ErrorHandler @Inject constructor(
         const val TAG = "ErrorHandler"
     }
 
-    fun handleError(message: String) {
-        Log.e(TAG, "Error occurred: $message")
-        showErrorMessage(message)
-
-//        val errorMessage = when {
-//            !error.message.isNullOrBlank() -> error.message
-//            error.throwable?.message?.isNotBlank() == true -> error.throwable.message
-//            else -> "Unknown error occurred"
-//        }
-//
-//        val fullMessage = buildString {
-//            append("Error: ")
-//            append(errorMessage)
-//            error.throwable?.let { append(" | Exception: ${it.javaClass.simpleName}") }
-//        }
-//
-//        AppMetrica.reportError(fullMessage, error.throwable ?: Exception(fullMessage))
-//
-//        logError(error)
-//
-//        showErrorMessage(error.copy(message = errorMessage))
+    fun handleInfo(message: String) {
+        Log.i(TAG, "Info: $message")
+        showInfo(message)
     }
 
-//    private fun logError(error: ApiCallResult.Error) {
-//        Log.e(TAG, buildLogMessage(error), error.throwable ?: Exception(error.message))
-//    }
+    fun handleError(message: String, exception: Throwable?) {
+        Log.e(TAG, "Error occurred: $message")
+        Log.e(TAG, "Error exception: $exception")
+        showInfo(message)
 
-    private fun showErrorMessage(message: String) {
+        val reportException: Exception? = when (exception) {
+            null -> null
+            is ApiException -> {
+                val code = exception.code
+                if (code != null && code in 500..599) exception else null
+            }
+
+            is Exception -> exception
+            else -> Exception(
+                message.ifBlank { "Unknown error occurred" },
+                exception
+            )
+        }
+
+        if (reportException != null) {
+            val fullMessage = buildString {
+                append("Message: ")
+                append(message.ifBlank { "Unknown error occurred" })
+                append(" | ErrorMessage: ")
+                append(exception?.message ?: "null")
+                append(" | Exception: ")
+                append(reportException.javaClass.simpleName)
+            }
+
+            AppMetrica.reportError(fullMessage, reportException)
+        }
+
+    }
+
+    private fun showInfo(message: String) {
         val toastManager = ToastManager(context)
 
         toastManager.showToast(message)
-
-
-//        when (error.code) {
-//            500 -> {
-//                Log.w(TAG, "Server error occurred", error.throwable)
-//                toastManager.showToast("Ошибка при обращении к серверу. Проверьте подключение к интернету и повторите попытку")
-//            }
-//
-//            401 -> {
-//                Log.w(TAG, "Unauthorized access attempt")
-//                toastManager.showToast("Ошибка доступа: ${error.message}")
-//                verificationManager.clearJwt()
-//                verificationManager.clearVerificationStatus()
-//            }
-//
-//            498 -> {
-//                Log.i(TAG, "Token expired, clearing JWT")
-//                toastManager.showToast("Ваша сессия истекла. Зайдите в приложение заново")
-//                verificationManager.clearJwt()
-//                verificationManager.clearVerificationStatus()
-//            }
-//
-//            else -> {
-//                Log.w(TAG, "Unexpected error occurred")
-//                toastManager.showToast("Возникла ошибка: ${error.message}")
-//            }
     }
 }
-
-//    private fun buildLogMessage(error: ApiCallResult.Error): String {
-//        return StringBuilder().apply {
-//            append("Error code: ${error.code}")
-//            append(", Message: ${error.message}")
-//            error.throwable?.let {
-//                append(", Exception: ${it.javaClass.simpleName}")
-//            }
-//        }.toString()
-//    }
-//}

@@ -15,13 +15,7 @@ import ru.hse.app.hasslspace.data.local.DataManager
 import ru.hse.app.hasslspace.domain.service.common.CropProfilePhotoService
 import ru.hse.app.hasslspace.domain.usecase.chats.GetChatMessagesUseCase
 import ru.hse.app.hasslspace.domain.usecase.chats.GetPrivateChatsUseCase
-import ru.hse.app.hasslspace.domain.usecase.chats.MarkChatAsReadUseCase
-import ru.hse.app.hasslspace.domain.usecase.chats.MarkMessageAsReadUseCase
-import ru.hse.app.hasslspace.domain.usecase.chats.ObserveAllUnreadCountsUseCase
-import ru.hse.app.hasslspace.domain.usecase.chats.ObserveUnreadCountUseCase
-import ru.hse.app.hasslspace.domain.usecase.chats.SaveMessageToRoomUseCase
 import ru.hse.app.hasslspace.domain.usecase.chats.SearchChatsUseCase
-import ru.hse.app.hasslspace.domain.usecase.chats.SendMessageUseCase
 import ru.hse.app.hasslspace.domain.usecase.chats.StartChatUseCase
 import ru.hse.app.hasslspace.domain.usecase.chats.UpdateChatMessagesRestUseCase
 import ru.hse.app.hasslspace.domain.usecase.friends.GetUserFriendsUseCase
@@ -35,7 +29,6 @@ import ru.hse.app.hasslspace.ui.entity.model.chats.toMessageShortUi
 import ru.hse.app.hasslspace.ui.entity.model.profile.events.LoadUserFriendsEvent
 import ru.hse.app.hasslspace.ui.entity.model.toUi
 import ru.hse.app.hasslspace.ui.errorhandling.ErrorHandler
-import ru.hse.coursework.godaily.ui.notification.ToastManager
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -102,7 +95,7 @@ class ChatsViewModel @Inject constructor(
                 },
                 onFailure = {
                     LoadUserFriendsEvent.Error(
-                        ("Ошибка при загрузке друзей. " + it.message)
+                        ("Ошибка при загрузке друзей. " + it.message), it
                     )
                 }
             )
@@ -212,7 +205,7 @@ class ChatsViewModel @Inject constructor(
                     StartChatEvent.Success(chatId)
                 },
                 onFailure = {
-                    StartChatEvent.Error("Ошибка при создании чата. " + it.message)
+                    StartChatEvent.Error("Ошибка при создании чата. " + it.message, it)
                 }
             )
         }
@@ -242,10 +235,15 @@ class ChatsViewModel @Inject constructor(
         }
     }
 
-    fun handleError(message: String) {
+    fun handleError(message: String, exception: Exception) {
         errorHandler.handleError(
-            message = message
+            message = message,
+            exception = exception
         )
+    }
+
+    fun handleInfo(message: String) {
+        errorHandler.handleInfo(message = message)
     }
 
     fun resetLoadUserFriendsEvent() {

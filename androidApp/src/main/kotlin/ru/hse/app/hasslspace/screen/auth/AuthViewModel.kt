@@ -28,7 +28,6 @@ import ru.hse.app.hasslspace.ui.entity.model.auth.events.VerifyCodeEvent
 import ru.hse.app.hasslspace.ui.entity.model.auth.events.VerifyUserEvent
 import ru.hse.app.hasslspace.ui.entity.model.auth.getEmptyUiModel
 import ru.hse.app.hasslspace.ui.errorhandling.ErrorHandler
-import ru.hse.coursework.godaily.ui.notification.ToastManager
 import javax.inject.Inject
 
 @HiltViewModel
@@ -132,14 +131,14 @@ class AuthViewModel @Inject constructor(
                         },
                         onFailure = {
                             RegisterUserEvent.Error(
-                                ("Ошибка при регистрации. " + it.message)
+                                ("Ошибка при регистрации. " + it.message), it
                             )
                         }
                     )
                 }
 
             } else {
-                errorHandler.handleError("Проверьте, что все поля заполнены и данные валидны")
+                errorHandler.handleError("Проверьте, что все поля заполнены и данные валидны", null)
             }
 
         }
@@ -167,14 +166,14 @@ class AuthViewModel @Inject constructor(
                         },
                         onFailure = {
                             LoginUserEvent.Error(
-                                ("Ошибка при входе. " + it.message)
+                                ("Ошибка при входе. " + it.message), it
                             )
                         }
                     )
                 }
 
             } else {
-                errorHandler.handleError("Пароль должен быть не менее 8 символов")
+                errorHandler.handleError("Пароль должен быть не менее 8 символов", null)
             }
 
 
@@ -198,7 +197,7 @@ class AuthViewModel @Inject constructor(
                     },
                     onFailure = {
                         CheckEmailVerificationEvent.Error(
-                            (it.message ?: "")
+                            (it.message ?: ""), it
                         )
                     }
                 )
@@ -221,7 +220,7 @@ class AuthViewModel @Inject constructor(
                         },
                         onFailure = {
                             SendVerificationCodeEvent.Error(
-                                (it.message ?: "")
+                                (it.message ?: ""), it
                             )
                         }
                     )
@@ -242,7 +241,7 @@ class AuthViewModel @Inject constructor(
                             SavePhotoEvent.SuccessSave
                         },
                         onFailure = {
-                            SavePhotoEvent.Error(it.message ?: "")
+                            SavePhotoEvent.Error(it.message ?: "", it)
                         }
                     )
                 }
@@ -269,17 +268,17 @@ class AuthViewModel @Inject constructor(
                                     }
                                     VerifyUserEvent.SuccessVerify
                                 } else {
-                                    VerifyUserEvent.Error("Не верифицирован email")
+                                    VerifyUserEvent.Error("Не верифицирован email", null)
                                 }
                             },
-                            onFailure = {
-                                VerifyUserEvent.Error(it.message ?: "")
+                            onFailure = { ex ->
+                                VerifyUserEvent.Error(ex.message ?: "", ex)
                             }
                         )
                         VerifyCodeEvent.SuccessVerify
                     },
-                    onFailure = {
-                        VerifyCodeEvent.Error(it.message ?: "")
+                    onFailure = { ex ->
+                        VerifyCodeEvent.Error(ex.message ?: "", ex)
                     }
                 )
             }
@@ -309,10 +308,15 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun handleError(message: String) {
+    fun handleError(message: String, ex: Throwable?) {
         errorHandler.handleError(
-            message = message
+            message = message,
+            exception = ex
         )
+    }
+
+    fun handleInfo(message: String) {
+        errorHandler.handleInfo(message = message)
     }
 
     fun onUsernameChanged(username: String) {
@@ -401,7 +405,7 @@ class AuthViewModel @Inject constructor(
         try {
             centrifugeService.connect(BuildConfig.CENTRIFUGO_URL)
         } catch (e: Exception) {
-            errorHandler.handleError(e.message ?: "")
+            errorHandler.handleError(e.message ?: "", e)
         }
 
     }

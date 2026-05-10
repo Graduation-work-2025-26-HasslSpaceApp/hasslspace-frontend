@@ -166,12 +166,6 @@ fun Messages(
                         }
                     )
                 }
-
-//                if (index == firstUnreadIndex) { todo придумать как добавить
-//                    item(key = "unread_header_$index") {
-//                        DayHeader("Непрочитано")
-//                    }
-//                }
             }
         }
 

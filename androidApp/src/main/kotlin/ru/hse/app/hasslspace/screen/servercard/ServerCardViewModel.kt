@@ -76,7 +76,6 @@ import ru.hse.app.hasslspace.ui.entity.model.toInvitationUi
 import ru.hse.app.hasslspace.ui.entity.model.toStatusPresentation
 import ru.hse.app.hasslspace.ui.entity.model.toUi
 import ru.hse.app.hasslspace.ui.errorhandling.ErrorHandler
-import ru.hse.coursework.godaily.ui.notification.ToastManager
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -313,7 +312,7 @@ class ServerCardViewModel @Inject constructor(
         roles: List<RoleMiniCheckboxUiModel> = listOf()
     ) {
         if (channelName.isEmpty()) {
-            handleError("Название канала не может быть пустым")
+            handleError("Название канала не может быть пустым", null)
             return
         }
         val roundLimit = limit.roundToInt()
@@ -332,7 +331,7 @@ class ServerCardViewModel @Inject constructor(
                     CreateChannelEvent.SuccessCreate
                 },
                 onFailure = {
-                    CreateChannelEvent.Error("Ошибка при создании канала. " + it.message)
+                    CreateChannelEvent.Error("Ошибка при создании канала. " + it.message, it)
                 }
             )
         }
@@ -344,7 +343,7 @@ class ServerCardViewModel @Inject constructor(
         result.fold(
             onSuccess = {},
             onFailure = {
-                errorHandler.handleError("Ошибка при назначении прав роли. " + it.message)
+                errorHandler.handleError("Ошибка при назначении прав роли. " + it.message, it)
             }
         )
     }
@@ -355,7 +354,7 @@ class ServerCardViewModel @Inject constructor(
         result.fold(
             onSuccess = {},
             onFailure = {
-                errorHandler.handleError("Ошибка при удалении прав роли. " + it.message)
+                errorHandler.handleError("Ошибка при удалении прав роли. " + it.message, it)
             }
         )
     }
@@ -369,7 +368,7 @@ class ServerCardViewModel @Inject constructor(
                     LeaveServerEvent.Success
                 },
                 onFailure = { error ->
-                    LeaveServerEvent.Error("Ошибка при удалении сервера. ${error.message}")
+                    LeaveServerEvent.Error("Ошибка при удалении сервера. ${error.message}", error)
                 }
             )
         }
@@ -386,7 +385,7 @@ class ServerCardViewModel @Inject constructor(
         roles: List<RoleMiniCheckboxUiModel> = listOf()
     ) {
         if (channelName.isEmpty()) {
-            handleError("Название канала не может быть пустым")
+            handleError("Название канала не может быть пустым", null)
             return
         }
         val roundLimit = limit.roundToInt()
@@ -407,7 +406,7 @@ class ServerCardViewModel @Inject constructor(
                     PatchChannelEvent.Success
                 },
                 onFailure = {
-                    PatchChannelEvent.Error("Ошибка при изменении канала. " + it.message)
+                    PatchChannelEvent.Error("Ошибка при изменении канала. " + it.message, it)
                 }
             )
         }
@@ -425,7 +424,7 @@ class ServerCardViewModel @Inject constructor(
                     DeleteChannelEvent.SuccessDelete
                 },
                 onFailure = { error ->
-                    DeleteChannelEvent.Error("Ошибка при удалении канала. ${error.message}")
+                    DeleteChannelEvent.Error("Ошибка при удалении канала. ${error.message}", error)
                 }
             )
         }
@@ -449,7 +448,7 @@ class ServerCardViewModel @Inject constructor(
                     )
                 },
                 onFailure = {
-                    StartChatChannelEvent.Error("Ошибка при получении ID чата. " + it.message)
+                    StartChatChannelEvent.Error("Ошибка при получении ID чата. " + it.message, it)
                 }
             )
         }
@@ -482,12 +481,18 @@ class ServerCardViewModel @Inject constructor(
                             )
                         },
                         onFailure = {
-                            GetTokenEvent.Error("Ошибка при подключении к голосовому каналу. " + it.message)
+                            GetTokenEvent.Error(
+                                "Ошибка при подключении к голосовому каналу. " + it.message,
+                                it
+                            )
                         }
                     )
                 },
                 onFailure = { error ->
-                    GetTokenEvent.Error("Ошибка при получении информации о канале. " + error.message)
+                    GetTokenEvent.Error(
+                        "Ошибка при получении информации о канале. " + error.message,
+                        error
+                    )
                 }
             )
         }
@@ -514,12 +519,15 @@ class ServerCardViewModel @Inject constructor(
                             GetTokenEvent.Success(token, roomName, videoEnabled = false)
                         },
                         onFailure = {
-                            GetTokenEvent.Error("Ошибка при подключении к звонку. " + it.message)
+                            GetTokenEvent.Error(
+                                "Ошибка при подключении к звонку. " + it.message,
+                                it
+                            )
                         }
                     )
                 },
                 onFailure = {
-                    GetTokenEvent.Error("Ошибка при получении комнаты. " + it.message)
+                    GetTokenEvent.Error("Ошибка при получении комнаты. " + it.message, it)
                 }
             )
         }
@@ -534,7 +542,7 @@ class ServerCardViewModel @Inject constructor(
                     StartChatEvent.Success(chatId)
                 },
                 onFailure = {
-                    StartChatEvent.Error("Ошибка при создании чата. " + it.message)
+                    StartChatEvent.Error("Ошибка при создании чата. " + it.message, it)
                 }
             )
         }
@@ -560,12 +568,15 @@ class ServerCardViewModel @Inject constructor(
                             GetTokenEvent.Success(token, roomName, videoEnabled = true)
                         },
                         onFailure = {
-                            GetTokenEvent.Error("Ошибка при подключении к видеозвонку. " + it.message)
+                            GetTokenEvent.Error(
+                                "Ошибка при подключении к видеозвонку. " + it.message,
+                                it
+                            )
                         }
                     )
                 },
                 onFailure = {
-                    GetTokenEvent.Error("Ошибка при получении комнаты. " + it.message)
+                    GetTokenEvent.Error("Ошибка при получении комнаты. " + it.message, it)
                 }
             )
         }
@@ -581,7 +592,10 @@ class ServerCardViewModel @Inject constructor(
                     RespondToFriendRequestEvent.SuccessRespond
                 },
                 onFailure = {
-                    RespondToFriendRequestEvent.Error("Ошибка при изменении данных. " + it.message)
+                    RespondToFriendRequestEvent.Error(
+                        "Ошибка при изменении данных. " + it.message,
+                        it
+                    )
                 }
             )
         }
@@ -596,7 +610,7 @@ class ServerCardViewModel @Inject constructor(
                     DeleteFriendshipEvent.SuccessDelete
                 },
                 onFailure = {
-                    DeleteFriendshipEvent.Error("Ошибка при удалении из друзей. " + it.message)
+                    DeleteFriendshipEvent.Error("Ошибка при удалении из друзей. " + it.message, it)
                 }
             )
         }
@@ -611,7 +625,7 @@ class ServerCardViewModel @Inject constructor(
                     CreateFriendRequestEvent.SuccessRequest(nickname)
                 },
                 onFailure = {
-                    CreateFriendRequestEvent.Error("Ошибка при создании заявки" + it.message)
+                    CreateFriendRequestEvent.Error("Ошибка при создании заявки" + it.message, it)
                 }
             )
         }
@@ -626,7 +640,7 @@ class ServerCardViewModel @Inject constructor(
                     DeleteServerEvent.SuccessDelete
                 },
                 onFailure = { error ->
-                    DeleteServerEvent.Error("Ошибка при удалении сервера. ${error.message}")
+                    DeleteServerEvent.Error("Ошибка при удалении сервера. ${error.message}", error)
                 }
             )
         }
@@ -664,7 +678,10 @@ class ServerCardViewModel @Inject constructor(
                     GetServerInfoEvent.SuccessLoad
                 },
                 onFailure = { error ->
-                    GetServerInfoEvent.Error("Ошибка при получении информации о сервере. ${error.message}")
+                    GetServerInfoEvent.Error(
+                        "Ошибка при получении информации о сервере. ${error.message}",
+                        error
+                    )
                 }
             )
         }
@@ -686,7 +703,10 @@ class ServerCardViewModel @Inject constructor(
                     GetFriendsNotInServerEvent.SuccessLoad
                 },
                 onFailure = { error ->
-                    GetFriendsNotInServerEvent.Error("Ошибка при получении информации о друзьях. ${error.message}")
+                    GetFriendsNotInServerEvent.Error(
+                        "Ошибка при получении информации о друзьях. ${error.message}",
+                        error
+                    )
                 }
             )
         }
@@ -727,7 +747,10 @@ class ServerCardViewModel @Inject constructor(
                     LoadChosenChannelEvent.SuccessLoad(channel.type)
                 },
                 onFailure = { error ->
-                    LoadChosenChannelEvent.Error("Ошибка при получении информации о канале. ${error.message}")
+                    LoadChosenChannelEvent.Error(
+                        "Ошибка при получении информации о канале. ${error.message}",
+                        error
+                    )
                 }
             )
         }
@@ -783,7 +806,10 @@ class ServerCardViewModel @Inject constructor(
                     SendServerInvitationEvent.Success(userId)
                 },
                 onFailure = { error ->
-                    SendServerInvitationEvent.Error("Ошибка при инициации приглашения. ${error.message}")
+                    SendServerInvitationEvent.Error(
+                        "Ошибка при инициации приглашения. ${error.message}",
+                        error
+                    )
                 }
             )
         }
@@ -888,7 +914,7 @@ class ServerCardViewModel @Inject constructor(
                 },
                 onFailure = {
                     LoadChosenUserEvent.Error(
-                        ("Ошибка при загрузке информации о пользователе. " + it.message)
+                        ("Ошибка при загрузке информации о пользователе. " + it.message), it
                     )
                 }
             )
@@ -912,7 +938,8 @@ class ServerCardViewModel @Inject constructor(
                 },
                 onFailure = {
                     LoadChosenUserCommonServersEvent.Error(
-                        ("Ошибка при загрузке информации об общих серверах с пользователем. " + it.message)
+                        ("Ошибка при загрузке информации об общих серверах с пользователем. " + it.message),
+                        it
                     )
                 }
             )
@@ -983,7 +1010,7 @@ class ServerCardViewModel @Inject constructor(
                         "Не удалось назначить роль в канале"
                     else
                         "Не удалось удалить роль из канала"
-                    errorHandler.handleError(errorMessage)
+                    errorHandler.handleError(errorMessage, it)
                 }
             )
         }
@@ -1016,7 +1043,7 @@ class ServerCardViewModel @Inject constructor(
                 },
                 onFailure = {
                     LoadUserDataEvent.Error(
-                        ("Ошибка при загрузке профиля. " + it.message)
+                        ("Ошибка при загрузке профиля. " + it.message), it
                     )
                 }
             )
@@ -1028,10 +1055,15 @@ class ServerCardViewModel @Inject constructor(
     }
 
 
-    fun handleError(message: String) {
+    fun handleError(message: String, exception: Throwable?) {
         errorHandler.handleError(
-            message = message
+            message = message,
+            exception = exception
         )
+    }
+
+    fun handleInfo(message: String) {
+        errorHandler.handleInfo(message = message)
     }
 
 

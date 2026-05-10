@@ -14,17 +14,9 @@ import ru.hse.app.hasslspace.data.local.DataManager
 import ru.hse.app.hasslspace.domain.service.common.CropProfilePhotoService
 import ru.hse.app.hasslspace.domain.usecase.channel.GetChannelInfoUseCase
 import ru.hse.app.hasslspace.domain.usecase.chats.GetChatMessagesUseCase
-import ru.hse.app.hasslspace.domain.usecase.chats.GetPrivateChatsUseCase
-import ru.hse.app.hasslspace.domain.usecase.chats.MarkChatAsReadUseCase
 import ru.hse.app.hasslspace.domain.usecase.chats.MarkMessageAsReadUseCase
-import ru.hse.app.hasslspace.domain.usecase.chats.ObserveAllUnreadCountsUseCase
-import ru.hse.app.hasslspace.domain.usecase.chats.ObserveUnreadCountUseCase
-import ru.hse.app.hasslspace.domain.usecase.chats.SaveMessageToRoomUseCase
-import ru.hse.app.hasslspace.domain.usecase.chats.SearchChatsUseCase
 import ru.hse.app.hasslspace.domain.usecase.chats.SendMessageUseCase
-import ru.hse.app.hasslspace.domain.usecase.chats.StartChatChannelUseCase
 import ru.hse.app.hasslspace.domain.usecase.chats.UpdateChatMessagesRestUseCase
-import ru.hse.app.hasslspace.domain.usecase.profile.LoadUserInfoUseCase
 import ru.hse.app.hasslspace.domain.usecase.servers.GetServerInfoUseCase
 import ru.hse.app.hasslspace.domain.usecase.servers.JoinServerUseCase
 import ru.hse.app.hasslspace.ui.entity.model.chats.ChatUiState
@@ -36,7 +28,6 @@ import ru.hse.app.hasslspace.ui.entity.model.chats.toUiChat
 import ru.hse.app.hasslspace.ui.entity.model.servers.events.JoinServerEvent
 import ru.hse.app.hasslspace.ui.entity.model.servers.events.LoadTextChannelEvent
 import ru.hse.app.hasslspace.ui.errorhandling.ErrorHandler
-import ru.hse.coursework.godaily.ui.notification.ToastManager
 import javax.inject.Inject
 
 @HiltViewModel
@@ -128,12 +119,15 @@ class TextChannelViewModel @Inject constructor(
                             LoadTextChannelEvent.SuccessLoad
                         },
                         onFailure = {
-                            LoadTextChannelEvent.Error("Ошибка при загрузке участников. " + it.message)
+                            LoadTextChannelEvent.Error(
+                                "Ошибка при загрузке участников. " + it.message,
+                                it
+                            )
                         }
                     )
                 },
                 onFailure = {
-                    LoadTextChannelEvent.Error("Ошибка при загрузке канала. " + it.message)
+                    LoadTextChannelEvent.Error("Ошибка при загрузке канала. " + it.message, it)
                 }
             )
         }
@@ -148,7 +142,7 @@ class TextChannelViewModel @Inject constructor(
     fun joinServer(code: String) {
         when {
             code.isBlank() -> {
-                errorHandler.handleError("Код не может быть пустым")
+                errorHandler.handleError("Код не может быть пустым", null)
                 return
             }
 
@@ -162,7 +156,10 @@ class TextChannelViewModel @Inject constructor(
                             JoinServerEvent.Success
                         },
                         onFailure = { error ->
-                            JoinServerEvent.Error("Ошибка при присоединении к серверу. ${error.message}")
+                            JoinServerEvent.Error(
+                                "Ошибка при присоединении к серверу. ${error.message}",
+                                error
+                            )
                         }
                     )
                 }
@@ -194,15 +191,22 @@ class TextChannelViewModel @Inject constructor(
                     SendMessageEvent.Success
                 },
                 onFailure = {
-                    SendMessageEvent.Error("Ошибка при отправке сообщения на сервер. " + it.message)
+                    SendMessageEvent.Error(
+                        "Ошибка при отправке сообщения на сервер. " + it.message,
+                        it
+                    )
                 }
             )
 
         }
     }
 
-    fun handleError(msg: String) {
-        errorHandler.handleError(msg)
+    fun handleError(msg: String, ex: Throwable?) {
+        errorHandler.handleError(msg, ex)
+    }
+
+    fun handleInfo(message: String) {
+        errorHandler.handleInfo(message = message)
     }
 
     fun resetLoadTextChannelEvent() {

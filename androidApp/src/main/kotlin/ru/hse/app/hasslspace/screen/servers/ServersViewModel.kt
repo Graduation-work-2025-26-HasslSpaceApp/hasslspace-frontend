@@ -25,7 +25,6 @@ import ru.hse.app.hasslspace.ui.entity.model.servers.events.GetUserServersEvent
 import ru.hse.app.hasslspace.ui.entity.model.servers.events.JoinServerEvent
 import ru.hse.app.hasslspace.ui.entity.model.toUi
 import ru.hse.app.hasslspace.ui.errorhandling.ErrorHandler
-import ru.hse.coursework.godaily.ui.notification.ToastManager
 import javax.inject.Inject
 
 @HiltViewModel
@@ -94,7 +93,7 @@ class ServersViewModel @Inject constructor(
                 onFailure = {
                     _uiState.value = ServersUiState.Error("")
                     GetUserServersEvent.Error(
-                        ("Ошибка при загрузке серверов. " + it.message)
+                        ("Ошибка при загрузке серверов. " + it.message), it
                     )
                 }
             )
@@ -132,7 +131,7 @@ class ServersViewModel @Inject constructor(
         serverPhoto: Uri? = null,
     ) {
         if (serverName.isEmpty()) {
-            handleError("Название сервера не может быть пустым")
+            handleError("Название сервера не может быть пустым", null)
             return
         }
         viewModelScope.launch {
@@ -143,7 +142,7 @@ class ServersViewModel @Inject constructor(
                     CreateServerEvent.SuccessCreate
                 },
                 onFailure = { error ->
-                    CreateServerEvent.Error("Ошибка при создании сервера. ${error.message}")
+                    CreateServerEvent.Error("Ошибка при создании сервера. ${error.message}", error)
                 }
             )
         }
@@ -154,7 +153,7 @@ class ServersViewModel @Inject constructor(
 
         when {
             code.isBlank() -> {
-                errorHandler.handleError("Код не может быть пустым")
+                errorHandler.handleError("Код не может быть пустым", null)
                 return
             }
 
@@ -168,7 +167,10 @@ class ServersViewModel @Inject constructor(
                             JoinServerEvent.Success
                         },
                         onFailure = { error ->
-                            JoinServerEvent.Error("Ошибка при присоединении к серверу. ${error.message}")
+                            JoinServerEvent.Error(
+                                "Ошибка при присоединении к серверу. ${error.message}",
+                                error
+                            )
                         }
                     )
                 }
@@ -176,10 +178,15 @@ class ServersViewModel @Inject constructor(
         }
     }
 
-    fun handleError(message: String) {
+    fun handleError(message: String, exception: Throwable?) {
         errorHandler.handleError(
-            message = message
+            message = message,
+            exception = exception
         )
+    }
+
+    fun handleInfo(message: String) {
+        errorHandler.handleInfo(message = message)
     }
 
     fun resetCreateServerEvent() {

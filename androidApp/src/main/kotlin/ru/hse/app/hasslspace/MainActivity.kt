@@ -11,10 +11,15 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import dagger.hilt.android.AndroidEntryPoint
+import ru.hse.app.hasslspace.ui.errorhandling.ErrorHandler
 import ru.hse.app.hasslspace.ui.navigation.StartScreen
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var errorHandler: ErrorHandler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -41,6 +46,13 @@ class MainActivity : ComponentActivity() {
 
     val requestPermissions =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
-            //todo
+            val deniedPermissions = results.filterValues { !it }.keys
+
+            if (deniedPermissions.isNotEmpty()) {
+                errorHandler.handleError(
+                    "Не все разрешения получены, функционал может быть ограничен",
+                    null
+                )
+            }
         }
 }
