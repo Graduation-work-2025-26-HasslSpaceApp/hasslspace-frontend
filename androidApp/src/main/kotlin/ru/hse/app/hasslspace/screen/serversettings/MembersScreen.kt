@@ -54,7 +54,8 @@ fun MembersScreen(
 
             is AssignRoleEvent.Error -> {
                 val message = (assignRoleEvent as AssignRoleEvent.Error).message
-                viewModel.errorHandler(message)
+                val exception = (assignRoleEvent as AssignRoleEvent.Error).exception
+                viewModel.errorHandler(message, exception)
             }
 
             null -> {}
@@ -69,7 +70,8 @@ fun MembersScreen(
 
             is RevokeRoleEvent.Error -> {
                 val message = (revokeRoleEvent as RevokeRoleEvent.Error).message
-                viewModel.errorHandler(message)
+                val exception = (revokeRoleEvent as RevokeRoleEvent.Error).exception
+                viewModel.errorHandler(message, exception)
             }
 
             null -> {}
@@ -86,12 +88,13 @@ fun MembersScreen(
                         inclusive = true
                     }
                 }
-                viewModel.errorHandler("Успешно передали права участнику")
+                viewModel.handleInfo("Успешно передали права участнику")
             }
 
             is PatchServerOwnerEvent.Error -> {
                 val message = (patchServerOwnerEvent as PatchServerOwnerEvent.Error).message
-                viewModel.errorHandler(message)
+                val exception = (patchServerOwnerEvent as PatchServerOwnerEvent.Error).exception
+                viewModel.errorHandler(message, exception)
             }
 
             null -> {}
@@ -108,12 +111,13 @@ fun MembersScreen(
                         inclusive = true
                     }
                 }
-                viewModel.errorHandler("Успешно удалили участника")
+                viewModel.handleInfo("Успешно удалили участника")
             }
 
             is DeleteServerMemberEvent.Error -> {
                 val message = (deleteServerMemberEvent as DeleteServerMemberEvent.Error).message
-                viewModel.errorHandler(message)
+                val exception = (deleteServerMemberEvent as DeleteServerMemberEvent.Error).exception
+                viewModel.errorHandler(message, exception)
             }
 
             null -> {}
@@ -127,7 +131,8 @@ fun MembersScreen(
 
             is GetServerRolesEvent.Error -> {
                 val message = (getServerRolesEvent as GetServerRolesEvent.Error).message
-                viewModel.errorHandler(message)
+                val exception = (getServerRolesEvent as GetServerRolesEvent.Error).exception
+                viewModel.errorHandler(message, exception)
             }
 
             null -> {}
@@ -144,7 +149,9 @@ fun MembersScreen(
             is LoadChosenServerRolesEvent.Error -> {
                 val message =
                     (loadChosenServerRolesEvent as LoadChosenServerRolesEvent.Error).message
-                viewModel.errorHandler(message)
+                val exception =
+                    (loadChosenServerRolesEvent as LoadChosenServerRolesEvent.Error).exception
+                viewModel.errorHandler(message, exception)
             }
 
             null -> {}
@@ -158,7 +165,8 @@ fun MembersScreen(
 
             is GetServerInfoEvent.Error -> {
                 val message = (getServerInfoEvent as GetServerInfoEvent.Error).message
-                viewModel.errorHandler(message)
+                val exception = (getServerInfoEvent as GetServerInfoEvent.Error).exception
+                viewModel.errorHandler(message, exception)
             }
 
             null -> {}

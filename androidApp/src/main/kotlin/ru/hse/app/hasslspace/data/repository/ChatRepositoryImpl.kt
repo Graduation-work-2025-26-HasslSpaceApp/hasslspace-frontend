@@ -96,12 +96,14 @@ class ChatRepositoryImpl @Inject constructor(
         limit: Int?
     ) {
 //    ): Result<List<Message>> {
-        apiCaller.safeApiCall { apiService.getMessageHistory(
-            chatId, lastMessageId,
-            fromDate = fromDate,
-            toDate = toDate,
-            limit = limit
-        ) }
+        apiCaller.safeApiCall {
+            apiService.getMessageHistory(
+                chatId, lastMessageId,
+                fromDate = fromDate,
+                toDate = toDate,
+                limit = limit
+            )
+        }
             .mapCatching { messages ->
                 messages.map {
                     chatDao.insertMessage(it.toEntity())
@@ -128,6 +130,12 @@ class ChatRepositoryImpl @Inject constructor(
     override suspend fun getPrivateChats(curUserId: String): Result<List<ChatInfo>> {
         return apiCaller.safeApiCall { apiService.getPrivateChats() }.mapCatching { chats ->
             chats.map { it.toDomain(curUserId) }
+        }
+    }
+
+    override suspend fun getPrivateChat(curUserId: String, chatId: String): Result<ChatInfo> {
+        return apiCaller.safeApiCall { apiService.getChat(chatId) }.mapCatching { chat ->
+            chat.toDomain(curUserId)
         }
     }
 

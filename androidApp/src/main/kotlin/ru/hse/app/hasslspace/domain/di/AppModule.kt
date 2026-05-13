@@ -18,39 +18,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-//    @Provides
-//    @Singleton
-//    fun provideLocationService(@ApplicationContext context: Context): LocationService {
-//        return LocationService(context)
-//    }
-//
-//    @Provides
-//    @Singleton
-//    fun provideUUIDService(): UuidService {
-//        return UuidService()
-//    }
-//
-//    @Provides
-//    @Singleton
-//    fun provideSafeApiCaller(): SafeApiCaller {
-//        return SafeApiCaller()
-//    }
-//
-//    @Provides
-//    @Singleton
-//    fun provideTrackingService(): TrackingService {
-//        return TrackingService()
-//    }
-
-//    @Provides
-//    @Singleton
-//    fun provideErrorHandler(
-//        @ApplicationContext context: Context,
-//        verificationManager: VerificationManager
-//    ): ErrorHandler {
-//        return ErrorHandler(context, verificationManager)
-//    }
-
     @Provides
     @Singleton
     fun provideImageLoader(@ApplicationContext context: Context): ImageLoader {

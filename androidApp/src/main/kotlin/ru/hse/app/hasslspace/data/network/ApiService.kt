@@ -259,7 +259,7 @@ interface ApiService {
     // Передать права на канал
     @PATCH(SERVER_SERVICE_URL + UPDATE_SERVER_OWNER_URL)
     suspend fun updateServerOwner(
-        @Query("newOwnerId") userId: String,
+        @Query("newOwnerId") newOwnerId: String,
         @Query("serverId") serverId: String,
     ): Response<String>
 
@@ -323,7 +323,7 @@ interface ApiService {
     @GET(CHAT_SERVICE_URL + GET_CHAT_URL)
     suspend fun getChat(
         @Query("chatId") chatId: String
-    ): Response<ChatInfoDto> // todo заменить потом usecase на такой
+    ): Response<ChatInfoDto>
 
     @GET(CHAT_SERVICE_URL + GET_MESSAGES_HISTORY_URL)
     suspend fun getMessageHistory(

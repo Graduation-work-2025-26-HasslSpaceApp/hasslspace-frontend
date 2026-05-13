@@ -9,5 +9,5 @@ sealed class GetTokenEvent {
     ) :
         GetTokenEvent()
 
-    data class Error(val message: String) : GetTokenEvent()
+    data class Error(val message: String, val exception: Throwable) : GetTokenEvent()
 }

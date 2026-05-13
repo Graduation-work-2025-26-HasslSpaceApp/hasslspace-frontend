@@ -109,31 +109,6 @@ fun UserCardCallMessage(
                 overflow = TextOverflow.Ellipsis
             )
         }
-
-//        Row(
-//            horizontalArrangement = Arrangement.spacedBy(20.dp),
-//            verticalAlignment = Alignment.CenterVertically,
-//            modifier = Modifier.padding(start = 5.dp),
-//        ) {
-//
-//            Icon(
-//                painter = painterResource(R.drawable.call),
-//                contentDescription = "Call",
-//                tint = MaterialTheme.colorScheme.onBackground,
-//                modifier = Modifier
-//                    .size(26.dp)
-//                    .clickable { onCallClick() }
-//            )
-//
-//            Icon(
-//                painter = painterResource(R.drawable.message),
-//                contentDescription = "Message",
-//                tint = MaterialTheme.colorScheme.onBackground,
-//                modifier = Modifier
-//                    .size(26.dp)
-//                    .clickable { onMessageClick() }
-//            )
-//        }
     }
 }
 
@@ -148,8 +123,6 @@ fun UserCardCallMessagePreviewAllLight() {
                 status = StatusPresentation.ONLINE,
                 profilePictureUrl = "",
                 onCardClick = {},
-//                onCallClick = {},
-//                onMessageClick = {},
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -162,8 +135,6 @@ fun UserCardCallMessagePreviewAllLight() {
                 status = StatusPresentation.INVISIBLE,
                 profilePictureUrl = "",
                 onCardClick = {},
-//                onCallClick = {},
-//                onMessageClick = {},
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -176,8 +147,6 @@ fun UserCardCallMessagePreviewAllLight() {
                 status = StatusPresentation.DO_NOT_DISTURB,
                 profilePictureUrl = "",
                 onCardClick = {},
-//                onCallClick = {},
-//                onMessageClick = {},
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -190,8 +159,6 @@ fun UserCardCallMessagePreviewAllLight() {
                 status = StatusPresentation.INVISIBLE,
                 profilePictureUrl = "",
                 onCardClick = {},
-//                onCallClick = {},
-//                onMessageClick = {},
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -204,8 +171,6 @@ fun UserCardCallMessagePreviewAllLight() {
                 status = StatusPresentation.OFFLINE,
                 profilePictureUrl = "",
                 onCardClick = {},
-//                onCallClick = {},
-//                onMessageClick = {},
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -224,8 +189,6 @@ fun UserCardCallMessagePreviewAllDark() {
                 status = StatusPresentation.ONLINE,
                 profilePictureUrl = "",
                 onCardClick = {},
-//                onCallClick = {},
-//                onMessageClick = {},
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -238,8 +201,6 @@ fun UserCardCallMessagePreviewAllDark() {
                 status = StatusPresentation.OFFLINE,
                 profilePictureUrl = "",
                 onCardClick = {},
-//                onCallClick = {},
-//                onMessageClick = {},
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -252,8 +213,6 @@ fun UserCardCallMessagePreviewAllDark() {
                 status = StatusPresentation.DO_NOT_DISTURB,
                 profilePictureUrl = "",
                 onCardClick = {},
-//                onCallClick = {},
-//                onMessageClick = {},
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -266,8 +225,6 @@ fun UserCardCallMessagePreviewAllDark() {
                 status = StatusPresentation.INVISIBLE,
                 profilePictureUrl = "",
                 onCardClick = {},
-//                onCallClick = {},
-//                onMessageClick = {},
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -280,8 +237,6 @@ fun UserCardCallMessagePreviewAllDark() {
                 status = StatusPresentation.INVISIBLE,
                 profilePictureUrl = "",
                 onCardClick = {},
-//                onCallClick = {},
-//                onMessageClick = {},
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -298,8 +253,6 @@ fun UserCardCallMessagePreviewDefaultLight() {
                 username = "Анна Смирнова",
                 nickname = "anna_smirnova",
                 onCardClick = {},
-//                onCallClick = {},
-//                onMessageClick = {},
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -311,8 +264,6 @@ fun UserCardCallMessagePreviewDefaultLight() {
                 nickname = "очень_длинный_никнейм_пользователя",
                 profilePictureUrl = "https://example.com/photo.jpg",
                 onCardClick = {},
-//                onCallClick = {},
-//                onMessageClick = {},
                 isDarkTheme = false,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -329,8 +280,6 @@ fun UserCardCallMessagePreviewDefaultDark() {
                 username = "Анна Смирнова",
                 nickname = "anna_smirnova",
                 onCardClick = {},
-//                onCallClick = {},
-//                onMessageClick = {},
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)
             )
@@ -342,8 +291,6 @@ fun UserCardCallMessagePreviewDefaultDark() {
                 nickname = "очень_длинный_никнейм_пользователя",
                 profilePictureUrl = "https://example.com/photo.jpg",
                 onCardClick = {},
-//                onCallClick = {},
-//                onMessageClick = {},
                 isDarkTheme = true,
                 imageLoader = ImageLoader(LocalContext.current)
             )

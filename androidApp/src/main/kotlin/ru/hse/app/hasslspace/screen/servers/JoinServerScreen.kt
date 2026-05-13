@@ -28,13 +28,14 @@ fun JoinServerScreen(
     LaunchedEffect(joinServerEvent) {
         when (joinServerEvent) {
             is JoinServerEvent.Success -> {
-                viewModel.handleError("Успешно присоединились к серверу")
+                viewModel.handleInfo("Успешно присоединились к серверу")
                 navController.navigate(BottomNavigationItem.Servers.route)
             }
 
             is JoinServerEvent.Error -> {
                 val message = (joinServerEvent as JoinServerEvent.Error).message
-                viewModel.handleError(message)
+                val exception = (joinServerEvent as JoinServerEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}

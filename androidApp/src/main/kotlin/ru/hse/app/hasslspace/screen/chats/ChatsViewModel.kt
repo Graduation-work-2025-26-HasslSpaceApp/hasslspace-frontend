@@ -6,22 +6,22 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil3.ImageLoader
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import ru.hse.app.hasslspace.BuildConfig
 import ru.hse.app.hasslspace.data.centrifugo.CentrifugeService
 import ru.hse.app.hasslspace.data.local.DataManager
+import ru.hse.app.hasslspace.data.roomstorage.MessageEntity
 import ru.hse.app.hasslspace.domain.service.common.CropProfilePhotoService
 import ru.hse.app.hasslspace.domain.usecase.chats.GetChatMessagesUseCase
 import ru.hse.app.hasslspace.domain.usecase.chats.GetPrivateChatsUseCase
-import ru.hse.app.hasslspace.domain.usecase.chats.MarkChatAsReadUseCase
-import ru.hse.app.hasslspace.domain.usecase.chats.MarkMessageAsReadUseCase
-import ru.hse.app.hasslspace.domain.usecase.chats.ObserveAllUnreadCountsUseCase
-import ru.hse.app.hasslspace.domain.usecase.chats.ObserveUnreadCountUseCase
-import ru.hse.app.hasslspace.domain.usecase.chats.SaveMessageToRoomUseCase
 import ru.hse.app.hasslspace.domain.usecase.chats.SearchChatsUseCase
-import ru.hse.app.hasslspace.domain.usecase.chats.SendMessageUseCase
 import ru.hse.app.hasslspace.domain.usecase.chats.StartChatUseCase
 import ru.hse.app.hasslspace.domain.usecase.chats.UpdateChatMessagesRestUseCase
 import ru.hse.app.hasslspace.domain.usecase.friends.GetUserFriendsUseCase
@@ -35,7 +35,6 @@ import ru.hse.app.hasslspace.ui.entity.model.chats.toMessageShortUi
 import ru.hse.app.hasslspace.ui.entity.model.profile.events.LoadUserFriendsEvent
 import ru.hse.app.hasslspace.ui.entity.model.toUi
 import ru.hse.app.hasslspace.ui.errorhandling.ErrorHandler
-import ru.hse.coursework.godaily.ui.notification.ToastManager
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -43,14 +42,7 @@ import javax.inject.Inject
 class ChatsViewModel @Inject constructor(
     private val getChatMessagesUseCase: GetChatMessagesUseCase,
     private val getPrivateChatsUseCase: GetPrivateChatsUseCase,
-    private val observeAllUnreadCountsUseCase: ObserveAllUnreadCountsUseCase,
-    private val observeUnreadCountUseCase: ObserveUnreadCountUseCase,
-    private val saveMessageToRoomUseCase: SaveMessageToRoomUseCase,
-    private val sendMessageUseCase: SendMessageUseCase,
     private val startChatUseCase: StartChatUseCase,
-
-    private val markMessageAsReadUseCase: MarkMessageAsReadUseCase,
-    private val markChatAsReadUseCase: MarkChatAsReadUseCase,
     private val updateChatMessagesRestUseCase: UpdateChatMessagesRestUseCase,
 
     private val loadUserInfoUseCase: LoadUserInfoUseCase,
@@ -58,7 +50,6 @@ class ChatsViewModel @Inject constructor(
     private val centrifugeService: CentrifugeService,
 
     private val dataManager: DataManager,
-    private val toastManager: ToastManager,
     val cropProfilePhotoService: CropProfilePhotoService,
     val errorHandler: ErrorHandler,
 
@@ -110,7 +101,7 @@ class ChatsViewModel @Inject constructor(
                 },
                 onFailure = {
                     LoadUserFriendsEvent.Error(
-                        ("Ошибка при загрузке друзей. " + it.message)
+                        ("Ошибка при загрузке друзей. " + it.message), it
                     )
                 }
             )
@@ -128,9 +119,10 @@ class ChatsViewModel @Inject constructor(
                         onSuccess = { chats ->
                             val chatModels = chats.map { it.toChatShort() }
                                 .sortedByDescending { chat ->
-                                    chat.messages.maxByOrNull { it.timestamp }?.timestamp ?: LocalDateTime.MIN
+                                    chat.messages.maxByOrNull { it.timestamp }?.timestamp
+                                        ?: LocalDateTime.MIN
                                 }
-                            chatModels.forEach { observeMessagesAndUnreadCount(it) }
+                            observeAllChats(chatModels)
 
                             connectToCentrifugo(chatModels.map { it.id })
 
@@ -170,20 +162,37 @@ class ChatsViewModel @Inject constructor(
         }
     }
 
-    private fun observeMessagesAndUnreadCount(chat: ChatShortUiModel) {
+    @OptIn(FlowPreview::class)
+    private fun observeAllChats(chats: List<ChatShortUiModel>) {
+        if (chats.isEmpty()) return
         viewModelScope.launch {
-            getChatMessagesUseCase.observeMessages(chat.id)
-                .collect { messages ->
-                    val updatedMessages = messages.map { it.toMessageShortUi() }
-                    val unreadCount = messages.count { !it.isRead }
-
-                    val updatedChat = chat.copy(
-                        messages = updatedMessages,
-                        unreadCount = unreadCount
-                    )
-                    updateChatState(updatedChat)
+            val flows = chats.map { chat ->
+                getChatMessagesUseCase.observeMessages(chat.id)
+                    .map { msgs -> chat.id to msgs }
+            }
+            combine(flows) { pairs -> pairs.toMap() }
+                .debounce(50)
+                .distinctUntilChanged()
+                .collect { messagesByChatId ->
+                    rebuildChats(messagesByChatId)
                 }
         }
+    }
+
+    private fun rebuildChats(messagesByChatId: Map<String, List<MessageEntity>>) {
+        val current = _uiState.value as? ChatsUiState.Success ?: return
+        val updated = current.data.chats.map { chat ->
+            val msgs = messagesByChatId[chat.id].orEmpty()
+            chat.copy(
+                messages = msgs.map { it.toMessageShortUi() },
+                unreadCount = msgs.count { !it.isRead }
+            )
+        }.sortedByDescending { c ->
+            c.messages.maxByOrNull { it.timestamp }?.timestamp ?: LocalDateTime.MIN
+        }
+        originalChats.clear()
+        originalChats.addAll(updated)
+        _uiState.value = ChatsUiState.Success(current.data.copy(chats = updated))
     }
 
     private fun updateChatState(updatedChat: ChatShortUiModel) {
@@ -219,7 +228,7 @@ class ChatsViewModel @Inject constructor(
                     StartChatEvent.Success(chatId)
                 },
                 onFailure = {
-                    StartChatEvent.Error("Ошибка при создании чата. " + it.message)
+                    StartChatEvent.Error("Ошибка при создании чата. " + it.message, it)
                 }
             )
         }
@@ -249,10 +258,15 @@ class ChatsViewModel @Inject constructor(
         }
     }
 
-    fun handleError(message: String) {
+    fun handleError(message: String, exception: Exception) {
         errorHandler.handleError(
-            message = message
+            message = message,
+            exception = exception
         )
+    }
+
+    fun handleInfo(message: String) {
+        errorHandler.handleInfo(message = message)
     }
 
     fun resetLoadUserFriendsEvent() {

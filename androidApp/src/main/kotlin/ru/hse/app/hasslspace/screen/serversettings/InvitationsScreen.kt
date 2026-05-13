@@ -46,7 +46,8 @@ fun InvitationsScreen(
 
             is DeleteInvitationEvent.Error -> {
                 val message = (deleteInvitationEvent as DeleteInvitationEvent.Error).message
-                viewModel.errorHandler(message)
+                val exception = (deleteInvitationEvent as DeleteInvitationEvent.Error).exception
+                viewModel.errorHandler(message, exception)
             }
 
             null -> {}
@@ -59,7 +60,9 @@ fun InvitationsScreen(
 
             is GetServerInvitationsEvent.Error -> {
                 val message = (getServerInvitationsEvent as GetServerInvitationsEvent.Error).message
-                viewModel.errorHandler(message)
+                val exception =
+                    (getServerInvitationsEvent as GetServerInvitationsEvent.Error).exception
+                viewModel.errorHandler(message, exception)
             }
 
             null -> {}
@@ -73,7 +76,8 @@ fun InvitationsScreen(
 
             is GetServerInfoEvent.Error -> {
                 val message = (getServerInfoEvent as GetServerInfoEvent.Error).message
-                viewModel.errorHandler(message)
+                val exception = (getServerInfoEvent as GetServerInfoEvent.Error).exception
+                viewModel.errorHandler(message, exception)
             }
 
             null -> {}
@@ -123,7 +127,7 @@ fun InvitationsScreenWithStateContent(
             val clip = ClipData.newPlainText("Copied Text", it.link)
             clipboard.setPrimaryClip(clip)
 
-            viewModel.errorHandler("Ссылка скопирована в буфер обмена")
+            viewModel.errorHandler("Ссылка скопирована в буфер обмена", null)
         },
         onCancelClick = { viewModel.deleteInvitation(it.code) },
     )

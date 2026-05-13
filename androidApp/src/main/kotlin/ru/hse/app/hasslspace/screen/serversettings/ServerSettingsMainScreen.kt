@@ -46,7 +46,7 @@ fun ServerSettingsMainScreen(
     LaunchedEffect(patchServerPropertiesEvent) {
         when (patchServerPropertiesEvent) {
             is PatchServerPropertiesEvent.Success -> {
-                viewModel.errorHandler("Данные успешно изменены")
+                viewModel.handleInfo("Данные успешно изменены")
                 viewModel.getServerInfo(serverId)
                 navController.popBackStack()
             }
@@ -54,7 +54,9 @@ fun ServerSettingsMainScreen(
             is PatchServerPropertiesEvent.Error -> {
                 val message =
                     (patchServerPropertiesEvent as PatchServerPropertiesEvent.Error).message
-                viewModel.errorHandler(message)
+                val exception =
+                    (patchServerPropertiesEvent as PatchServerPropertiesEvent.Error).exception
+                viewModel.errorHandler(message, exception)
             }
 
             null -> {}
@@ -65,12 +67,13 @@ fun ServerSettingsMainScreen(
     LaunchedEffect(updateServerPhotoEvent) {
         when (updateServerPhotoEvent) {
             is UpdateServerPhotoEvent.Success -> {
-                viewModel.errorHandler("Фото успешно изменено")
+                viewModel.handleInfo("Фото успешно изменено")
             }
 
             is UpdateServerPhotoEvent.Error -> {
                 val message = (updateServerPhotoEvent as UpdateServerPhotoEvent.Error).message
-                viewModel.errorHandler(message)
+                val exception = (updateServerPhotoEvent as UpdateServerPhotoEvent.Error).exception
+                viewModel.errorHandler(message, exception)
             }
 
             null -> {}
@@ -84,7 +87,8 @@ fun ServerSettingsMainScreen(
 
             is GetServerInfoEvent.Error -> {
                 val message = (getServerInfoEvent as GetServerInfoEvent.Error).message
-                viewModel.errorHandler(message)
+                val exception = (getServerInfoEvent as GetServerInfoEvent.Error).exception
+                viewModel.errorHandler(message, exception)
             }
 
             null -> {}
@@ -98,7 +102,8 @@ fun ServerSettingsMainScreen(
 
             is GetServerRolesEvent.Error -> {
                 val message = (getServerRolesEvent as GetServerRolesEvent.Error).message
-                viewModel.errorHandler(message)
+                val exception = (getServerRolesEvent as GetServerRolesEvent.Error).exception
+                viewModel.errorHandler(message, exception)
             }
 
             null -> {}

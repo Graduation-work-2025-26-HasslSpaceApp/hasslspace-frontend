@@ -111,7 +111,7 @@ fun CallScreenContent(
     0
     LaunchedEffect(Unit) {
         viewModel.errors.collect { message ->
-            viewModel.handleError(message)
+            viewModel.handleError(message, null)
             onDisconnect()
         }
     }
@@ -156,7 +156,7 @@ fun CallScreenContent(
                 val isLocalOverLimit = overLimit.any { it.second == localIdentity }
 
                 if (isLocalOverLimit) {
-                    viewModel.handleError("В звонке максимум участников")
+                    viewModel.handleError("В звонке максимум участников", null)
                     room.disconnect()
                     onDisconnect()
                 }
@@ -164,8 +164,6 @@ fun CallScreenContent(
                 viewModel.onParticipantCountChanged(remoteParticipants.size, limit, onDisconnect)
             }
         }
-
-        //todo добавить возможность скриншеринга
 
         Box(modifier = Modifier.fillMaxSize()) {
             if (uiState.isConnecting) {

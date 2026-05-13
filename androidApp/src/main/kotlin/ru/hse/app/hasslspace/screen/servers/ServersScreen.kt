@@ -32,7 +32,8 @@ fun ServersScreen(
 
             is GetUserServersEvent.Error -> {
                 val message = (getUserServersEvent as GetUserServersEvent.Error).message
-                viewModel.handleError(message)
+                val exception = (getUserServersEvent as GetUserServersEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}

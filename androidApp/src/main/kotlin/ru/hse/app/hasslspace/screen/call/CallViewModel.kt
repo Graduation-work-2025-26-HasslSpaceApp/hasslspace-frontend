@@ -44,10 +44,15 @@ class CallViewModel @Inject constructor(
 
     // ─── Room events ──────────────────────────────────────────────────────────
 
-    fun handleError(message: String, duration: Int = Toast.LENGTH_SHORT) {
+    fun handleError(message: String, exception: Throwable?, duration: Int = Toast.LENGTH_SHORT) {
         errorHandler.handleError(
             message = message,
+            exception = exception
         )
+    }
+
+    fun handleInfo(message: String) {
+        errorHandler.handleInfo(message = message)
     }
 
     fun onRoomConnected() {

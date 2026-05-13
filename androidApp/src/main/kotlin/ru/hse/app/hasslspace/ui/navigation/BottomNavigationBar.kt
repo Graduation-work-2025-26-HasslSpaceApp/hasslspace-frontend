@@ -190,7 +190,7 @@ fun BottomNavigation(bottomNavController: NavHostController) {
             val curUserId = backStackEntry.arguments?.getString("curUserId")
 
 
-            if (serverId != null && chatId != null && channelId != null&& curUserId != null) {
+            if (serverId != null && chatId != null && channelId != null && curUserId != null) {
                 TextChannelScreen(serverId, channelId, chatId, curUserId, bottomNavController)
             }
         }

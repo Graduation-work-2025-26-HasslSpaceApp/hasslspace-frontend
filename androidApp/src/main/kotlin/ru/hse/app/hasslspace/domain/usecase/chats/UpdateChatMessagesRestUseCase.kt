@@ -14,6 +14,6 @@ class UpdateChatMessagesRestUseCase @Inject constructor(
             fromDate = null,
             toDate = LocalDateTime.now(),
             limit = null
-        ) // todo
+        )
     }
 }

@@ -78,7 +78,10 @@ fun CreateChannelContent(
 
         if (isPrivate) {
             Spacer(Modifier.height(25.dp))
-            VariableMedium("После создания вы сможете настроить ролевой доступ через настройки канала", fontSize = 15.sp)
+            VariableMedium(
+                "После создания вы сможете настроить ролевой доступ через настройки канала",
+                fontSize = 15.sp
+            )
 //            TextArrowButton(
 //                onClick = onAddMembers,
 //                text = "Настроить роли"

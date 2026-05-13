@@ -38,7 +38,8 @@ fun ProfileScreen(
             is LoadUserDataEvent.Error -> {
                 val message =
                     (loadUserDataEvent as LoadUserDataEvent.Error).message
-                viewModel.handleError(message)
+                val exception = (loadUserDataEvent as LoadUserDataEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}

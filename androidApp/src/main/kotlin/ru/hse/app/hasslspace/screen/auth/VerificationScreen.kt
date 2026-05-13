@@ -35,7 +35,8 @@ fun VerificationScreen(
 
             is SendVerificationCodeEvent.Error -> {
                 val message = (sendCodeEvent as SendVerificationCodeEvent.Error).message
-                viewModel.handleError(message)
+                val exception = (sendCodeEvent as SendVerificationCodeEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}
@@ -51,7 +52,8 @@ fun VerificationScreen(
 
             is VerifyCodeEvent.Error -> {
                 val message = (verifyCodeEvent as VerifyCodeEvent.Error).message
-                viewModel.handleError(message)
+                val exception = (verifyCodeEvent as VerifyCodeEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}
@@ -74,7 +76,8 @@ fun VerificationScreen(
 
             is VerifyUserEvent.Error -> {
                 val message = (verifyUserEvent as VerifyUserEvent.Error).message
-                viewModel.handleError(message)
+                val exception = (verifyUserEvent as VerifyUserEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}

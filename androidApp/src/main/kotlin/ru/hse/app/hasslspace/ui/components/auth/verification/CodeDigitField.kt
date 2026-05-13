@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -32,6 +33,7 @@ import ru.hse.app.hasslspace.ui.theme.AppTheme
 fun CodeDigitField(
     value: String,
     onValueChange: (String) -> Unit,
+    onBackspace: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -68,7 +70,16 @@ fun CodeDigitField(
             ),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             cursorBrush = SolidColor(Color.Transparent),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .onKeyEvent { event ->
+                    if (event.nativeKeyEvent.keyCode == android.view.KeyEvent.KEYCODE_DEL && value.isEmpty()) {
+                        onBackspace?.invoke()
+                        true
+                    } else {
+                        false
+                    }
+                }
         )
     }
 }
