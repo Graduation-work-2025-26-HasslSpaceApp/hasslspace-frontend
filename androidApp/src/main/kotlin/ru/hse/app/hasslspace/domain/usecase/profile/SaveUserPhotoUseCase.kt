@@ -23,7 +23,6 @@ class SaveUserPhotoUseCase @Inject constructor(
             onFailure = {
                 return Result.failure(
                     uploadResult.exceptionOrNull()
-                    //TODO во всех юз кейсах сделать преобразование ошибки апи в ошибку UI
                         ?: ApiException(null, ApiException.PHOTO_UPLOADING_ERROR, null)
                 )
             }

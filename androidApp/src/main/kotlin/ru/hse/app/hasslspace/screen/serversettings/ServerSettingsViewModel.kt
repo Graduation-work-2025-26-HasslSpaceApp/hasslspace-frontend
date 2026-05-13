@@ -58,7 +58,6 @@ import ru.hse.app.hasslspace.ui.entity.model.toRoleMiniCheckboxUiModel
 import ru.hse.app.hasslspace.ui.entity.model.toRoleMiniIfChosen
 import ru.hse.app.hasslspace.ui.entity.model.toUi
 import ru.hse.app.hasslspace.ui.errorhandling.ErrorHandler
-import ru.hse.coursework.godaily.ui.notification.ToastManager
 import javax.inject.Inject
 
 @HiltViewModel
@@ -90,7 +89,6 @@ class ServerSettingsViewModel @Inject constructor(
 
 
     private val dataManager: DataManager,
-    private val toastManager: ToastManager,
     val cropProfilePhotoService: CropProfilePhotoService,
     val imageLoader: ImageLoader
 ) : ViewModel() {
@@ -220,13 +218,14 @@ class ServerSettingsViewModel @Inject constructor(
                         )
                         _assignRoleEvent.value = result.fold(
                             onSuccess = {
-                                val updatedNewRoleMembers = currentState.data.editedRole.members.map { member ->
-                                    if (member.id == tapped.id) {
-                                        member.copy(isChosen = !member.isChosen)
-                                    } else {
-                                        member
+                                val updatedNewRoleMembers =
+                                    currentState.data.editedRole.members.map { member ->
+                                        if (member.id == tapped.id) {
+                                            member.copy(isChosen = !member.isChosen)
+                                        } else {
+                                            member
+                                        }
                                     }
-                                }
 
                                 val updatedData = currentState.data.copy(
                                     editedRole = currentState.data.editedRole.copy(
@@ -239,7 +238,10 @@ class ServerSettingsViewModel @Inject constructor(
                             },
 
                             onFailure = { error ->
-                                AssignRoleEvent.Error("Ошибка при выдаче роли. ${error.message}")
+                                AssignRoleEvent.Error(
+                                    "Ошибка при выдаче роли. ${error.message}",
+                                    error
+                                )
                             }
                         )
                     } else {
@@ -251,13 +253,14 @@ class ServerSettingsViewModel @Inject constructor(
 
                         _revokeRoleEvent.value = result.fold(
                             onSuccess = {
-                                val updatedNewRoleMembers = currentState.data.editedRole.members.map { member ->
-                                    if (member.id == tapped.id) {
-                                        member.copy(isChosen = !member.isChosen)
-                                    } else {
-                                        member
+                                val updatedNewRoleMembers =
+                                    currentState.data.editedRole.members.map { member ->
+                                        if (member.id == tapped.id) {
+                                            member.copy(isChosen = !member.isChosen)
+                                        } else {
+                                            member
+                                        }
                                     }
-                                }
 
                                 val updatedData = currentState.data.copy(
                                     editedRole = currentState.data.editedRole.copy(
@@ -270,13 +273,15 @@ class ServerSettingsViewModel @Inject constructor(
                             },
 
                             onFailure = { error ->
-                                RevokeRoleEvent.Error("Ошибка при снятии роли. ${error.message}")
+                                RevokeRoleEvent.Error(
+                                    "Ошибка при снятии роли. ${error.message}",
+                                    error
+                                )
                             }
                         )
                     }
                 } catch (e: Exception) {
-                    // todo ловить и показывать ошибку
-                    // _uiState.value = ServerSettingsUiState.Error(e.message)
+                    errorHandler("Ошибка при работе с ролями. ${e.message}", e)
                 }
             }
         }
@@ -343,7 +348,7 @@ class ServerSettingsViewModel @Inject constructor(
                 val data = currentState.data
 
                 if (data.editedRole.name.isEmpty()) {
-                    errorHandler("Название роли не может быть пустым")
+                    errorHandler("Название роли не может быть пустым", null)
                     return@launch
                 }
 
@@ -362,7 +367,10 @@ class ServerSettingsViewModel @Inject constructor(
                     },
 
                     onFailure = { error ->
-                        PatchServerRoleEvent.Error("Ошибка при изменении роли. ${error.message}")
+                        PatchServerRoleEvent.Error(
+                            "Ошибка при изменении роли. ${error.message}",
+                            error
+                        )
                     }
                 )
             }
@@ -372,7 +380,7 @@ class ServerSettingsViewModel @Inject constructor(
 
     fun deleteRole(serverId: String, roleId: String, roleName: String) {
         if (roleName == "Admin" || roleName == "Member") {
-            errorHandler.handleError("Нельзя удалить стандартную роль")
+            errorHandler.handleError("Нельзя удалить стандартную роль", null)
             return
         }
         viewModelScope.launch {
@@ -384,7 +392,7 @@ class ServerSettingsViewModel @Inject constructor(
                 },
 
                 onFailure = { error ->
-                    DeleteRoleEvent.Error("Ошибка при удалении роли. ${error.message}")
+                    DeleteRoleEvent.Error("Ошибка при удалении роли. ${error.message}", error)
                 }
             )
         }
@@ -398,7 +406,7 @@ class ServerSettingsViewModel @Inject constructor(
                     DeleteInvitationEvent.SuccessDelete
                 },
                 onFailure = { error ->
-                    DeleteInvitationEvent.Error("Ошибка при удалении. ${error.message}")
+                    DeleteInvitationEvent.Error("Ошибка при удалении. ${error.message}", error)
                 }
             )
         }
@@ -409,12 +417,12 @@ class ServerSettingsViewModel @Inject constructor(
         newRole: ServerSettingsUiModel.NewRoleUiModel
     ) {
         if (newRole.name.isEmpty()) {
-            errorHandler("Название роли не может быть пустым")
+            errorHandler("Название роли не может быть пустым", null)
             return
         }
 
         if (newRole.name == "Admin" || newRole.name == "Member") {
-            errorHandler("Нельзя создать новую роль со стандартным названием")
+            errorHandler("Нельзя создать новую роль со стандартным названием", null)
             return
         }
 
@@ -444,7 +452,7 @@ class ServerSettingsViewModel @Inject constructor(
                     CreateServerRoleEvent.SuccessCreate
                 },
                 onFailure = { error ->
-                    CreateServerRoleEvent.Error("Ошибка при создании роли. ${error.message}")
+                    CreateServerRoleEvent.Error("Ошибка при создании роли. ${error.message}", error)
                 }
             )
         }
@@ -477,7 +485,10 @@ class ServerSettingsViewModel @Inject constructor(
                     GetServerInfoEvent.SuccessLoad
                 },
                 onFailure = { error ->
-                    GetServerInfoEvent.Error("Ошибка при получении информации о сервере. ${error.message}")
+                    GetServerInfoEvent.Error(
+                        "Ошибка при получении информации о сервере. ${error.message}",
+                        error
+                    )
                 }
             )
         }
@@ -499,7 +510,10 @@ class ServerSettingsViewModel @Inject constructor(
                     GetServerInvitationsEvent.SuccessLoad
                 },
                 onFailure = { error ->
-                    GetServerInvitationsEvent.Error("Ошибка при получении приглашений. ${error.message}")
+                    GetServerInvitationsEvent.Error(
+                        "Ошибка при получении приглашений. ${error.message}",
+                        error
+                    )
                 }
             )
         }
@@ -521,7 +535,10 @@ class ServerSettingsViewModel @Inject constructor(
                     GetServerRolesEvent.SuccessLoad
                 },
                 onFailure = { error ->
-                    GetServerRolesEvent.Error("Ошибка при получении ролей сервера. ${error.message}")
+                    GetServerRolesEvent.Error(
+                        "Ошибка при получении ролей сервера. ${error.message}",
+                        error
+                    )
                 }
             )
         }
@@ -551,7 +568,10 @@ class ServerSettingsViewModel @Inject constructor(
                     LoadChosenServerRolesEvent.SuccessLoad
                 },
                 onFailure = { error ->
-                    LoadChosenServerRolesEvent.Error("Ошибка при получении ролей сервера. ${error.message}")
+                    LoadChosenServerRolesEvent.Error(
+                        "Ошибка при получении ролей сервера. ${error.message}",
+                        error
+                    )
                 }
             )
         }
@@ -590,7 +610,7 @@ class ServerSettingsViewModel @Inject constructor(
                                 AssignRoleEvent.Success
                             },
                             onFailure = {
-                                AssignRoleEvent.Error("Ошибка при выдачи роли. ${it.message}")
+                                AssignRoleEvent.Error("Ошибка при выдачи роли. ${it.message}", it)
                             })
                     } else {
                         val result = revokeRoleUseCase(
@@ -617,13 +637,12 @@ class ServerSettingsViewModel @Inject constructor(
                                 RevokeRoleEvent.Success
                             },
                             onFailure = {
-                                RevokeRoleEvent.Error("Ошибка при снятии роли. ${it.message}")
+                                RevokeRoleEvent.Error("Ошибка при снятии роли. ${it.message}", it)
                             })
                     }
 
                 } catch (e: Exception) {
-                    // todo ловить и показывать ошибку
-                    // _uiState.value = ServerSettingsUiState.Error(e.message)
+                    errorHandler("Ошибка при работе с ролями. ${e.message}", e)
                 }
             }
         }
@@ -663,7 +682,7 @@ class ServerSettingsViewModel @Inject constructor(
                 },
 
                 onFailure = { error ->
-                    PatchServerOwnerEvent.Error("Ошибка при передаче прав. ${error.message}")
+                    PatchServerOwnerEvent.Error("Ошибка при передаче прав. ${error.message}", error)
                 },
             )
         }
@@ -679,7 +698,10 @@ class ServerSettingsViewModel @Inject constructor(
                 },
 
                 onFailure = { error ->
-                    DeleteServerMemberEvent.Error("Ошибка при удалении участника. ${error.message}")
+                    DeleteServerMemberEvent.Error(
+                        "Ошибка при удалении участника. ${error.message}",
+                        error
+                    )
                 },
             )
         }
@@ -699,7 +721,7 @@ class ServerSettingsViewModel @Inject constructor(
 
     fun onSaveEditedServername(serverId: String, value: String) {
         if (value.isEmpty()) {
-            errorHandler.handleError("Название не может быть пустым")
+            errorHandler.handleError("Название не может быть пустым", null)
             return
         }
         viewModelScope.launch {
@@ -711,7 +733,10 @@ class ServerSettingsViewModel @Inject constructor(
                 },
 
                 onFailure = { error ->
-                    PatchServerPropertiesEvent.Error("Ошибка при изменении данных сервера. " + error.message)
+                    PatchServerPropertiesEvent.Error(
+                        "Ошибка при изменении данных сервера. " + error.message,
+                        error
+                    )
                 }
             )
         }
@@ -737,7 +762,10 @@ class ServerSettingsViewModel @Inject constructor(
                             UpdateServerPhotoEvent.Success
                         },
                         onFailure = {
-                            UpdateServerPhotoEvent.Error("Ошибка при сохранении фото. " + it.message)
+                            UpdateServerPhotoEvent.Error(
+                                "Ошибка при сохранении фото. " + it.message,
+                                it
+                            )
                         }
                     )
                 }
@@ -750,10 +778,15 @@ class ServerSettingsViewModel @Inject constructor(
         saveServerPhoto(uri)
     }
 
-    fun errorHandler(message: String, duration: Int = Toast.LENGTH_SHORT) {
+    fun errorHandler(message: String, exception: Throwable?, duration: Int = Toast.LENGTH_SHORT) {
         errorHandler.handleError(
-            message = message
+            message = message,
+            exception = exception
         )
+    }
+
+    fun handleInfo(message: String) {
+        errorHandler.handleInfo(message = message)
     }
 
     fun resetGetServerInfoEvent() {

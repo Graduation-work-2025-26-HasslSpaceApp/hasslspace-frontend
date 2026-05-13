@@ -20,10 +20,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -51,11 +53,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -69,6 +73,9 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.SemanticsPropertyKey
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
@@ -86,6 +93,7 @@ import androidx.emoji2.emojipicker.EmojiPickerView
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.video.videoFrameMillis
+import kotlinx.coroutines.flow.first
 import ru.hse.app.hasslspace.R
 import ru.hse.app.hasslspace.ui.theme.AppTheme
 
@@ -112,18 +120,31 @@ fun UserInput(
     var currentInputSelector by rememberSaveable { mutableStateOf(InputSelector.NONE) }
     val dismissKeyboard = { currentInputSelector = InputSelector.NONE }
     var attachments by remember { mutableStateOf<List<Uri>>(emptyList()) }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val textFieldFocusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+    val density = LocalDensity.current
+    val imeBottom = WindowInsets.ime.getBottom(density)
+    // Храним imeBottom в snapshot-state, чтобы snapshotFlow мог его наблюдать из корутины
+    var imeBottomPx by remember { mutableStateOf(0) }
+    SideEffect { imeBottomPx = imeBottom }
+
+    // Отложенный селектор: показываем панель только после полного закрытия клавиатуры
+    var pendingSelector by remember { mutableStateOf<InputSelector?>(null) }
+    LaunchedEffect(pendingSelector) {
+        val pending = pendingSelector ?: return@LaunchedEffect
+        snapshotFlow { imeBottomPx }.first { it == 0 }
+        currentInputSelector = pending
+        pendingSelector = null
+    }
 
     val mediaLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
-    ) { uri ->
-        uri?.let { attachments = listOf(it) }
-    }
+    ) { uri -> uri?.let { attachments = listOf(it) } }
 
     val fileLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument()
-    ) { uri ->
-        uri?.let { attachments = listOf(it) }
-    }
+    ) { uri -> uri?.let { attachments = listOf(it) } }
 
     if (currentInputSelector != InputSelector.NONE) {
         BackHandler(onBack = dismissKeyboard)
@@ -134,11 +155,9 @@ fun UserInput(
     }
     var textFieldFocusState by remember { mutableStateOf(false) }
 
+
     Surface(tonalElevation = 2.dp, contentColor = MaterialTheme.colorScheme.secondary) {
-        Column(
-            modifier = modifier
-                .background(MaterialTheme.colorScheme.background)
-        ) {
+        Column(modifier = modifier.background(MaterialTheme.colorScheme.background)) {
             AttachmentsPreview(
                 attachments = attachments,
                 onRemove = { attachments = attachments - it }
@@ -150,6 +169,7 @@ fun UserInput(
                 onTextFieldFocused = { focused ->
                     if (focused) {
                         currentInputSelector = InputSelector.NONE
+                        pendingSelector = null
                         resetScroll()
                     }
                     textFieldFocusState = focused
@@ -161,10 +181,21 @@ fun UserInput(
                     resetScroll()
                 },
                 focusState = textFieldFocusState,
+                focusRequester = textFieldFocusRequester,
             )
             UserInputSelector(
-                onSelectorChange = { currentInputSelector = it },
-                sendMessageEnabled = (textState.text.isNotBlank() || attachments.isNotEmpty()),
+                onSelectorChange = { newSelector ->
+                    if (newSelector != InputSelector.NONE && textFieldFocusState) {
+                        // Клавиатура открыта — скрываем её и ждём полного закрытия
+                        keyboardController?.hide()
+                        focusManager.clearFocus()
+                        pendingSelector = newSelector
+                    } else {
+                        pendingSelector = null
+                        currentInputSelector = newSelector
+                    }
+                },
+                sendMessageEnabled = textState.text.isNotBlank() || attachments.isNotEmpty(),
                 onMessageSent = {
                     onMessageSent(textState.text, attachments)
                     textState = TextFieldValue()
@@ -174,6 +205,7 @@ fun UserInput(
                 },
                 currentInputSelector = currentInputSelector,
                 makeKeyboardVisible = {
+                    textFieldFocusRequester.requestFocus()
                     textFieldFocusState = true
                 },
                 mediaLauncher = mediaLauncher,
@@ -187,7 +219,7 @@ fun UserInput(
             )
         }
     }
-} //todo не появляется клавиатура после убирания смайликов
+}
 
 private fun TextFieldValue.addText(newString: String): TextFieldValue {
     val newText = this.text.replaceRange(
@@ -224,7 +256,8 @@ private fun SelectorExpanded(
             InputSelector.NONE -> {}
             InputSelector.EMOJI -> EmojiSelector(onTextAdded, focusRequester, isDark)
             InputSelector.MEDIA,
-            InputSelector.FILE -> {}
+            InputSelector.FILE -> {
+            }
         }
     }
 }
@@ -416,7 +449,8 @@ fun AttachmentsPreview(
                             context.contentResolver
                                 .query(uri, null, null, null, null)
                                 ?.use { cursor ->
-                                    val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                                    val nameIndex =
+                                        cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
                                     cursor.moveToFirst()
                                     cursor.getString(nameIndex)
                                 } ?: uri.lastPathSegment ?: "Файл"
@@ -489,6 +523,7 @@ private fun UserInputText(
     onTextFieldFocused: (Boolean) -> Unit,
     onMessageSent: (String) -> Unit,
     focusState: Boolean,
+    focusRequester: FocusRequester, // Новый параметр
 ) {
     Row(
         modifier = Modifier
@@ -505,6 +540,7 @@ private fun UserInputText(
                 keyboardType,
                 focusState,
                 onMessageSent,
+                focusRequester, // Передаем дальше
                 Modifier
                     .fillMaxWidth()
                     .semantics {
@@ -525,14 +561,15 @@ private fun UserInputTextField(
     keyboardType: KeyboardType,
     focusState: Boolean,
     onMessageSent: (String) -> Unit,
+    focusRequester: FocusRequester, // Новый параметр
     modifier: Modifier = Modifier,
 ) {
-    var lastFocusState by remember { mutableStateOf(false) }
     AdjustableTextField(
         textFieldValue = textFieldValue,
         onTextChanged = onTextChanged,
         onTextFieldFocused = onTextFieldFocused,
         onMessageSent = onMessageSent,
+        focusRequester = focusRequester, // Передаем дальше
         modifier = Modifier
             .fillMaxWidth()
             .semantics {
@@ -550,15 +587,12 @@ fun AdjustableTextField(
     onTextFieldFocused: (Boolean) -> Unit,
     onMessageSent: (String) -> Unit,
     modifier: Modifier = Modifier,
-    keyboardType: KeyboardType = KeyboardType.Text
+    keyboardType: KeyboardType = KeyboardType.Text,
+    focusRequester: FocusRequester? = null, // Новый параметр
 ) {
-
     var isFocused by remember { mutableStateOf(false) }
 
     val maxLines = 6
-    val lineHeight = 24.dp
-
-    val numberOfLines = (textFieldValue.text.length / 30) + 1
 
     BasicTextField(
         value = textFieldValue,
@@ -571,6 +605,7 @@ fun AdjustableTextField(
                     isFocused = state.isFocused
                 }
             }
+            .then(if (focusRequester != null) Modifier.focusRequester(focusRequester) else Modifier)
             .heightIn(min = 48.dp, max = 144.dp),
         keyboardOptions = KeyboardOptions(
             keyboardType = keyboardType,
@@ -588,7 +623,6 @@ fun AdjustableTextField(
                     Text(
                         text = "Напишите сообщение",
                         style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.outline),
-                        modifier = Modifier
                     )
                 }
                 innerTextField()
@@ -705,7 +739,7 @@ fun UserInputPreviewLight() {
             Spacer(modifier = Modifier.weight(1f))
             UserInput(
                 modifier = Modifier.fillMaxWidth(),
-                onMessageSent = {_, _ -> },
+                onMessageSent = { _, _ -> },
                 isDark = false
             )
         }
@@ -725,7 +759,7 @@ fun UserInputPreviewDark() {
             Spacer(modifier = Modifier.weight(1f))
             UserInput(
                 modifier = Modifier.fillMaxWidth(),
-                onMessageSent = {_, _ -> },
+                onMessageSent = { _, _ -> },
                 isDark = true
             )
         }

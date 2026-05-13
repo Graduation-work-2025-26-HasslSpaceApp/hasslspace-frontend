@@ -53,6 +53,8 @@ interface ChatRepository {
 
     suspend fun getPrivateChats(curUserId: String): Result<List<ChatInfo>>
 
+    suspend fun getPrivateChat(curUserId: String, chatId: String): Result<ChatInfo>
+
     suspend fun markMessageAsRead(messageId: String)
 
     suspend fun markMessagesAsRead(chatId: String)

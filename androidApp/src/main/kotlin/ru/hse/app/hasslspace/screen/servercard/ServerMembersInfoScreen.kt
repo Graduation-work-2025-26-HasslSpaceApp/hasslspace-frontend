@@ -58,7 +58,8 @@ fun ServerMembersInfoScreen(
 
             is StartChatEvent.Error -> {
                 val message = (startChatEvent as StartChatEvent.Error).message
-                viewModel.handleError(message)
+                val exception = (startChatEvent as StartChatEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}
@@ -84,7 +85,8 @@ fun ServerMembersInfoScreen(
 
             is GetTokenEvent.Error -> {
                 val message = (getTokenEvent as GetTokenEvent.Error).message
-                viewModel.handleError(message)
+                val exception = (getTokenEvent as GetTokenEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}
@@ -95,13 +97,15 @@ fun ServerMembersInfoScreen(
     LaunchedEffect(respondToFriendRequestEvent) {
         when (respondToFriendRequestEvent) {
             is RespondToFriendRequestEvent.SuccessRespond -> {
-                viewModel.handleError("Успешно")
+                viewModel.handleInfo("Успешно")
             }
 
             is RespondToFriendRequestEvent.Error -> {
                 val message =
                     (respondToFriendRequestEvent as RespondToFriendRequestEvent.Error).message
-                viewModel.handleError(message)
+                val exception =
+                    (respondToFriendRequestEvent as RespondToFriendRequestEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}
@@ -117,7 +121,8 @@ fun ServerMembersInfoScreen(
 
             is LoadChosenUserEvent.Error -> {
                 val message = (loadChosenUserEvent as LoadChosenUserEvent.Error).message
-                viewModel.handleError(message)
+                val exception = (loadChosenUserEvent as LoadChosenUserEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}
@@ -132,7 +137,9 @@ fun ServerMembersInfoScreen(
             is LoadChosenUserCommonServersEvent.Error -> {
                 val message =
                     (loadChosenUserCommonServersEvent as LoadChosenUserCommonServersEvent.Error).message
-                viewModel.handleError(message)
+                val exception =
+                    (loadChosenUserCommonServersEvent as LoadChosenUserCommonServersEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}
@@ -147,7 +154,9 @@ fun ServerMembersInfoScreen(
             is CreateFriendRequestEvent.Error -> {
                 val message =
                     (deleteFriendshipEvent as DeleteFriendshipEvent.Error).message
-                viewModel.handleError(message)
+                val exception =
+                    (deleteFriendshipEvent as DeleteFriendshipEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}
@@ -162,7 +171,9 @@ fun ServerMembersInfoScreen(
             is DeleteFriendshipEvent.Error -> {
                 val message =
                     (deleteFriendshipEvent as DeleteFriendshipEvent.Error).message
-                viewModel.handleError(message)
+                val exception =
+                    (deleteFriendshipEvent as DeleteFriendshipEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}
@@ -176,7 +187,8 @@ fun ServerMembersInfoScreen(
 
             is GetServerInfoEvent.Error -> {
                 val message = (getServerInfoEvent as GetServerInfoEvent.Error).message
-                viewModel.handleError(message)
+                val exception = (getServerInfoEvent as GetServerInfoEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}
@@ -192,7 +204,8 @@ fun ServerMembersInfoScreen(
 
             is LoadChosenUserEvent.Error -> {
                 val message = (loadChosenUserEvent as LoadChosenUserEvent.Error).message
-                viewModel.handleError(message)
+                val exception = (loadChosenUserEvent as LoadChosenUserEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}
@@ -207,7 +220,9 @@ fun ServerMembersInfoScreen(
             is LoadChosenUserCommonServersEvent.Error -> {
                 val message =
                     (loadChosenUserCommonServersEvent as LoadChosenUserCommonServersEvent.Error).message
-                viewModel.handleError(message)
+                val exception =
+                    (loadChosenUserCommonServersEvent as LoadChosenUserCommonServersEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}
@@ -291,19 +306,18 @@ fun ServerMembersInfoScreenWithStateContent(
             },
             aboutUserInfo = data.chosenUser.description,
             onDismiss = { viewModel.showFriendCard.value = false },
-            onInvite = { /*todo*/ },
+            onInvite = {},
             onCopyNickname = {
                 val clipboard =
                     context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                 val clip = ClipData.newPlainText("Copied Text", data.chosenUser.nickname)
                 clipboard.setPrimaryClip(clip)
 
-                viewModel.handleError("Текст скопирован в буфер обмена")
+                viewModel.handleInfo("Текст скопирован в буфер обмена")
             },
             onThirdOptionClick = {
                 when (data.chosenUser.type) {
                     TypeUiModel.FRIEND -> {
-                        // todo показать окно-подтверждение
                         viewModel.deleteFriendship(data.chosenUser.id)
                     }
 

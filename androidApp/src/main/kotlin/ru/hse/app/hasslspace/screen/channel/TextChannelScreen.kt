@@ -53,13 +53,14 @@ fun TextChannelScreen(
     LaunchedEffect(joinServerEvent) {
         when (joinServerEvent) {
             is JoinServerEvent.Success -> {
-                viewModel.handleError("Успешно присоединились к серверу")
+                viewModel.handleInfo("Успешно присоединились к серверу")
                 navController.navigate(BottomNavigationItem.Servers.route)
             }
 
             is JoinServerEvent.Error -> {
                 val message = (joinServerEvent as JoinServerEvent.Error).message
-                viewModel.handleError(message)
+                val exception = (joinServerEvent as JoinServerEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}
@@ -74,7 +75,8 @@ fun TextChannelScreen(
             is SendMessageEvent.Error -> {
                 val message =
                     (sendMessageEvent as SendMessageEvent.Error).message
-                viewModel.handleError(message)
+                val exception = (sendMessageEvent as SendMessageEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}
@@ -89,7 +91,9 @@ fun TextChannelScreen(
             is GetPrivateChatMessagesEvent.Error -> {
                 val message =
                     (getPrivateChatMessagesEvent as GetPrivateChatMessagesEvent.Error).message
-                viewModel.handleError(message)
+                val exception =
+                    (getPrivateChatMessagesEvent as GetPrivateChatMessagesEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}
@@ -104,7 +108,8 @@ fun TextChannelScreen(
             is LoadTextChannelEvent.Error -> {
                 val message =
                     (loadTextChannelEvent as LoadTextChannelEvent.Error).message
-                viewModel.handleError(message)
+                val exception = (loadTextChannelEvent as LoadTextChannelEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}
@@ -144,8 +149,14 @@ fun TextChannelWithStateContent(
         channelName = uiState.data.name,
         channelSubtitle = participantsLabel(members.size),
         onBackClick = { navController.popBackStack() },
-        onAuthorClick = {/*todo*/ },
-        onSendMessage = { text, attachments -> viewModel.addCurrentUserMessage(uiState.data.id, text, attachments) },
+        onAuthorClick = {},
+        onSendMessage = { text, attachments ->
+            viewModel.addCurrentUserMessage(
+                uiState.data.id,
+                text,
+                attachments
+            )
+        },
         isDarkTheme = viewModel.isDark,
         imageLoader = viewModel.imageLoader,
         messages = uiState.data.messages,

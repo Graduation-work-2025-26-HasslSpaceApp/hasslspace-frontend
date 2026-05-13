@@ -40,6 +40,19 @@ val centrifugoUrl: String by extra {
     value
 }
 
+val appMetricaApiKey: String by extra {
+    val properties = Properties()
+    val localPropertiesFile = project.rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        localPropertiesFile.inputStream().use { properties.load(it) }
+    }
+    val value = properties.getProperty("APPMETRICA_API_KEY", "")
+    if (value.isEmpty()) {
+        throw InvalidUserDataException("AppMetrica API key is not provided. Set your API key in the project's local.properties file: APPMETRICA_API_KEY=<your-api-key-value>.")
+    }
+    value
+}
+
 plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.android)
@@ -64,6 +77,7 @@ android {
         buildConfigField("String", "SERVER_URL", "\"$serverUrl\"")
         buildConfigField("String", "LIVEKIT_URL", "\"$serverLiveKitUrl\"")
         buildConfigField("String", "CENTRIFUGO_URL", "\"$centrifugoUrl\"")
+        buildConfigField("String", "APPMETRICA_API_KEY", "\"$appMetricaApiKey\"")
     }
     buildFeatures {
         compose = true
@@ -86,6 +100,7 @@ dependencies {
     implementation(libs.compose.foundation)
     implementation(libs.compose.material3)
     implementation(libs.compose.ui.tooling.preview)
+    debugImplementation(libs.compose.ui.tooling)
 
     implementation(libs.kermit)
     implementation(libs.kotlinx.coroutines.core)
@@ -151,7 +166,7 @@ dependencies {
     implementation(libs.coil)
     implementation(libs.coil.network.okhttp)
     implementation(libs.androidx.palette.ktx)
-    implementation("io.coil-kt.coil3:coil-video:3.4.0")
+    implementation(libs.coil.video)
 
     //Image Cropper
     implementation(libs.ucrop)
@@ -182,4 +197,7 @@ dependencies {
 
     // centrifugo
     implementation(libs.centrifuge.java)
+
+    // App Metrica
+    implementation(libs.analytics)
 }

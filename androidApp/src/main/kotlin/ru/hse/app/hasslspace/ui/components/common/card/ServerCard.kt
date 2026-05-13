@@ -84,16 +84,6 @@ fun ServerCard(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-//
-//            Spacer(modifier = Modifier.height(8.dp))
-//
-//            VariableLight(
-//                text = participantsLabel(count = participantCount),
-//                fontSize = 12.sp,
-//                fontColor = MaterialTheme.colorScheme.outline,
-//                maxLines = 1,
-//                overflow = TextOverflow.Ellipsis
-//            )
         }
     }
 }

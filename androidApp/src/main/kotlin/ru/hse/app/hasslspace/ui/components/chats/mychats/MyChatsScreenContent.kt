@@ -1,5 +1,6 @@
 package ru.hse.app.hasslspace.ui.components.chats.mychats
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -7,6 +8,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -65,33 +69,35 @@ fun MyChatsScreenContent(
             NoItemsBox("У вас пока нет чатов")
         }
 
-        UniversalVerticalGrid(
-            items = chats,
-            columns = 1,
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(1),
             contentPadding = PaddingValues(0.dp),
-            verticalSpacing = 20.dp,
-        ) { chat ->
-            val sorted = chat.messages.sortedByDescending { it.timestamp }
-            ChatCard(
-                imageLoader = imageLoader,
-                title = chat.name,
-                lastMessage = sorted.firstOrNull()?.let { message ->
-                    when {
-                        message.fileUrl?.isNotEmpty() == true -> "Вложение"
-                        message.content.isNotBlank() -> message.content
-                        else -> ""
-                    }
-                } ?: "",
-                timeOfLastMessage = if (sorted.isNotEmpty() && sorted.firstOrNull()?.timestamp != null) {
-                    formatMessageTime(sorted.firstOrNull()!!.timestamp)
-                } else {
-                    ""
-                },
-                chatPictureUrl = chat.chatPhotoUrl,
-                isDarkTheme = isDarkTheme,
-                onChatClick = { onChatClick(chat) },
-                unreadCount = chat.unreadCount,
-            )
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp)
+        ) {
+            items(chats, key = { it.id }) { chat ->
+                val sorted = chat.messages.sortedByDescending { it.timestamp }
+                ChatCard(
+                    imageLoader = imageLoader,
+                    title = chat.name,
+                    lastMessage = sorted.firstOrNull()?.let { message ->
+                        when {
+                            message.fileUrl?.isNotEmpty() == true -> "Вложение"
+                            message.content.isNotBlank() -> message.content
+                            else -> ""
+                        }
+                    } ?: "",
+                    timeOfLastMessage = if (sorted.isNotEmpty() && sorted.firstOrNull()?.timestamp != null) {
+                        formatMessageTime(sorted.firstOrNull()!!.timestamp)
+                    } else {
+                        ""
+                    },
+                    chatPictureUrl = chat.chatPhotoUrl,
+                    isDarkTheme = isDarkTheme,
+                    onChatClick = { onChatClick(chat) },
+                    unreadCount = chat.unreadCount,
+                )
+            }
         }
     }
 }

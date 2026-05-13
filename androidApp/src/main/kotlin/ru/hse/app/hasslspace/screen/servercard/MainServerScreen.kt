@@ -66,14 +66,16 @@ fun MainServerScreen(
                 val serverId = (startChannelChatEvent as StartChatChannelEvent.Success).serverId
                 val channelId = (startChannelChatEvent as StartChatChannelEvent.Success).channelId
                 val chatId = (startChannelChatEvent as StartChatChannelEvent.Success).chatId
-                val currestUserId = (startChannelChatEvent as StartChatChannelEvent.Success).currestUserId
+                val currestUserId =
+                    (startChannelChatEvent as StartChatChannelEvent.Success).currestUserId
 
                 navController.navigate(NavigationItem.TextChannelChat.route + "/$serverId" + "/$channelId" + "/$chatId" + "/$currestUserId")
             }
 
             is StartChatChannelEvent.Error -> {
                 val message = (startChannelChatEvent as StartChatChannelEvent.Error).message
-                viewModel.handleError(message)
+                val exception = (startChannelChatEvent as StartChatChannelEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}
@@ -92,7 +94,8 @@ fun MainServerScreen(
 
             is StartChatEvent.Error -> {
                 val message = (startChatEvent as StartChatEvent.Error).message
-                viewModel.handleError(message)
+                val exception = (startChatEvent as StartChatEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}
@@ -116,7 +119,8 @@ fun MainServerScreen(
 
             is LeaveServerEvent.Error -> {
                 val message = (leaveServerEvent as LeaveServerEvent.Error).message
-                viewModel.handleError(message)
+                val exception = (leaveServerEvent as LeaveServerEvent.Error).exception
+                viewModel.handleError(message, exception)
                 viewModel.showLeaveServerDialog.value = false
                 viewModel.showServerSettingsSheet.value = false
             }
@@ -133,7 +137,8 @@ fun MainServerScreen(
             is LoadUserDataEvent.Error -> {
                 val message =
                     (loadUserDataEvent as LoadUserDataEvent.Error).message
-                viewModel.handleError(message)
+                val exception = (loadUserDataEvent as LoadUserDataEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}
@@ -154,7 +159,8 @@ fun MainServerScreen(
 
             is GetTokenEvent.Error -> {
                 val message = (getVoiceChannelTokenEvent as GetTokenEvent.Error).message
-                viewModel.handleError(message)
+                val exception = (getVoiceChannelTokenEvent as GetTokenEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}
@@ -171,7 +177,8 @@ fun MainServerScreen(
 
             is PatchChannelEvent.Error -> {
                 val message = (patchChannelEvent as PatchChannelEvent.Error).message
-                viewModel.handleError(message)
+                val exception = (patchChannelEvent as PatchChannelEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}
@@ -187,7 +194,8 @@ fun MainServerScreen(
 
             is LoadChosenChannelEvent.Error -> {
                 val message = (loadChosenChannelEvent as LoadChosenChannelEvent.Error).message
-                viewModel.handleError(message)
+                val exception = (loadChosenChannelEvent as LoadChosenChannelEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}
@@ -207,7 +215,8 @@ fun MainServerScreen(
 
             is DeleteServerEvent.Error -> {
                 val message = (deleteServerEvent as DeleteServerEvent.Error).message
-                viewModel.handleError(message)
+                val exception = (deleteServerEvent as DeleteServerEvent.Error).exception
+                viewModel.handleError(message, exception)
                 viewModel.showDeleteServerDialog.value = false
                 viewModel.showServerSettingsSheet.value = false
             }
@@ -232,7 +241,8 @@ fun MainServerScreen(
 
             is DeleteChannelEvent.Error -> {
                 val message = (deleteChannelEvent as DeleteChannelEvent.Error).message
-                viewModel.handleError(message)
+                val exception = (deleteChannelEvent as DeleteChannelEvent.Error).exception
+                viewModel.handleError(message, exception)
                 viewModel.showDeleteChannel.value = false
                 viewModel.showEditChannel.value = false
             }
@@ -255,7 +265,8 @@ fun MainServerScreen(
 
             is CreateChannelEvent.Error -> {
                 val message = (createChannelEvent as CreateChannelEvent.Error).message
-                viewModel.handleError(message)
+                val exception = (createChannelEvent as CreateChannelEvent.Error).exception
+                viewModel.handleError(message, exception)
                 viewModel.creatingChannel.value = false
             }
 
@@ -270,7 +281,8 @@ fun MainServerScreen(
 
             is GetServerInfoEvent.Error -> {
                 val message = (getServerInfoEvent as GetServerInfoEvent.Error).message
-                viewModel.handleError(message)
+                val exception = (getServerInfoEvent as GetServerInfoEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}
@@ -285,7 +297,9 @@ fun MainServerScreen(
             is GetFriendsNotInServerEvent.Error -> {
                 val message =
                     (getFriendsNotInServerEvent as GetFriendsNotInServerEvent.Error).message
-                viewModel.handleError(message)
+                val exception =
+                    (getFriendsNotInServerEvent as GetFriendsNotInServerEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}
@@ -303,7 +317,9 @@ fun MainServerScreen(
 
             is SendServerInvitationEvent.Error -> {
                 val message = (sendServerInvitationEvent as SendServerInvitationEvent.Error).message
-                viewModel.handleError(message)
+                val exception =
+                    (sendServerInvitationEvent as SendServerInvitationEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}
@@ -362,7 +378,7 @@ fun MainServerScreenWithStateContent(
                         currentUserId = data.currentUser.id
                     )
                 } else {
-                    viewModel.handleError("Не загружен текущий пользователь")
+                    viewModel.handleError("Не загружен текущий пользователь", null)
                 }
 
             },
@@ -379,7 +395,7 @@ fun MainServerScreenWithStateContent(
                         channelName = it.title,
                     )
                 } else {
-                    viewModel.handleError("Не загружены данные текущего пользователя")
+                    viewModel.handleError("Не загружены данные текущего пользователя", null)
                 }
             },
             onVoiceChannelLongClick = {

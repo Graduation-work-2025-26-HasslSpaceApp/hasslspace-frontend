@@ -40,7 +40,8 @@ fun AddFriendsScreen(
             is LoadUserFriendsEvent.Error -> {
                 val message =
                     (loadUserFriendsEvent as LoadUserFriendsEvent.Error).message
-                viewModel.handleError(message)
+                val exception = (loadUserFriendsEvent as LoadUserFriendsEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}
@@ -79,7 +80,8 @@ fun AddFriendsScreen(
             is DeleteFriendshipEvent.Error -> {
                 val message =
                     (deleteFriendshipEvent as DeleteFriendshipEvent.Error).message
-                viewModel.handleError(message)
+                val exception = (deleteFriendshipEvent as DeleteFriendshipEvent.Error).exception
+                viewModel.handleError(message, exception)
             }
 
             null -> {}
@@ -122,10 +124,7 @@ fun AddFriendsScreenWithStateContent(
         imageLoader = viewModel.imageLoader,
         requests = viewModel.getOutgoingRequests(data.friends),
         onBackClick = { navController.popBackStack() },
-        onRequestClick = {
-//            viewModel.loadChosenUserCommonServers(userId = it.id)
-//            viewModel.loadChosenUser(userId = it.id) todo
-        },
+        onRequestClick = {},
         searchText = viewModel.addFriendFieldValue.value,
         onValueChange = viewModel::changeAddFriendValue,
         onSendClick = { viewModel.createFriendshipRequest(viewModel.addFriendFieldValue.value) },

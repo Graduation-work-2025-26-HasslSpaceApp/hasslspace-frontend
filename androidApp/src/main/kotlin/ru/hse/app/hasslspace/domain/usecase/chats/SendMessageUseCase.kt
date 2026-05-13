@@ -17,13 +17,12 @@ class SendMessageUseCase @Inject constructor(
         }
 
         val file = attachments.first()
-        val uploadResult = putFileUseCase.invoke(file, null) // todo
+        val uploadResult = putFileUseCase.invoke(file, null)
         uploadResult.fold(onSuccess = { fileUrl ->
             return chatRepository.sendMessage(chatId, content, fileUrl)
         }, onFailure = {
             return Result.failure(
                 uploadResult.exceptionOrNull()
-                //TODO во всех юз кейсах сделать преобразование ошибки апи в ошибку UI
                     ?: ApiException(null, ApiException.FILE_UPLOADING_ERROR, null)
             )
         })

@@ -59,12 +59,6 @@ fun NewMessageScreenContent(
             )
         }
         Spacer(Modifier.height(15.dp))
-//        SearchBar(
-//            placeholder = "Кому? Найти друзей",
-//            text = searchText,
-//            onValueChange = onValueChange
-//        )
-//        Spacer(Modifier.height(15.dp))
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(1),
@@ -73,22 +67,6 @@ fun NewMessageScreenContent(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-//            item {
-//                AddButton(
-//                    onClick = onNewGroupClick,
-//                    text = "Новая группа",
-//                    iconResource = if (isDarkTheme) R.drawable.new_group_dark else R.drawable.new_group_light
-//                )
-//            }
-//
-//            item {
-//                AddButton(
-//                    modifier = Modifier.padding(bottom = 15.dp),
-//                    onClick = onAddFriendClick,
-//                    text = "Добавить друга",
-//                    iconResource = if (isDarkTheme) R.drawable.new_friend_dark else R.drawable.new_friend_light
-//                )
-//            }
 
             items(friends, key = { it.id }) { friend ->
                 UserCardArrow(

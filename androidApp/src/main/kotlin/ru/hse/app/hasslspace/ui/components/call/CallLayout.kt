@@ -72,9 +72,6 @@ fun CallLayout(
             }
 
             if (primaryTrack != null) {
-//                Box(
-//                    modifier = Modifier.fillMaxSize().background(color = MaterialTheme.colorScheme.primary)
-//                )
                 PrimarySpeakerView(
                     trackReference = primaryTrack,
                     modifier = Modifier

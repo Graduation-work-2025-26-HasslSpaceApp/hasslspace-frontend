@@ -2,5 +2,5 @@ package ru.hse.app.hasslspace.ui.entity.model.chats.events
 
 sealed class GetPrivateChatsEvent {
     data object SuccessLoad : GetPrivateChatsEvent()
-    data class Error(val message: String) : GetPrivateChatsEvent()
+    data class Error(val message: String, val exception: Throwable) : GetPrivateChatsEvent()
 }

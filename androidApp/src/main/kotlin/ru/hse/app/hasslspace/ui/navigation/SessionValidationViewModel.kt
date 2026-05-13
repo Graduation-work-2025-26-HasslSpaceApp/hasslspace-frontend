@@ -39,8 +39,6 @@ class SessionValidationViewModel @Inject constructor(
     val isDarkFlow = dataManager.isDark
 
     init {
-        //TODO для теста
-//        clear()
 
         loadTheme()
 
@@ -113,12 +111,6 @@ class SessionValidationViewModel @Inject constructor(
         }
         dataManager.saveIsDarkTheme(isDarkTheme)
         _isDark.update { isDarkTheme }
-    }
-
-    private fun clear() {
-        dataManager.clearIsDarkTheme()
-        dataManager.clearJwt()
-        dataManager.clearVerificationStatus()
     }
 }
 

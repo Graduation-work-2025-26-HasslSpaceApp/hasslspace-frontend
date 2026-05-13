@@ -19,10 +19,8 @@ class PutFileUseCase @Inject constructor(
         file: Uri,
         photoUrl: String?
     ): Result<String> {
-//        imageLoader.memoryCache?.clear()todo
-//        imageLoader.diskCache?.clear()
 
-        val photoLimit = 1L * 1024 * 1024  // 100 МБ
+        val photoLimit = 100L * 1024 * 1024  // 100 МБ
         val fileLimit = 1L * 1024 * 1024 * 1024  // 1 ГБ
 
         val userFileMultipart = file.let { fileConverterService.uriToMultipart(it, "file") }

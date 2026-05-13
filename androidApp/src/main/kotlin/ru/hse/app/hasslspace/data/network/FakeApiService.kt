@@ -658,7 +658,7 @@ class FakeApiService : ApiService {
     }
 
     override suspend fun updateServerOwner(
-        userId: String,
+        newOwnerId: String,
         serverId: String
     ): Response<String> {
         fakeServer = fakeServer.copy(
@@ -1193,9 +1193,9 @@ class FakeApiService : ApiService {
         return Response.success(newMessageId)
     }
 
-    override suspend fun startChat(userId: String): Response<String> {
+    override suspend fun startChat(targetUserId: String): Response<String> {
         // Проверяем, существует ли уже чат с этим пользователем
-        val existingChat = when (userId) {
+        val existingChat = when (targetUserId) {
             "1" -> "chat_1"
             "2" -> "chat_2"
             "3" -> "chat_3"
