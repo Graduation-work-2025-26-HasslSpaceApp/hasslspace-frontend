@@ -6,12 +6,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil3.ImageLoader
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import ru.hse.app.hasslspace.BuildConfig
 import ru.hse.app.hasslspace.data.centrifugo.CentrifugeService
 import ru.hse.app.hasslspace.data.local.DataManager
+import ru.hse.app.hasslspace.data.roomstorage.MessageEntity
 import ru.hse.app.hasslspace.domain.service.common.CropProfilePhotoService
 import ru.hse.app.hasslspace.domain.usecase.chats.GetChatMessagesUseCase
 import ru.hse.app.hasslspace.domain.usecase.chats.GetPrivateChatsUseCase
@@ -116,7 +122,7 @@ class ChatsViewModel @Inject constructor(
                                     chat.messages.maxByOrNull { it.timestamp }?.timestamp
                                         ?: LocalDateTime.MIN
                                 }
-                            chatModels.forEach { observeMessagesAndUnreadCount(it) }
+                            observeAllChats(chatModels)
 
                             connectToCentrifugo(chatModels.map { it.id })
 
@@ -156,20 +162,37 @@ class ChatsViewModel @Inject constructor(
         }
     }
 
-    private fun observeMessagesAndUnreadCount(chat: ChatShortUiModel) {
+    @OptIn(FlowPreview::class)
+    private fun observeAllChats(chats: List<ChatShortUiModel>) {
+        if (chats.isEmpty()) return
         viewModelScope.launch {
-            getChatMessagesUseCase.observeMessages(chat.id)
-                .collect { messages ->
-                    val updatedMessages = messages.map { it.toMessageShortUi() }
-                    val unreadCount = messages.count { !it.isRead }
-
-                    val updatedChat = chat.copy(
-                        messages = updatedMessages,
-                        unreadCount = unreadCount
-                    )
-                    updateChatState(updatedChat)
+            val flows = chats.map { chat ->
+                getChatMessagesUseCase.observeMessages(chat.id)
+                    .map { msgs -> chat.id to msgs }
+            }
+            combine(flows) { pairs -> pairs.toMap() }
+                .debounce(50)
+                .distinctUntilChanged()
+                .collect { messagesByChatId ->
+                    rebuildChats(messagesByChatId)
                 }
         }
+    }
+
+    private fun rebuildChats(messagesByChatId: Map<String, List<MessageEntity>>) {
+        val current = _uiState.value as? ChatsUiState.Success ?: return
+        val updated = current.data.chats.map { chat ->
+            val msgs = messagesByChatId[chat.id].orEmpty()
+            chat.copy(
+                messages = msgs.map { it.toMessageShortUi() },
+                unreadCount = msgs.count { !it.isRead }
+            )
+        }.sortedByDescending { c ->
+            c.messages.maxByOrNull { it.timestamp }?.timestamp ?: LocalDateTime.MIN
+        }
+        originalChats.clear()
+        originalChats.addAll(updated)
+        _uiState.value = ChatsUiState.Success(current.data.copy(chats = updated))
     }
 
     private fun updateChatState(updatedChat: ChatShortUiModel) {

@@ -136,6 +136,7 @@ class TextChannelViewModel @Inject constructor(
     fun refreshMessages(chatId: String, channelId: String) {
         viewModelScope.launch {
             updateChatMessagesRestUseCase(chatId)
+            connectToCentrifugo(chatId)
         }
     }
 
